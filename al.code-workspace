@@ -1,8 +1,27 @@
 {
     "folders": [
         {
+            "path": "app"
+        },
+        {
+            "path": "test"
+        },
+        {
             "path": ".AL-Go"
         }
     ],
-    "settings": {}
+    "settings": {
+        "al.namespaceTemplate": "Origo.APP.CloudEvents.SubscriptionBilling",
+        "CRS.FileNamePattern": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+        "CRS.FileNamePatternExtensions": "<ObjectNameShort>.<ObjectTypeShortPascalCase>.al",
+        "CRS.RemoveSuffixFromFilename": true,
+        "CRS.ObjectNameSuffix": "ori",
+        "al.enableCodeAnalysis": true,
+        "al.codeAnalyzers": [
+            "${CodeCop}",
+            "${UICop}",
+            "${AppSourceCop}",
+            "${PerTenantExtensionCop}"
+        ]
+    }
 }

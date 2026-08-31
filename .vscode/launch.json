@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "al",
+      "request": "launch",
+      "name": "launch: bc28-is",
+      "server": "https://cosmo-alpaca-enterprise.westeurope.cloudapp.azure.com",
+      "serverInstance": "f068155f0c39dev",
+      "port": 443,
+      "authentication": "UserPassword",
+      "environmentType": "OnPrem",
+      "tenant": "default",
+      "startupObjectType": "Page",
+      "startupObjectId": 22,
+      "breakOnError": "All",
+      "launchBrowser": true,
+      "schemaUpdateMode": "Synchronize"
+    },
+    {
+      "type": "al",
+      "request": "attach",
+      "name": "attach: bc28-is",
+      "server": "https://cosmo-alpaca-enterprise.westeurope.cloudapp.azure.com",
+      "serverInstance": "f068155f0c39dev",
+      "port": 443,
+      "authentication": "UserPassword",
+      "environmentType": "OnPrem",
+      "tenant": "default",
+      "breakOnNext": "WebClient"
+    }
+  ]
+}
