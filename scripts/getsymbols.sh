@@ -36,7 +36,7 @@ app_symbols() {
   fetch "$d" Microsoft "Base Application"
   fetch "$d" Microsoft "Application"
   fetch "$d" Microsoft "Subscription Billing"
-  fetch "$d" Origo     "Origo Cloud Events Core"
+  fetch "$d" Origo     "Bifrost Foundation"
 }
 
 # The test project needs the above, the Microsoft test libraries, and this app itself.
@@ -57,8 +57,8 @@ test_symbols() {
   fetch "$d" Microsoft "Business Foundation Test Libraries"
   fetch "$d" Microsoft "System Application Test Library"
   fetch "$d" Microsoft "Permissions Mock"
-  fetch "$d" Origo     "Origo Cloud Events Core"
-  fetch "$d" Origo     "Origo Cloud Events Subscription Billing"
+  fetch "$d" Origo     "Bifrost Foundation"
+  fetch "$d" Origo     "Bifrost Subscription Billing"
 }
 
 TARGET="${1:-app}"

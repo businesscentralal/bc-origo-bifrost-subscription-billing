@@ -15,7 +15,7 @@ Please go to https://aka.ms/AL-Go and [COSMO Docs](https://docs.cosmoconsult.com
 
 ---
 
-# Origo Bifrost Subscription Billing
+# Bifrost Subscription Billing
 
 Bifrost message types for the Microsoft Dynamics 365 Business Central **Subscription Billing**
 app, so an agent or an integration can operate Subscription Billing end to end without manual UI
@@ -45,10 +45,10 @@ See [app/docs/Message-Types.md](app/docs/Message-Types.md) for the full referenc
 
 | App | Publisher | Minimum version |
 | --- | --- | --- |
-| Origo Bifrost Core | Origo | 28.2.6.0 |
+| Bifrost Foundation | Origo | 28.0.0.0 |
 | Subscription Billing | Microsoft | 28.0.0.0 |
 
-Object range 10035035–10035084. Namespace `Origo.APP.Bifrost.SubscriptionBilling`.
+Object range 10035035–10035084. Namespace `Origo.Bifrost.SubscriptionBilling`.
 
 ## Repository layout
 
@@ -65,6 +65,7 @@ app/                 the extension
   src/Analysis/              Subscription.Analysis.*
   src/Import/                Subscription.Import.*
   src/Common/                shared request parsing, isolated write, preview rollback
+  src/Help/                  per-domain Markdown help text (one codeunit per domain)
   src/Permission Set/        permission sets
   docs/                      AppSource and Partner Center documentation
 test/                the test app (object range 95700–95799)

@@ -1,9 +1,82 @@
 # Changelog
 
-All notable changes to Origo Bifrost Subscription Billing are documented here.
+All notable changes to Bifrost Subscription Billing are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project
 uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html) aligned to the Business Central
 major version.
+
+## [29.0.0.0] - 2026-09-06
+
+### Changed
+
+Migrated from *Origo Cloud Events Subscription Billing* to **Bifrost Subscription Billing**,
+following the same procedure used for the other Cloud Events -> Bifrost apps
+(`bc-origo-bifrost-core/tools/migration/MIGRATION_GUIDE.md`). The app was never published, so
+the app id and every object id keep their identity (offset 0) - this is an in-place rename, not
+a side-by-side install.
+
+- Namespace `Origo.APP.CloudEvents.SubscriptionBilling` -> `Origo.Bifrost.SubscriptionBilling`
+  (tests: `Origo.Bifrost.SubscriptionBilling.Test`).
+- Dependency on *Origo Cloud Events Core* replaced by **Bifrost Foundation** 28.0.0.0.
+- Every object loses its `CE ` prefix; the `Sub`/`Bil`/`Con`/`Vend`/`PU`/`Ren`/`Usg`/`Def`/`Ana`/
+  `Imp` abbreviations are unchanged. Renames (old -> new):
+
+  | Old | New |
+  | --- | --- |
+  | `CE Sub Line Create Impl ori` | `Sub Line Create Impl ori` |
+  | `CE Sub Con GetLines Impl ori` | `Sub Con GetLines Impl ori` |
+  | `CE Sub Con CrInvoice Impl ori` | `Sub Con CrInvoice Impl ori` |
+  | `CE Sub Con PrvInvoice Impl ori` | `Sub Con PrvInvoice Impl ori` |
+  | `CE Sub Con UpdDates Impl ori` | `Sub Con UpdDates Impl ori` |
+  | `CE Sub Con UpdFCY Impl ori` | `Sub Con UpdFCY Impl ori` |
+  | `CE Sub Vend GetLines Impl ori` | `Sub Vend GetLines Impl ori` |
+  | `CE Sub Vend CrInvoice Impl ori` | `Sub Vend CrInvoice Impl ori` |
+  | `CE Sub Vend PrvInv Impl ori` | `Sub Vend PrvInv Impl ori` |
+  | `CE Sub Bil CrProposal Impl ori` | `Sub Bil CrProposal Impl ori` |
+  | `CE Sub Bil CrDocs Impl ori` | `Sub Bil CrDocs Impl ori` |
+  | `CE Sub Bil PrvDocs Impl ori` | `Sub Bil PrvDocs Impl ori` |
+  | `CE Sub PU SetFilter Impl ori` | `Sub PU SetFilter Impl ori` |
+  | `CE Sub PU CrProposal Impl ori` | `Sub PU CrProposal Impl ori` |
+  | `CE Sub PU Perform Impl ori` | `Sub PU Perform Impl ori` |
+  | `CE Sub Ren Extend Impl ori` | `Sub Ren Extend Impl ori` |
+  | `CE Sub Ren CrQuote Impl ori` | `Sub Ren CrQuote Impl ori` |
+  | `CE Sub Usg Import Impl ori` | `Sub Usg Import Impl ori` |
+  | `CE Sub Usg Process Impl ori` | `Sub Usg Process Impl ori` |
+  | `CE Sub Def Release Impl ori` | `Sub Def Release Impl ori` |
+  | `CE Sub Ana Recalc Impl ori` | `Sub Ana Recalc Impl ori` |
+  | `CE Sub Imp CrContr Impl ori` | `Sub Imp CrContr Impl ori` |
+  | `CE Sub Helper ori` | `Sub Helper ori` |
+  | `CE Sub Write Process ori` | `Sub Write Process ori` |
+  | `CE Sub Msg Type ori` (enum extension) | `Sub Msg Type ori` |
+  | `CE Sub Bil Obj ori` (permission set) | `BIFROST SubBil ori` |
+  | `CE Sub Bil Full ori` (permission set ext.) | `BIFROST SubBFull ori` |
+  | `CE Sub Bil Read ori` (permission set ext.) | `BIFROST SubBRead ori` |
+
+  Message type keys (`Subscription.<Domain>.<Action>`) are unchanged - they are the external API
+  contract.
+
+- Help text for all 22 message types moved out of their Impl codeunits into 10 new per-domain
+  Help codeunits (`Sub <Domain> Help ori`, ids 10035065-10035074: Line, Con, Vend, Bil, PU, Ren,
+  Usg, Def, Ana, Imp), matching the domain-help pattern used by Bifrost Foundation and Bifrost
+  Nornir. Each Impl codeunit's `GetMessageHelpAsMarkdownDocument` now delegates to its domain's
+  Help codeunit; the Markdown text itself is unchanged.
+- No setup table or setup page extension existed in the Cloud Events version of this app, so
+  there was nothing to move out of Foundation's `Setup ori` page for this migration.
+- App renamed to **Bifrost Subscription Billing**, custom logo, help/contextSensitiveHelpUrl
+  updated to the `BifrostSubscriptionBilling` blob path. One Icelandic caption paraphrase
+  ("Atburðir í skýinu - áskriftir") was found and replaced with "Bifröst - áskriftir"
+  (`BIFROST SubBil ori`); no other Icelandic paraphrases of the old brand were found.
+- Repository renamed from `origo-bc-cloudevents-subscriptionbilling` to
+  `bc-origo-bifrost-subscription-billing`.
+
+### Notes
+
+- The `EULA` URL still points at a document named `..._Cloud_Events_Terms_of_Use...` on the
+  Origo CDN - left as-is because it is a real external legal document, not a code artifact;
+  flag for legal/marketing to reissue under the Bifrost name on their own schedule.
+- A Foundation-wide "Apps" action group (for setup pages like this one to hang an action off of)
+  and a Foundation-wide secret store are both being built in parallel; this app has no setup page
+  today, so neither applies yet.
 
 ## [28.0.0.0] - 2026-09-01
 

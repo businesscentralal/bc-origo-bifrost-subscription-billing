@@ -1,12 +1,12 @@
 # AppSource user scenarios
 
-**App:** Origo Bifrost Subscription Billing
+**App:** Bifrost Subscription Billing
 **Publisher:** Origo
 **Version:** 28.0.0.0
 **Prepared:** 2026-09-01
 
 These scenarios let a validation engineer exercise the app end to end. They assume a Business
-Central sandbox with the **Subscription Billing** app and **Origo Bifrost Core** installed,
+Central sandbox with the **Subscription Billing** app and **Bifrost Foundation** installed,
 and the Bifrost demonstration data available.
 
 ## Test credentials
@@ -19,10 +19,10 @@ and the Bifrost demonstration data available.
 
 ## Prerequisites
 
-1. Install **Origo Bifrost Core** and activate it (see the Core app's own setup guide).
+1. Install **Bifrost Foundation** and activate it (see the Foundation app's own setup guide).
 2. Install **Subscription Billing** (Microsoft) and run its assisted setup so that
    Subscription Contract Setup, number series and a Billing Template exist.
-3. Install **Origo Bifrost Subscription Billing**.
+3. Install **Bifrost Subscription Billing**.
 4. Assign the permission set **Bifrost Sub. Billing** (`BIFROST SubBil ori`) to the test user,
    in addition to their Bifrost Core permissions.
 
@@ -65,8 +65,8 @@ Without the Data Exchange Definition the import call still succeeds as a call, a
 ## Scenario 1: Installation and activation
 
 1. Open **Extension Management**.
-2. Confirm **Origo Bifrost Subscription Billing** is listed and installed.
-3. Confirm the dependency **Origo Bifrost Core** is installed and appears above it.
+2. Confirm **Bifrost Subscription Billing** is listed and installed.
+3. Confirm the dependency **Bifrost Foundation** is installed and appears above it.
 4. Open **Users**, select the test user, and confirm the permission set
    **Bifrost Sub. Billing** can be assigned.
 
@@ -193,7 +193,7 @@ extension does not widen).
 ## Scenario 11: Uninstallation
 
 1. Open **Extension Management**.
-2. Uninstall **Origo Bifrost Subscription Billing**.
+2. Uninstall **Bifrost Subscription Billing**.
 3. Invoke `Help.MessageTypes.Get` again.
 
 **Expected:** the extension uninstalls without error, the `Subscription.*` message types no longer

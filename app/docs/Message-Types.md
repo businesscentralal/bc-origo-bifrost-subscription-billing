@@ -1,6 +1,6 @@
 # Subscription Billing message types
 
-**App:** Origo Bifrost Subscription Billing
+**App:** Bifrost Subscription Billing
 **Version:** 28.0.0.0
 **Prepared:** 2026-08-30
 
@@ -8,7 +8,7 @@
 
 This app adds 22 Bifrost message types that let an external agent operate Microsoft
 Dynamics 365 Business Central **Subscription Billing** end to end, without a person driving the
-client by hand. It does not replace the generic **Origo Bifrost Core** message types -
+client by hand. It does not replace the generic **Bifrost Foundation** message types -
 `Data.Records.Get`, `Data.Records.Set` and the rest still cover plain reads and simple field
 writes on any table. This app exists only for the operations a generic record call cannot
 perform: applying a Subscription Package with Microsoft's own derivation logic, running a

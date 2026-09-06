@@ -2,7 +2,7 @@
 
 ## Name
 
-Origo Bifrost Subscription Billing
+Bifrost Subscription Billing
 
 ## Search result summary (max 100 characters)
 
@@ -10,7 +10,7 @@ Run Subscription Billing end to end from an agent or API - no manual UI steps.
 
 ## Short description / offer summary
 
-Origo Bifrost Subscription Billing adds a curated set of Bifrost message types for the
+Bifrost Subscription Billing adds a curated set of Bifrost message types for the
 Microsoft Subscription Billing app. It covers exactly the operations that a generic record read or
 write cannot perform: applying subscription packages, attaching lines to customer and vendor
 contracts, running the billing pipeline, previewing a billing run without writing, importing and
@@ -48,7 +48,7 @@ English (United States), Icelandic (Iceland)
 
 - Microsoft Dynamics 365 Business Central
 - Subscription Billing (Microsoft)
-- Origo Bifrost Core (required dependency)
+- Bifrost Foundation (required dependency)
 
 ## Help and support
 

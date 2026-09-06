@@ -1,6 +1,6 @@
 # AppSource release checklist
 
-**App:** Origo Bifrost Subscription Billing (`dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d`)
+**App:** Bifrost Subscription Billing (`dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d`)
 **Publisher:** Origo
 **Target version:** 28.0.0.0 - first submission
 
@@ -17,7 +17,7 @@ a person with Partner Center access, and cannot be finished from the code alone.
 | Publisher, app id, version, brief, description | `app/app.json` |
 | Logo (250x250 PNG) | `app/assets/Logo250x250.png` |
 | Privacy statement URL | https://www.origo.is/um-origo/stefnur/personuverndarstefna |
-| Licence terms (EULA) URL | The Bifrost Terms of Use PDF, shared with Origo Bifrost Core |
+| Licence terms (EULA) URL | The Bifrost Terms of Use PDF, shared with Bifrost Foundation |
 | Help URL and context-sensitive help URL | https://www.origo.is/ - see *Help content* below |
 | `target: Cloud` | `app/app.json` |
 | Registered object range 10035035..10035084 | `app/app.json` - `idRanges` |
@@ -96,7 +96,7 @@ to the offer listing.
 
 ### 6. Dependency availability
 
-The app depends on **Origo Bifrost Core** `28.2.6.0` or later. That app must already be live
+The app depends on **Bifrost Foundation** `28.0.0.0` or later. That app must already be live
 on AppSource, and at a version at least as high as the dependency, or validation cannot resolve
 it. It also depends on Microsoft's **Subscription Billing**, which ships with Business Central,
 so nothing is needed for that one.

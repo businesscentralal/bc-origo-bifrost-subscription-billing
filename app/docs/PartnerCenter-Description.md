@@ -8,7 +8,7 @@ invoice, run the billing proposal, perform the price update, import a usage file
 an AI agent can read and write subscription records through a generic API, and then stops at the
 first button.
 
-Origo Bifrost Subscription Billing closes that gap. It publishes a curated set of Bifrost
+Bifrost Subscription Billing closes that gap. It publishes a curated set of Bifrost
 message types - one per operation that genuinely needs a codeunit, record context at insert time, a
 stored filter, or a preview-and-rollback run - so the whole application surface becomes callable.
 
@@ -49,6 +49,6 @@ help, and nothing posts unless you ask for it.
 
 ## Built on Bifrost Core
 
-This extension requires Origo Bifrost Core, which provides the message dispatcher, the request
+This extension requires Bifrost Foundation, which provides the message dispatcher, the request
 log, the change-log write guard and the permission model. Subscription Billing message types appear
 alongside the Core ones and are discovered the same way.
