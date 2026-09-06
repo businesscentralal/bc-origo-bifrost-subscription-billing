@@ -1,14 +1,14 @@
 # Subscription Billing message types
 
-**App:** Origo Cloud Events Subscription Billing
+**App:** Origo Bifrost Subscription Billing
 **Version:** 28.0.0.0
 **Prepared:** 2026-08-30
 
 ## 1. Introduction
 
-This app adds 22 Cloud Event message types that let an external agent operate Microsoft
+This app adds 22 Bifrost message types that let an external agent operate Microsoft
 Dynamics 365 Business Central **Subscription Billing** end to end, without a person driving the
-client by hand. It does not replace the generic **Origo Cloud Events Core** message types -
+client by hand. It does not replace the generic **Origo Bifrost Core** message types -
 `Data.Records.Get`, `Data.Records.Set` and the rest still cover plain reads and simple field
 writes on any table. This app exists only for the operations a generic record call cannot
 perform: applying a Subscription Package with Microsoft's own derivation logic, running a
@@ -24,20 +24,20 @@ All 22 message types share the same request/response contract, inherited from Or
 Events Core:
 
 - The request body is a JSON object. Every message type reads it with the same helper
-  (`CE Sub Helper ori`), so parameter parsing is consistent: dates are read and written in the
+  (`Sub Helper ori`), so parameter parsing is consistent: dates are read and written in the
   ISO format `YYYY-MM-DD` regardless of the caller's locale, decimals use a decimal point, and
   booleans accept `true`/`false`/`1`/`0` (case-insensitive).
 - Most message types accept their primary key (a contract number, a subscription number, a
-  template code) either as a named JSON property or as the Cloud Event message **subject**. The
+  template code) either as a named JSON property or as the Bifrost message **subject**. The
   named property always wins if both are supplied.
 - A successful response is a JSON object with `"status": "Success"` plus the type's own keys.
   A failed call responds with `{"status": "Error", "error": "...", "callstack": "..."}` and
   writes nothing, except where a section below says otherwise.
 - Every write-capable message type runs its actual work through a shared isolated-transaction
-  wrapper (`CE Sub Write Process ori`), so a failure partway through a write rolls back cleanly
+  wrapper (`Sub Write Process ori`), so a failure partway through a write rolls back cleanly
   rather than leaving half-written records.
-- Assign the permission set **Cloud Events Sub. Billing** (`CE Sub Bil Obj ori`) to let a user
-  or service invoke these message types, in addition to their Cloud Events Core permissions.
+- Assign the permission set **Bifrost Sub. Billing** (`BIFROST SubBil ori`) to let a user
+  or service invoke these message types, in addition to their Bifrost Core permissions.
   This set only grants execute rights on this app's own objects; it does not widen the caller's
   access to Subscription Billing tables.
 - Call `Help.MessageTypes.Get` (Core) to list all registered types, and
@@ -83,7 +83,7 @@ writes anything.
 
 ### 3.1 Subscription.Line.Create
 
-*Implementation: `CE Sub Line Create Impl ori` (10035036)*
+*Implementation: `Sub Line Create Impl ori` (10035036)*
 
 Applies a Subscription Package to an existing Subscription Header, letting Microsoft's own
 package application logic derive prices, billing rhythms and dates for each new Subscription
@@ -140,7 +140,7 @@ nothing is billed. Runs in an isolated transaction that rolls back on error.
 
 ### 4.1 Subscription.Contract.GetLines
 
-*Implementation: `CE Sub Con GetLines Impl ori` (10035037)*
+*Implementation: `Sub Con GetLines Impl ori` (10035037)*
 
 Attaches Subscription Lines that are not yet on any contract to a customer Subscription
 Contract, reproducing the selection Microsoft's own "Get Subscription Lines" action applies on
@@ -194,7 +194,7 @@ isolated transaction that rolls back on error.
 
 ### 4.2 Subscription.Contract.CreateInvoice
 
-*Implementation: `CE Sub Con CrInvoice Impl ori` (10035038)*
+*Implementation: `Sub Con CrInvoice Impl ori` (10035038)*
 
 Bills one customer Subscription Contract to an unposted sales invoice (or credit memo, when a
 line calls for one). The due Subscription Lines are handed to Microsoft's ad-hoc billing
@@ -262,7 +262,7 @@ an isolated transaction that rolls back on error.
 
 ### 4.3 Subscription.Contract.PreviewInvoice
 
-*Implementation: `CE Sub Con PrvInvoice Impl ori` (10035039)*
+*Implementation: `Sub Con PrvInvoice Impl ori` (10035039)*
 
 Shows what `Subscription.Contract.CreateInvoice` would bill, without keeping anything and
 without ever creating a document. The due Subscription Lines are handed to the same ad-hoc
@@ -322,7 +322,7 @@ instead. `preview` and `rollback` are always `true`.
 
 ### 4.4 Subscription.Contract.UpdateLineDates — blocked
 
-*Implementation: `CE Sub Con UpdDates Impl ori` (10035040)*
+*Implementation: `Sub Con UpdDates Impl ori` (10035040)*
 
 **Registered and discoverable, but every call returns an error. Nothing is ever written, and
 the code does not read the request body at all** - it responds with a fixed error before
@@ -360,7 +360,7 @@ process, so there is nothing to roll back.
 
 ### 4.5 Subscription.Contract.UpdateExchangeRates — blocked
 
-*Implementation: `CE Sub Con UpdFCY Impl ori` (10035041)*
+*Implementation: `Sub Con UpdFCY Impl ori` (10035041)*
 
 **Registered and discoverable, but every call returns an error. Nothing is ever written, and
 the code does not read the request body at all.**
@@ -371,7 +371,7 @@ via `Customer Subscription Contract.UpdateAndRecalculateServiceCommitmentCurrenc
 is `internal` in Microsoft's app. There is a second, independent reason this stays blocked even
 if that procedure were made public: the flow opens the interactive "Exchange Rate Selection"
 page so a user can confirm the rate. When `GuiAllowed` is false - as it is for an unattended
-Cloud Event call - that page returns false instead of failing, and the flow proceeds with a
+Bifrost call - that page returns false instead of failing, and the flow proceeds with a
 zero exchange rate. Calling it unattended would silently zero out foreign-currency amounts on
 the contract, which is worse than not running it at all.
 
@@ -400,7 +400,7 @@ problem ever reaching a real contract through this API.
 
 ### 5.1 Subscription.VendorContract.GetLines
 
-*Implementation: `CE Sub Vend GetLines Impl ori` (10035042)*
+*Implementation: `Sub Vend GetLines Impl ori` (10035042)*
 
 Finds Subscription Lines that are invoiced via a contract, belong to the vendor partner, are
 not yet linked to any Vendor Subscription Contract, and have not already ended, then attaches
@@ -453,7 +453,7 @@ isolated transaction that rolls back on error.
 
 ### 5.2 Subscription.VendorContract.CreateInvoice
 
-*Implementation: `CE Sub Vend CrInvoice Impl ori` (10035043)*
+*Implementation: `Sub Vend CrInvoice Impl ori` (10035043)*
 
 Bills the due Subscription Lines of one Vendor Subscription Contract. The due lines are copied
 into an ad-hoc billing proposal (Billing Line rows with a blank Billing Template Code), which is
@@ -516,7 +516,7 @@ someone else's pending run. Runs in an isolated transaction that rolls back on e
 
 ### 5.3 Subscription.VendorContract.PreviewInvoice
 
-*Implementation: `CE Sub Vend PrvInv Impl ori` (10035044)*
+*Implementation: `Sub Vend PrvInv Impl ori` (10035044)*
 
 Shows what `Subscription.VendorContract.CreateInvoice` would bill, without keeping anything and
 without ever creating a document, using the same ad-hoc billing proposal entry point the write
@@ -572,7 +572,7 @@ that turns proposal lines into a purchase document. The same foreign-pending-lin
 
 ### 6.1 Subscription.Billing.CreateProposal
 
-*Implementation: `CE Sub Bil CrProposal Impl ori` (10035045)*
+*Implementation: `Sub Bil CrProposal Impl ori` (10035045)*
 
 Generates billing proposal lines (Billing Line, table 8061) for a Billing Template. Every
 Subscription Line whose next billing date falls on or before the billing date, and that
@@ -629,7 +629,7 @@ isolated transaction that rolls back on error.
 
 ### 6.2 Subscription.Billing.CreateDocuments
 
-*Implementation: `CE Sub Bil CrDocs Impl ori` (10035046)*
+*Implementation: `Sub Bil CrDocs Impl ori` (10035046)*
 
 Processes every unbilled Billing Line (Document Type = None) standing under a Billing Template
 and turns them into sales or purchase documents, grouped per contract by default. Run
@@ -714,7 +714,7 @@ before a failure are committed and are reported back with `"rolledBack": false`.
 
 ### 6.3 Subscription.Billing.PreviewDocuments
 
-*Implementation: `CE Sub Bil PrvDocs Impl ori` (10035047)*
+*Implementation: `Sub Bil PrvDocs Impl ori` (10035047)*
 
 Shows what `Subscription.Billing.CreateDocuments` would produce for a Billing Template's
 unbilled proposal lines, by reading those Billing Line rows and grouping them the same way a
@@ -782,7 +782,7 @@ is no proposal to build, no document to create even temporarily, and nothing to 
 
 ### 7.1 Subscription.PriceUpdate.SetTemplateFilter
 
-*Implementation: `CE Sub PU SetFilter Impl ori` (10035048)*
+*Implementation: `Sub PU SetFilter Impl ori` (10035048)*
 
 Writes one of the three view filters stored on a Price Update Template (table 8003): the
 Subscription Contract filter, the Subscription filter, or the Subscription Line filter. Each is
@@ -840,7 +840,7 @@ contracts, subscriptions or lines. Runs in an isolated transaction that rolls ba
 
 ### 7.2 Subscription.PriceUpdate.CreateProposal — blocked
 
-*Implementation: `CE Sub PU CrProposal Impl ori` (10035049)*
+*Implementation: `Sub PU CrProposal Impl ori` (10035049)*
 
 **Registered and discoverable, but every call returns an error and writes nothing.** Creating a
 price update proposal requires `Codeunit "Price Update Management".CreatePriceUpdateProposal`,
@@ -872,7 +872,7 @@ fails fast with an actionable error instead of attempting an unsupported workaro
 
 ### 7.3 Subscription.PriceUpdate.Perform — blocked
 
-*Implementation: `CE Sub PU Perform Impl ori` (10035050)*
+*Implementation: `Sub PU Perform Impl ori` (10035050)*
 
 **Registered and discoverable, but every call returns an error and writes nothing.** Applying a
 price update proposal requires `Codeunit "Price Update Management".PerformPriceUpdate`, which is
@@ -908,7 +908,7 @@ fails fast rather than risking price changes on contracts the caller never inten
 
 ### 8.1 Subscription.Renewal.Extend
 
-*Implementation: `CE Sub Ren Extend Impl ori` (10035051)*
+*Implementation: `Sub Ren Extend Impl ori` (10035051)*
 
 Extends an existing Subscription onto a customer and/or vendor contract by running Microsoft's
 `Codeunit "Extend Sub. Contract Mgt."`. The Subscription must already exist - this type does not
@@ -972,7 +972,7 @@ isolated transaction that rolls back on error.
 
 ### 8.2 Subscription.Renewal.CreateQuote
 
-*Implementation: `CE Sub Ren CrQuote Impl ori` (10035052)*
+*Implementation: `Sub Ren CrQuote Impl ori` (10035052)*
 
 Creates a contract renewal sales quote for a Customer Subscription Contract. Any stale renewal
 lines left over from an earlier run against this contract are deleted first, then a fresh Sub.
@@ -1020,7 +1020,7 @@ itself. Runs in an isolated transaction that rolls back on error.
 
 ### 9.1 Subscription.Usage.ImportData
 
-*Implementation: `CE Sub Usg Import Impl ori` (10035053)*
+*Implementation: `Sub Usg Import Impl ori` (10035053)*
 
 Creates a Usage Data Import header (table 8013) and a Usage Data Blob (table 8011) holding the
 supplied file, then runs Microsoft's "Import And Process Usage Data" codeunit with the "Create
@@ -1032,7 +1032,7 @@ only creates the imported lines; it does not turn them into billable quantities.
 | Parameter | Type | Required | Description | Default |
 | --- | --- | --- | --- | --- |
 | `supplierNo` | Code[20] | Yes | The Usage Data Supplier the file was received from. May also be supplied as the message subject. | - |
-| `fileName` | Text | No | The source file name recorded on the Usage Data Blob. | `cloudevents-usage.csv` |
+| `fileName` | Text | No | The source file name recorded on the Usage Data Blob. | `bifrost-usage.csv` |
 | `content` | Text | See note | The raw file content as text, for example a CSV payload. | - |
 | `contentBase64` | Text | See note | The file content, base64 encoded. Use for non-text payloads. | - |
 | `runProcessing` | Boolean | No | When true, also runs the "Process Imported Lines" step immediately after the import. | `false` |
@@ -1079,7 +1079,7 @@ rolls back on error.
 
 ### 9.2 Subscription.Usage.Process
 
-*Implementation: `CE Sub Usg Process Impl ori` (10035054)*
+*Implementation: `Sub Usg Process Impl ori` (10035054)*
 
 Advances an existing Usage Data Import entry through its remaining processing stages: turning
 imported lines into billable quantities, creating Usage Data Billing rows (table 8006), and
@@ -1153,7 +1153,7 @@ instead.
 
 ### 10.1 Subscription.Deferral.Release
 
-*Implementation: `CE Sub Def Release Impl ori` (10035055)*
+*Implementation: `Sub Def Release Impl ori` (10035055)*
 
 Runs Microsoft's "Contract Deferrals Release" report, which releases every eligible deferred
 revenue and cost entry - customer (table 8066) and vendor (table 8072) - and posts the release
@@ -1231,7 +1231,7 @@ date carefully before calling this in a production environment.
 
 ### 11.1 Subscription.Analysis.Recalculate
 
-*Implementation: `CE Sub Ana Recalc Impl ori` (10035056)*
+*Implementation: `Sub Ana Recalc Impl ori` (10035056)*
 
 Runs Microsoft's "Create Contract Analysis" report, which adds Sub. Contr. Analysis Entry rows
 (table 8019) for every Subscription Line that belongs to a Subscription Contract. Three facts
@@ -1281,7 +1281,7 @@ isolated transaction that rolls back on error.
 
 ### 12.1 Subscription.Import.CreateContracts
 
-*Implementation: `CE Sub Imp CrContr Impl ori` (10035057)*
+*Implementation: `Sub Imp CrContr Impl ori` (10035057)*
 
 Turns staged import rows - Imported Subscription Header (table 8008), Imported Cust. Sub.
 Contract (table 8010) and Imported Subscription Line (table 8009) - into real Subscription

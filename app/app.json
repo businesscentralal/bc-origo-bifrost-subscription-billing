@@ -1,16 +1,16 @@
 {
   "id": "dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d",
-  "name": "Origo Cloud Events Subscription Billing",
+  "name": "Bifrost Subscription Billing",
   "publisher": "Origo",
-  "version": "28.0.0.0",
-  "brief": "Cloud Event message types for Subscription Billing",
-  "description": "Adds Cloud Events message types for the Microsoft Dynamics 365 Business Central Subscription Billing app. Covers subscription lines, customer and vendor contracts, the billing pipeline, price updates and indexation, renewal, usage-based billing, deferrals, contract analysis and migration - so an agent can operate Subscription Billing end to end without manual UI steps.",
+  "version": "29.0.0.0",
+  "brief": "Bifrost Subscription Billing - message types for Subscription Billing",
+  "description": "Adds Bifrost message types for the Microsoft Dynamics 365 Business Central Subscription Billing app. Covers subscription lines, customer and vendor contracts, the billing pipeline, price updates and indexation, renewal, usage-based billing, deferrals, contract analysis and migration - so an agent can operate Subscription Billing end to end without manual UI steps.",
   "url": "https://www.origo.is/",
-  "help": "https://www.origo.is/",
+  "help": "https://origopublic.blob.core.windows.net/help/BifrostSubscriptionBilling/bc28/en-US/index.html",
   "privacyStatement": "https://www.origo.is/um-origo/stefnur/personuverndarstefna",
   "EULA": "https://new-origo.cdn.prismic.io/new-origo/lp1r1WElZFfmWAJU_Origo_BC_Cloud_Events_Terms_of_Use_-1-.pdf",
   "applicationInsightsConnectionString": "InstrumentationKey=a73491c5-6798-4929-9ba6-d25d321dbd42;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=e23f6f88-6b6b-41e3-9058-915aad32dd5f",
-  "contextSensitiveHelpUrl": "https://www.origo.is/",
+  "contextSensitiveHelpUrl": "https://origopublic.blob.core.windows.net/help/BifrostSubscriptionBilling/bc28/{0}/",
   "keyVaultUrls": [],
   "supportedLocales": [
     "en-US",
@@ -19,10 +19,10 @@
   "logo": "assets/Logo250x250.png",
   "dependencies": [
     {
-      "id": "a629b897-7541-4562-bebb-c6122f15801c",
-      "name": "Origo Cloud Events Core",
+      "id": "7505e808-6e52-4b96-a328-82573391297a",
+      "name": "Bifrost Foundation",
       "publisher": "Origo",
-      "version": "28.2.6.0"
+      "version": "28.0.0.0"
     },
     {
       "id": "3099ffc7-4cf7-4df6-9b96-7e4bc2bb587c",
@@ -34,7 +34,7 @@
   "internalsVisibleTo": [
     {
       "id": "a621027d-6e47-4932-bc65-319b8b798bff",
-      "name": "Origo Cloud Events Subscription Billing - Tests",
+      "name": "Bifrost Subscription Billing - Tests",
       "publisher": "Origo"
     }
   ],

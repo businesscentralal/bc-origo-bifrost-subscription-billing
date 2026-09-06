@@ -36,7 +36,7 @@
         "al.enableCodeActions": true,
         "al.incrementalBuild": true,
         "al.packageCachePath": "./.alpackages",
-        "al.namespaceTemplate": "Origo.APP.CloudEvents",
+        "al.namespaceTemplate": "Origo.Bifrost.SubscriptionBilling",
         "dotnetAcquisitionExtension.existingDotnetPath": []
     },
     "extensions": {

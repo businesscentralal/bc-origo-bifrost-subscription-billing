@@ -1,13 +1,13 @@
 # AppSource user scenarios
 
-**App:** Origo Cloud Events Subscription Billing
+**App:** Origo Bifrost Subscription Billing
 **Publisher:** Origo
 **Version:** 28.0.0.0
 **Prepared:** 2026-09-01
 
 These scenarios let a validation engineer exercise the app end to end. They assume a Business
-Central sandbox with the **Subscription Billing** app and **Origo Cloud Events Core** installed,
-and the Cloud Events demonstration data available.
+Central sandbox with the **Subscription Billing** app and **Origo Bifrost Core** installed,
+and the Bifrost demonstration data available.
 
 ## Test credentials
 
@@ -15,16 +15,16 @@ and the Cloud Events demonstration data available.
 | --- | --- |
 | Environment | Sandbox with Subscription Billing enabled |
 | Company | CRONUS (or any company with Subscription Billing set up) |
-| User | A user with SUPER, or with `CE Sub Bil Obj ori` plus a Cloud Events Core permission set |
+| User | A user with SUPER, or with `BIFROST SubBil ori` plus a Bifrost Core permission set |
 
 ## Prerequisites
 
-1. Install **Origo Cloud Events Core** and activate it (see the Core app's own setup guide).
+1. Install **Origo Bifrost Core** and activate it (see the Core app's own setup guide).
 2. Install **Subscription Billing** (Microsoft) and run its assisted setup so that
    Subscription Contract Setup, number series and a Billing Template exist.
-3. Install **Origo Cloud Events Subscription Billing**.
-4. Assign the permission set **Cloud Events Sub. Billing** (`CE Sub Bil Obj ori`) to the test user,
-   in addition to their Cloud Events Core permissions.
+3. Install **Origo Bifrost Subscription Billing**.
+4. Assign the permission set **Bifrost Sub. Billing** (`BIFROST SubBil ori`) to the test user,
+   in addition to their Bifrost Core permissions.
 
 ### Company setup the later scenarios depend on
 
@@ -65,10 +65,10 @@ Without the Data Exchange Definition the import call still succeeds as a call, a
 ## Scenario 1: Installation and activation
 
 1. Open **Extension Management**.
-2. Confirm **Origo Cloud Events Subscription Billing** is listed and installed.
-3. Confirm the dependency **Origo Cloud Events Core** is installed and appears above it.
+2. Confirm **Origo Bifrost Subscription Billing** is listed and installed.
+3. Confirm the dependency **Origo Bifrost Core** is installed and appears above it.
 4. Open **Users**, select the test user, and confirm the permission set
-   **Cloud Events Sub. Billing** can be assigned.
+   **Bifrost Sub. Billing** can be assigned.
 
 **Expected:** the extension installs with no errors and its permission set is assignable.
 
@@ -76,7 +76,7 @@ Without the Data Exchange Definition the import call still succeeds as a call, a
 
 ## Scenario 2: Discovering the message types
 
-1. Invoke the Cloud Events message type **`Help.MessageTypes.Get`** (Core).
+1. Invoke the Bifrost message type **`Help.MessageTypes.Get`** (Core).
 2. Inspect the returned list.
 
 **Expected:** the response includes 22 message types whose names begin with `Subscription.`, each
@@ -180,9 +180,9 @@ or billing records.
 
 ## Scenario 10: Permission verification
 
-1. Create a user **without** the `CE Sub Bil Obj ori` permission set (Cloud Events Core access only).
+1. Create a user **without** the `BIFROST SubBil ori` permission set (Bifrost Core access only).
 2. Attempt to invoke **`Subscription.Billing.CreateProposal`** as that user.
-3. Assign `CE Sub Bil Obj ori` and retry.
+3. Assign `BIFROST SubBil ori` and retry.
 
 **Expected:** without the permission set the call fails with a permission error; with it, the call
 succeeds (subject to the user's own permissions on the Subscription Billing tables, which this
@@ -193,9 +193,9 @@ extension does not widen).
 ## Scenario 11: Uninstallation
 
 1. Open **Extension Management**.
-2. Uninstall **Origo Cloud Events Subscription Billing**.
+2. Uninstall **Origo Bifrost Subscription Billing**.
 3. Invoke `Help.MessageTypes.Get` again.
 
 **Expected:** the extension uninstalls without error, the `Subscription.*` message types no longer
-appear, and Cloud Events Core and Subscription Billing continue to work normally. No Subscription
+appear, and Bifrost Core and Subscription Billing continue to work normally. No Subscription
 Billing data is removed by the uninstall.

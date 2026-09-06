@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Origo Cloud Events Subscription Billing are documented here.
+All notable changes to Origo Bifrost Subscription Billing are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project
 uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html) aligned to the Business Central
 major version.
@@ -9,7 +9,7 @@ major version.
 
 ### Added
 
-Initial release. Adds Cloud Event message types for the Microsoft Dynamics 365 Business Central
+Initial release. Adds Bifrost message types for the Microsoft Dynamics 365 Business Central
 Subscription Billing app, so an agent can drive Subscription Billing without manual UI steps.
 
 Message types, all named `Subscription.<Domain>.<Action>`:
@@ -64,8 +64,8 @@ before submission:
   re-parsed without re-sending it.
 - `documentType` and `processingStatus` came back as the caller's language caption, or as a
   bare enum ordinal. Both are now stable English tokens an integration can switch on.
-- The `CE Sub Bil Full ori` permission set extension granted execute rights on only two
-  codeunits, so a user with full Cloud Events access could not actually invoke any Subscription
+- The `BIFROST SubBFull ori` permission set extension granted execute rights on only two
+  codeunits, so a user with full Bifrost access could not actually invoke any Subscription
   Billing message type.
 - `Subscription.Deferral.Release` accepted `postingDate` and `postUntilDate` and silently ignored
   both. Microsoft's report takes them from its request page, which an external app cannot set, so

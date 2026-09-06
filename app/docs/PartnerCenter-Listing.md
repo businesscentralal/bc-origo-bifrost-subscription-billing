@@ -2,7 +2,7 @@
 
 ## Name
 
-Origo Cloud Events Subscription Billing
+Origo Bifrost Subscription Billing
 
 ## Search result summary (max 100 characters)
 
@@ -10,7 +10,7 @@ Run Subscription Billing end to end from an agent or API - no manual UI steps.
 
 ## Short description / offer summary
 
-Origo Cloud Events Subscription Billing adds a curated set of Cloud Event message types for the
+Origo Bifrost Subscription Billing adds a curated set of Bifrost message types for the
 Microsoft Subscription Billing app. It covers exactly the operations that a generic record read or
 write cannot perform: applying subscription packages, attaching lines to customer and vendor
 contracts, running the billing pipeline, previewing a billing run without writing, importing and
@@ -24,7 +24,7 @@ See `PartnerCenter-Description.md`.
 ## Keywords
 
 subscription billing, recurring billing, contract management, usage-based billing, revenue
-deferral, contract renewal, cloud events, automation, API, agent, MCP
+deferral, contract renewal, bifrost, automation, API, agent, MCP
 
 ## Categories
 
@@ -48,7 +48,7 @@ English (United States), Icelandic (Iceland)
 
 - Microsoft Dynamics 365 Business Central
 - Subscription Billing (Microsoft)
-- Origo Cloud Events Core (required dependency)
+- Origo Bifrost Core (required dependency)
 
 ## Help and support
 

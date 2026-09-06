@@ -1,6 +1,6 @@
 # AppSource release checklist
 
-**App:** Origo Cloud Events Subscription Billing (`dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d`)
+**App:** Origo Bifrost Subscription Billing (`dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d`)
 **Publisher:** Origo
 **Target version:** 28.0.0.0 - first submission
 
@@ -17,14 +17,14 @@ a person with Partner Center access, and cannot be finished from the code alone.
 | Publisher, app id, version, brief, description | `app/app.json` |
 | Logo (250x250 PNG) | `app/assets/Logo250x250.png` |
 | Privacy statement URL | https://www.origo.is/um-origo/stefnur/personuverndarstefna |
-| Licence terms (EULA) URL | The Cloud Events Terms of Use PDF, shared with Origo Cloud Events Core |
+| Licence terms (EULA) URL | The Bifrost Terms of Use PDF, shared with Origo Bifrost Core |
 | Help URL and context-sensitive help URL | https://www.origo.is/ - see *Help content* below |
 | `target: Cloud` | `app/app.json` |
 | Registered object range 10035035..10035084 | `app/app.json` - `idRanges` |
 | Affix and suffix `ori` on every object | `app/AppSourceCop.json`, enforced by AppSourceCop |
 | Supported countries | `app/AppSourceCop.json` - 14 countries, matching the Partner Center listing |
 | en-US and is-IS translations, complete | `app/Translations/*.xlf` - 84 of 84 units translated |
-| Assignable permission set | `CE Sub Bil Obj ori`, plus extensions of the Core sets |
+| Assignable permission set | `BIFROST SubBil ori`, plus extensions of the Core sets |
 | Clean build with CodeCop, UICop and AppSourceCop | zero warnings; only `AS0081` is suppressed, for the test app's `internalsVisibleTo` |
 | Test app excluded from the shipped artifact | `test/` is a separate app, listed under `testFolders` in `.AL-Go/settings.json` |
 | Partner Center listing text | `app/docs/PartnerCenter-Listing.md`, `app/docs/PartnerCenter-Description.md` |
@@ -76,14 +76,14 @@ The app registration must be the one linked to the Partner Center account under
 Microsoft's validation checks that the Help link is reachable, and https://www.origo.is/ passes -
 but it is the company home page, not product help.
 
-The rest of the Cloud Events family publishes help to
+The rest of the Bifrost family publishes help to
 `https://origopublic.blob.core.windows.net/help/<product>/<bcversion>/<locale>/index.html`
-(Cloud Events Core uses `.../help/Cloud Events/bc27/en-US/index.html`). When help for this app is
+(Bifrost Core uses `.../help/Bifrost/bc27/en-US/index.html`). When help for this app is
 published there, point both properties at it:
 
 ```json
-"help": "https://origopublic.blob.core.windows.net/help/Cloud Events Subscription Billing/bc28/en-US/index.html",
-"contextSensitiveHelpUrl": "https://origopublic.blob.core.windows.net/help/Cloud Events Subscription Billing/bc28/{0}/"
+"help": "https://origopublic.blob.core.windows.net/help/Bifrost Subscription Billing/bc28/en-US/index.html",
+"contextSensitiveHelpUrl": "https://origopublic.blob.core.windows.net/help/Bifrost Subscription Billing/bc28/{0}/"
 ```
 
 Do not set those URLs before the content is live: an unreachable Help link fails validation.
@@ -96,7 +96,7 @@ to the offer listing.
 
 ### 6. Dependency availability
 
-The app depends on **Origo Cloud Events Core** `28.2.6.0` or later. That app must already be live
+The app depends on **Origo Bifrost Core** `28.2.6.0` or later. That app must already be live
 on AppSource, and at a version at least as high as the dependency, or validation cannot resolve
 it. It also depends on Microsoft's **Subscription Billing**, which ships with Business Central,
 so nothing is needed for that one.

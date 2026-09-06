@@ -15,9 +15,9 @@ Please go to https://aka.ms/AL-Go and [COSMO Docs](https://docs.cosmoconsult.com
 
 ---
 
-# Origo Cloud Events Subscription Billing
+# Origo Bifrost Subscription Billing
 
-Cloud Event message types for the Microsoft Dynamics 365 Business Central **Subscription Billing**
+Bifrost message types for the Microsoft Dynamics 365 Business Central **Subscription Billing**
 app, so an agent or an integration can operate Subscription Billing end to end without manual UI
 steps.
 
@@ -25,7 +25,7 @@ steps.
 
 Subscription Billing models recurring revenue well, but its meaningful operations sit behind page
 actions. A generic API can read and write subscription records and then stops at the first button.
-This extension publishes one Cloud Event message type per operation that genuinely needs more than
+This extension publishes one Bifrost message type per operation that genuinely needs more than
 a record write — a Microsoft codeunit, record context at insert time, a stored BLOB filter, or a
 preview-and-rollback run.
 
@@ -45,10 +45,10 @@ See [app/docs/Message-Types.md](app/docs/Message-Types.md) for the full referenc
 
 | App | Publisher | Minimum version |
 | --- | --- | --- |
-| Origo Cloud Events Core | Origo | 28.2.6.0 |
+| Origo Bifrost Core | Origo | 28.2.6.0 |
 | Subscription Billing | Microsoft | 28.0.0.0 |
 
-Object range 10035035–10035084. Namespace `Origo.APP.CloudEvents.SubscriptionBilling`.
+Object range 10035035–10035084. Namespace `Origo.APP.Bifrost.SubscriptionBilling`.
 
 ## Repository layout
 
@@ -106,14 +106,14 @@ Two layers, and they cover different things.
 **AL tests** (`test/`, object range 95700–95799) run in the AL-Go pipeline on every build. They
 cover the registration contract — every message type resolves to an implementation, describes
 itself and returns a help document with the sections a caller needs — and the shared request
-parsing and response formatting in `CE Sub Helper ori`. Installing the test app builds the
+parsing and response formatting in `Sub Helper ori`. Installing the test app builds the
 `DEFAULT` AL test suite, refreshing it on every install so test codeunits added later appear too.
 
 **Live message type testing** is what proves the Microsoft integration, because most of what these
 message types do is call Microsoft's own codeunits, and those only misbehave against real data —
 an interactive request page that cannot open unattended, a proposal Business Central declines to
 build twice, a connector that skips a blob it thinks is already imported. Publish both apps to a
-development container and drive the types through the Cloud Events API. `app/docs/
+development container and drive the types through the Bifrost API. `app/docs/
 AppSource-UserScenarios.md` lists the company setup this needs; every prerequisite in that table
 was found by hitting it.
 
