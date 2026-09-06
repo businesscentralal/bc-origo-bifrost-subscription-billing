@@ -11,7 +11,7 @@ major version.
 
 Documentation consolidated onto the Bifröst documentation site.
 
-- All public documentation moved to <https://bifrost.origo.is>. Product documentation is at
+- All public documentation moved to <https://businesscentralal.github.io/bifrost>. Product documentation is at
   `/en-us/subscription-billing/` and in-product help at `/en-us/help/subscription-billing/`, both
   available in English and Icelandic. The `app/docs/` folder is gone; this repository now keeps only
   `README.md`, `CHANGELOG.md` and code.
@@ -173,7 +173,7 @@ Microsoft has not exposed a public API for the operation in Business Central 28.
 `Subscription.PriceUpdate.CreateProposal` and `Subscription.PriceUpdate.Perform`. Each error names
 the exact Microsoft procedure that would need to become public and points to the client action that
 performs the operation today. See
-<https://bifrost.origo.is/en-us/subscription-billing/message-types> for the detail.
+<https://businesscentralal.github.io/bifrost/en-us/subscription-billing/message-types> for the detail.
 
 ### Notes
 

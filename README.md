@@ -22,14 +22,14 @@ subscription is an end date or a closed flag, not a hard delete.
 ## Documentation
 
 All public documentation lives in the [businesscentralal/bifrost](https://github.com/businesscentralal/bifrost)
-site repository and is published at <https://bifrost.origo.is>. There are no `docs/` or `Help/`
+site repository and is published at <https://businesscentralal.github.io/bifrost>. There are no `docs/` or `Help/`
 folders in this repository.
 
 | What | Where |
 | --- | --- |
-| Product documentation (overview, message types, AppSource listing) | <https://bifrost.origo.is/en-us/subscription-billing/> |
-| In-product help (en-US and is-IS) | <https://bifrost.origo.is/en-us/help/subscription-billing/> |
-| Building on Bifröst (extensibility guide) | <https://bifrost.origo.is/en-us/extensibility/> |
+| Product documentation (overview, message types, AppSource listing) | <https://businesscentralal.github.io/bifrost/en-us/subscription-billing/> |
+| In-product help (en-US and is-IS) | <https://businesscentralal.github.io/bifrost/en-us/help/subscription-billing/> |
+| Building on Bifröst (extensibility guide) | <https://businesscentralal.github.io/bifrost/en-us/extensibility/> |
 | Release notes | [CHANGELOG.md](CHANGELOG.md) |
 
 Message-type contracts are also served by the app itself at runtime: `Help.MessageTypes.Get` (Core)
@@ -128,7 +128,7 @@ Central 28.4: `Subscription.Contract.UpdateLineDates`, `Subscription.Contract.Up
 `Subscription.PriceUpdate.CreateProposal` and `Subscription.PriceUpdate.Perform`. Each names the
 procedure that would need to become public and points to the client action that does the job today.
 See the [changelog](CHANGELOG.md) and the
-[message type documentation](https://bifrost.origo.is/en-us/subscription-billing/message-types) for
+[message type documentation](https://businesscentralal.github.io/bifrost/en-us/subscription-billing/message-types) for
 detail.
 
 ---
