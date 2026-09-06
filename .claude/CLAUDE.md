@@ -90,4 +90,5 @@ Key rules always in effect:
 - `invoke_message_type` / `get_message_type_help` / `get_records` / `set_records` on the
   `origo-bc-bc28-is` server hit this app directly (route `origo/bifrost/v1.0`). Keep calls serial -
   parallel bursts crash the server. Test data uses the `BIFT-S` prefix in CRONUS IS.
-- Full message-type test reports live in `app/docs/Bifrost_SubscriptionBilling_TestReport_<date>.md`.
+- Full message-type test reports live in `test/reports/Bifrost_SubscriptionBilling_TestReport_<date>.md`.
+  They are internal and are never published to the documentation site.

@@ -7,6 +7,22 @@ major version.
 
 ## [29.0.0.0] - 2026-09-06
 
+### Changed (2026-09-06)
+
+Documentation consolidated onto the Bifröst documentation site.
+
+- All public documentation moved to <https://bifrost.origo.is>. Product documentation is at
+  `/en-us/subscription-billing/` and in-product help at `/en-us/help/subscription-billing/`, both
+  available in English and Icelandic. The `app/docs/` folder is gone; this repository now keeps only
+  `README.md`, `CHANGELOG.md` and code.
+- `help` and `contextSensitiveHelpUrl` in `app/app.json` repointed from the retiring
+  `origopublic.blob.core.windows.net` storage account to `bifrost.origo.is`.
+  `supportedLocales` is unchanged (`en-US`, `is-IS`).
+- The end-to-end message-type test report moved from `app/docs/` to `test/reports/`. It is internal
+  and is not published to the documentation site.
+- The one-off developer scripts (`scripts/build.sh`, `deploy.sh`, `getsymbols.sh`, `mcp.sh`) removed.
+  Build locally with `alc.exe` and publish with the Bifröst tooling described in the README.
+
 ### Changed
 
 Migrated from *Origo Cloud Events Subscription Billing* to **Bifrost Subscription Billing**,
@@ -156,7 +172,8 @@ Microsoft has not exposed a public API for the operation in Business Central 28.
 `Subscription.Contract.UpdateLineDates`, `Subscription.Contract.UpdateExchangeRates`,
 `Subscription.PriceUpdate.CreateProposal` and `Subscription.PriceUpdate.Perform`. Each error names
 the exact Microsoft procedure that would need to become public and points to the client action that
-performs the operation today. See `app/docs/Message-Types.md` for the detail.
+performs the operation today. See
+<https://bifrost.origo.is/en-us/subscription-billing/message-types> for the detail.
 
 ### Notes
 
