@@ -11,5 +11,14 @@
     "test"
   ],
   "bcptTestFolders": [],
-  "doNotRunTests": false
+  "doNotRunTests": false,
+  "appDependencyProbingPaths": [
+    {
+      "repo": "https://github.com/OrigoSoftwareSolutions/bc-origo-bifrost-core",
+      "release_status": "prerelease",
+      "version": "latest",
+      "projects": "*",
+      "authTokenSecret": "ghTokenWorkflow"
+    }
+  ]
 }
