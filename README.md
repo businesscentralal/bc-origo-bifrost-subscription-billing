@@ -120,16 +120,33 @@ Microsoft's own codeunits and reports; it reimplements none of their logic.
 
 ---
 
-## Known limitations
+## Setup
+
+This app has **no setup of its own** and deliberately adds **nothing to the Bifröst Setup page** -
+no `Apps` group action, no setup table, no setup page and no Secret Store entry. Every message type
+calls Microsoft's Subscription Billing app in-process; there is no external service, no API key and
+no outbound HTTP. Everything the operations need is configured in Microsoft's own Subscription
+Billing setup (billing templates, contract types, price update templates, usage data suppliers).
+Grant `BIFROST SubBil ori` alongside a Bifröst Foundation permission set and the Microsoft
+Subscription Billing permission sets, and the app is ready.
+
+## Known issues
 
 Four message types are registered and discoverable but return a structured error rather than
 performing the operation, because Microsoft has not exposed a public API for them in Business
 Central 28.4: `Subscription.Contract.UpdateLineDates`, `Subscription.Contract.UpdateExchangeRates`,
 `Subscription.PriceUpdate.CreateProposal` and `Subscription.PriceUpdate.Perform`. Each names the
 procedure that would need to become public and points to the client action that does the job today.
-See the [changelog](CHANGELOG.md) and the
+Each error names the exact Microsoft procedure that would have to become public
+(`Customer Subscription Contract.UpdateServicesDates()`, `Subscription Header.UpdateServicesDates()`,
+codeunit 8058 `Update Sub. Lines Term. Dates`, and the price-update equivalents - all `internal` in
+Microsoft's app). They stay registered so the contract is discoverable and so they start working the
+moment Microsoft opens the API. See the [changelog](CHANGELOG.md) and the
 [message type documentation](https://businesscentralal.github.io/bifrost/en-us/subscription-billing/message-types) for
 detail.
+
+The `EULA` link in `app.json` still points at the Cloud Events terms of use; it is a real external
+legal document and is left untouched until legal/marketing publish a Bifröst version.
 
 ---
 

@@ -7,6 +7,44 @@ major version.
 
 ## [29.0.0.0] - 2026-09-06
 
+### Release notes
+
+- **Version 29.0.0.0, not 28.x.** The predecessor *Origo Cloud Events Subscription Billing* had
+  already reached 28.x, and this is an in-place successor with the same app id, so the version had
+  to move forward. The sibling Bifröst apps sit at 28.x because they are new app identities. The
+  app still targets `application`/`platform` 28.0.0.0 and runtime 17.0 - the major number is a
+  release counter here, not a Business Central version.
+- **This app adds nothing to the Bifröst Setup page, on purpose.** It has no setup table, no setup
+  page, no secrets and no outbound HTTP: every message type calls Microsoft's Subscription Billing
+  app in-process, and everything it needs is configured in Microsoft's own Subscription Billing
+  setup. There is therefore no `Apps` group action and no Secret Store registration, unlike the
+  sibling connectors that talk to an external service.
+- **`EULA` in `app.json` still points at the Cloud Events terms of use**
+  (`..._Origo_BC_Cloud_Events_Terms_of_Use_-1-.pdf`). That is a real external legal document; it is
+  left untouched until legal/marketing publish a Bifröst version.
+
+### Known issues
+
+- Four message types are registered and discoverable but always return a structured error instead
+  of performing the operation, because Microsoft exposes no public API for them in Business Central
+  28.4: `Subscription.Contract.UpdateLineDates`, `Subscription.Contract.UpdateExchangeRates`,
+  `Subscription.PriceUpdate.CreateProposal` and `Subscription.PriceUpdate.Perform`. The procedures
+  that would have to become public (`Customer Subscription Contract.UpdateServicesDates()`,
+  `Subscription Header.UpdateServicesDates()`, codeunit 8058 `Update Sub. Lines Term. Dates`, and
+  the price-update equivalents) are `internal` in Microsoft's app. Each error names them and points
+  at the client action that does the job today. They stay registered so the contract is discoverable
+  and so they start working the moment Microsoft opens the API; re-verified in the 2026-09-06
+  end-to-end run (rows 8, 9, 19, 20 of the test report).
+
+### Fixed (2026-09-06)
+
+- The test app no longer builds its lines into the shared `DEFAULT` AL Test Suite. `Sub Test
+  Install ori` now owns the `SUBSCRIPTI` suite - the name `tools/Run-BifrostTests.ps1` derives from
+  the test app name - and a new `Sub Test Upgrade ori` (95703) refreshes it on republish. Without
+  the upgrade codeunit an in-place version upgrade never re-ran `OnInstallAppPerCompany`, so on
+  bc28-is the suite kept other apps' test codeunits and this app's tests were never discovered
+  (observation 2 in the 2026-09-06 test report).
+
 ### Changed (2026-09-06)
 
 Documentation consolidated onto the Bifröst documentation site.
@@ -16,8 +54,10 @@ Documentation consolidated onto the Bifröst documentation site.
   available in English and Icelandic. The `app/docs/` folder is gone; this repository now keeps only
   `README.md`, `CHANGELOG.md` and code.
 - `help` and `contextSensitiveHelpUrl` in `app/app.json` repointed from the retiring
-  `origopublic.blob.core.windows.net` storage account to `bifrost.origo.is`.
-  `supportedLocales` is unchanged (`en-US`, `is-IS`).
+  `origopublic.blob.core.windows.net` storage account to
+  <https://businesscentralal.github.io/bifrost>, where the site is actually published. They move to
+  `bifrost.origo.is` once that DNS record exists. `supportedLocales` is unchanged
+  (`en-US`, `is-IS`).
 - The end-to-end message-type test report moved from `app/docs/` to `test/reports/`. It is internal
   and is not published to the documentation site.
 - The one-off developer scripts (`scripts/build.sh`, `deploy.sh`, `getsymbols.sh`, `mcp.sh`) removed.

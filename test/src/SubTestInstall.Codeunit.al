@@ -1,21 +1,19 @@
 namespace Origo.Bifrost.SubscriptionBilling.Test;
 
-using Origo.Bifrost.SubscriptionBilling;
 using System.TestTools.TestRunner;
 
 /// <summary>
-/// Builds the DEFAULT AL test suite when the test app is installed, so the test explorer and the
-/// AL-Go pipeline both find the Subscription Billing tests without any manual setup. The suite is
-/// rebuilt rather than only created once: a DEFAULT suite that already exists keeps the method
-/// list it was given the first time, so a test codeunit added in a later version would never
-/// appear in it.
+/// Registers the Bifrost Subscription Billing test codeunits in their own AL Test Suite so a test
+/// run can select them without touching the shared DEFAULT suite of the container, where a dozen
+/// Bifröst and Cloud Events test apps are installed side by side. The suite name is the one
+/// tools/Run-BifrostTests.ps1 derives from the test app name.
 /// </summary>
 codeunit 95700 "Sub Test Install ori"
 {
     Subtype = Install;
 
     var
-        SuiteNameTok: Label 'DEFAULT', Locked = true;
+        SuiteNameTok: Label 'SUBSCRIPTI', Locked = true;
         ObjectRangeTok: Label '95700..95799', Locked = true;
 
     trigger OnInstallAppPerCompany()
@@ -23,7 +21,7 @@ codeunit 95700 "Sub Test Install ori"
         RefreshTestSuite();
     end;
 
-    /// <summary>Creates the DEFAULT suite when it is missing, then re-selects this app's test methods into it.</summary>
+    /// <summary>Rebuilds this app's own suite from its own object range. Safe to call repeatedly.</summary>
     internal procedure RefreshTestSuite()
     var
         ALTestSuite: Record "AL Test Suite";
@@ -34,10 +32,10 @@ codeunit 95700 "Sub Test Install ori"
         SuiteName := CopyStr(SuiteNameTok, 1, MaxStrLen(SuiteName));
         if not ALTestSuite.Get(SuiteName) then begin
             TestSuiteMgt.CreateTestSuite(SuiteName);
+            Commit();
             ALTestSuite.Get(SuiteName);
         end;
 
-        // Drop only this app's own lines, so a suite someone has added other codeunits to keeps them.
         TestMethodLine.SetRange("Test Suite", ALTestSuite.Name);
         TestMethodLine.SetFilter("Test Codeunit", ObjectRangeTok);
         if not TestMethodLine.IsEmpty() then
