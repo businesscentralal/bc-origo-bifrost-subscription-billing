@@ -136,9 +136,13 @@ codeunit 95701 "Sub Msg Type Tst ori"
                 MessageType := Enum::"Message Type ori".FromInteger(Ordinal);
                 MessageTypeInterface := MessageType;
 
-                Clear(TempArgument);
+                TempArgument.Reset();
+                TempArgument.DeleteAll();
                 TempArgument.Init();
                 TempArgument."Type" := MessageType;
+                // GetResponseText calls CalcFields, which reads the BLOB back from the (temporary)
+                // table - the record has to exist there or the response comes back empty.
+                TempArgument.Insert();
 
                 // [WHEN] The help document is requested, which is what Help.Implementation.Get calls
                 MessageTypeInterface.GetMessageHelpAsMarkdownDocument(TempArgument);
@@ -173,9 +177,13 @@ codeunit 95701 "Sub Msg Type Tst ori"
                 MessageType := Enum::"Message Type ori".FromInteger(Ordinal);
                 MessageTypeInterface := MessageType;
 
-                Clear(TempArgument);
+                TempArgument.Reset();
+                TempArgument.DeleteAll();
                 TempArgument.Init();
                 TempArgument."Type" := MessageType;
+                // GetResponseText calls CalcFields, which reads the BLOB back from the (temporary)
+                // table - the record has to exist there or the response comes back empty.
+                TempArgument.Insert();
 
                 // [WHEN] The help document is read
                 MessageTypeInterface.GetMessageHelpAsMarkdownDocument(TempArgument);

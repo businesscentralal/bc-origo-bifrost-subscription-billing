@@ -38,6 +38,12 @@ major version.
 
 ### Fixed (2026-09-06)
 
+- `AllTypes_ReturnAHelpDocument` and `AllTypes_HelpDocumentsTheRequestAndResponse` never actually
+  exercised the help documents: they built a temporary `Message Argument ori` without inserting it,
+  and `GetResponseText` calls `CalcFields` on the `Response Content` BLOB, which reads back empty
+  for a record that is not in the (temporary) table. Both tests now `Insert()` the record, matching
+  the sibling apps. This was observation 1 in the 2026-09-06 test report - a test defect, not an app
+  defect; the shipped help documents were always correct, which is why the live API returned them.
 - The test app no longer builds its lines into the shared `DEFAULT` AL Test Suite. `Sub Test
   Install ori` now owns the `SUBSCRIPTI` suite - the name `tools/Run-BifrostTests.ps1` derives from
   the test app name - and a new `Sub Test Upgrade ori` (95703) refreshes it on republish. Without

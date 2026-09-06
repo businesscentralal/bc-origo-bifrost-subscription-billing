@@ -146,8 +146,8 @@ API for the underlying operation in Business Central 28.4.
 
 | # | Severity | Description | Status |
 | - | --- | --- | --- |
-| 1 | Low, unconfirmed | `Subscription.Line.Create` help document returned empty on bc28-w1's AL test run only (section 3.1) | Not reproducible against the live app; documented as an open observation, not fixed (nothing to fix that reproduces) |
-| 2 | Environment | bc28-is shared `DEFAULT` AL Test Suite does not include this app's tests after an in-place upgrade (section 3.2) | Environment limitation, not a code defect; no action taken in this app |
+| 1 | Test defect | `Subscription.Line.Create` help document returned empty in the AL test run (section 3.1) | **Fixed 2026-09-06.** Root cause found: the two help tests built a temporary `Message Argument ori` without inserting it, and `GetResponseText` calls `CalcFields` on the `Response Content` BLOB - which reads back empty for a record that is not in the temporary table. Both tests now `Insert()`, matching the sibling apps. 18/18 pass on bc28-is and bc28-w1. The shipped help documents were never wrong. |
+| 2 | Environment | bc28-is shared `DEFAULT` AL Test Suite does not include this app's tests after an in-place upgrade (section 3.2) | **Fixed 2026-09-06.** `Sub Test Install ori` now owns the app's own `SUBSCRIPTI` suite instead of the shared `DEFAULT` one, and the new `Sub Test Upgrade ori` (95703) refreshes it on republish, so an in-place upgrade no longer leaves a stale suite. bc28-is now runs the app's own 18 tests. |
 | 3 | Advisory | `EULA` URL in `app.json` still names a `..._Cloud_Events_Terms_of_Use...` asset | Left as-is (real external legal document); flagged for legal/marketing in CHANGELOG 29.0.0.0 |
 
 No product defects were found in the migrated message-type logic itself.
