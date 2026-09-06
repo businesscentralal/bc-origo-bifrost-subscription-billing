@@ -98,7 +98,8 @@ codeunit 10035042 "CE Sub Vend GetLines Impl ori" implements "Cloud Event Msg In
         HelpBuilder.AppendLine('| --- | --- |');
         HelpBuilder.AppendLine('| The contract does not exist | The Vendor Subscription Contract ''%1'' does not exist. |');
         HelpBuilder.AppendLine('| contractNo is missing | The request is missing the required parameter ''contractNo''. |');
-        HelpBuilder.AppendLine('| subscriptionLineEntryNos is not an array | The parameter ''subscriptionLineEntryNos'' must be a JSON array of integers. |');
+        HelpBuilder.AppendLine('| subscriptionLineEntryNos is present but is not an array | The parameter ''subscriptionLineEntryNos'' must be a JSON array. |');
+        HelpBuilder.AppendLine('| subscriptionLineEntryNos holds something other than integers | The parameter ''subscriptionLineEntryNos'' must be a JSON array of integers. |');
         HelpBuilder.AppendLine();
         HelpBuilder.AppendLine('Errors return `{ "status": "Error", "error": "...", "callstack": "..." }` and nothing is written.');
         HelpBuilder.AppendLine();
@@ -144,7 +145,7 @@ codeunit 10035042 "CE Sub Vend GetLines Impl ori" implements "Cloud Event Msg In
         AttachedLinesArray: JsonArray;
         AttachedLineJson: JsonObject;
         EntryNoJToken: JsonToken;
-        EntryNoArrayJToken: JsonToken;
+        EntryNoJsonArray: JsonArray;
         EntryNoFilter: List of [Integer];
         EntryNo: Integer;
         ContractNo: Code[20];
@@ -158,12 +159,8 @@ codeunit 10035042 "CE Sub Vend GetLines Impl ori" implements "Cloud Event Msg In
         if not VendorSubscriptionContract.Get(ContractNo) then
             Error(ContractNotFoundErr, ContractNo);
 
-        if Helper.HasValue(RequestJson, 'subscriptionLineEntryNos') then begin
-            if not RequestJson.Get('subscriptionLineEntryNos', EntryNoArrayJToken) then
-                Error(InvalidEntryNoArrayErr);
-            if not EntryNoArrayJToken.IsArray() then
-                Error(InvalidEntryNoArrayErr);
-            foreach EntryNoJToken in EntryNoArrayJToken.AsArray() do begin
+        if Helper.TryGetArray(RequestJson, 'subscriptionLineEntryNos', EntryNoJsonArray) then
+            foreach EntryNoJToken in EntryNoJsonArray do begin
                 if not EntryNoJToken.IsValue() then
                     Error(InvalidEntryNoArrayErr);
                 if not Evaluate(EntryNo, EntryNoJToken.AsValue().AsText(), 9) then
@@ -171,7 +168,6 @@ codeunit 10035042 "CE Sub Vend GetLines Impl ori" implements "Cloud Event Msg In
                 if not EntryNoFilter.Contains(EntryNo) then
                     EntryNoFilter.Add(EntryNo);
             end;
-        end;
 
         SubscriptionLine.SetRange("Invoicing via", Enum::"Invoicing Via"::Contract);
         SubscriptionLine.SetRange("Subscription Contract No.", '');

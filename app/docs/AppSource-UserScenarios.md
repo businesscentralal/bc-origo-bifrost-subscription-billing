@@ -3,7 +3,7 @@
 **App:** Origo Cloud Events Subscription Billing
 **Publisher:** Origo
 **Version:** 28.0.0.0
-**Prepared:** 2026-08-30
+**Prepared:** 2026-09-01
 
 These scenarios let a validation engineer exercise the app end to end. They assume a Business
 Central sandbox with the **Subscription Billing** app and **Origo Cloud Events Core** installed,
@@ -25,6 +25,40 @@ and the Cloud Events demonstration data available.
 3. Install **Origo Cloud Events Subscription Billing**.
 4. Assign the permission set **Cloud Events Sub. Billing** (`CE Sub Bil Obj ori`) to the test user,
    in addition to their Cloud Events Core permissions.
+
+### Company setup the later scenarios depend on
+
+Scenarios 1 to 5 need nothing beyond the four steps above. The billing, deferral and usage
+scenarios post to the general ledger, so the company must also be set up for that. These are
+Microsoft's own Subscription Billing prerequisites, not this app's, but they are easy to miss on
+a fresh sandbox - every one of them was hit while testing this release against a Business
+Central 28.4 container:
+
+| Setup | Why it is needed | Symptom if missing |
+| --- | --- | --- |
+| **General Posting Setup** for the subscription item's posting group combination: *Cust. Sub. Contract Account*, *Cust. Sub. Contr. Def Account*, *Vend. Sub. Contract Account*, *Vend. Sub. Contr. Def. Account* | Contract deferrals post through these accounts | Posting a billing document fails with *"Cust. Sub. Contract Deferral Account must have a value in General Posting Setup..."* |
+| **General Posting Setup**: sales/purchase line and invoice discount accounts, credit memo accounts | The deferral release journal needs them | `Subscription.Deferral.Release` fails with *"Sales Line Disc. Account must have a value..."* |
+| **VAT Posting Setup** completed for the subscription item's VAT product posting group | Any posting | Posting fails with *"...VAT Posting Setup is blocked"* |
+| **Source Code Setup > Sub. Contr. Deferrals Release** | Stamps the deferral release entries | `Subscription.Deferral.Release` fails with *"Subscription Contract Deferral must have a value in Source Code Setup"* |
+| **Subscription Contract Setup > Def. Rel. Jnl. Template Name / Def. Rel. Jnl. Batch Name** | The journal the release posts through | `Subscription.Deferral.Release` cannot post |
+| **Subscription Contract Setup > Vend. Sub. Contract Nos.** | Numbering vendor contracts | Creating a Vendor Subscription Contract fails |
+| An **Item Unit of Measure** row for the subscription item, and the same code on the Subscription header | The invoicing item must share the subscription's unit | `Subscription.Contract.CreateInvoice` fails with *"The subscription's unit of measure contains a value that is not found in the item unit of measure..."* |
+| **Currency Exchange Rates** covering the posting dates you use - including for the **Additional Reporting Currency**, if the company has one | Posting converts amounts to the additional reporting currency at the posting date | Posting fails with *"There is no Currency Exchange Rate within the filter"*. Note the reported currency code may be the **local** currency even when every document is in local currency and the rate that is actually missing belongs to the reporting currency, so check both |
+
+### Usage-based billing scenarios
+
+`Subscription.Usage.ImportData` parses the file through Microsoft's generic usage-data connector,
+which needs, in addition to the above:
+
+- a **Usage Data Supplier** of type Generic;
+- **Generic Import Settings** for that supplier, pointing at a **Data Exchange Definition** that
+  maps the file's columns onto table 8018 *Usage Data Generic Import*;
+- **Usage Data Supplier Reference**, **Usage Data Supp. Customer** and **Usage Data Supp.
+  Subscription** rows linking the file's customer and subscription identifiers to the Business
+  Central customer and the usage-based Subscription Line.
+
+Without the Data Exchange Definition the import call still succeeds as a call, and reports
+`processingStatus: "Error"` with Business Central's own reason - it does not throw.
 
 ---
 

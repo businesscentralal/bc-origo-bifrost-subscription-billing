@@ -20,6 +20,7 @@ codeunit 10035054 "CE Sub Usg Process Impl ori" implements "Cloud Event Msg Inte
         NotFoundErr: Label 'The Usage Data Import entry %1 does not exist.', Comment = '%1 = entry no.||is-IS=Innflutningsfærslan %1 fyrir notkunargögn er ekki til.';
         AlreadyClosedErr: Label 'Usage Data Import entry %1 is already Closed and cannot be processed again.', Comment = '%1 = entry no.||is-IS=Innflutningsfærslan %1 fyrir notkunargögn er þegar lokuð og er ekki hægt að vinna aftur.';
         UnknownStepErr: Label '''%1'' is not a known processing step. Use ProcessImportedLines, CreateUsageDataBilling or ProcessUsageDataBilling.', Comment = '%1 = step name||is-IS=''%1'' er ekki þekkt vinnsluskref. Notaðu ProcessImportedLines, CreateUsageDataBilling eða ProcessUsageDataBilling.';
+        CreateImportedLinesTok: Label 'CreateImportedLines', Locked = true;
         ProcessImportedLinesTok: Label 'ProcessImportedLines', Locked = true;
         CreateUsageDataBillingTok: Label 'CreateUsageDataBilling', Locked = true;
         ProcessUsageDataBillingTok: Label 'ProcessUsageDataBilling', Locked = true;
@@ -64,7 +65,13 @@ codeunit 10035054 "CE Sub Usg Process Impl ori" implements "Cloud Event Msg Inte
         HelpBuilder.AppendLine('| Parameter | Type | Required | Description |');
         HelpBuilder.AppendLine('| --- | --- | --- | --- |');
         HelpBuilder.AppendLine('| usageDataImportEntryNo | Integer | Yes | The Usage Data Import entry to process. May also be supplied as the message subject when the subject is numeric. |');
-        HelpBuilder.AppendLine('| steps | Array of Text | No | Which stages to run, in any subset of ProcessImportedLines, CreateUsageDataBilling, ProcessUsageDataBilling. Defaults to all three, always executed in that order regardless of the order given. |');
+        HelpBuilder.AppendLine('| steps | Array of Text | No | Which stages to run, in any subset of CreateImportedLines, ProcessImportedLines, CreateUsageDataBilling, ProcessUsageDataBilling. Defaults to the last three, always executed in that order regardless of the order given. |');
+        HelpBuilder.AppendLine();
+        HelpBuilder.AppendLine('`CreateImportedLines` re-parses the Usage Data Blob that `Subscription.Usage.ImportData`');
+        HelpBuilder.AppendLine('already stored into Usage Data Generic Import rows. It is not in the default set, because');
+        HelpBuilder.AppendLine('the import call runs it once already - ask for it when the first parse failed on a setup');
+        HelpBuilder.AppendLine('problem, such as a Data Exchange Definition that did not match the file, and you want to');
+        HelpBuilder.AppendLine('retry without re-sending the file.');
         HelpBuilder.AppendLine();
         HelpBuilder.AppendLine('## Request Example');
         HelpBuilder.AppendLine();
@@ -174,7 +181,7 @@ codeunit 10035054 "CE Sub Usg Process Impl ori" implements "Cloud Event Msg Inte
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('usageDataImportEntryNo', EntryNo);
         ResponseJson.Add('steps', StepsArray);
-        ResponseJson.Add('processingStatus', Format(UsageDataImport."Processing Status", 0, 9));
+        ResponseJson.Add('processingStatus', Helper.FormatProcessingStatus(UsageDataImport."Processing Status"));
         ResponseJson.Add('usageDataBillingCount', UsageDataBilling.Count());
         UsageDataBilling.SetRange("Processing Status", UsageDataBilling."Processing Status"::Error);
         ResponseJson.Add('usageDataBillingErrorCount', UsageDataBilling.Count());
@@ -183,13 +190,11 @@ codeunit 10035054 "CE Sub Usg Process Impl ori" implements "Cloud Event Msg Inte
 
     local procedure GetRequestedSteps(RequestJson: JsonObject; var StepNames: List of [Text])
     var
-        StepsToken: JsonToken;
         StepToken: JsonToken;
         StepsArrayIn: JsonArray;
     begin
         Clear(StepNames);
-        if RequestJson.Get('steps', StepsToken) and StepsToken.IsArray() then begin
-            StepsArrayIn := StepsToken.AsArray();
+        if Helper.TryGetArray(RequestJson, 'steps', StepsArrayIn) then begin
             foreach StepToken in StepsArrayIn do
                 StepNames.Add(StepToken.AsValue().AsText());
             exit;
@@ -205,7 +210,23 @@ codeunit 10035054 "CE Sub Usg Process Impl ori" implements "Cloud Event Msg Inte
         StepOk: Boolean;
         StepReason: Text;
     begin
+        // Business Central leaves the status and reason of the previous step standing on the
+        // Usage Data Import and only overwrites them when a step has something to say. Clear them
+        // first, so a step that succeeds after an earlier one failed is not reported as an error
+        // carrying the earlier step's message.
+        ResetStatus(UsageDataImport);
+
         case StepName of
+            CreateImportedLinesTok:
+                begin
+                    UsageDataImport."Processing Step" := UsageDataImport."Processing Step"::"Create Imported Lines";
+                    UsageDataImport.Modify(false);
+                    Commit();
+                    // Safe to run unattended: the dispatcher only asks the supplier for a file
+                    // when no unprocessed Usage Data Blob is standing for this import, and
+                    // Subscription.Usage.ImportData always leaves one behind.
+                    StepOk := Codeunit.Run(Codeunit::"Import And Process Usage Data", UsageDataImport);
+                end;
             ProcessImportedLinesTok:
                 begin
                     UsageDataImport."Processing Step" := UsageDataImport."Processing Step"::"Process Imported Lines";
@@ -240,8 +261,17 @@ codeunit 10035054 "CE Sub Usg Process Impl ori" implements "Cloud Event Msg Inte
             StepReason := GetLastErrorText();
 
         StepJson.Add('step', StepName);
-        StepJson.Add('status', Format(UsageDataImport."Processing Status", 0, 9));
+        StepJson.Add('status', Helper.FormatProcessingStatus(UsageDataImport."Processing Status"));
         StepJson.Add('reason', StepReason);
         StepsArray.Add(StepJson);
+    end;
+
+    /// <summary>Clears the status a previous step left on the Usage Data Import, so the next step reports its own outcome.</summary>
+    local procedure ResetStatus(var UsageDataImport: Record "Usage Data Import")
+    begin
+        UsageDataImport."Processing Status" := UsageDataImport."Processing Status"::None;
+        UsageDataImport."Reason (Preview)" := '';
+        Clear(UsageDataImport.Reason);
+        UsageDataImport.Modify(false);
     end;
 }

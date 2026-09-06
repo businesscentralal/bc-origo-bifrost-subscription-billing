@@ -157,7 +157,7 @@ codeunit 10035051 "CE Sub Ren Extend Impl ori" implements "Cloud Event Msg Inter
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
         NewEntryNosArray: JsonArray;
-        PackagesJToken: JsonToken;
+        PackagesJsonArray: JsonArray;
         PackageJToken: JsonToken;
         ExistingEntryNos: List of [Integer];
         SubscriptionHeaderNo: Code[20];
@@ -196,16 +196,15 @@ codeunit 10035051 "CE Sub Ren Extend Impl ori" implements "Cloud Event Msg Inter
             if not VendorSubscriptionContract.Get(VendorContractNo) then
                 Error(VendorContractNotFoundErr, VendorContractNo);
 
-        if RequestJson.Get('subscriptionPackageCodes', PackagesJToken) then
-            if PackagesJToken.IsArray() then
-                foreach PackageJToken in PackagesJToken.AsArray() do begin
-                    PackageCode := CopyStr(PackageJToken.AsValue().AsText(), 1, MaxStrLen(PackageCode));
-                    if not SubscriptionPackage.Get(PackageCode) then
-                        Error(PackageNotFoundErr, PackageCode);
-                    TempSubscriptionPackage := SubscriptionPackage;
-                    TempSubscriptionPackage.Selected := true;
-                    TempSubscriptionPackage.Insert(false);
-                end;
+        if Helper.TryGetArray(RequestJson, 'subscriptionPackageCodes', PackagesJsonArray) then
+            foreach PackageJToken in PackagesJsonArray do begin
+                PackageCode := CopyStr(PackageJToken.AsValue().AsText(), 1, MaxStrLen(PackageCode));
+                if not SubscriptionPackage.Get(PackageCode) then
+                    Error(PackageNotFoundErr, PackageCode);
+                TempSubscriptionPackage := SubscriptionPackage;
+                TempSubscriptionPackage.Selected := true;
+                TempSubscriptionPackage.Insert(false);
+            end;
 
         if ExtendCustomerContract then begin
             CustSubContractLine.SetRange("Subscription Contract No.", CustomerContractNo);

@@ -189,11 +189,14 @@ codeunit 10035053 "CE Sub Usg Import Impl ori" implements "Cloud Event Msg Inter
             OutStr.WriteText(Content);
         UsageDataBlob.Source := CopyStr(FileName, 1, MaxStrLen(UsageDataBlob.Source));
         UsageDataBlob."Import Date" := Today();
-        UsageDataBlob."Import Status" := UsageDataBlob."Import Status"::Ok;
+        // Leave "Import Status" at None. Microsoft's connector picks up blobs that have not been
+        // turned into imported lines yet and stamps Ok on them itself; a blob that already says Ok
+        // is treated as done and silently skipped.
         UsageDataBlob.Modify(false);
 
         UsageDataImport."Processing Step" := UsageDataImport."Processing Step"::"Create Imported Lines";
         UsageDataImport.Modify(false);
+
         Commit();
         if not Codeunit.Run(Codeunit::"Import And Process Usage Data", UsageDataImport) then
             Error(GetLastErrorText());
@@ -217,7 +220,7 @@ codeunit 10035053 "CE Sub Usg Import Impl ori" implements "Cloud Event Msg Inter
 
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('usageDataImportEntryNo', UsageDataImport."Entry No.");
-        ResponseJson.Add('processingStatus', Format(UsageDataImport."Processing Status", 0, 9));
+        ResponseJson.Add('processingStatus', Helper.FormatProcessingStatus(UsageDataImport."Processing Status"));
         ResponseJson.Add('reason', ReasonText);
         ResponseJson.Add('importedLineCount', UsageDataGenericImport.Count());
         Helper.RespondWithSuccess(Argument, ResponseJson);

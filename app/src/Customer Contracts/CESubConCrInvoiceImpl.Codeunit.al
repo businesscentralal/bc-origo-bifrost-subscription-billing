@@ -20,6 +20,7 @@ codeunit 10035038 "CE Sub Con CrInvoice Impl ori" implements "Cloud Event Msg In
         ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar ''%1'' er ekki til.';
         ForeignPendingErr: Label 'Contract ''%1'' has %2 pending billing line(s) with no billing template assigned. Clear or complete that proposal before billing this contract, because creating this invoice would also convert those lines.', Comment = '%1 = foreign contract no., %2 = row count||is-IS=Samningur ''%1'' er með %2 ófrágengna(r) reikningslínu(r) án úthlutaðs reikningssniðmáts. Ljúktu við eða hreinsaðu þá tillögu áður en þessi samningur er reikningsfærður, því annars myndi þessi aðgerð einnig umbreyta þeim línum.';
         NothingDueMsg: Label 'No Subscription Lines were due for billing on or before %1 for contract %2.', Comment = '%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.';
+        NothingNewMsg: Label 'Nothing new could be billed for contract %1. Its due Subscription Lines already sit on a billing proposal or on an unposted document - post or clear those first.', Comment = '%1 = contract number||is-IS=Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Áskriftarlínur hans eru þegar á reikningstillögu eða á óbókfærðu skjali - bókfaðu þær eða hreinsaðu þær fyrst.';
         DescriptionLbl: Label 'Bills one customer Subscription Contract to an unposted sales invoice. Returns the documents created.', MaxLength = 250, Comment = 'is-IS=Reikningsfærir einn áskriftarsamning viðskiptavinar á óbókfærðan sölureikning. Skilar þeim skjölum sem urðu til.';
 
     internal procedure IsEnabled(): Boolean
@@ -181,6 +182,7 @@ codeunit 10035038 "CE Sub Con CrInvoice Impl ori" implements "Cloud Event Msg In
         DocumentKey: Text;
         ForeignCount: Integer;
         BillingLineCount: Integer;
+        WatermarkEntryNo: Integer;
     begin
         if not CustomerSubscriptionContract.Get(ContractNo) then
             Error(ContractNotFoundErr, ContractNo);
@@ -219,10 +221,22 @@ codeunit 10035038 "CE Sub Con CrInvoice Impl ori" implements "Cloud Event Msg In
             exit;
         end;
 
+        // Note where the Billing Line table ends before the proposal runs, so the response reports
+        // exactly the rows this call produced. Counting every blank-template row for the contract
+        // instead would re-report rows from an earlier run and name a document that already
+        // existed - which is what happens when the contract's due lines are still sitting on an
+        // unposted document, because Business Central then bills nothing new.
+        BillingLine.Reset();
+        if BillingLine.FindLast() then
+            WatermarkEntryNo := BillingLine."Entry No."
+        else
+            WatermarkEntryNo := 0;
+
         BillingProposal.CreateBillingProposalForPurchaseHeader(Enum::"Service Partner"::Customer, TempSubscriptionLine, BillingDate, BillingToDate);
         BillingProposal.CreateBillingDocument(Enum::"Service Partner"::Customer, ContractNo, DocumentDate, PostingDate, false, false);
 
         BillingLine.Reset();
+        BillingLine.SetFilter("Entry No.", '>%1', WatermarkEntryNo);
         BillingLine.SetRange("Billing Template Code", '');
         BillingLine.SetRange("Subscription Contract No.", ContractNo);
         BillingLineCount := BillingLine.Count();
@@ -231,19 +245,19 @@ codeunit 10035038 "CE Sub Con CrInvoice Impl ori" implements "Cloud Event Msg In
         if BillingLine.FindSet() then
             repeat
                 if BillingLine."Document No." <> '' then begin
-                    DocumentKey := Format(BillingLine."Document Type", 0, 9) + '|' + BillingLine."Document No.";
+                    DocumentKey := Helper.FormatDocumentType(BillingLine."Document Type") + '|' + BillingLine."Document No.";
                     if not SeenDocuments.Contains(DocumentKey) then begin
                         SeenDocuments.Add(DocumentKey);
                         Clear(DocumentJson);
-                        DocumentJson.Add('documentType', Format(BillingLine."Document Type"));
+                        DocumentJson.Add('documentType', Helper.FormatDocumentType(BillingLine."Document Type"));
                         DocumentJson.Add('documentNo', BillingLine."Document No.");
                         DocumentsArray.Add(DocumentJson);
                     end;
                 end;
             until BillingLine.Next() = 0;
 
-        if DocumentsArray.Count() = 0 then
-            ResponseJson.Add('message', StrSubstNo(NothingDueMsg, Helper.FormatDate(BillingDate), ContractNo));
+        if BillingLineCount = 0 then
+            ResponseJson.Add('message', StrSubstNo(NothingNewMsg, ContractNo));
 
         ResponseJson.Add('documents', DocumentsArray);
         ResponseJson.Add('billingLineCount', BillingLineCount);

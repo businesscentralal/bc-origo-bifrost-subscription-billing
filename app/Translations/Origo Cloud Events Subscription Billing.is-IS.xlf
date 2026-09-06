@@ -33,6 +33,11 @@
           <target>Það eru engar ófakturaðar tillögufærslur fyrir reikningssniðmátið '%1'. Keyrðu Subscription.Billing.CreateProposal fyrst.</target><note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Það eru engar ófakturaðar tillögufærslur fyrir reikningssniðmátið '%1'. Keyrðu Subscription.Billing.CreateProposal fyrst.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Bil CrDocs Impl ori - NamedType NothingPendingMsg</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2318287485 - NamedType 3038559585" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The billing run failed after Business Central had already created the documents listed in 'documents'. Business Central commits each document as it is created, so those documents still exist and were not rolled back. Review them before running this template again. Underlying error: %1</source>
+          <target>Reikningskeyrslan brast eftir að Business Central hafði þegar búið til skjölin sem talin eru upp í 'documents'. Business Central vistar hvert skjal um leið og það verður til, svo þau skjöl eru enn til og hafa ekki verið afturkölluð. Yfirfarðu þau áður en þetta sniðmát er keyrt aftur. Undirliggjandi villa: %1</target><note from="Developer" annotates="general" priority="2">%1 = the underlying Business Central error||is-IS=Reikningskeyrslan brast eftir að Business Central hafði þegar búið til skjölin sem talin eru upp í 'documents'. Business Central vistar hvert skjal um leið og það verður til, svo þau skjöl eru enn til og hafa ekki verið afturkölluð. Yfirfarðu þau áður en þetta sniðmát er keyrt aftur. Undirliggjandi villa: %1</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Bil CrDocs Impl ori - NamedType NotRolledBackErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2318287485 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Billing Template '%1' does not exist.</source>
           <target>Reikningssniðmátið '%1' er ekki til.</target><note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Reikningssniðmátið '%1' er ekki til.</note>
@@ -103,6 +108,11 @@
           <target>Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.</target><note from="Developer" annotates="general" priority="2">%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Con CrInvoice Impl ori - NamedType NothingDueMsg</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3454643184 - NamedType 3875890108" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Nothing new could be billed for contract %1. Its due Subscription Lines already sit on a billing proposal or on an unposted document - post or clear those first.</source>
+          <target>Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Áskriftarlínur hans eru þegar á reikningstillögu eða á óbókfærðu skjali - bókfaðu þær eða hreinsaðu þær fyrst.</target><note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Áskriftarlínur hans eru þegar á reikningstillögu eða á óbókfærðu skjali - bókfaðu þær eða hreinsaðu þær fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Con CrInvoice Impl ori - NamedType NothingNewMsg</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2789682601 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
           <target>Áskriftarsamningur viðskiptavinar '%1' er ekki til.</target><note from="Developer" annotates="general" priority="2">%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar '%1' er ekki til.</note>
@@ -163,10 +173,25 @@
           <target>Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptavina og birgja fram að tilteknum degi og bókfærir losunina í fjárhagsbókhald.</target><note from="Developer" annotates="general" priority="2">is-IS=Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptavina og birgja fram að tilteknum degi og bókfærir losunina í fjárhagsbókhald.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Def Release Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 896413588 - NamedType 1528260597" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Business Central released %1 deferral(s) posted after 'postUntilDate' (%2). The release has already posted to the general ledger and cannot be undone from here - reconcile before releasing again.</source>
+          <target>Business Central losaði %1 frestun(ar) sem bókast eftir 'postUntilDate' (%2). Losunin er þegar bókfærð í fjárhagsbókhald og verður ekki afturkölluð héðan - stemmdu af áður en losað er aftur.</target><note from="Developer" annotates="general" priority="2">%1 = number of deferrals released outside the window, %2 = post until date||is-IS=Business Central losaði %1 frestun(ar) sem bókast eftir 'postUntilDate' (%2). Losunin er þegar bókfærð í fjárhagsbókhald og verður ekki afturkölluð héðan - stemmdu af áður en losað er aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Def Release Impl ori - NamedType OvershotWindowMsg</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 896413588 - NamedType 924905078" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Business Central posts this release under the work date (%1) and offers no supported way to post it under a different one, so 'postingDate' (%2) cannot be honoured. Omit 'postingDate', or set the session work date to %2 before calling.</source>
+          <target>Business Central bókar þessa losun miðað við vinnudagsetninguna (%1) og býður enga studda leið til að bóka hana miðað við aðra, svo ekki er hægt að virða 'postingDate' (%2). Slepptu 'postingDate', eða stilltu vinnudagsetningu setunnar á %2 áður en kallað er.</target><note from="Developer" annotates="general" priority="2">%1 = work date, %2 = requested posting date||is-IS=Business Central bókar þessa losun miðað við vinnudagsetninguna (%1) og býður enga studda leið til að bóka hana miðað við aðra, svo ekki er hægt að virða 'postingDate' (%2). Slepptu 'postingDate', eða stilltu vinnudagsetningu setunnar á %2 áður en kallað er.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Def Release Impl ori - NamedType PostingDateNotSupportedErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 896413588 - NamedType 3791052309" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter 'postUntilDate' (%1) must not be later than 'postingDate' (%2).</source>
           <target>Færibreytan 'postUntilDate' (%1) má ekki vera síðar en 'postingDate' (%2).</target><note from="Developer" annotates="general" priority="2">%1 = post until date, %2 = posting date||is-IS=Færibreytan 'postUntilDate' (%1) má ekki vera síðar en 'postingDate' (%2).</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Def Release Impl ori - NamedType PostUntilAfterPostingErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 896413588 - NamedType 2724583529" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Refusing to run: Business Central would release %1 deferral(s) posted between 'postUntilDate' (%2) and the work date (%3). The report cannot be told where to stop from an external app, so it always releases everything eligible up to the work date. Set the session work date to %2 before calling, or raise 'postUntilDate' to %3 to accept releasing all of them.</source>
+          <target>Keyrslu hafnað: Business Central myndi losa %1 frestun(ar) sem bókast á milli 'postUntilDate' (%2) og vinnudagsetningarinnar (%3). Ekki er hægt að segja skýrslunni hvar hún á að stoppa frá utanaðkomandi appi, svo hún losar alltaf allt sem uppfyllir skilyrði fram að vinnudagsetningu. Stilltu vinnudagsetningu setunnar á %2 áður en kallað er, eða hækkaðu 'postUntilDate' í %3 til að samþykkja að þær losni allar.</target><note from="Developer" annotates="general" priority="2">%1 = number of deferrals, %2 = post until date, %3 = work date||is-IS=Keyrslu hafnað: Business Central myndi losa %1 frestun(ar) sem bókast á milli 'postUntilDate' (%2) og vinnudagsetningarinnar (%3). Ekki er hægt að segja skýrslunni hvar hún á að stoppa frá utanaðkomandi appi, svo hún losar alltaf allt sem uppfyllir skilyrði fram að vinnudagsetningu. Stilltu vinnudagsetningu setunnar á %2 áður en kallað er, eða hækkaðu 'postUntilDate' í %3 til að samþykkja að þær losni allar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Def Release Impl ori - NamedType WouldOverReleaseErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 999960100 - NamedType 1432801292" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter '%1' is not a valid date. Use the ISO format YYYY-MM-DD.</source>
@@ -187,6 +212,11 @@
           <source>The request is missing the required parameter '%1'.</source>
           <target>Beiðnina vantar nauðsynlega færibreytu '%1'.</target><note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Beiðnina vantar nauðsynlega færibreytu '%1'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Helper ori - NamedType MissingParameterErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 999960100 - NamedType 798422602" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter '%1' must be a JSON array.</source>
+          <target>Færibreytan '%1' verður að vera JSON fylki.</target><note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Færibreytan '%1' verður að vera JSON fylki.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Helper ori - NamedType NotAnArrayErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 999960100 - NamedType 2127484308" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter '%1' is longer than the %2 characters allowed.</source>
@@ -353,6 +383,16 @@
           <target>Það eru %1 ólokin(ar) færsla(ur) í reikningstillögu fyrir annan áskriftarsamning ('%2'). Hreinsaðu eða vinndu úr þeirri tillögu áður en reikningur er búinn til fyrir '%3'.</target><note from="Developer" annotates="general" priority="2">%1 = row count, %2 = the other contract number, %3 = this contract number||is-IS=Það eru %1 ólokin(ar) færsla(ur) í reikningstillögu fyrir annan áskriftarsamning ('%2'). Hreinsaðu eða vinndu úr þeirri tillögu áður en reikningur er búinn til fyrir '%3'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Vend CrInvoice Impl ori - NamedType ForeignPendingProposalErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2944798457 - NamedType 1678473316" size-unit="char" translate="yes" xml:space="preserve">
+          <source>No Subscription Lines were due for billing on or before %1 for contract %2.</source>
+          <target>Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.</target><note from="Developer" annotates="general" priority="2">%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Vend CrInvoice Impl ori - NamedType NothingDueMsg</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2944798457 - NamedType 3875890108" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Nothing new could be billed for contract %1. Its due Subscription Lines already sit on a billing proposal or on an unposted document - post or clear those first.</source>
+          <target>Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Áskriftarlínur hans eru þegar á reikningstillögu eða á óbókfærðu skjali - bókfaðu þær eða hreinsaðu þær fyrst.</target><note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Áskriftarlínur hans eru þegar á reikningstillögu eða á óbókfærðu skjali - bókfaðu þær eða hreinsaðu þær fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Vend CrInvoice Impl ori - NamedType NothingNewMsg</note>
+        </trans-unit>
         <trans-unit id="Codeunit 1470509720 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Vendor Subscription Contract '%1' does not exist.</source>
           <target>Birgjaáskriftarsamningurinn '%1' er ekki til.</target><note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Birgjaáskriftarsamningurinn '%1' er ekki til.</note>
@@ -382,6 +422,16 @@
           <source>There are %1 pending billing proposal line(s) left over for a different subscription contract ('%2'). Clear or process that proposal before previewing '%3'.</source>
           <target>Það eru %1 ólokin(ar) færsla(ur) í reikningstillögu fyrir annan áskriftarsamning ('%2'). Hreinsaðu eða vinndu úr þeirri tillögu áður en samningur '%3' er forskoðaður.</target><note from="Developer" annotates="general" priority="2">%1 = row count, %2 = the other contract number, %3 = this contract number||is-IS=Það eru %1 ólokin(ar) færsla(ur) í reikningstillögu fyrir annan áskriftarsamning ('%2'). Hreinsaðu eða vinndu úr þeirri tillögu áður en samningur '%3' er forskoðaður.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Vend PrvInv Impl ori - NamedType ForeignPendingProposalErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 948742142 - NamedType 1678473316" size-unit="char" translate="yes" xml:space="preserve">
+          <source>No Subscription Lines were due for billing on or before %1 for contract %2.</source>
+          <target>Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.</target><note from="Developer" annotates="general" priority="2">%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Vend PrvInv Impl ori - NamedType NothingDueMsg</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 948742142 - NamedType 3875890108" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Nothing new could be proposed for contract %1. Its due Subscription Lines are already covered by pending billing proposal lines - bill or clear those first.</source>
+          <target>Ekkert nýtt var hægt að leggja til fyrir samning %1. Áskriftarlínur hans eru þegar með reikningstillögulínur - ljúktu við þær eða hreinsaðu þær fyrst.</target><note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Ekkert nýtt var hægt að leggja til fyrir samning %1. Áskriftarlínur hans eru þegar með reikningstillögulínur - ljúktu við þær eða hreinsaðu þær fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit CE Sub Vend PrvInv Impl ori - NamedType NothingNewMsg</note>
         </trans-unit>
         <trans-unit id="PermissionSet 3821408874 - Property 2879900210" maxwidth="30" size-unit="char" translate="yes" xml:space="preserve">
           <source>Cloud Events Sub. Billing</source>

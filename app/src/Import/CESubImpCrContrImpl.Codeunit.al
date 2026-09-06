@@ -176,14 +176,12 @@ codeunit 10035057 "CE Sub Imp CrContr Impl ori" implements "Cloud Event Msg Inte
 
     local procedure GetRequestedStages(RequestJson: JsonObject; var RequestedStages: List of [Text])
     var
-        StagesToken: JsonToken;
         StageToken: JsonToken;
         StagesArrayIn: JsonArray;
         StageName: Text;
     begin
         Clear(RequestedStages);
-        if RequestJson.Get('stages', StagesToken) and StagesToken.IsArray() then begin
-            StagesArrayIn := StagesToken.AsArray();
+        if Helper.TryGetArray(RequestJson, 'stages', StagesArrayIn) then begin
             foreach StageToken in StagesArrayIn do begin
                 StageName := StageToken.AsValue().AsText();
                 case StageName of
@@ -244,7 +242,7 @@ codeunit 10035057 "CE Sub Imp CrContr Impl ori" implements "Cloud Event Msg Inte
                     ImportedSubscriptionHeader."Error Text" := CopyStr(GetLastErrorText(), 1, MaxStrLen(ImportedSubscriptionHeader."Error Text"));
                     ImportedSubscriptionHeader.Modify(false);
                     Commit();
-                    AddError(ErrorsArray, ErrorCount, SubscriptionHeadersTok, Format(ImportedSubscriptionHeader."Entry No."), ImportedSubscriptionHeader."Error Text");
+                    AddError(ErrorsArray, ErrorCount, SubscriptionHeadersTok, Format(ImportedSubscriptionHeader."Entry No.", 0, 9), ImportedSubscriptionHeader."Error Text");
                 end;
             until ImportedSubscriptionHeader.Next() = 0;
         AddStageResult(StagesArray, SubscriptionHeadersTok, Processed, Succeeded, Failed);
@@ -269,7 +267,7 @@ codeunit 10035057 "CE Sub Imp CrContr Impl ori" implements "Cloud Event Msg Inte
                     ImportedCustSubContract."Error Text" := CopyStr(GetLastErrorText(), 1, MaxStrLen(ImportedCustSubContract."Error Text"));
                     ImportedCustSubContract.Modify(false);
                     Commit();
-                    AddError(ErrorsArray, ErrorCount, CustomerContractsTok, Format(ImportedCustSubContract."Entry No."), ImportedCustSubContract."Error Text");
+                    AddError(ErrorsArray, ErrorCount, CustomerContractsTok, Format(ImportedCustSubContract."Entry No.", 0, 9), ImportedCustSubContract."Error Text");
                 end;
             until ImportedCustSubContract.Next() = 0;
         AddStageResult(StagesArray, CustomerContractsTok, Processed, Succeeded, Failed);
@@ -294,7 +292,7 @@ codeunit 10035057 "CE Sub Imp CrContr Impl ori" implements "Cloud Event Msg Inte
                     ImportedSubscriptionLine."Error Text" := CopyStr(GetLastErrorText(), 1, MaxStrLen(ImportedSubscriptionLine."Error Text"));
                     ImportedSubscriptionLine.Modify(false);
                     Commit();
-                    AddError(ErrorsArray, ErrorCount, SubscriptionLinesTok, Format(ImportedSubscriptionLine."Entry No."), ImportedSubscriptionLine."Error Text");
+                    AddError(ErrorsArray, ErrorCount, SubscriptionLinesTok, Format(ImportedSubscriptionLine."Entry No.", 0, 9), ImportedSubscriptionLine."Error Text");
                 end;
             until ImportedSubscriptionLine.Next() = 0;
         AddStageResult(StagesArray, SubscriptionLinesTok, Processed, Succeeded, Failed);
@@ -319,7 +317,7 @@ codeunit 10035057 "CE Sub Imp CrContr Impl ori" implements "Cloud Event Msg Inte
                     ImportedSubscriptionLine."Error Text" := CopyStr(GetLastErrorText(), 1, MaxStrLen(ImportedSubscriptionLine."Error Text"));
                     ImportedSubscriptionLine.Modify(false);
                     Commit();
-                    AddError(ErrorsArray, ErrorCount, ContractLinesTok, Format(ImportedSubscriptionLine."Entry No."), ImportedSubscriptionLine."Error Text");
+                    AddError(ErrorsArray, ErrorCount, ContractLinesTok, Format(ImportedSubscriptionLine."Entry No.", 0, 9), ImportedSubscriptionLine."Error Text");
                 end;
             until ImportedSubscriptionLine.Next() = 0;
         AddStageResult(StagesArray, ContractLinesTok, Processed, Succeeded, Failed);

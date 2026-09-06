@@ -6,10 +6,11 @@
   "brief": "Cloud Event message types for Subscription Billing",
   "description": "Adds Cloud Events message types for the Microsoft Dynamics 365 Business Central Subscription Billing app. Covers subscription lines, customer and vendor contracts, the billing pipeline, price updates and indexation, renewal, usage-based billing, deferrals, contract analysis and migration - so an agent can operate Subscription Billing end to end without manual UI steps.",
   "url": "https://www.origo.is/",
-  "help": "https://origopublic.blob.core.windows.net/help/Origo Cloud Events Subscription Billing/bc28/en-US/index.html",
+  "help": "https://www.origo.is/",
   "privacyStatement": "https://www.origo.is/um-origo/stefnur/personuverndarstefna",
-  "EULA": "https://www.origo.is/skilmalar-og-oryggismal",
-  "contextSensitiveHelpUrl": "https://origopublic.blob.core.windows.net/help/Origo Cloud Events Subscription Billing/bc28/{0}/",
+  "EULA": "https://new-origo.cdn.prismic.io/new-origo/lp1r1WElZFfmWAJU_Origo_BC_Cloud_Events_Terms_of_Use_-1-.pdf",
+  "applicationInsightsConnectionString": "InstrumentationKey=a73491c5-6798-4929-9ba6-d25d321dbd42;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=e23f6f88-6b6b-41e3-9058-915aad32dd5f",
+  "contextSensitiveHelpUrl": "https://www.origo.is/",
   "keyVaultUrls": [],
   "supportedLocales": [
     "en-US",
@@ -58,7 +59,6 @@
   "propagateDependencies": false,
   "runtime": "17.0",
   "suppressWarnings": [
-    "AA0215",
     "AS0081"
   ]
 }

@@ -234,8 +234,16 @@ calculation or document assembly.
 
 Verified end to end: a preview of this same run reported 3 billing periods totalling 3,600
 and left the database byte-identical; the real run then produced sales invoice 102311 from
-exactly those 3 periods. When nothing on the contract is due, the call still succeeds with
-`documents: []`, `billingLineCount` of 0 and a `message` explaining that nothing was due.
+exactly those 3 periods.
+
+`documents` and `billingLineCount` describe **only what this call produced**. When nothing on
+the contract is due, or when Business Central proposes nothing new, the call still succeeds
+with `documents: []`, `billingLineCount` of 0 and a `message` saying which of the two it was.
+The second case is the common one in practice: Business Central will not bill a Subscription
+Line whose previous billing document is still unposted, so calling this twice in a row on the
+same contract bills once and then reports *"Nothing new could be billed for contract %1..."*
+until that document is posted. See
+[Known limitations](#a-contract-cannot-be-billed-again-while-its-last-document-is-unposted).
 
 **Errors**
 
@@ -438,7 +446,7 @@ A run matching no candidate line is a success with `linesAttached` of 0 and an e
 | --- | --- |
 | Contract does not exist | The Vendor Subscription Contract '%1' does not exist. |
 | `contractNo` missing | The request is missing the required parameter 'contractNo'. |
-| `subscriptionLineEntryNos` not an array | The parameter 'subscriptionLineEntryNos' must be a JSON array of integers. |
+| `subscriptionLineEntryNos` is present but is not an array | The parameter 'subscriptionLineEntryNos' must be a JSON array. |
 
 **Safety.** Only attaches existing Subscription Lines; never creates or deletes one. Runs in an
 isolated transaction that rolls back on error.
@@ -482,8 +490,16 @@ then turned into an unposted purchase document via Microsoft's billing proposal 
 }
 ```
 
-A run finding nothing due is a success with `billingLineCount` of 0 and an empty `documents`
-array.
+`billingLineCount` counts the billing periods this call actually produced - the same number
+the preview reports as `wouldBillLineCount` - and `documents` names only the documents this
+call created. A run that finds nothing due, or that Business Central declines to bill again
+because the contract's last document is still unposted, is a success with `billingLineCount`
+of 0, an empty `documents` array and a `message` saying which of the two it was. See
+[Known limitations](#a-contract-cannot-be-billed-again-while-its-last-document-is-unposted).
+
+`vendorInvoiceNo` is stamped only onto the documents this call created; an earlier, still
+unposted document for the same contract keeps the Vendor Invoice No. it was given at the
+time.
 
 **Errors**
 
@@ -650,9 +666,35 @@ billing-document codeunit.
 }
 ```
 
-When `postDocuments` was explicitly true, the response also carries `"posted": true`. A run
-with no unbilled proposal lines is a success with `documents: []`, `documentCount` of 0, and a
-`message` pointing at `Subscription.Billing.CreateProposal`.
+When `postDocuments` was explicitly true, the response carries `"posted": true` at the top
+level and each document carries `"posted": true` of its own - posting archives the proposal
+rows, so those documents are read back from the Billing Line Archive rather than from Billing
+Line. A run with no unbilled proposal lines is a success with `documents: []`, `documentCount`
+of 0, and a `message` pointing at `Subscription.Billing.CreateProposal`.
+
+`documents` and `documentCount` cover only the proposal rows **this** call consumed, so
+running the same template twice does not re-report the first run's documents.
+
+**This run is not atomic.** Business Central commits each billing document as it creates it,
+so a failure part way through - a posting error on one document, say - leaves every document
+created before it standing. The response then names them explicitly instead of failing blind:
+
+```json
+{
+  "status": "Error",
+  "error": "The billing run failed after Business Central had already created the documents listed in 'documents'. ...",
+  "billingTemplateCode": "MONTHLY",
+  "billingLinesProcessed": 12,
+  "documentCount": 2,
+  "documents": [
+    { "documentType": "Invoice", "documentNo": "INV-000123", "contractNo": "CC000010" }
+  ],
+  "rolledBack": false
+}
+```
+
+Errors raised before Business Central is called - an unknown template, a mixed-partner
+proposal, an invalid `groupBy` - write nothing at all.
 
 **Errors**
 
@@ -667,7 +709,8 @@ with no unbilled proposal lines is a success with `documents: []`, `documentCoun
 **Safety.** Can post when `postDocuments` is explicitly true, but only for customer documents -
 vendor billing documents are never posted by Business Central on this path (see
 [Known limitations](#13-known-limitations)). Always refuses to mix customer and vendor proposal
-lines in one run. Runs in an isolated transaction that rolls back on error.
+lines in one run. **Not atomic**: see the note above the errors table - documents created
+before a failure are committed and are reported back with `"rolledBack": false`.
 
 ### 6.3 Subscription.Billing.PreviewDocuments
 
@@ -1049,7 +1092,13 @@ stage does not undo an earlier one.
 | Parameter | Type | Required | Description | Default |
 | --- | --- | --- | --- | --- |
 | `usageDataImportEntryNo` | Integer | Yes | The Usage Data Import entry to process. May also be supplied as the message subject when the subject is numeric. | - |
-| `steps` | Text[] | No | Any subset of `ProcessImportedLines`, `CreateUsageDataBilling`, `ProcessUsageDataBilling`, always executed in that order regardless of the order given. | All three, in order |
+| `steps` | Text[] | No | Any subset of `CreateImportedLines`, `ProcessImportedLines`, `CreateUsageDataBilling`, `ProcessUsageDataBilling`, always executed in that order regardless of the order given. | The last three, in order |
+
+`CreateImportedLines` re-parses the Usage Data Blob that `Subscription.Usage.ImportData`
+already stored, into Usage Data Generic Import rows. It is deliberately **not** in the default
+set, because the import call runs it once already; ask for it when that first parse failed on
+a setup problem - a Data Exchange Definition that does not match the file, say - and you want
+to retry without re-sending the file.
 
 ```json
 {
@@ -1072,6 +1121,12 @@ stage does not undo an earlier one.
 }
 ```
 
+Each stage's `status` and `reason` are its own: Business Central leaves the previous stage's
+status standing on the Usage Data Import entry and only overwrites it when a stage has
+something to say, so the entry is reset before each stage runs. Without that, a stage that
+succeeded after an earlier one failed would be reported as an error carrying the earlier
+stage's message.
+
 `processingStatus` is the entry's status after the last requested stage. `usageDataBillingCount`
 and `usageDataBillingErrorCount` count Usage Data Billing rows for this entry, the second
 filtered to rows whose own Processing Status is Error. A stage that fails on its own data (for
@@ -1085,6 +1140,7 @@ example a row with a missing price) is still reported as a successful call - che
 | Entry does not exist | The Usage Data Import entry %1 does not exist. |
 | Entry is already Closed | Usage Data Import entry %1 is already Closed and cannot be processed again. |
 | Unknown step name given | '%1' is not a known processing step. Use ProcessImportedLines, CreateUsageDataBilling or ProcessUsageDataBilling. |
+| `steps` is present but is not an array | The parameter 'steps' must be a JSON array. |
 
 **Safety.** Advances an existing entry through its processing stages, creating Usage Data
 Billing rows; does not post anything by itself. Each requested stage commits once it completes,
@@ -1100,16 +1156,27 @@ instead.
 *Implementation: `CE Sub Def Release Impl ori` (10035055)*
 
 Runs Microsoft's "Contract Deferrals Release" report, which releases every eligible deferred
-revenue and cost entry - customer (table 8066) and vendor (table 8072) - whose posting date
-falls on or before the given date, and posts the release to the general ledger. A generic
-record write has no way to invoke a posting report.
+revenue and cost entry - customer (table 8066) and vendor (table 8072) - and posts the release
+to the general ledger. A generic record write has no way to invoke a posting report.
+
+**The report always uses the session work date, and its two dates cannot be set from an
+external app.** They live on its request page, backed by global variables;
+`SetRequestPageParameters` is `internal` in Microsoft's app, and the request page XML passed to
+`Report.Execute` is not applied to this report. Verified against Business Central 28.4: a call
+asking for `postUntilDate` of 2026-03-31 released every eligible deferral up to the work date of
+2026-09-01 and posted them under the work date.
+
+`postingDate` and `postUntilDate` are therefore **a guard, not an instruction**. The call
+inspects what the report is about to do and refuses when that reaches further than the caller
+asked, rather than posting irreversibly and reporting a number that does not match what
+happened. To release up to an earlier date, set the session work date first.
 
 **Request parameters**
 
 | Parameter | Type | Required | Description | Default |
 | --- | --- | --- | --- | --- |
-| `postingDate` | Date | No | The date the release is posted under. | Work date |
-| `postUntilDate` | Date | No | Deferrals posted on or before this date are released. Must not be later than `postingDate`. | `postingDate` |
+| `postingDate` | Date | No | The date the caller expects the release to post under. Must equal the work date - the call is refused otherwise, because that is the only date Business Central will use. | Work date |
+| `postUntilDate` | Date | No | The latest deferral posting date the caller is willing to release. The call is refused if the report would go past it. Must not be later than `postingDate`. | `postingDate` |
 
 ```json
 {
@@ -1129,8 +1196,11 @@ record write has no way to invoke a posting report.
 }
 ```
 
-Released counts are measured by comparing eligible, unreleased deferral rows before and after
-the run. A run finding nothing eligible is still a success, with every count at 0.
+Counts are measured across **every** unreleased deferral, not only those inside the requested
+window, so they report what the run actually released. A run finding nothing eligible is still
+a success, with every count at 0. Should anything outside the window be released even so, the
+response carries `releasedOutsideRequestedWindow` and a `warning`, so it is visible in the
+response and not only in the ledger.
 
 Confirmed by live testing: this call requires `Source Code Setup."Sub. Contr. Deferrals
 Release"` and the deferral release journal template/batch in Subscription Contract Setup to be
@@ -1144,12 +1214,15 @@ unchanged.
 | Condition | Message |
 | --- | --- |
 | `postUntilDate` later than `postingDate` | The parameter 'postUntilDate' (%1) must not be later than 'postingDate' (%2). |
+| `postingDate` is not the work date | Business Central posts this release under the work date (%1) and offers no supported way to post it under a different one, so 'postingDate' (%2) cannot be honoured. Omit 'postingDate', or set the session work date to %2 before calling. |
+| The report would reach past `postUntilDate` | Refusing to run: Business Central would release %1 deferral(s) posted between 'postUntilDate' (%2) and the work date (%3)... |
 | Deferral release setup missing | Raised by Microsoft's "Contract Deferrals Release" report when Source Code Setup or the release journal template/batch is not configured; reported as-is. |
 
 **Safety.** **This message type posts to the general ledger and cannot be undone**, except by
 posting a compensating credit memo through the normal deferral correction process. It is **not
 scoped to a single contract** - it releases every eligible customer and vendor deferral, across
-every Subscription Contract, whose posting date falls on or before `postUntilDate`. Confirm the
+every Subscription Contract, up to the work date. `postUntilDate` is what keeps that from
+reaching further than intended; it can refuse the run, but it cannot narrow it. Confirm the work
 date carefully before calling this in a production environment.
 
 ---
@@ -1292,6 +1365,41 @@ them, and none of the four attempt to re-implement the underlying business logic
 risks silently diverging from Microsoft's own rules and corrupting or mis-pricing customer
 contracts. Use the equivalent action in the Business Central client instead (see each type's
 own section above for the specific action name).
+
+### Deferral release cannot be scoped to a date from an external app
+
+`Subscription.Deferral.Release` runs Microsoft's "Contract Deferrals Release" report, whose
+posting date and cut-off date live on its request page. `SetRequestPageParameters` is `internal`
+in Microsoft's app, and the request page XML handed to `Report.Execute` is not applied to this
+report, so neither date can be supplied from outside. The report uses the session work date for
+both: it releases everything eligible up to the work date and posts it under the work date.
+
+Because the call posts irreversibly to the general ledger, `postingDate` and `postUntilDate` are
+enforced as a precondition instead of being accepted and quietly ignored - the call is refused
+when the report would post under a different date, or release deferrals past `postUntilDate`.
+The way to release up to an earlier date is to set the session work date before calling.
+
+### A contract cannot be billed again while its last document is unposted
+
+Business Central will not propose a new billing period for a Subscription Line whose previous
+billing document is still unposted. This is Microsoft's own rule, not something this app adds,
+and it applies to every route into billing - `Subscription.Contract.CreateInvoice`,
+`Subscription.VendorContract.CreateInvoice` and `Subscription.Billing.CreateProposal` alike.
+
+The practical consequence for an integration is that billing the same contract twice in a row
+bills once. The second call succeeds and reports `documents: []`, a count of 0, and a message
+saying nothing new could be billed - it does **not** silently re-report the first call's
+document. Post (or delete) the outstanding document and the next call bills the next period.
+
+### Array parameters must be arrays
+
+Every message type that takes a list - `subscriptionLineEntryNos`, `subscriptionPackageCodes`,
+`steps`, `stages` - rejects a value that is present but is not a JSON array, with
+*"The parameter '%1' must be a JSON array."* Omitting the parameter, or sending it as null,
+still selects the documented default. The alternative - quietly ignoring a malformed list -
+would turn a typo into a much larger run than the caller asked for: a mistyped `steps` would
+run all the processing stages, and a mistyped `subscriptionLineEntryNos` would attach every
+eligible Subscription Line rather than the two that were named.
 
 ### CreateInvoice refuses to run past another contract's pending lines
 

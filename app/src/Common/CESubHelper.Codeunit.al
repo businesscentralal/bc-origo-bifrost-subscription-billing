@@ -18,6 +18,7 @@ codeunit 10035058 "CE Sub Helper ori"
         InvalidDecimalErr: Label 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' er ekki gild tala. Notaðu punkt sem tugabrot, til dæmis 1234.56.';
         InvalidPartnerErr: Label 'The parameter ''%1'' must be either ''Customer'' or ''Vendor''.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera annaðhvort ''Customer'' eða ''Vendor''.';
         ValueTooLongErr: Label 'The parameter ''%1'' is longer than the %2 characters allowed.', Comment = '%1 = parameter name, %2 = maximum length||is-IS=Færibreytan ''%1'' er lengri en %2 stafirnir sem leyfðir eru.';
+        NotAnArrayErr: Label 'The parameter ''%1'' must be a JSON array.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera JSON fylki.';
 
     /// <summary>Returns true when the request carries a non-null value for the property.</summary>
     procedure HasValue(RequestJson: JsonObject; PropertyName: Text): Boolean
@@ -29,6 +30,28 @@ codeunit 10035058 "CE Sub Helper ori"
         if not JToken.IsValue() then
             exit(false);
         exit(not JToken.AsValue().IsNull());
+    end;
+
+    /// <summary>
+    /// Reads a JSON array from the request. Returns false when the property is absent or null,
+    /// which lets the caller fall back to its own default. Errors when the property is present
+    /// with a value that is not an array, so a malformed request is reported rather than
+    /// silently treated as "not supplied".
+    /// </summary>
+    procedure TryGetArray(RequestJson: JsonObject; PropertyName: Text; var Value: JsonArray): Boolean
+    var
+        JToken: JsonToken;
+    begin
+        Clear(Value);
+        if not RequestJson.Get(PropertyName, JToken) then
+            exit(false);
+        if JToken.IsValue() then
+            if JToken.AsValue().IsNull() then
+                exit(false);
+        if not JToken.IsArray() then
+            Error(NotAnArrayErr, PropertyName);
+        Value := JToken.AsArray();
+        exit(true);
     end;
 
     /// <summary>Reads a text value. Errors when Required and the value is absent.</summary>
@@ -177,6 +200,53 @@ codeunit 10035058 "CE Sub Helper ori"
             ResponseJson.Add('status', SuccessTok);
         Argument.SetResponseJson(ResponseJson);
         Argument."Content Type" := Argument.GetContentTypeJson();
+    end;
+
+    /// <summary>
+    /// Names a recurring billing document type for a JSON response. Format() on the enum would
+    /// return the caption in the caller's language, and Format(..., 0, 9) returns the bare
+    /// ordinal, so neither gives a stable token an integration can switch on. These are the
+    /// Microsoft enum value names, written out as locked labels.
+    /// </summary>
+    procedure FormatDocumentType(Value: Enum "Rec. Billing Document Type"): Text
+    var
+        NoneTok: Label 'None', Locked = true;
+        InvoiceTok: Label 'Invoice', Locked = true;
+        CreditMemoTok: Label 'Credit Memo', Locked = true;
+    begin
+        case Value of
+            Value::None:
+                exit(NoneTok);
+            Value::Invoice:
+                exit(InvoiceTok);
+            Value::"Credit Memo":
+                exit(CreditMemoTok);
+        end;
+        exit(Format(Value, 0, 9));
+    end;
+
+    /// <summary>
+    /// Names a usage data processing status for a JSON response, for the same reason
+    /// FormatDocumentType exists: neither Format() nor Format(..., 0, 9) yields a stable token.
+    /// </summary>
+    procedure FormatProcessingStatus(Value: Enum "Processing Status"): Text
+    var
+        NoneTok: Label 'None', Locked = true;
+        OkTok: Label 'Ok', Locked = true;
+        ErrorTok: Label 'Error', Locked = true;
+        ClosedTok: Label 'Closed', Locked = true;
+    begin
+        case Value of
+            Value::None:
+                exit(NoneTok);
+            Value::Ok:
+                exit(OkTok);
+            Value::Error:
+                exit(ErrorTok);
+            Value::Closed:
+                exit(ClosedTok);
+        end;
+        exit(Format(Value, 0, 9));
     end;
 
     /// <summary>Formats a date for a JSON response using the ISO format.</summary>

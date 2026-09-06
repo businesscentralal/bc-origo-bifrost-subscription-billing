@@ -21,6 +21,8 @@ codeunit 10035044 "CE Sub Vend PrvInv Impl ori" implements "Cloud Event Msg Inte
         Helper: Codeunit "CE Sub Helper ori";
         ContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Birgjaáskriftarsamningurinn ''%1'' er ekki til.';
         ForeignPendingProposalErr: Label 'There are %1 pending billing proposal line(s) left over for a different subscription contract (''%2''). Clear or process that proposal before previewing ''%3''.', Comment = '%1 = row count, %2 = the other contract number, %3 = this contract number||is-IS=Það eru %1 ólokin(ar) færsla(ur) í reikningstillögu fyrir annan áskriftarsamning (''%2''). Hreinsaðu eða vinndu úr þeirri tillögu áður en samningur ''%3'' er forskoðaður.';
+        NothingDueMsg: Label 'No Subscription Lines were due for billing on or before %1 for contract %2.', Comment = '%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.';
+        NothingNewMsg: Label 'Nothing new could be proposed for contract %1. Its due Subscription Lines are already covered by pending billing proposal lines - bill or clear those first.', Comment = '%1 = contract number||is-IS=Ekkert nýtt var hægt að leggja til fyrir samning %1. Áskriftarlínur hans eru þegar með reikningstillögulínur - ljúktu við þær eða hreinsaðu þær fyrst.';
         DescriptionLbl: Label 'Previews the billing proposal lines that Subscription.VendorContract.CreateInvoice would build for a vendor subscription contract. Nothing is written and no document is ever created.', MaxLength = 250, Comment = 'is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir birgjaáskriftarsamning. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.';
 
     internal procedure IsEnabled(): Boolean
@@ -234,6 +236,7 @@ codeunit 10035044 "CE Sub Vend PrvInv Impl ori" implements "Cloud Event Msg Inte
             ResponseJson.Add('lines', LinesArray);
             ResponseJson.Add('wouldBillLineCount', 0);
             ResponseJson.Add('totalAmount', Helper.FormatDecimal(0));
+            ResponseJson.Add('message', StrSubstNo(NothingDueMsg, Helper.FormatDate(BillingDate), ContractNo));
             exit;
         end;
 
@@ -247,6 +250,9 @@ codeunit 10035044 "CE Sub Vend PrvInv Impl ori" implements "Cloud Event Msg Inte
             Enum::"Service Partner"::Vendor, TempSubscriptionLine, BillingDate, BillingToDate);
 
         CollectAndDeleteProposalLines(WatermarkEntryNo, ContractNo, LinesArray, WouldBillLineCount, TotalAmount);
+
+        if WouldBillLineCount = 0 then
+            ResponseJson.Add('message', StrSubstNo(NothingNewMsg, ContractNo));
 
         ResponseJson.Add('lines', LinesArray);
         ResponseJson.Add('wouldBillLineCount', WouldBillLineCount);

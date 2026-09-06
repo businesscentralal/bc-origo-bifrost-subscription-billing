@@ -95,6 +95,7 @@ codeunit 10035037 "CE Sub Con GetLines Impl ori" implements "Cloud Event Msg Int
         HelpBuilder.AppendLine('| Condition | Message |');
         HelpBuilder.AppendLine('| --- | --- |');
         HelpBuilder.AppendLine('| The contract does not exist | The Customer Subscription Contract ''%1'' does not exist. |');
+        HelpBuilder.AppendLine('| subscriptionLineEntryNos is present but is not an array | The parameter ''subscriptionLineEntryNos'' must be a JSON array. |');
         HelpBuilder.AppendLine();
         HelpBuilder.AppendLine('Errors return `{ "status": "Error", "error": "...", "callstack": "..." }` and nothing is written.');
         HelpBuilder.AppendLine();
@@ -141,7 +142,6 @@ codeunit 10035037 "CE Sub Con GetLines Impl ori" implements "Cloud Event Msg Int
         AttachedLinesArray: JsonArray;
         AttachedLineJson: JsonObject;
         EntryNoJToken: JsonToken;
-        EntryNoArrayJToken: JsonToken;
         EntryNoJsonArray: JsonArray;
         EntryNoFilter: Text;
         ContractNo: Code[20];
@@ -165,18 +165,16 @@ codeunit 10035037 "CE Sub Con GetLines Impl ori" implements "Cloud Event Msg Int
         if SubscriptionHeaderNo <> '' then
             SubscriptionLine.SetRange("Subscription Header No.", SubscriptionHeaderNo);
 
-        if RequestJson.Get('subscriptionLineEntryNos', EntryNoArrayJToken) then
-            if EntryNoArrayJToken.IsArray() then begin
-                EntryNoJsonArray := EntryNoArrayJToken.AsArray();
-                for Index := 0 to EntryNoJsonArray.Count() - 1 do begin
-                    EntryNoJsonArray.Get(Index, EntryNoJToken);
-                    if EntryNoFilter <> '' then
-                        EntryNoFilter += '|';
-                    EntryNoFilter += Format(EntryNoJToken.AsValue().AsInteger(), 0, 9);
-                end;
+        if Helper.TryGetArray(RequestJson, 'subscriptionLineEntryNos', EntryNoJsonArray) then begin
+            for Index := 0 to EntryNoJsonArray.Count() - 1 do begin
+                EntryNoJsonArray.Get(Index, EntryNoJToken);
                 if EntryNoFilter <> '' then
-                    SubscriptionLine.SetFilter("Entry No.", EntryNoFilter);
+                    EntryNoFilter += '|';
+                EntryNoFilter += Format(EntryNoJToken.AsValue().AsInteger(), 0, 9);
             end;
+            if EntryNoFilter <> '' then
+                SubscriptionLine.SetFilter("Entry No.", EntryNoFilter);
+        end;
 
         if SubscriptionLine.FindSet() then
             repeat

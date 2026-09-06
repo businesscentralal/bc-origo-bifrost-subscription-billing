@@ -5,7 +5,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html) aligned to the Business Central
 major version.
 
-## [28.0.0.0] - 2026-08-30
+## [28.0.0.0] - 2026-09-01
 
 ### Added
 
@@ -28,6 +28,53 @@ Message types, all named `Subscription.<Domain>.<Action>`:
 - **Usage-based billing** - `Subscription.Usage.ImportData`, `Subscription.Usage.Process`
 - **Deferrals, analysis and migration** - `Subscription.Deferral.Release`,
   `Subscription.Analysis.Recalculate`, `Subscription.Import.CreateContracts`
+
+### Fixed before first release
+
+Found by running every message type against a Business Central 28.4 container and corrected
+before submission:
+
+- `Subscription.VendorContract.GetLines` ignored `subscriptionLineEntryNos` and attached every
+  eligible Subscription Line instead of the ones named. Array parameters are now read through
+  one shared helper that also rejects a value that is present but is not an array, rather than
+  silently falling back to the default - the same helper now backs `subscriptionPackageCodes`,
+  `steps` and `stages`.
+- `Subscription.Billing.CreateDocuments` started a fresh copy of Microsoft's document-creation
+  codeunit instead of the configured one, so the interactive "Create Customer Billing Docs"
+  request page opened and the call failed outright in an unattended session.
+- `Subscription.Contract.CreateInvoice` and `Subscription.VendorContract.CreateInvoice`
+  reported the documents and line counts of *earlier* runs when Business Central billed
+  nothing new. They now report only what the call produced and say so when nothing was billed;
+  the vendor type additionally no longer re-stamps `vendorInvoiceNo` onto an earlier document.
+- `Subscription.Billing.CreateDocuments` reported no documents at all when `postDocuments` was
+  true, because posting archives the proposal rows it read them back from. It now reads the
+  posted documents from the Billing Line Archive and marks each with `"posted": true`. When the
+  run fails part way through it now names the documents Business Central had already committed
+  and returns `"rolledBack": false`, instead of failing without saying what survived.
+- `Subscription.Renewal.CreateQuote` aborted with Business Central's generic *"An error
+  occurred and the transaction is stopped"* whenever Microsoft's renewal codeunit failed,
+  because it caught that codeunit's error after having already written the renewal lines.
+- `Subscription.Usage.ImportData` stamped the Usage Data Blob as already imported, so Microsoft's
+  connector skipped it and asked the client to upload a file - a callback that cannot be
+  answered in an unattended session.
+- `Subscription.Usage.Process` reported each stage using the status Business Central had left
+  standing from the previous stage, so a stage that succeeded after an earlier failure was
+  reported as an error carrying the earlier stage's message. It also gained a
+  `CreateImportedLines` step, so a file whose first parse failed on a setup problem can be
+  re-parsed without re-sending it.
+- `documentType` and `processingStatus` came back as the caller's language caption, or as a
+  bare enum ordinal. Both are now stable English tokens an integration can switch on.
+- The `CE Sub Bil Full ori` permission set extension granted execute rights on only two
+  codeunits, so a user with full Cloud Events access could not actually invoke any Subscription
+  Billing message type.
+- `Subscription.Deferral.Release` accepted `postingDate` and `postUntilDate` and silently ignored
+  both. Microsoft's report takes them from its request page, which an external app cannot set, so
+  the report released everything eligible up to the work date and posted it under the work date -
+  while the response reported only the count inside the window the caller asked for. Asking to
+  release up to 2026-03-31 released 29 customer deferrals up to 2026-09-01 and reported 9. The
+  two dates are now enforced as a precondition: the call is refused when the report would post
+  under a different date or reach past `postUntilDate`, the counts cover every deferral actually
+  released, and a run that overshoots anyway is flagged in the response.
 
 ### Known limitations
 

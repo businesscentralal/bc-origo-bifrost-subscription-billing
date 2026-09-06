@@ -68,27 +68,54 @@ app/                 the extension
   src/Permission Set/        permission sets
   docs/                      AppSource and Partner Center documentation
 test/                the test app (object range 95700–95799)
-scripts/             local build, deploy and MCP helpers
+scripts/             local symbol download, build, deploy and MCP helpers
 ```
 
 ## Building locally
 
-`scripts/build.sh` compiles with the AL compiler shipped in the VS Code AL extension, against
-symbols in `app/.alpackages`. The symbols are not committed — download them from your development
-container or from the public Microsoft symbol feed.
+The symbols are not committed. Pull them straight from the development container:
+
+```bash
+BC_USER=<user> BC_PASSWORD=<password> scripts/getsymbols.sh both
+```
+
+Then compile with the AL compiler shipped in the VS Code AL extension. The script finds the
+newest installed extension and picks the right `alc` for the platform, so it runs the same on
+macOS, Linux and Windows (Git Bash); set `AL_EXTENSION_PATH` to override.
 
 ```bash
 scripts/build.sh app     # or: test, both
 ```
 
+The build runs CodeCop, UICop and AppSourceCop and is expected to be **warning-free**. Only
+`AS0081` is suppressed, for the `internalsVisibleTo` entry the test app needs.
+
 ## Deploying to a development container
 
 ```bash
-BC_USER=<user> BC_PASSWORD=<password> scripts/deploy.sh app
+BC_USER=<user> BC_PASSWORD=<password> scripts/deploy.sh app     # or: test, both
 ```
 
 Override `BC_SERVER`, `BC_INSTANCE` and `BC_TENANT` to target a different container. The default
 points at the shared COSMO Alpaca development container.
+
+## Testing
+
+Two layers, and they cover different things.
+
+**AL tests** (`test/`, object range 95700–95799) run in the AL-Go pipeline on every build. They
+cover the registration contract — every message type resolves to an implementation, describes
+itself and returns a help document with the sections a caller needs — and the shared request
+parsing and response formatting in `CE Sub Helper ori`. Installing the test app builds the
+`DEFAULT` AL test suite, refreshing it on every install so test codeunits added later appear too.
+
+**Live message type testing** is what proves the Microsoft integration, because most of what these
+message types do is call Microsoft's own codeunits, and those only misbehave against real data —
+an interactive request page that cannot open unattended, a proposal Business Central declines to
+build twice, a connector that skips a blob it thinks is already imported. Publish both apps to a
+development container and drive the types through the Cloud Events API. `app/docs/
+AppSource-UserScenarios.md` lists the company setup this needs; every prerequisite in that table
+was found by hitting it.
 
 ## Known limitations
 

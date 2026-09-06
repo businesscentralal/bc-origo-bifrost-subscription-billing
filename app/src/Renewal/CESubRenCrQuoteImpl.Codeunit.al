@@ -171,18 +171,23 @@ codeunit 10035052 "CE Sub Ren CrQuote Impl ori" implements "Cloud Event Msg Inte
         SubContractRenewalLine.SetRange(Partner, Enum::"Service Partner"::Customer);
 
         Clear(CreateSubContractRenewal);
-        if not CreateSubContractRenewal.Run(SubContractRenewalLine) then
-            Argument.RespondWithLastError()
-        else begin
-            SalesQuoteNo := CreateSubContractRenewal.GetSalesQuoteNo();
-            if SalesQuoteNo = '' then
-                Error(QuoteNotCreatedErr, ContractNo);
+        // Call this without consuming the Boolean, so a failure inside Microsoft's codeunit
+        // propagates instead of being caught here. The renewal lines above are already written in
+        // this transaction, and Business Central cannot roll a caught Codeunit.Run back to a
+        // savepoint once that is true - it abandons the whole transaction and reports only
+        // "An error occurred and the transaction is stopped", losing the real reason. Letting the
+        // error travel up to the single isolation boundary in "CE Sub Write Process ori" rolls the
+        // renewal lines back with it and keeps Microsoft's own message intact.
+        CreateSubContractRenewal.Run(SubContractRenewalLine);
 
-            ResponseJson.Add('status', 'Success');
-            ResponseJson.Add('contractNo', ContractNo);
-            ResponseJson.Add('renewalLinesCreated', RenewalLinesCreated);
-            ResponseJson.Add('salesQuoteNo', SalesQuoteNo);
-            Helper.RespondWithSuccess(Argument, ResponseJson);
-        end;
+        SalesQuoteNo := CreateSubContractRenewal.GetSalesQuoteNo();
+        if SalesQuoteNo = '' then
+            Error(QuoteNotCreatedErr, ContractNo);
+
+        ResponseJson.Add('status', 'Success');
+        ResponseJson.Add('contractNo', ContractNo);
+        ResponseJson.Add('renewalLinesCreated', RenewalLinesCreated);
+        ResponseJson.Add('salesQuoteNo', SalesQuoteNo);
+        Helper.RespondWithSuccess(Argument, ResponseJson);
     end;
 }
