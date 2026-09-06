@@ -20,3 +20,4 @@ rad.json
 cache_*
 ~$*
 .out/
+TestResults/
