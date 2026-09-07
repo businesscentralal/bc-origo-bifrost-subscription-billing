@@ -7,6 +7,12 @@ major version.
 
 ## [29.0.0.0] - 2026-09-06
 
+### Reviewed (2026-09-07) - Setup Wizard action rollout
+
+- Checked against the wave-wide Setup Wizard action rollout: this app has no setup page of its own
+  (`Sub Registration ori` registers with `Setup Page Id = 0` by design, asserted by `Sub Registration
+  Tst ori`), so there is no page to add the action to. No functional change.
+
 ### Changed (2026-09-07) - tests run on Foundation's public API
 
 - The test app no longer depends on Bifröst Foundation's internals: Bifrost Subscription Billing - Tests has been removed
