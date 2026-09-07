@@ -86,6 +86,14 @@ Key rules always in effect:
   `bc-origo-bifrost-core/tools/migration/migrate.py` (same app id, same object ids, offset 0 - the
   app was never published). See CHANGELOG 29.0.0.0 for the full rename table.
 
+## Test App Rules
+- **The test app uses Bifröst Foundation's public API only.** Bifrost Subscription Billing - Tests is not listed in
+  Foundation's `app.json` `internalsVisibleTo` and must never be added back. A test that needs a
+  message type executed runs it through the public `Dispatcher ori` (`Execute` for a lightweight
+  dispatch, `EnqueueAndProcess` when the persisted queue row is needed); the dispatcher marks the
+  call licensed itself, so the internal `SetLicensed` is never needed. An Impl may still be called
+  directly on a temporary `Message Argument ori` when that Impl does not call `AssertIsLicensed`.
+
 ## Testing Through the MCP Server
 - `invoke_message_type` / `get_message_type_help` / `get_records` / `set_records` on the
   `origo-bc-bc28-is` server hit this app directly (route `origo/bifrost/v1.0`). Keep calls serial -

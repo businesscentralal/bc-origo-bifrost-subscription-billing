@@ -7,6 +7,14 @@ major version.
 
 ## [29.0.0.0] - 2026-09-06
 
+### Changed (2026-09-07) - tests run on Foundation's public API
+
+- The test app no longer depends on Bifröst Foundation's internals: Bifrost Subscription Billing - Tests has been removed
+  from Foundation's `internalsVisibleTo`, and the test suite compiles and runs against a Foundation
+  package that does not grant it. No test code had to change - the suite never touched a Foundation
+  internal.
+
+
 ### Release notes
 
 - **Version 29.0.0.0, not 28.x.** The predecessor *Origo Cloud Events Subscription Billing* had
