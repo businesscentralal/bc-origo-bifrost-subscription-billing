@@ -93,6 +93,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori"
             SubContractRenewalLine.DeleteAll(true);
 
         CustSubContractLine.SetRange("Subscription Contract No.", ContractNo);
+        CustSubContractLine.SetLoadFields("Subscription Line Entry No.");
         if CustSubContractLine.FindSet() then
             repeat
                 if CustSubContractLine."Subscription Line Entry No." <> 0 then

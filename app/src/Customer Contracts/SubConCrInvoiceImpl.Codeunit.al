@@ -152,6 +152,7 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori"
         // existed - which is what happens when the contract's due lines are still sitting on an
         // unposted document, because Business Central then bills nothing new.
         BillingLine.Reset();
+        BillingLine.SetLoadFields("Entry No.");
         if BillingLine.FindLast() then
             WatermarkEntryNo := BillingLine."Entry No."
         else

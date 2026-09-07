@@ -101,6 +101,7 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori"
         SubscriptionLine.SetRange("Subscription Header No.", SubscriptionHeaderNo);
         LinesBefore := SubscriptionLine.Count();
         MaxEntryNoBefore := 0;
+        SubscriptionLine.SetLoadFields("Entry No.");
         if SubscriptionLine.FindLast() then
             MaxEntryNoBefore := SubscriptionLine."Entry No.";
 

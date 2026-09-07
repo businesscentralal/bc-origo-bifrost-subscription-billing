@@ -136,13 +136,15 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
         BillingLineArchive: Record "Billing Line Archive";
         CreateBillingDocuments: Codeunit "Create Billing Documents";
         DocumentJson: JsonObject;
-        DistinctDocumentNos: List of [Code[20]];
-        DistinctComboKeys: List of [Text];
-        ProcessedEntryNos: List of [Integer];
+        // Dictionaries, not lists: every one of these is asked "have I seen this already?" once per
+        // Billing Line row, and a list answers that by walking everything it already holds.
+        DistinctDocumentNos: Dictionary of [Code[20], Boolean];
+        DistinctComboKeys: Dictionary of [Text, Boolean];
+        ProcessedEntryNos: Dictionary of [Integer, Boolean];
         ArchiveWatermarkEntryNo: Integer;
         ActualPartner: Enum "Service Partner";
-        CustomerLineCount: Integer;
-        VendorLineCount: Integer;
+        HasCustomerLines: Boolean;
+        HasVendorLines: Boolean;
         ComboKey: Text;
     begin
         if not BillingTemplate.Get(BillingTemplateCode) then
@@ -154,13 +156,14 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
         if BillingLinesProcessed = 0 then
             exit(true);
 
+        // Only whether there are any, never how many - so ask the question that stops at the first row.
         BillingLine.SetRange(Partner, Enum::"Service Partner"::Customer);
-        CustomerLineCount := BillingLine.Count();
+        HasCustomerLines := not BillingLine.IsEmpty();
         BillingLine.SetRange(Partner, Enum::"Service Partner"::Vendor);
-        VendorLineCount := BillingLine.Count();
-        if (CustomerLineCount > 0) and (VendorLineCount > 0) then
+        HasVendorLines := not BillingLine.IsEmpty();
+        if HasCustomerLines and HasVendorLines then
             Error(MixedPartnerErr, BillingTemplateCode);
-        if VendorLineCount > 0 then
+        if HasVendorLines then
             ActualPartner := Enum::"Service Partner"::Vendor
         else
             ActualPartner := Enum::"Service Partner"::Customer;
@@ -190,7 +193,7 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
         BillingLine.SetLoadFields("Entry No.");
         if BillingLine.FindSet() then
             repeat
-                ProcessedEntryNos.Add(BillingLine."Entry No.");
+                ProcessedEntryNos.Set(BillingLine."Entry No.", true);
             until BillingLine.Next() = 0;
 
         // Posting a document archives its Billing Line rows, so the rows this run consumed would
@@ -223,10 +226,10 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
         BillingLine.SetLoadFields("Document Type", "Document No.", "Subscription Contract No.");
         if BillingLine.FindSet() then
             repeat
-                if ProcessedEntryNos.Contains(BillingLine."Entry No.") then begin
+                if ProcessedEntryNos.ContainsKey(BillingLine."Entry No.") then begin
                     ComboKey := Helper.FormatDocumentType(BillingLine."Document Type") + '|' + BillingLine."Document No." + '|' + BillingLine."Subscription Contract No.";
-                    if not DistinctComboKeys.Contains(ComboKey) then begin
-                        DistinctComboKeys.Add(ComboKey);
+                    if not DistinctComboKeys.ContainsKey(ComboKey) then begin
+                        DistinctComboKeys.Add(ComboKey, true);
 
                         Clear(DocumentJson);
                         DocumentJson.Add('documentType', Helper.FormatDocumentType(BillingLine."Document Type"));
@@ -234,8 +237,8 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
                         DocumentJson.Add('contractNo', BillingLine."Subscription Contract No.");
                         DocumentsArray.Add(DocumentJson);
                     end;
-                    if not DistinctDocumentNos.Contains(BillingLine."Document No.") then
-                        DistinctDocumentNos.Add(BillingLine."Document No.");
+                    if not DistinctDocumentNos.ContainsKey(BillingLine."Document No.") then
+                        DistinctDocumentNos.Add(BillingLine."Document No.", true);
                 end;
             until BillingLine.Next() = 0;
 
@@ -246,8 +249,8 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
         if BillingLineArchive.FindSet() then
             repeat
                 ComboKey := Helper.FormatDocumentType(BillingLineArchive."Document Type") + '|' + BillingLineArchive."Document No." + '|' + BillingLineArchive."Subscription Contract No.";
-                if not DistinctComboKeys.Contains(ComboKey) then begin
-                    DistinctComboKeys.Add(ComboKey);
+                if not DistinctComboKeys.ContainsKey(ComboKey) then begin
+                    DistinctComboKeys.Add(ComboKey, true);
 
                     Clear(DocumentJson);
                     DocumentJson.Add('documentType', Helper.FormatDocumentType(BillingLineArchive."Document Type"));
@@ -256,8 +259,8 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
                     DocumentJson.Add('posted', true);
                     DocumentsArray.Add(DocumentJson);
                 end;
-                if not DistinctDocumentNos.Contains(BillingLineArchive."Document No.") then
-                    DistinctDocumentNos.Add(BillingLineArchive."Document No.");
+                if not DistinctDocumentNos.ContainsKey(BillingLineArchive."Document No.") then
+                    DistinctDocumentNos.Add(BillingLineArchive."Document No.", true);
             until BillingLineArchive.Next() = 0;
 
         DocumentCount := DistinctDocumentNos.Count();

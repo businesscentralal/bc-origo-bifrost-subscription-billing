@@ -87,6 +87,110 @@ codeunit 95702 "Sub Helper Tst ori"
     end;
 
     [Test]
+    procedure GetEntryNoSelection_BuildsAFilterOverTheDistinctEntryNos()
+    var
+        RequestJson: JsonObject;
+        SuppliedArray: JsonArray;
+        SelectedEntryNos: Dictionary of [Integer, Boolean];
+        EntryNoFilter: Text;
+    begin
+        // [GIVEN] A request naming three lines, one of them twice
+        SuppliedArray.Add(101);
+        SuppliedArray.Add(102);
+        SuppliedArray.Add(101);
+        SuppliedArray.Add(103);
+        RequestJson.Add('subscriptionLineEntryNos', SuppliedArray);
+
+        // [WHEN] The selection is read
+        EntryNoFilter := Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos);
+
+        // [THEN] The duplicate is folded away and the database is asked only for those three
+        Assert.AreEqual(3, SelectedEntryNos.Count(), 'The repeated entry number should be counted once.');
+        Assert.IsTrue(SelectedEntryNos.ContainsKey(101), 'Entry 101 should be in the selection.');
+        Assert.IsTrue(SelectedEntryNos.ContainsKey(102), 'Entry 102 should be in the selection.');
+        Assert.IsTrue(SelectedEntryNos.ContainsKey(103), 'Entry 103 should be in the selection.');
+        Assert.AreEqual(2, StrLen(EntryNoFilter) - StrLen(DelChr(EntryNoFilter, '=', '|')), 'Three entry numbers make two separators.');
+        Assert.IsTrue(EntryNoFilter.Contains('101'), 'The filter should name entry 101.');
+        Assert.IsTrue(EntryNoFilter.Contains('102'), 'The filter should name entry 102.');
+        Assert.IsTrue(EntryNoFilter.Contains('103'), 'The filter should name entry 103.');
+    end;
+
+    [Test]
+    procedure GetEntryNoSelection_SelectsEverything_WhenThePropertyIsMissing()
+    var
+        RequestJson: JsonObject;
+        SelectedEntryNos: Dictionary of [Integer, Boolean];
+    begin
+        // [GIVEN] A request that names no lines at all
+        RequestJson.Add('contractNo', 'CC000010');
+
+        // [WHEN] The selection is read
+        // [THEN] Nothing is filtered and nothing is selected, which means "take every eligible line"
+        Assert.AreEqual('', Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos), 'No selection means no filter.');
+        Assert.AreEqual(0, SelectedEntryNos.Count(), 'No selection means nothing to test rows against.');
+    end;
+
+    [Test]
+    procedure GetEntryNoSelection_Errors_OnAnElementThatIsNotANumber()
+    var
+        RequestJson: JsonObject;
+        SuppliedArray: JsonArray;
+        SelectedEntryNos: Dictionary of [Integer, Boolean];
+    begin
+        // [GIVEN] A request whose list carries something that is not an entry number
+        SuppliedArray.Add(101);
+        SuppliedArray.Add('not-a-number');
+        RequestJson.Add('subscriptionLineEntryNos', SuppliedArray);
+
+        // [WHEN] The selection is read
+        asserterror Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos);
+
+        // [THEN] The caller is named the parameter, rather than the element being silently dropped
+        // and every eligible line attached instead of the ones that were named
+        Assert.ExpectedError('subscriptionLineEntryNos');
+    end;
+
+    [Test]
+    procedure GetEntryNoSelection_Errors_OnANestedElement()
+    var
+        RequestJson: JsonObject;
+        SuppliedArray: JsonArray;
+        NestedArray: JsonArray;
+        SelectedEntryNos: Dictionary of [Integer, Boolean];
+    begin
+        // [GIVEN] A request whose list carries an array where an entry number belongs
+        NestedArray.Add(101);
+        SuppliedArray.Add(NestedArray);
+        RequestJson.Add('subscriptionLineEntryNos', SuppliedArray);
+
+        // [WHEN] The selection is read
+        asserterror Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos);
+
+        // [THEN] The caller is told, rather than the token being read as a value it is not
+        Assert.ExpectedError('subscriptionLineEntryNos');
+    end;
+
+    [Test]
+    procedure GetEntryNoSelection_DropsTheFilter_WhenTheListIsTooLongForOneExpression()
+    var
+        RequestJson: JsonObject;
+        SuppliedArray: JsonArray;
+        SelectedEntryNos: Dictionary of [Integer, Boolean];
+        Index: Integer;
+    begin
+        // [GIVEN] A request naming more lines than fit in a single filter expression
+        for Index := 1 to 60 do
+            SuppliedArray.Add(Index);
+        RequestJson.Add('subscriptionLineEntryNos', SuppliedArray);
+
+        // [WHEN] The selection is read
+        // [THEN] The filter is given up rather than built past the length a filter may have - the
+        // selection itself still comes back whole, so the caller drops the extra rows row by row
+        Assert.AreEqual('', Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos), 'A long list is not turned into a filter.');
+        Assert.AreEqual(60, SelectedEntryNos.Count(), 'Every named entry number should still be selected.');
+    end;
+
+    [Test]
     procedure FormatDocumentType_ReturnsAStableToken()
     begin
         // [GIVEN] The recurring billing document types

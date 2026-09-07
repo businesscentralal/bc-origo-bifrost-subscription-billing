@@ -19,6 +19,7 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori"
         Helper: Codeunit "Sub Helper ori";
         NotFoundErr: Label 'The Usage Data Import entry %1 does not exist.', Comment = '%1 = entry no.||is-IS=Innflutningsfærslan %1 fyrir notkunargögn er ekki til.';
         AlreadyClosedErr: Label 'Usage Data Import entry %1 is already Closed and cannot be processed again.', Comment = '%1 = entry no.||is-IS=Innflutningsfærslan %1 fyrir notkunargögn er þegar lokuð og er ekki hægt að vinna aftur.';
+        InvalidSubjectErr: Label 'The subject ''%1'' is not a Usage Data Import entry number. Send the entry number as the subject, or as ''usageDataImportEntryNo'' in the request.', Comment = '%1 = the supplied subject||is-IS=Efnið ''%1'' er ekki færslunúmer innflutnings notkunargagna. Sendu færslunúmerið sem efni (subject) eða sem ''usageDataImportEntryNo'' í beiðninni.';
         UnknownStepErr: Label '''%1'' is not a known processing step. Use ProcessImportedLines, CreateUsageDataBilling or ProcessUsageDataBilling.', Comment = '%1 = step name||is-IS=''%1'' er ekki þekkt vinnsluskref. Notaðu ProcessImportedLines, CreateUsageDataBilling eða ProcessUsageDataBilling.';
         CreateImportedLinesTok: Label 'CreateImportedLines', Locked = true;
         ProcessImportedLinesTok: Label 'ProcessImportedLines', Locked = true;
@@ -84,9 +85,12 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori"
     begin
         RequestJson := Argument.GetRequestJson();
 
+        // The subject is free text the caller chose. Say what is wrong with it rather than letting
+        // Evaluate raise its own conversion error, which names neither the parameter nor the way out.
         EntryNo := 0;
         if Argument.Subject <> '' then
-            Evaluate(EntryNo, Argument.Subject, 9);
+            if not Evaluate(EntryNo, Argument.Subject, 9) then
+                Error(InvalidSubjectErr, Argument.Subject);
         if EntryNo = 0 then
             EntryNo := Helper.GetInteger(RequestJson, 'usageDataImportEntryNo', true);
 

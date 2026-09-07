@@ -77,6 +77,7 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori"
         ContractNo := Helper.GetCode20(RequestJson, 'contractNo', false);
 
         SubContrAnalysisEntry.Reset();
+        SubContrAnalysisEntry.SetLoadFields("Entry No.");
         if SubContrAnalysisEntry.FindLast() then
             MaxEntryNoBefore := SubContrAnalysisEntry."Entry No."
         else

@@ -107,22 +107,25 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori"
         if PostingDate <> EffectiveDate then
             Error(PostingDateNotSupportedErr, Helper.FormatDate(EffectiveDate), Helper.FormatDate(PostingDate));
 
-        if PostUntilDate < EffectiveDate then begin
-            WouldOverRelease :=
-                (CountUnreleasedCustomerDeferrals(EffectiveDate) - CountUnreleasedCustomerDeferrals(PostUntilDate)) +
-                (CountUnreleasedVendorDeferrals(EffectiveDate) - CountUnreleasedVendorDeferrals(PostUntilDate));
-            if WouldOverRelease > 0 then
-                Error(WouldOverReleaseErr, WouldOverRelease, Helper.FormatDate(PostUntilDate), Helper.FormatDate(EffectiveDate));
-        end;
-
         // Count every unreleased deferral, not only the ones inside the requested window. The report
         // decides for itself how far it goes, and measuring only the window would hide a run that
         // went past it - which is not something to find out later, because this posts to the
         // general ledger and cannot be undone.
+        // Neither Released nor Posting Date carries an index of its own, so each of these counts
+        // costs a table scan. Take them once, before the over-release precondition below, and let
+        // that precondition reuse the two window counts rather than asking for them a second time.
         CustomerBeforeCount := CountUnreleasedCustomerDeferrals(0D);
         CustomerBeforeInWindow := CountUnreleasedCustomerDeferrals(PostUntilDate);
         VendorBeforeCount := CountUnreleasedVendorDeferrals(0D);
         VendorBeforeInWindow := CountUnreleasedVendorDeferrals(PostUntilDate);
+
+        if PostUntilDate < EffectiveDate then begin
+            WouldOverRelease :=
+                (CountUnreleasedCustomerDeferrals(EffectiveDate) - CustomerBeforeInWindow) +
+                (CountUnreleasedVendorDeferrals(EffectiveDate) - VendorBeforeInWindow);
+            if WouldOverRelease > 0 then
+                Error(WouldOverReleaseErr, WouldOverRelease, Helper.FormatDate(PostUntilDate), Helper.FormatDate(EffectiveDate));
+        end;
 
         // Business Central matches request page values against the report they belong to, and drops
         // the whole parameter set without complaint when the document does not identify it. Omit the

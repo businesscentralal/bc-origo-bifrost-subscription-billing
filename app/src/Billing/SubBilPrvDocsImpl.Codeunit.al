@@ -161,51 +161,51 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
     /// </summary>
     local procedure BuildDocumentsPreview(var BillingLine: Record "Billing Line"; GroupByCustomer: Boolean; var DocumentsArray: JsonArray)
     var
-        GroupBillingLine: Record "Billing Line";
         DocumentJson: JsonObject;
+        // The keys are kept in their own list as well, because the preview reports the groups in the
+        // order the rows first named them and a dictionary makes no promise about the order it
+        // hands its keys back in.
         GroupKeys: List of [Code[20]];
+        GroupLineCounts: Dictionary of [Code[20], Integer];
+        GroupTotals: Dictionary of [Code[20], Decimal];
+        GroupPartnerNos: Dictionary of [Code[20], Code[20]];
         GroupKey: Code[20];
-        PartnerNo: Code[20];
         ContractNo: Code[20];
-        LineCount: Integer;
-        TotalAmount: Decimal;
     begin
+        // One pass over the rows, accumulating per group as they arrive. Reading the table once per
+        // group instead - a Count and a FindSet each - re-reads the same proposal N+1 times over.
+        BillingLine.SetLoadFields("Partner No.", "Subscription Contract No.", Amount);
         if BillingLine.FindSet() then
             repeat
                 if GroupByCustomer then
                     GroupKey := BillingLine."Partner No."
                 else
                     GroupKey := BillingLine."Subscription Contract No.";
-                if not GroupKeys.Contains(GroupKey) then
+
+                if not GroupLineCounts.ContainsKey(GroupKey) then begin
                     GroupKeys.Add(GroupKey);
+                    GroupLineCounts.Add(GroupKey, 0);
+                    GroupTotals.Add(GroupKey, 0);
+                    GroupPartnerNos.Add(GroupKey, '');
+                end;
+
+                GroupLineCounts.Set(GroupKey, GroupLineCounts.Get(GroupKey) + 1);
+                GroupTotals.Set(GroupKey, GroupTotals.Get(GroupKey) + BillingLine.Amount);
+                if GroupPartnerNos.Get(GroupKey) = '' then
+                    GroupPartnerNos.Set(GroupKey, BillingLine."Partner No.");
             until BillingLine.Next() = 0;
 
         foreach GroupKey in GroupKeys do begin
-            GroupBillingLine.CopyFilters(BillingLine);
             if GroupByCustomer then
-                GroupBillingLine.SetRange("Partner No.", GroupKey)
+                ContractNo := ''
             else
-                GroupBillingLine.SetRange("Subscription Contract No.", GroupKey);
-
-            LineCount := GroupBillingLine.Count();
-            TotalAmount := 0;
-            PartnerNo := '';
-            ContractNo := '';
-
-            if GroupBillingLine.FindSet() then
-                repeat
-                    TotalAmount += GroupBillingLine.Amount;
-                    if PartnerNo = '' then
-                        PartnerNo := GroupBillingLine."Partner No.";
-                    if not GroupByCustomer then
-                        ContractNo := GroupBillingLine."Subscription Contract No.";
-                until GroupBillingLine.Next() = 0;
+                ContractNo := GroupKey;
 
             Clear(DocumentJson);
             DocumentJson.Add('contractNo', ContractNo);
-            DocumentJson.Add('partnerNo', PartnerNo);
-            DocumentJson.Add('lineCount', LineCount);
-            DocumentJson.Add('totalAmount', Helper.FormatDecimal(TotalAmount));
+            DocumentJson.Add('partnerNo', GroupPartnerNos.Get(GroupKey));
+            DocumentJson.Add('lineCount', GroupLineCounts.Get(GroupKey));
+            DocumentJson.Add('totalAmount', Helper.FormatDecimal(GroupTotals.Get(GroupKey)));
             DocumentsArray.Add(DocumentJson);
         end;
     end;

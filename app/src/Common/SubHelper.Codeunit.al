@@ -19,6 +19,7 @@ codeunit 10035058 "Sub Helper ori"
         InvalidPartnerErr: Label 'The parameter ''%1'' must be either ''Customer'' or ''Vendor''.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera annaðhvort ''Customer'' eða ''Vendor''.';
         ValueTooLongErr: Label 'The parameter ''%1'' is longer than the %2 characters allowed.', Comment = '%1 = parameter name, %2 = maximum length||is-IS=Færibreytan ''%1'' er lengri en %2 stafirnir sem leyfðir eru.';
         NotAnArrayErr: Label 'The parameter ''%1'' must be a JSON array.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera JSON fylki.';
+        InvalidEntryNoArrayErr: Label 'The parameter ''%1'' must be a JSON array of entry numbers, written as whole numbers.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera JSON fylki af færslunúmerum, rituðum sem heilar tölur.';
 
     /// <summary>Returns true when the request carries a non-null value for the property.</summary>
     procedure HasValue(RequestJson: JsonObject; PropertyName: Text): Boolean
@@ -52,6 +53,52 @@ codeunit 10035058 "Sub Helper ori"
             Error(NotAnArrayErr, PropertyName);
         Value := JToken.AsArray();
         exit(true);
+    end;
+
+    /// <summary>
+    /// Reads an optional JSON array of record entry numbers and turns it into a filter the database
+    /// can apply. Every element has to be a value that reads as a whole number - anything else is
+    /// rejected rather than quietly skipped, so a caller who sends the wrong shape is told so.
+    /// Fills SelectedEntryNos with the distinct numbers, and returns the ''Entry No.'' filter to
+    /// apply before reading: the numbers themselves while the list is short enough for one filter
+    /// expression, and an empty text once it is not - past that point the caller keeps every
+    /// candidate row and tests it against SelectedEntryNos, which costs one dictionary lookup a row
+    /// and cannot run into the length a filter expression is allowed to have. An empty text is also
+    /// what an absent property returns, and then SelectedEntryNos is empty too, which means
+    /// "no selection - take everything".
+    /// </summary>
+    procedure GetEntryNoSelection(RequestJson: JsonObject; PropertyName: Text; var SelectedEntryNos: Dictionary of [Integer, Boolean]) EntryNoFilter: Text
+    var
+        EntryNoJsonArray: JsonArray;
+        EntryNoJToken: JsonToken;
+        EntryNo: Integer;
+        MaxInlineEntryNos: Integer;
+    begin
+        Clear(SelectedEntryNos);
+        if not TryGetArray(RequestJson, PropertyName, EntryNoJsonArray) then
+            exit('');
+
+        foreach EntryNoJToken in EntryNoJsonArray do begin
+            if not EntryNoJToken.IsValue() then
+                Error(InvalidEntryNoArrayErr, PropertyName);
+            if not Evaluate(EntryNo, EntryNoJToken.AsValue().AsText(), 9) then
+                Error(InvalidEntryNoArrayErr, PropertyName);
+            if not SelectedEntryNos.ContainsKey(EntryNo) then
+                SelectedEntryNos.Add(EntryNo, true);
+        end;
+
+        // Ten digits and a separator per entry number keeps a full list of this many comfortably
+        // inside what Business Central accepts as a single filter expression.
+        MaxInlineEntryNos := 50;
+        if (SelectedEntryNos.Count() = 0) or (SelectedEntryNos.Count() > MaxInlineEntryNos) then
+            exit('');
+
+        foreach EntryNo in SelectedEntryNos.Keys() do begin
+            if EntryNoFilter <> '' then
+                EntryNoFilter += '|';
+            EntryNoFilter += Format(EntryNo, 0, 9);
+        end;
+        exit(EntryNoFilter);
     end;
 
     /// <summary>Reads a text value. Errors when Required and the value is absent.</summary>

@@ -18,7 +18,6 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori"
     var
         Helper: Codeunit "Sub Helper ori";
         ContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Birgjaáskriftarsamningurinn ''%1'' er ekki til.';
-        InvalidEntryNoArrayErr: Label 'The parameter ''subscriptionLineEntryNos'' must be a JSON array of integers.', Comment = 'is-IS=Færibreytan ''subscriptionLineEntryNos'' verður að vera JSON fylki af heiltölum.';
         DescriptionLbl: Label 'Attaches unassigned Subscription Lines to a vendor subscription contract, creating a Vend. Sub. Contract Line for each one. Returns how many lines were attached.', MaxLength = 250, Comment = 'is-IS=Tengir ótengdar áskriftarlínur við birgjaáskriftarsamning og býr til samningslínu fyrir áskrift birgis fyrir hverja þeirra. Skilar fjölda tengdra lína.';
 
     internal procedure IsEnabled(): Boolean
@@ -75,10 +74,8 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori"
         ResponseJson: JsonObject;
         AttachedLinesArray: JsonArray;
         AttachedLineJson: JsonObject;
-        EntryNoJToken: JsonToken;
-        EntryNoJsonArray: JsonArray;
-        EntryNoFilter: List of [Integer];
-        EntryNo: Integer;
+        SelectedEntryNos: Dictionary of [Integer, Boolean];
+        EntryNoFilter: Text;
         ContractNo: Code[20];
         SubscriptionHeaderNo: Code[20];
         LinesAttached: Integer;
@@ -90,15 +87,7 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori"
         if not VendorSubscriptionContract.Get(ContractNo) then
             Error(ContractNotFoundErr, ContractNo);
 
-        if Helper.TryGetArray(RequestJson, 'subscriptionLineEntryNos', EntryNoJsonArray) then
-            foreach EntryNoJToken in EntryNoJsonArray do begin
-                if not EntryNoJToken.IsValue() then
-                    Error(InvalidEntryNoArrayErr);
-                if not Evaluate(EntryNo, EntryNoJToken.AsValue().AsText(), 9) then
-                    Error(InvalidEntryNoArrayErr);
-                if not EntryNoFilter.Contains(EntryNo) then
-                    EntryNoFilter.Add(EntryNo);
-            end;
+        EntryNoFilter := Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos);
 
         SubscriptionLine.SetRange("Invoicing via", Enum::"Invoicing Via"::Contract);
         SubscriptionLine.SetRange("Subscription Contract No.", '');
@@ -106,10 +95,16 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori"
         SubscriptionLine.SetFilter("Subscription Line End Date", '>%1|%2', WorkDate(), 0D);
         if SubscriptionHeaderNo <> '' then
             SubscriptionLine.SetRange("Subscription Header No.", SubscriptionHeaderNo);
+        // Let the database drop the rows the caller did not ask for, instead of reading every
+        // unassigned line and sorting them out here one by one.
+        if EntryNoFilter <> '' then
+            SubscriptionLine.SetFilter("Entry No.", EntryNoFilter);
 
         if SubscriptionLine.FindSet() then
             repeat
-                if (EntryNoFilter.Count() = 0) or EntryNoFilter.Contains(SubscriptionLine."Entry No.") then begin
+                // The filter already holds the caller's selection whenever it fits in one
+                // expression. The test repeats it for the case where it did not.
+                if (SelectedEntryNos.Count() = 0) or SelectedEntryNos.ContainsKey(SubscriptionLine."Entry No.") then begin
                     Clear(VendSubContractLine);
                     VendorSubscriptionContract.CreateVendorContractLineFromServiceCommitment(SubscriptionLine, ContractNo, VendSubContractLine);
                     LinesAttached += 1;

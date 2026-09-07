@@ -36,6 +36,45 @@ major version.
   and so they start working the moment Microsoft opens the API; re-verified in the 2026-09-06
   end-to-end run (rows 8, 9, 19, 20 of the test report).
 
+### Security (2026-09-07)
+
+- `Subscription.VendorContract.CreateInvoice` stamped the caller's `vendorInvoiceNo` onto the
+  purchase document by assigning the field directly. That skipped the field's own validation, which
+  is where Business Central enforces the vendor's duplicate-invoice-number control - the same
+  vendor invoice number could be booked twice under two different documents. The value now goes
+  through `Validate`, so a duplicate is refused the way it is refused in the user interface.
+- `Subscription.PriceUpdate.SetTemplateFilter` passed the caller's `filter` straight into
+  `RecordRef.SetView`. A malformed view raised Business Central's own parser error, which names
+  neither the parameter that was wrong nor the shape it should have had, and can quote internals of
+  the table being opened. The call is now guarded and answers with the documented contract instead.
+- `Subscription.Usage.Process` read the entry number out of the message subject with an unguarded
+  `Evaluate`. A subject that is not a number now produces a message that names the subject and the
+  two ways to supply the entry number, instead of a raw conversion error.
+- `Subscription.Contract.GetLines` read `subscriptionLineEntryNos` without checking that each
+  element was a value, and built an unbounded filter expression from it. Both `GetLines` types now
+  share one helper that rejects anything that does not read as a whole number and keeps the filter
+  inside the length Business Central allows - covered by five new unit tests.
+
+### Performance (2026-09-07)
+
+- `Subscription.Billing.CreateDocuments` compared every Billing Line it read back against a list of
+  the entry numbers it had consumed, once per row against everything already accumulated. The three
+  running sets are dictionaries now, so each test is a single lookup rather than a walk. Its two
+  partner probes ask `IsEmpty` instead of `Count`, since only the answer "any at all" was used.
+- `Subscription.Billing.PreviewDocuments` grouped the proposal by reading the table once to collect
+  the group keys and then twice more per group - a `Count` and a `FindSet` each. It is one pass now,
+  accumulating per group as the rows arrive, with the reporting order unchanged.
+- `Subscription.Deferral.Release` counted unreleased deferrals up to twelve times per call on two
+  columns that carry no index. The four pre-run counts are taken once and the over-release
+  precondition reuses two of them.
+- `Subscription.Contract.GetLines` read the Subscription Header once per candidate line to compare a
+  single field. The answer is now read once per header and remembered, with `SetLoadFields` on it.
+- `Subscription.VendorContract.GetLines` read every unassigned Subscription Line and sorted out the
+  caller's selection in memory. The selection is pushed into the database filter instead.
+- `SetLoadFields` added to nine watermark and scan reads that use one or two fields
+  (`Sub Ana Recalc`, `Sub Line Create`, `Sub Con CrInvoice`, `Sub Con PrvInvoice`,
+  `Sub Vend CrInvoice`, `Sub Vend PrvInv`, `Sub Ren CrQuote`, `Sub Bil PrvDocs`).
+
 ### Fixed (2026-09-06)
 
 - `AllTypes_ReturnAHelpDocument` and `AllTypes_HelpDocumentsTheRequestAndResponse` never actually

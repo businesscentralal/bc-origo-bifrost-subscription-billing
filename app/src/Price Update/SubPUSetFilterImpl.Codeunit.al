@@ -21,6 +21,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori"
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Price Update Template ''%1'' does not exist.', Comment = '%1 = price update template code||is-IS=Verðuppfærslusniðmátið ''%1'' er ekki til.';
         InvalidTargetErr: Label 'The parameter ''target'' must be one of ''contract'', ''subscription'' or ''line'', not ''%1''.', Comment = '%1 = the supplied target value||is-IS=Færibreytan ''target'' verður að vera ein af ''contract'', ''subscription'' eða ''line'', ekki ''%1''.';
+        InvalidFilterErr: Label 'The parameter ''filter'' is not a valid Business Central view for target ''%1''. Supply a view in the form ''SORTING(Field) WHERE(Field=FILTER(Value))''.', Comment = '%1 = the supplied target value||is-IS=Færibreytan ''filter'' er ekki gild Business Central sýn fyrir ''%1''. Sendu sýn á forminu ''SORTING(Reitur) WHERE(Reitur=FILTER(Gildi))''.';
         ContractTok: Label 'contract', Locked = true;
         SubscriptionTok: Label 'subscription', Locked = true;
         LineTok: Label 'line', Locked = true;
@@ -111,7 +112,11 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori"
 
         RRef.Open(TargetTableNo);
         BlankView := RRef.GetView(false);
-        RRef.SetView(SuppliedFilter);
+        // The view comes straight from the caller. Business Central raises its own parser error on a
+        // malformed one, which says nothing about which parameter was wrong and can name internals of
+        // the table being opened. Catch it and answer with the contract this message type documents.
+        if not TrySetView(RRef, SuppliedFilter) then
+            Error(InvalidFilterErr, TargetName);
         FilterText := RRef.GetView(false);
         Clear(RRef);
 
@@ -154,6 +159,13 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori"
         ResponseJson.Add('filter', FilterText);
         ResponseJson.Add('filters', FiltersJson);
         Helper.RespondWithSuccess(Argument, ResponseJson);
+    end;
+
+    /// <summary>Applies a caller-supplied view to the RecordRef, reporting failure instead of raising Business Central's own parser error.</summary>
+    [TryFunction]
+    local procedure TrySetView(var RRef: RecordRef; View: Text)
+    begin
+        RRef.SetView(View);
     end;
 
     /// <summary>Reads the remaining text of an InStream, or an empty string when it holds nothing.</summary>

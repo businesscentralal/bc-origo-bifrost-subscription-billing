@@ -166,6 +166,7 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori"
         // onto it - which is what happens when the contract's due lines are still sitting on an
         // unposted document, because Business Central then bills nothing new.
         BillingLine.Reset();
+        BillingLine.SetLoadFields("Entry No.");
         if BillingLine.FindLast() then
             WatermarkEntryNo := BillingLine."Entry No."
         else
@@ -200,13 +201,16 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori"
             DocumentJson.Add('documentNo', DocumentNo);
             DocumentsArray.Add(DocumentJson);
 
+            // Validate, not a direct assignment: the field's OnValidate is what enforces the vendor's
+            // duplicate-invoice-number control. Writing the field straight would let the same vendor
+            // invoice number be booked twice under two different documents.
             if VendorInvoiceNo <> '' then
                 if PurchaseHeader.Get(Enum::"Purchase Document Type"::Invoice, DocumentNo) then begin
-                    PurchaseHeader."Vendor Invoice No." := VendorInvoiceNo;
+                    PurchaseHeader.Validate("Vendor Invoice No.", VendorInvoiceNo);
                     PurchaseHeader.Modify(true);
                 end else
                     if PurchaseHeader.Get(Enum::"Purchase Document Type"::"Credit Memo", DocumentNo) then begin
-                        PurchaseHeader."Vendor Invoice No." := VendorInvoiceNo;
+                        PurchaseHeader.Validate("Vendor Invoice No.", VendorInvoiceNo);
                         PurchaseHeader.Modify(true);
                     end;
         end;

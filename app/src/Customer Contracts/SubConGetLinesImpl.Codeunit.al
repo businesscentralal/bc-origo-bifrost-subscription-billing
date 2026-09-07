@@ -69,20 +69,18 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori"
     var
         CustomerSubscriptionContract: Record "Customer Subscription Contract";
         SubscriptionLine: Record "Subscription Line";
-        SubscriptionHeader: Record "Subscription Header";
         CustSubContractLine: Record "Cust. Sub. Contract Line";
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
         AttachedLinesArray: JsonArray;
         AttachedLineJson: JsonObject;
-        EntryNoJToken: JsonToken;
-        EntryNoJsonArray: JsonArray;
+        SelectedEntryNos: Dictionary of [Integer, Boolean];
+        HeaderMatches: Dictionary of [Code[20], Boolean];
         EntryNoFilter: Text;
         ContractNo: Code[20];
         SubscriptionHeaderNo: Code[20];
         LinesAttached: Integer;
         LinesSkipped: Integer;
-        Index: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
         ContractNo := Helper.GetSubjectOr(Argument, RequestJson, 'contractNo', true);
@@ -99,23 +97,16 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori"
         if SubscriptionHeaderNo <> '' then
             SubscriptionLine.SetRange("Subscription Header No.", SubscriptionHeaderNo);
 
-        if Helper.TryGetArray(RequestJson, 'subscriptionLineEntryNos', EntryNoJsonArray) then begin
-            for Index := 0 to EntryNoJsonArray.Count() - 1 do begin
-                EntryNoJsonArray.Get(Index, EntryNoJToken);
-                if EntryNoFilter <> '' then
-                    EntryNoFilter += '|';
-                EntryNoFilter += Format(EntryNoJToken.AsValue().AsInteger(), 0, 9);
-            end;
-            if EntryNoFilter <> '' then
-                SubscriptionLine.SetFilter("Entry No.", EntryNoFilter);
-        end;
+        EntryNoFilter := Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos);
+        if EntryNoFilter <> '' then
+            SubscriptionLine.SetFilter("Entry No.", EntryNoFilter);
 
         if SubscriptionLine.FindSet() then
             repeat
-                if not SubscriptionHeader.Get(SubscriptionLine."Subscription Header No.") then
-                    LinesSkipped += 1
-                else
-                    if SubscriptionHeader."End-User Customer No." <> CustomerSubscriptionContract."Sell-to Customer No." then
+                // The filter already holds the caller's selection whenever it fits in one
+                // expression. The test repeats it for the case where it did not.
+                if (SelectedEntryNos.Count() = 0) or SelectedEntryNos.ContainsKey(SubscriptionLine."Entry No.") then
+                    if not BelongsToContractCustomer(SubscriptionLine."Subscription Header No.", CustomerSubscriptionContract."Sell-to Customer No.", HeaderMatches) then
                         LinesSkipped += 1
                     else begin
                         Clear(CustSubContractLine);
@@ -134,5 +125,26 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori"
         ResponseJson.Add('attachedLines', AttachedLinesArray);
         ResponseJson.Add('linesSkipped', LinesSkipped);
         Helper.RespondWithSuccess(Argument, ResponseJson);
+    end;
+
+    /// <summary>
+    /// Tells whether a Subscription Line's Subscription Header names the contract's customer, and
+    /// so whether the line may be attached to it. A missing header answers no. The answer turns
+    /// only on the header, and the lines a single call walks share a handful of headers between
+    /// them, so it is read once per header and remembered for the rest of the run.
+    /// </summary>
+    local procedure BelongsToContractCustomer(SubscriptionHeaderNo: Code[20]; SellToCustomerNo: Code[20]; var HeaderMatches: Dictionary of [Code[20], Boolean]) Matches: Boolean
+    var
+        SubscriptionHeader: Record "Subscription Header";
+    begin
+        if HeaderMatches.Get(SubscriptionHeaderNo, Matches) then
+            exit(Matches);
+
+        SubscriptionHeader.SetLoadFields("End-User Customer No.");
+        if SubscriptionHeader.Get(SubscriptionHeaderNo) then
+            Matches := SubscriptionHeader."End-User Customer No." = SellToCustomerNo;
+
+        HeaderMatches.Add(SubscriptionHeaderNo, Matches);
+        exit(Matches);
     end;
 }

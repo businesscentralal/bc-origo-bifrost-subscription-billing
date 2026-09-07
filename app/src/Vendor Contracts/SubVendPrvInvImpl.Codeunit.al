@@ -68,6 +68,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori"
         end;
 
         ContractNo := Helper.GetSubjectOr(Argument, Argument.GetRequestJson(), 'contractNo', false);
+        BillingLine.SetLoadFields("Entry No.");
         if BillingLine.FindLast() then
             WatermarkEntryNo := BillingLine."Entry No.";
 
