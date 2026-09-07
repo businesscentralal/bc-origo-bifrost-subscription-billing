@@ -75,6 +75,17 @@ major version.
   (`Sub Ana Recalc`, `Sub Line Create`, `Sub Con CrInvoice`, `Sub Con PrvInvoice`,
   `Sub Vend CrInvoice`, `Sub Vend PrvInv`, `Sub Ren CrQuote`, `Sub Bil PrvDocs`).
 
+### Fixed (2026-09-07)
+
+- Icelandic translations for the `Subscription.Contract.UpdateLineDates` and
+  `Subscription.Contract.UpdateExchangeRates` known-issue errors quoted the Business Central client
+  action names in plain English quotes. They now use Icelandic quotation marks with the English
+  name kept in parentheses for clarity: `„Uppfæra dagsetningar áskriftarlína“ ("Update Subscription
+  Line Dates")` and `„Uppfæra gengi“ ("Update Exchange Rates")`.
+- The same two Icelandic strings read "Subscription Billing appi Microsoft" - "appi" used as a
+  stray separate word instead of the correct Icelandic dative compound. Fixed to "Subscription
+  Billing-forriti Microsoft".
+
 ### Fixed (2026-09-06)
 
 - `AllTypes_ReturnAHelpDocument` and `AllTypes_HelpDocumentsTheRequestAndResponse` never actually
