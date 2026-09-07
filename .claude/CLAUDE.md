@@ -11,6 +11,30 @@ App:   10035035-10035084 (migrated in place from the legacy Cloud Events range, 
   was never published, so ids kept their identity)
 Tests: 95700-95799 (offset 0, same reason)
 
+### Allocated object ids
+App:
+- 10035035 enumextension `Sub Msg Type ori`
+- 10035036-10035057 the 22 `Sub <Domain><Verb> Impl ori` codeunits
+- 10035058 codeunit `Sub Helper ori`
+- 10035059 codeunit `Sub Write Process ori`
+- 10035060 codeunit `Sub Registration ori` (registers the app with Foundation's `App Registry ori`)
+- 10035062-10035064 the three permission sets
+- 10035065-10035074 the ten `Sub <Domain> Help ori` codeunits
+- Free: 10035061, 10035075-10035084
+
+Tests:
+- 95700 `Sub Test Install ori`, 95701 `Sub Msg Type Tst ori`, 95702 `Sub Helper Tst ori`,
+  95703 `Sub Test Upgrade ori`, 95704 `Sub Registration Tst ori`
+- Free: 95705-95799
+
+## Setup Notifications
+Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
+on Bifröst Foundation's `Setup ori` page ("Bifrost Setup"), and their single action is "Start setup
+wizard". This app never raises a `Notification` of its own. It makes itself known to Foundation
+instead: codeunit `Sub Registration ori` subscribes to `App Registry ori.OnRegisterApps` and calls
+`AddApp` with this app's module id, its display name and setup page id `0` (this app has no setup
+page). If a setup page is ever added here, pass its `Page::` id in that same call.
+
 ## Target BC Version
 28.x (application/platform 28.0.0.0, runtime 17.0)
 

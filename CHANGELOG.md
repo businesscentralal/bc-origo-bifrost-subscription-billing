@@ -14,6 +14,20 @@ major version.
   package that does not grant it. No test code had to change - the suite never touched a Foundation
   internal.
 
+### Setup notifications and wizard (2026-09-07)
+
+- Across the Bifröst family, setup notifications now live only on Bifröst Foundation's **Bifrost
+  Setup** page, and their only action is "Start setup wizard". A dependent app never raises a
+  notification of its own; it makes itself known to Foundation instead.
+- New codeunit 10035060 `Sub Registration ori` (internal) subscribes once to
+  `App Registry ori.OnRegisterApps` and calls `AddApp` with this app's own module id, its display
+  name and setup page id `0` - this app has no setup page. Foundation's registry then reports its
+  HTTP status and credential counts alongside every other Bifröst app.
+- Nothing was removed: this app never raised a setup notification and has no notification-action
+  codeunit.
+- New test codeunit 95704 `Sub Registration Tst ori` asserts that Bifrost Subscription Billing
+  appears in `App Registry ori.GetApps` under the module id resolved from the test app's own
+  dependency list, so the registration cannot be dropped unnoticed.
 
 ### Release notes
 
@@ -22,11 +36,12 @@ major version.
   to move forward. The sibling Bifröst apps sit at 28.x because they are new app identities. The
   app still targets `application`/`platform` 28.0.0.0 and runtime 17.0 - the major number is a
   release counter here, not a Business Central version.
-- **This app adds nothing to the Bifröst Setup page, on purpose.** It has no setup table, no setup
-  page, no secrets and no outbound HTTP: every message type calls Microsoft's Subscription Billing
-  app in-process, and everything it needs is configured in Microsoft's own Subscription Billing
-  setup. There is therefore no `Apps` group action and no Secret Store registration, unlike the
-  sibling connectors that talk to an external service.
+- **This app adds no setup surface of its own, on purpose.** It has no setup table, no setup page,
+  no secrets and no outbound HTTP: every message type calls Microsoft's Subscription Billing app
+  in-process, and everything it needs is configured in Microsoft's own Subscription Billing setup.
+  There is therefore no `Apps` group action and no Secret Store registration, unlike the sibling
+  connectors that talk to an external service. It does register itself with Foundation's
+  `App Registry ori` (setup page id `0`) so the Bifröst Setup page can list it.
 - **`EULA` in `app.json` still points at the Cloud Events terms of use**
   (`..._Origo_BC_Cloud_Events_Terms_of_Use_-1-.pdf`). That is a real external legal document; it is
   left untouched until legal/marketing publish a Bifröst version.
