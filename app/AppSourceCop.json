@@ -1,0 +1,6 @@
+{
+  "mandatoryAffixes": ["ori"],
+  "publisher": "Origo",
+  "mandatorySuffix": "ori",
+  "supportedCountries": ["IS", "GB", "DK", "NO", "SE", "FI", "DE", "FR", "NL", "AT", "CH", "IE", "PT", "ES"]
+}

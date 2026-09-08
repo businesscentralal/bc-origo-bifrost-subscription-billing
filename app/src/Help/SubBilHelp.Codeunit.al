@@ -1,0 +1,266 @@
+namespace Origo.Bifrost.SubscriptionBilling;
+
+/// <summary>
+/// Shared Markdown help text for the <c>Subscription.Billing.CreateProposal</c>, <c>Subscription.Billing.CreateDocuments</c> and <c>Subscription.Billing.PreviewDocuments</c> Bifrost message types.
+/// Consolidating the help text per domain means a future domain-wide formatting change
+/// only has to touch this file, instead of every Impl codeunit in the domain.
+/// </summary>
+codeunit 10035068 "Sub Bil Help ori"
+{
+    Access = Internal;
+
+    /// <summary>
+    /// Returns the Markdown help document for the given message key. Returns an empty
+    /// text when the key is not one of the message types covered by this codeunit.
+    /// </summary>
+    internal procedure GetHelpMarkdown(MessageKey: Text): Text
+    var
+        HelpBuilder: TextBuilder;
+    begin
+        case MessageKey of
+            'Subscription.Billing.CreateProposal':
+                begin
+                    HelpBuilder.AppendLine('# Subscription.Billing.CreateProposal');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Overview');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('Generates billing proposal lines (Billing Line, table 8061) for a Billing Template.');
+                    HelpBuilder.AppendLine('Every Subscription Line whose next billing date falls on or before the billing date and');
+                    HelpBuilder.AppendLine('that matches the template''s own filter is proposed for billing. Nothing is invoiced yet -');
+                    HelpBuilder.AppendLine('call `Subscription.Billing.CreateDocuments` afterwards to turn the proposal into documents.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Request Parameters');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('| Parameter | Type | Required | Description |');
+                    HelpBuilder.AppendLine('| --- | --- | --- | --- |');
+                    HelpBuilder.AppendLine('| billingTemplateCode | Code[20] | Yes | The Billing Template to run. May also be supplied as the message subject. |');
+                    HelpBuilder.AppendLine('| billingDate | Date | No | Lines due on or before this date are proposed. Defaults to the work date. |');
+                    HelpBuilder.AppendLine('| billingToDate | Date | No | Bills complete periods up to this date. Omit to use each line''s own billing rhythm. |');
+                    HelpBuilder.AppendLine('| automatedBilling | Boolean | No | Defaults to true, which keeps the run silent. Leave it at the default. |');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('Dates use the ISO format `YYYY-MM-DD`.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Request Example');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('```json');
+                    HelpBuilder.AppendLine('{');
+                    HelpBuilder.AppendLine('  "billingTemplateCode": "MONTHLY",');
+                    HelpBuilder.AppendLine('  "billingDate": "2026-08-31",');
+                    HelpBuilder.AppendLine('  "billingToDate": "2026-09-30"');
+                    HelpBuilder.AppendLine('}');
+                    HelpBuilder.AppendLine('```');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Response Shape');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('```json');
+                    HelpBuilder.AppendLine('{');
+                    HelpBuilder.AppendLine('  "status": "Success",');
+                    HelpBuilder.AppendLine('  "billingTemplateCode": "MONTHLY",');
+                    HelpBuilder.AppendLine('  "billingDate": "2026-08-31",');
+                    HelpBuilder.AppendLine('  "billingToDate": "2026-09-30",');
+                    HelpBuilder.AppendLine('  "proposalLinesCreated": 12,');
+                    HelpBuilder.AppendLine('  "proposalLineCount": 12,');
+                    HelpBuilder.AppendLine('  "contracts": ["CC000010", "CC000011"]');
+                    HelpBuilder.AppendLine('}');
+                    HelpBuilder.AppendLine('```');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('`proposalLinesCreated` counts the lines this call added. `proposalLineCount` is the total');
+                    HelpBuilder.AppendLine('number of proposal lines now standing for the template, including any created earlier.');
+                    HelpBuilder.AppendLine('A run that matches nothing is a success with `proposalLinesCreated` of 0.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Errors');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('| Condition | Message |');
+                    HelpBuilder.AppendLine('| --- | --- |');
+                    HelpBuilder.AppendLine('| The template does not exist | The Billing Template ''%1'' does not exist. |');
+                    HelpBuilder.AppendLine('| billingTemplateCode is missing | The request is missing the required parameter ''billingTemplateCode''. |');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('Errors return `{ "status": "Error", "error": "...", "callstack": "..." }` and nothing is written.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Safety');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('This message type writes. It only creates proposal lines - no invoice is created and');
+                    HelpBuilder.AppendLine('nothing is posted. The write runs in an isolated transaction that rolls back on error.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Related Message Types');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('- `Subscription.Billing.CreateDocuments`');
+                    HelpBuilder.AppendLine('- `Subscription.Billing.PreviewDocuments`');
+                    HelpBuilder.AppendLine('- `Subscription.Contract.CreateInvoice`');
+                end;
+            'Subscription.Billing.CreateDocuments':
+                begin
+                    HelpBuilder.AppendLine('# Subscription.Billing.CreateDocuments');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Overview');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('Processes every unbilled Billing Line (Document Type = None) standing under a Billing Template');
+                    HelpBuilder.AppendLine('and turns them into sales or purchase documents, grouped per contract by default. Run');
+                    HelpBuilder.AppendLine('`Subscription.Billing.CreateProposal` first to populate the proposal lines this call consumes.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Request Parameters');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('| Parameter | Type | Required | Description |');
+                    HelpBuilder.AppendLine('| --- | --- | --- | --- |');
+                    HelpBuilder.AppendLine('| billingTemplateCode | Code[20] | Yes | The Billing Template whose unbilled proposal lines are processed. May also be supplied as the message subject. |');
+                    HelpBuilder.AppendLine('| documentDate | Date | No | Document date stamped on the created documents. Defaults to the work date. |');
+                    HelpBuilder.AppendLine('| postingDate | Date | No | Posting date stamped on the created documents. Defaults to the work date. |');
+                    HelpBuilder.AppendLine('| postDocuments | Boolean | No | Defaults to false. When true, customer documents are posted immediately - vendor documents are never auto-posted regardless of this flag. |');
+                    HelpBuilder.AppendLine('| groupBy | Text | No | ''Contract'' (default) groups one document per contract. ''Customer'' groups one document per Bill-to Customer and only applies to customer proposal lines. |');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('Dates use the ISO format `YYYY-MM-DD`.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Request Example');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('```json');
+                    HelpBuilder.AppendLine('{');
+                    HelpBuilder.AppendLine('  "billingTemplateCode": "MONTHLY",');
+                    HelpBuilder.AppendLine('  "postDocuments": false');
+                    HelpBuilder.AppendLine('}');
+                    HelpBuilder.AppendLine('```');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Response Shape');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('```json');
+                    HelpBuilder.AppendLine('{');
+                    HelpBuilder.AppendLine('  "status": "Success",');
+                    HelpBuilder.AppendLine('  "billingTemplateCode": "MONTHLY",');
+                    HelpBuilder.AppendLine('  "billingLinesProcessed": 12,');
+                    HelpBuilder.AppendLine('  "documentCount": 5,');
+                    HelpBuilder.AppendLine('  "documents": [');
+                    HelpBuilder.AppendLine('    { "documentType": "Invoice", "documentNo": "INV-000123", "contractNo": "CC000010" }');
+                    HelpBuilder.AppendLine('  ]');
+                    HelpBuilder.AppendLine('}');
+                    HelpBuilder.AppendLine('```');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('When `postDocuments` was explicitly true, the response also carries `"posted": true` at the');
+                    HelpBuilder.AppendLine('top level, and each document that was posted carries `"posted": true` of its own - posting');
+                    HelpBuilder.AppendLine('archives the proposal rows, and these documents are read back from that archive. A run with');
+                    HelpBuilder.AppendLine('no unbilled proposal lines is a success with `documents: []`, `documentCount` of 0, and a `message`.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Errors');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('| Condition | Message |');
+                    HelpBuilder.AppendLine('| --- | --- |');
+                    HelpBuilder.AppendLine('| The template does not exist | The Billing Template ''%1'' does not exist. |');
+                    HelpBuilder.AppendLine('| billingTemplateCode is missing | The request is missing the required parameter ''billingTemplateCode''. |');
+                    HelpBuilder.AppendLine('| Proposal lines mix customer and vendor rows | You can create documents only for one type of partner at a time. |');
+                    HelpBuilder.AppendLine('| groupBy is not Contract or Customer | The parameter ''groupBy'' must be either ''Contract'' or ''Customer''. |');
+                    HelpBuilder.AppendLine('| groupBy = Customer on vendor lines | ''groupBy'' = ''Customer'' only applies when the pending proposal lines belong to customer contracts. |');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('Errors return `{ "status": "Error", "error": "...", "callstack": "..." }` and nothing is written.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Safety');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('This message type writes, and can post when `postDocuments` is explicitly set to true for customer');
+                    HelpBuilder.AppendLine('documents. It always refuses to mix customer and vendor proposal lines in one run.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('**This run is not atomic.** Business Central commits each billing document as it creates it,');
+                    HelpBuilder.AppendLine('so a failure part way through - a posting error on one document, say - leaves every document');
+                    HelpBuilder.AppendLine('created before it standing. When that happens the response is:');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('```json');
+                    HelpBuilder.AppendLine('{');
+                    HelpBuilder.AppendLine('  "status": "Error",');
+                    HelpBuilder.AppendLine('  "error": "The billing run failed after Business Central had already created ...",');
+                    HelpBuilder.AppendLine('  "documents": [ { "documentType": "Invoice", "documentNo": "INV-000123", "contractNo": "CC000010" } ],');
+                    HelpBuilder.AppendLine('  "rolledBack": false');
+                    HelpBuilder.AppendLine('}');
+                    HelpBuilder.AppendLine('```');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('so the caller can see exactly which documents survived and review them before re-running the');
+                    HelpBuilder.AppendLine('template. Errors raised before Business Central is called - an unknown template, a mixed');
+                    HelpBuilder.AppendLine('partner proposal, an invalid `groupBy` - write nothing at all.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Related Message Types');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('- `Subscription.Billing.CreateProposal`');
+                    HelpBuilder.AppendLine('- `Subscription.Billing.PreviewDocuments`');
+                end;
+            'Subscription.Billing.PreviewDocuments':
+                begin
+                    HelpBuilder.AppendLine('# Subscription.Billing.PreviewDocuments');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Overview');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('Shows what `Subscription.Billing.CreateDocuments` would produce for a Billing Template''s');
+                    HelpBuilder.AppendLine('unbilled proposal lines (Document Type = None), by reading those Billing Line rows and');
+                    HelpBuilder.AppendLine('grouping them the same way a real run would - one entry per document that would be');
+                    HelpBuilder.AppendLine('created, grouped per contract by default. Nothing is created, and nothing is written at');
+                    HelpBuilder.AppendLine('all. Run `Subscription.Billing.CreateProposal` first to populate the proposal lines this');
+                    HelpBuilder.AppendLine('call reads.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Request Parameters');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('| Parameter | Type | Required | Description |');
+                    HelpBuilder.AppendLine('| --- | --- | --- | --- |');
+                    HelpBuilder.AppendLine('| billingTemplateCode | Code[20] | Yes | The Billing Template to preview. May also be supplied as the message subject. |');
+                    HelpBuilder.AppendLine('| groupBy | Text | No | ''Contract'' (default) groups one document per contract. ''Customer'' groups one document per Partner No. and only applies when every pending line belongs to a customer contract. |');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('There are no `documentDate`, `postingDate` or `postDocuments` parameters - a preview never');
+                    HelpBuilder.AppendLine('creates or posts anything, so no document data applies.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Request Example');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('```json');
+                    HelpBuilder.AppendLine('{');
+                    HelpBuilder.AppendLine('  "billingTemplateCode": "MONTHLY"');
+                    HelpBuilder.AppendLine('}');
+                    HelpBuilder.AppendLine('```');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Response Shape');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('```json');
+                    HelpBuilder.AppendLine('{');
+                    HelpBuilder.AppendLine('  "status": "Success",');
+                    HelpBuilder.AppendLine('  "billingTemplateCode": "MONTHLY",');
+                    HelpBuilder.AppendLine('  "billingLineCount": 12,');
+                    HelpBuilder.AppendLine('  "documentCount": 5,');
+                    HelpBuilder.AppendLine('  "documents": [');
+                    HelpBuilder.AppendLine('    { "contractNo": "CC000010", "partnerNo": "10000", "lineCount": 3, "totalAmount": "297.00" }');
+                    HelpBuilder.AppendLine('  ],');
+                    HelpBuilder.AppendLine('  "warnings": [],');
+                    HelpBuilder.AppendLine('  "preview": true,');
+                    HelpBuilder.AppendLine('  "rollback": true');
+                    HelpBuilder.AppendLine('}');
+                    HelpBuilder.AppendLine('```');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('`contractNo` is left blank on an entry when `groupBy` is `Customer`, because one document');
+                    HelpBuilder.AppendLine('created that way can span several contracts for the same Partner No. A run with no unbilled');
+                    HelpBuilder.AppendLine('proposal lines is a success with `documents: []`, `documentCount` of 0, and a `message`;');
+                    HelpBuilder.AppendLine('`preview` and `rollback` are still `true`.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Errors');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('| Condition | Message |');
+                    HelpBuilder.AppendLine('| --- | --- |');
+                    HelpBuilder.AppendLine('| The template does not exist | The Billing Template ''%1'' does not exist. |');
+                    HelpBuilder.AppendLine('| billingTemplateCode is missing | The request is missing the required parameter ''billingTemplateCode''. |');
+                    HelpBuilder.AppendLine('| groupBy is not Contract or Customer | The parameter ''groupBy'' must be either ''Contract'' or ''Customer''. |');
+                    HelpBuilder.AppendLine('| groupBy = Customer but a vendor line is pending | ''groupBy'' = ''Customer'' only applies when the pending proposal lines belong to customer contracts. |');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('Errors return `{ "status": "Error", "error": "...", "callstack": "..." }`. A mix of customer');
+                    HelpBuilder.AppendLine('and vendor proposal lines is not an error here - `Subscription.Billing.CreateDocuments`');
+                    HelpBuilder.AppendLine('would refuse to run, and this call reports that as a `warnings` entry instead, alongside');
+                    HelpBuilder.AppendLine('the grouping it can still show.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Safety');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('This message type only reads. It does not call `Subscription.Billing.CreateDocuments` or any');
+                    HelpBuilder.AppendLine('other codeunit that writes, so there is no billing proposal to build, no document to create');
+                    HelpBuilder.AppendLine('even temporarily, and nothing to clean up afterwards - unlike the invoice previews, which');
+                    HelpBuilder.AppendLine('have to build and then remove real proposal lines because that is the only way to preview');
+                    HelpBuilder.AppendLine('them. `preview` and `rollback` are always `true` in the response because, quite simply,');
+                    HelpBuilder.AppendLine('nothing was ever written for either of them to undo.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Related Message Types');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('- `Subscription.Billing.CreateDocuments`');
+                    HelpBuilder.AppendLine('- `Subscription.Billing.CreateProposal`');
+                end;
+            else
+                exit('');
+        end;
+        exit(HelpBuilder.ToText());
+    end;
+}

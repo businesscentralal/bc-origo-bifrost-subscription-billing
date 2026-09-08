@@ -2,9 +2,23 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go-Actions/v9.0/.Modules/settings.schema.json",
   "country": "w1",
   "appSourceCopMandatoryAffixes": [
-    "<affix>"
+    "ori"
   ],
-  "appFolders": [],
-  "testFolders": [],
-  "bcptTestFolders": []
+  "appFolders": [
+    "app"
+  ],
+  "testFolders": [
+    "test"
+  ],
+  "bcptTestFolders": [],
+  "doNotRunTests": false,
+  "appDependencyProbingPaths": [
+    {
+      "repo": "https://github.com/OrigoSoftwareSolutions/bc-origo-bifrost-core",
+      "release_status": "prerelease",
+      "version": "latest",
+      "projects": "*",
+      "authTokenSecret": "ghTokenWorkflow"
+    }
+  ]
 }

@@ -19,3 +19,5 @@ rad.json
 .snapshots/
 cache_*
 ~$*
+.out/
+TestResults/
