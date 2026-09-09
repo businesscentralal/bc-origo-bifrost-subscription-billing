@@ -17,5 +17,17 @@
         "doNotSignApps": false
       }
     }
-  ]
+  ],
+  "Environments": [
+    "Bifrost"
+  ],
+  "DeployToBifrost": {
+    "EnvironmentType": "SaaS",
+    "EnvironmentName": "Bifrost",
+    "Branches": [
+      "main"
+    ],
+    "ContinuousDeployment": true,
+    "Scope": "Dev"
+  }
 }
