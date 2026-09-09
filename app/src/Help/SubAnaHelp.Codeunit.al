@@ -13,7 +13,7 @@ codeunit 10035073 "Sub Ana Help ori"
     /// Returns the Markdown help document for the given message key. Returns an empty
     /// text when the key is not one of the message types covered by this codeunit.
     /// </summary>
-    internal procedure GetHelpMarkdown(MessageKey: Text): Text
+    procedure GetHelpMarkdown(MessageKey: Text): Text
     var
         HelpBuilder: TextBuilder;
     begin

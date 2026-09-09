@@ -15,8 +15,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar ''%1'' er ekki til.';
@@ -25,35 +23,35 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori"
         NothingDueMsg: Label 'No Subscription Lines were due for billing on or before %1 for contract %2.', Comment = '%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru gjaldfallnar til reikningsgerðar á eða fyrir %1 fyrir samning %2.';
         DescriptionLbl: Label 'Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Nothing is written and no invoice is ever created.', MaxLength = 250, Comment = 'is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptavinar. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Customer Subscription Contract");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
     /// <summary>Builds the Markdown help document returned when the message type is inspected.</summary>
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         ConHelp: Codeunit "Sub Con Help ori";
     begin
         Argument.SetResponseMarkdown(ConHelp.GetHelpMarkdown('Subscription.Contract.PreviewInvoice'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         BillingLine: Record "Billing Line";
         WriteProcess: Codeunit "Sub Write Process ori";
@@ -84,7 +82,7 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Builds and reports the preview, then cleans up after itself. Called directly, or through the isolated write process.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         ResponseJson: JsonObject;
         ContractNo: Code[20];

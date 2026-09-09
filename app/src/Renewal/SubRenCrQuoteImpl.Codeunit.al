@@ -15,8 +15,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = customer contract no.||is-IS=Viðskiptavinasamningurinn ''%1'' er ekki til.';
@@ -24,34 +22,34 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori"
         QuoteNotCreatedErr: Label 'Create Sub. Contract Renewal did not produce a sales quote for Customer Subscription Contract ''%1''.', Comment = '%1 = customer contract no.||is-IS=Create Sub. Contract Renewal bjó ekki til sölutilboð fyrir viðskiptavinasamninginn ''%1''.';
         DescriptionLbl: Label 'Builds contract renewal lines from a Customer Subscription Contract''s Subscription Lines and creates a renewal sales quote from them.', MaxLength = 250, Comment = 'is-IS=Býr til endurnýjunarlínur samnings út frá áskriftarlínum viðskiptavinasamnings og útbýr endurnýjunarsölutilboð út frá þeim.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Customer Subscription Contract");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         RenHelp: Codeunit "Sub Ren Help ori";
     begin
         Argument.SetResponseMarkdown(RenHelp.GetHelpMarkdown('Subscription.Renewal.CreateQuote'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
     begin
@@ -69,7 +67,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Builds the renewal lines for the contract and creates the renewal sales quote.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         CustomerSubscriptionContract: Record "Customer Subscription Contract";
         CustSubContractLine: Record "Cust. Sub. Contract Line";

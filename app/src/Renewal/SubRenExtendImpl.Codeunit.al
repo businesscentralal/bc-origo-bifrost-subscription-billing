@@ -13,8 +13,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         SubscriptionHeaderNotFoundErr: Label 'The Subscription ''%1'' does not exist.', Comment = '%1 = subscription header no.||is-IS=Áskriftin ''%1'' er ekki til.';
@@ -24,34 +22,34 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori"
         NeitherContractErr: Label 'The request must supply at least one of ''customerContractNo'' or ''vendorContractNo''.', Comment = 'is-IS=Beiðnin verður að innihalda a.m.k. annað af ''customerContractNo'' eða ''vendorContractNo''.';
         DescriptionLbl: Label 'Extends a Subscription with a new customer and/or vendor contract, applying the item''s standard packages plus any extra packages supplied. Returns the contract line counts created.', MaxLength = 250, Comment = 'is-IS=Framlengir áskrift með nýjum viðskiptavina- og/eða birgjasamningi og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Subscription Header");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         RenHelp: Codeunit "Sub Ren Help ori";
     begin
         Argument.SetResponseMarkdown(RenHelp.GetHelpMarkdown('Subscription.Renewal.Extend'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
     begin
@@ -69,7 +67,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Extends the subscription onto the requested contract(s) and reports the lines created.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         SubscriptionHeader: Record "Subscription Header";
         CustomerSubscriptionContract: Record "Customer Subscription Contract";

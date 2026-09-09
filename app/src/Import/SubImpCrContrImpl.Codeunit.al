@@ -13,8 +13,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         UnknownStageErr: Label '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', Comment = '%1 = stage name||is-IS=''%1'' er ekki þekkt innflutningsskref. Notaðu SubscriptionHeaders, CustomerContracts, SubscriptionLines eða ContractLines.';
@@ -26,34 +24,34 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori"
         MaxErrorCount: Integer;
         DescriptionLbl: Label 'Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.', MaxLength = 250, Comment = 'is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptavina, áskriftarlínur og samningslínur áskriftarsamnings viðskiptavinar út frá innfluttum bráðabirgðalínum, eitt skref í einu.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Imported Subscription Header");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         ImpHelp: Codeunit "Sub Imp Help ori";
     begin
         Argument.SetResponseMarkdown(ImpHelp.GetHelpMarkdown('Subscription.Import.CreateContracts'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
     begin
@@ -71,7 +69,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Runs the requested import stages over the staged rows. Called directly, or through the isolated write process.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
         ResponseJson: JsonObject;

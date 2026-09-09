@@ -15,8 +15,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Price Update Template ''%1'' does not exist.', Comment = '%1 = price update template code||is-IS=Verðuppfærslusniðmátið ''%1'' er ekki til.';
@@ -27,34 +25,34 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori"
         LineTok: Label 'line', Locked = true;
         DescriptionLbl: Label 'Writes the contract, subscription or line view filter Blob on a Price Update Template and returns the current value of all three filters.', MaxLength = 250, Comment = 'is-IS=Skrifar síu (Blob) fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Price Update Template");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         PUHelp: Codeunit "Sub PU Help ori";
     begin
         Argument.SetResponseMarkdown(PUHelp.GetHelpMarkdown('Subscription.PriceUpdate.SetTemplateFilter'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
     begin
@@ -72,7 +70,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Writes the requested filter Blob and reports back all three current filter values.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         PriceUpdateTemplate: Record "Price Update Template";
         RRef: RecordRef;

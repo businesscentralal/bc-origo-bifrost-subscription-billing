@@ -12,8 +12,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         PostUntilAfterPostingErr: Label 'The parameter ''postUntilDate'' (%1) must not be later than ''postingDate'' (%2).', Comment = '%1 = post until date, %2 = posting date||is-IS=Færibreytan ''postUntilDate'' (%1) má ekki vera síðar en ''postingDate'' (%2).';
@@ -22,34 +20,34 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori"
         OvershotWindowMsg: Label 'Business Central released %1 deferral(s) posted after ''postUntilDate'' (%2). The release has already posted to the general ledger and cannot be undone from here - reconcile before releasing again.', Comment = '%1 = number of deferrals released outside the window, %2 = post until date||is-IS=Business Central losaði %1 frestun(ar) sem bókast eftir ''postUntilDate'' (%2). Losunin er þegar bókfærð í fjárhagsbókhald og verður ekki afturkölluð héðan - stemmdu af áður en losað er aftur.';
         DescriptionLbl: Label 'Releases deferred revenue and cost for customer and vendor Subscription Contracts up to a date, posting the release to the general ledger.', MaxLength = 250, Comment = 'is-IS=Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptavina og birgja fram að tilteknum degi og bókfærir losunina í fjárhagsbókhald.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Cust. Sub. Contract Deferral");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         DefHelp: Codeunit "Sub Def Help ori";
     begin
         Argument.SetResponseMarkdown(DefHelp.GetHelpMarkdown('Subscription.Deferral.Release'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
     begin
@@ -67,7 +65,7 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Runs the deferral release report. Called directly, or through the isolated write process.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
