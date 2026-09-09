@@ -13,8 +13,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Billing Template ''%1'' does not exist.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er ekki til.';
@@ -25,34 +23,34 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
         NotRolledBackErr: Label 'The billing run failed after Business Central had already created the documents listed in ''documents''. Business Central commits each document as it is created, so those documents still exist and were not rolled back. Review them before running this template again. Underlying error: %1', Comment = '%1 = the underlying Business Central error||is-IS=Reikningskeyrslan brast eftir að Business Central hafði þegar búið til skjölin sem talin eru upp í ''documents''. Business Central vistar hvert skjal um leið og það verður til, svo þau skjöl eru enn til og hafa ekki verið afturkölluð. Yfirfarðu þau áður en þetta sniðmát er keyrt aftur. Undirliggjandi villa: %1';
         DescriptionLbl: Label 'Turns the unbilled Billing Line rows under a Billing Template into sales or purchase documents. Reports the documents created and how many proposal lines were processed.', MaxLength = 250, Comment = 'is-IS=Umbreytir ófakturuðum reikningslínum undir reikningssniðmáti í sölu- eða innkaupaskjöl. Skilar þeim skjölum sem urðu til og fjölda tillögufærslna sem unnið var úr.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Billing Template");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         BilHelp: Codeunit "Sub Bil Help ori";
     begin
         Argument.SetResponseMarkdown(BilHelp.GetHelpMarkdown('Subscription.Billing.CreateDocuments'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
     begin
@@ -70,7 +68,7 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Processes the pending proposal lines into documents. Called directly, or through the isolated write process.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
@@ -129,7 +127,7 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori"
     /// Shared implementation for the write and preview paths. Returns true when there was nothing
     /// pending to process (BillingLinesProcessed and DocumentCount are then left at 0).
     /// </summary>
-    internal procedure CreateDocumentsFromProposal(BillingTemplateCode: Code[20]; DocumentDate: Date; PostingDate: Date; PostDocuments: Boolean; GroupBy: Text; var BillingLinesProcessed: Integer; var DocumentCount: Integer; var DocumentsArray: JsonArray; var FailureReason: Text) NothingPending: Boolean
+    procedure CreateDocumentsFromProposal(BillingTemplateCode: Code[20]; DocumentDate: Date; PostingDate: Date; PostDocuments: Boolean; GroupBy: Text; var BillingLinesProcessed: Integer; var DocumentCount: Integer; var DocumentsArray: JsonArray; var FailureReason: Text) NothingPending: Boolean
     var
         BillingTemplate: Record "Billing Template";
         BillingLine: Record "Billing Line";

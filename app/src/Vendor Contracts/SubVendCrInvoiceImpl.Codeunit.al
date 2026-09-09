@@ -15,8 +15,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         ContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Birgjaáskriftarsamningurinn ''%1'' er ekki til.';
@@ -25,34 +23,34 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori"
         NothingNewMsg: Label 'Nothing new could be billed for contract %1. Its due Subscription Lines already sit on a billing proposal or on an unposted document - post or clear those first.', Comment = '%1 = contract number||is-IS=Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Áskriftarlínur hans eru þegar á reikningstillögu eða á óbókfærðu skjali - bókfaðu þær eða hreinsaðu þær fyrst.';
         DescriptionLbl: Label 'Creates an unposted purchase invoice or credit memo for the due Subscription Lines of a vendor subscription contract. Never posts the document.', MaxLength = 250, Comment = 'is-IS=Býr til óbókfærðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur birgjaáskriftarsamnings. Skjalið er aldrei bókfært.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Vendor Subscription Contract");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         VendHelp: Codeunit "Sub Vend Help ori";
     begin
         Argument.SetResponseMarkdown(VendHelp.GetHelpMarkdown('Subscription.VendorContract.CreateInvoice'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
     begin
@@ -70,7 +68,7 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Builds the ad-hoc proposal and creates the purchase document. Called directly, or through the isolated write process.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
@@ -109,7 +107,7 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori"
     /// contract's due vendor Subscription Lines, turns it into an unposted purchase document, and optionally
     /// stamps the caller's Vendor Invoice No. onto every document it created.
     /// </summary>
-    internal procedure CreateVendorInvoice(ContractNo: Code[20]; BillingDate: Date; BillingToDate: Date; DocumentDate: Date; PostingDate: Date; VendorInvoiceNo: Text[35]; var BillingLineCount: Integer; var DocumentsArray: JsonArray; var Message: Text)
+    procedure CreateVendorInvoice(ContractNo: Code[20]; BillingDate: Date; BillingToDate: Date; DocumentDate: Date; PostingDate: Date; VendorInvoiceNo: Text[35]; var BillingLineCount: Integer; var DocumentsArray: JsonArray; var Message: Text)
     var
         VendorSubscriptionContract: Record "Vendor Subscription Contract";
         SubscriptionLine: Record "Subscription Line";

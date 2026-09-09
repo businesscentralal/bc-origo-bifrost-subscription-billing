@@ -14,8 +14,6 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
 {
-    Access = Internal;
-
     var
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Billing Template ''%1'' does not exist.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er ekki til.';
@@ -26,34 +24,34 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
         UpdateRequiredMsg: Label '%1 of the pending proposal line(s) are flagged ''Update Required'' and would need to be refreshed before a real run could process them.', Comment = '%1 = row count||is-IS=%1 af óloknum tillögufærslum eru merktar ''Uppfærslu krafist'' og þyrfti að endurnýja áður en raunveruleg keyrsla gæti unnið úr þeim.';
         DescriptionLbl: Label 'Previews the documents that Subscription.Billing.CreateDocuments would create for a Billing Template, by reading the existing proposal lines. Reads only; writes nothing.', MaxLength = 250, Comment = 'is-IS=Forskoðar þau skjöl sem Subscription.Billing.CreateDocuments myndi búa til fyrir reikningssniðmát, með því að lesa fyrirliggjandi tillögulínur. Les eingöngu; skrifar ekkert.';
 
-    internal procedure IsEnabled(): Boolean
+    procedure IsEnabled(): Boolean
     begin
         exit(true);
     end;
 
-    internal procedure GetFilterTableNo() FilterTableId: Integer
+    procedure GetFilterTableNo() FilterTableId: Integer
     begin
         exit(Database::"Billing Template");
     end;
 
-    internal procedure GetDescription() Description: Text[250]
+    procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
     end;
 
-    internal procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
+    procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    internal procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
+    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
     var
         BilHelp: Codeunit "Sub Bil Help ori";
     begin
         Argument.SetResponseMarkdown(BilHelp.GetHelpMarkdown('Subscription.Billing.PreviewDocuments'));
     end;
 
-    internal procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
     begin
@@ -71,7 +69,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Reads the pending proposal lines and reports how they would be grouped into documents. Never writes.</summary>
-    internal procedure PerformWrite(var Argument: Record "Message Argument ori")
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
