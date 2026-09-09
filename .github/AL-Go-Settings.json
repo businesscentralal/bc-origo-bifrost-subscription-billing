@@ -28,6 +28,6 @@
       "main"
     ],
     "ContinuousDeployment": true,
-    "Scope": "PTE"
+    "Scope": "Dev"
   }
 }
