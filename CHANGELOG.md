@@ -7,6 +7,14 @@ major version.
 
 ## [29.0.0.0] - 2026-09-06
 
+### Fixed (2026-09-17) - Icelandic translations and AL Comment authority (PR #7)
+
+- Icelandic translations in Subscription Billing were reviewed and corrected (terminology,
+  grammar, plurals, spelling, and consistency). The AL `Comment = 'is-IS=…'` authority on
+  Label declarations was brought into line with the generated `.xlf` targets so a future
+  xlf regeneration cannot silently revert the corrections.
+
+
 ### Reviewed (2026-09-07) - Setup Wizard action rollout
 
 - Checked against the wave-wide Setup Wizard action rollout: this app has no setup page of its own
