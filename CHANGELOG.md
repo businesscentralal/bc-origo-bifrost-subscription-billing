@@ -5,6 +5,14 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html) aligned to the Business Central
 major version.
 
+## [Unreleased]
+
+### Changed (2026-09-17) - Foundation pin ≥28.0.0.100 + latestBuild probing
+
+- Bifrost Foundation dependency in `app/app.json` and `test/app.json` bumped `28.0.0.0` → `28.0.0.100`.
+- `.AL-Go/settings.json` core probing `release_status` → **latestBuild** (was `prerelease`).
+- App version remains `29.0.0.0`. Follow-up after PR #7 merge.
+
 ## [29.0.0.0] - 2026-09-06
 
 ### Fixed (2026-09-17) - Icelandic translations and AL Comment authority (PR #7)
