@@ -15,7 +15,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori"
 {
     var
         Helper: Codeunit "Sub Helper ori";
-        UnknownStageErr: Label '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', Comment = '%1 = stage name||is-IS=''%1'' er ekki þekkt innflutningsskref. Notaðu SubscriptionHeaders, CustomerContracts, SubscriptionLines eða ContractLines.';
+        UnknownStageErr: Label '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', Comment = '%1 = stage name||is-IS=''%1'' er ekki þekkt innflutningsstig. Notaðu SubscriptionHeaders, CustomerContracts, SubscriptionLines eða ContractLines.';
         MaxErrorsCappedMsg: Label 'Only the first %1 errors are listed; more rows may have failed.', Comment = '%1 = maximum error count||is-IS=Aðeins fyrstu %1 villurnar eru sýndar; fleiri línur gætu hafa mistekist.';
         SubscriptionHeadersTok: Label 'SubscriptionHeaders', Locked = true;
         CustomerContractsTok: Label 'CustomerContracts', Locked = true;

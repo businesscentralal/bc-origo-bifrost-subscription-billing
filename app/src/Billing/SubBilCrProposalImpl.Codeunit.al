@@ -15,7 +15,7 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori"
     var
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Billing Template ''%1'' does not exist.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er ekki til.';
-        DescriptionLbl: Label 'Creates billing proposal lines for a Billing Template and a billing date. Returns the number of proposal lines created and the contracts they cover.', MaxLength = 250, Comment = 'is-IS=Býr til reikningstillögulínur fyrir reikningssniðmát og greiðsludagsetningu. Skilar fjölda tillögulína sem urðu til og þeim samningum sem þær ná yfir.';
+        DescriptionLbl: Label 'Creates billing proposal lines for a Billing Template and a billing date. Returns the number of proposal lines created and the contracts they cover.', MaxLength = 250, Comment = 'is-IS=Býr til reikningstillögulínur fyrir reikningssniðmát og reikningsdagsetningu. Skilar fjölda tillögulína sem urðu til og þeim samningum sem þær ná yfir.';
 
     procedure IsEnabled(): Boolean
     begin

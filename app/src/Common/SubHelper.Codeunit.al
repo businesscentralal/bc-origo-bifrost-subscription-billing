@@ -15,10 +15,10 @@ codeunit 10035058 "Sub Helper ori"
     var
         MissingParameterErr: Label 'The request is missing the required parameter ''%1''.', Comment = '%1 = parameter name||is-IS=Beiðnina vantar nauðsynlega færibreytu ''%1''.';
         InvalidDateErr: Label 'The parameter ''%1'' is not a valid date. Use the ISO format YYYY-MM-DD.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' er ekki gild dagsetning. Notaðu ISO sniðið YYYY-MM-DD.';
-        InvalidDecimalErr: Label 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' er ekki gild tala. Notaðu punkt sem tugabrot, til dæmis 1234.56.';
+        InvalidDecimalErr: Label 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' er ekki gild tala. Notaðu tugapunkt, til dæmis 1234.56.';
         InvalidPartnerErr: Label 'The parameter ''%1'' must be either ''Customer'' or ''Vendor''.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera annaðhvort ''Customer'' eða ''Vendor''.';
-        ValueTooLongErr: Label 'The parameter ''%1'' is longer than the %2 characters allowed.', Comment = '%1 = parameter name, %2 = maximum length||is-IS=Færibreytan ''%1'' er lengri en %2 stafirnir sem leyfðir eru.';
-        NotAnArrayErr: Label 'The parameter ''%1'' must be a JSON array.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera JSON fylki.';
+        ValueTooLongErr: Label 'The parameter ''%1'' is longer than the %2 characters allowed.', Comment = '%1 = parameter name, %2 = maximum length||is-IS=Færibreytan ''%1'' er lengri en leyfilegur hámarksfjöldi stafa, %2.';
+        NotAnArrayErr: Label 'The parameter ''%1'' must be a JSON array.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera JSON-fylki.';
         InvalidEntryNoArrayErr: Label 'The parameter ''%1'' must be a JSON array of entry numbers, written as whole numbers.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera JSON fylki af færslunúmerum, rituðum sem heilar tölur.';
 
     /// <summary>Returns true when the request carries a non-null value for the property.</summary>

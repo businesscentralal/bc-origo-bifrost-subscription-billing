@@ -18,9 +18,9 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori"
 {
     var
         Helper: Codeunit "Sub Helper ori";
-        NoContentErr: Label 'The request must supply either ''content'' (raw text) or ''contentBase64'' (base64 encoded) for the usage data file.', Comment = 'is-IS=Beiðnin verður að innihalda annaðhvort ''content'' (hreinan texta) eða ''contentBase64'' (base64 kóðað) fyrir notkunargögnin.';
+        NoContentErr: Label 'The request must supply either ''content'' (raw text) or ''contentBase64'' (base64 encoded) for the usage data file.', Comment = 'is-IS=Beiðnin verður að innihalda annaðhvort ''content'' (hreinan texta) eða ''contentBase64'' (base64-kóðað) fyrir notkunargögnin.';
         DefaultFileNameTok: Label 'bifrost-usage.csv', Locked = true;
-        DescriptionLbl: Label 'Imports a usage data file (as raw text or base64) for metered Subscription Lines and creates the imported usage data lines. Optionally also processes those lines into billable quantities.', MaxLength = 250, Comment = 'is-IS=Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Að auki er hægt að vinna þær línur upp í reikningshæft magn.';
+        DescriptionLbl: Label 'Imports a usage data file (as raw text or base64) for metered Subscription Lines and creates the imported usage data lines. Optionally also processes those lines into billable quantities.', MaxLength = 250, Comment = 'is-IS=Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.';
 
     procedure IsEnabled(): Boolean
     begin
