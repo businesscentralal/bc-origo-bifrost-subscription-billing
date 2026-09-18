@@ -187,12 +187,18 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
         BillingLine: Record "Billing Line";
         Index: Integer;
         ContractNo: Code[20];
+        NextEntryNo: Integer;
     begin
+        // Isolate fixture rows, then allocate Entry Nos past any existing AutoIncrement/demo rows.
+        // Insert(false) does not reliably advance SQL identity when demo data already occupies 1..n.
         ClearTemplateLines();
+        NextEntryNo := NextBillingLineEntryNo();
         for Index := 1 to GroupCount do begin
             ContractNo := CopyStr(StrSubstNo('C%1', Format(100000 + Index)), 1, 20);
 
             BillingLine.Init();
+            BillingLine."Entry No." := NextEntryNo;
+            NextEntryNo += 1;
             BillingLine."Billing Template Code" := TemplateCodeTok;
             BillingLine."Document Type" := BillingLine."Document Type"::None;
             BillingLine.Partner := BillingLine.Partner::Customer;
@@ -201,6 +207,16 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
             BillingLine.Amount := Index;
             BillingLine.Insert(false);
         end;
+    end;
+
+    local procedure NextBillingLineEntryNo(): Integer
+    var
+        BillingLine: Record "Billing Line";
+    begin
+        BillingLine.Reset();
+        if BillingLine.FindLast() then
+            exit(BillingLine."Entry No." + 1);
+        exit(1);
     end;
 
     local procedure InvokePreview(var TempArgument: Record "Message Argument ori" temporary; var Impl: Codeunit "Sub Bil PrvDocs Impl ori"; RequestJsonText: Text)
