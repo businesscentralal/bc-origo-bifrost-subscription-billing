@@ -9,7 +9,7 @@
   "help": "https://businesscentralal.github.io/bifrost/en-us/subscription-billing/",
   "privacyStatement": "https://www.origo.is/um-origo/stefnur/personuverndarstefna",
   "EULA": "https://new-origo.cdn.prismic.io/new-origo/lp1r1WElZFfmWAJU_Origo_BC_Cloud_Events_Terms_of_Use_-1-.pdf",
-  "applicationInsightsConnectionString": "InstrumentationKey=a73491c5-6798-4929-9ba6-d25d321dbd42;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=e23f6f88-6b6b-41e3-9058-915aad32dd5f",
+  "applicationInsightsConnectionString": "InstrumentationKey=ef087c74-194c-4bdc-9cd2-2e6525378e23;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=d02fa3c8-356f-4c2b-ab61-9f0cd1b8734c",
   "contextSensitiveHelpUrl": "https://businesscentralal.github.io/bifrost/{0}/help/subscription-billing/",
   "keyVaultUrls": [],
   "supportedLocales": [
