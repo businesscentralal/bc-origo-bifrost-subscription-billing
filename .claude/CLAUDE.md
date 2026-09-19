@@ -25,7 +25,8 @@ App:
 Tests:
 - 95700 `Sub Test Install ori`, 95701 `Sub Msg Type Tst ori`, 95702 `Sub Helper Tst ori`,
   95703 `Sub Test Upgrade ori`, 95704 `Sub Registration Tst ori`
-- Free: 95705-95799
+- 95705 `Sub Bil PrvDocs SkipTst ori`
+- Free: 95706-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
@@ -45,7 +46,7 @@ Repository: bc-origo-bifrost-subscription-billing
 Default branch: main
 
 ## Dependencies
-- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.0.0)
+- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.0.110)
 - Subscription Billing (Microsoft, 28.0.0.0)
 
 ## Naming Rules

@@ -196,6 +196,8 @@ codeunit 10035068 "Sub Bil Help ori"
                     HelpBuilder.AppendLine('| --- | --- | --- | --- |');
                     HelpBuilder.AppendLine('| billingTemplateCode | Code[20] | Yes | The Billing Template to preview. May also be supplied as the message subject. |');
                     HelpBuilder.AppendLine('| groupBy | Text | No | ''Contract'' (default) groups one document per contract. ''Customer'' groups one document per Partner No. and only applies when every pending line belongs to a customer contract. |');
+                    HelpBuilder.AppendLine('| skip | Integer | No | Number of document groups to skip. Defaults to 0. Negative values are rejected by Foundation. |');
+                    HelpBuilder.AppendLine('| take | Integer | No | Maximum document groups to return. Defaults to 100 when omitted or zero; clamped to 1000. Negative values are rejected by Foundation. |');
                     HelpBuilder.AppendLine();
                     HelpBuilder.AppendLine('There are no `documentDate`, `postingDate` or `postDocuments` parameters - a preview never');
                     HelpBuilder.AppendLine('creates or posts anything, so no document data applies.');
@@ -216,6 +218,9 @@ codeunit 10035068 "Sub Bil Help ori"
                     HelpBuilder.AppendLine('  "billingTemplateCode": "MONTHLY",');
                     HelpBuilder.AppendLine('  "billingLineCount": 12,');
                     HelpBuilder.AppendLine('  "documentCount": 5,');
+                    HelpBuilder.AppendLine('  "skip": 0,');
+                    HelpBuilder.AppendLine('  "take": 100,');
+                    HelpBuilder.AppendLine('  "hasMore": false,');
                     HelpBuilder.AppendLine('  "documents": [');
                     HelpBuilder.AppendLine('    { "contractNo": "CC000010", "partnerNo": "10000", "lineCount": 3, "totalAmount": "297.00" }');
                     HelpBuilder.AppendLine('  ],');
@@ -225,10 +230,19 @@ codeunit 10035068 "Sub Bil Help ori"
                     HelpBuilder.AppendLine('}');
                     HelpBuilder.AppendLine('```');
                     HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('`documentCount` is the unpaginated total number of document groups. `documents` is the');
+                    HelpBuilder.AppendLine('current page. `skip` / `take` echo the evaluated paging arguments; `hasMore` is true when');
+                    HelpBuilder.AppendLine('further groups remain after this page.');
+                    HelpBuilder.AppendLine();
                     HelpBuilder.AppendLine('`contractNo` is left blank on an entry when `groupBy` is `Customer`, because one document');
                     HelpBuilder.AppendLine('created that way can span several contracts for the same Partner No. A run with no unbilled');
                     HelpBuilder.AppendLine('proposal lines is a success with `documents: []`, `documentCount` of 0, and a `message`;');
                     HelpBuilder.AppendLine('`preview` and `rollback` are still `true`.');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('## Pagination Limits');
+                    HelpBuilder.AppendLine();
+                    HelpBuilder.AppendLine('`skip` defaults to 0 and rejects negative values. `take` defaults to 100 when omitted or');
+                    HelpBuilder.AppendLine('zero, rejects negative values, and is clamped to the hard maximum of 1000.');
                     HelpBuilder.AppendLine();
                     HelpBuilder.AppendLine('## Errors');
                     HelpBuilder.AppendLine();
