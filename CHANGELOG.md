@@ -2,17 +2,14 @@
 
 ## [Unreleased]
 
-### Changed (2026-09-17) - Bifrost Foundation Exact pin 28.0.0.100 (no float)
+### Added (2026-09-18) - PreviewDocuments Foundation skip/take (issue #8)
 
-- App/test Bifrost Foundation dependency set to Exact `28.0.0.100`.
-- AL-Go `appDependencyProbingPaths` for bc-origo-bifrost-core: `release_status: latestBuild`, `version: 1.0.0.100`.
-- `nuGetFeedSelectMode: Exact` so NuGet does not resolve `[28.0.0.100,)` upward to colliding `.107`.
+- `Subscription.Billing.PreviewDocuments` now calls Foundation `EvaluateSkipTake` (omit→0/100, negatives Error, take clamped to 1000).
+- Response adds `skip`, `take`, `hasMore`; `documentCount` is the unpaginated group total while `documents` is the page.
+- Help documents `## Pagination Limits` (max 1000). No product clamp below Foundation's 1000.
+- Bifrost Foundation Exact pin `28.0.0.100` → `28.0.0.110`; AL-Go core probe `1.0.0.100` → `1.0.0.110` (latestBuild + Exact).
+- New test codeunit 95705 `Sub Bil PrvDocs SkipTst ori`.
 
-
-All notable changes to Bifrost Subscription Billing are documented here.
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project
-uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html) aligned to the Business Central
-major version.
 
 ## [29.0.0.0] - 2026-09-06
 

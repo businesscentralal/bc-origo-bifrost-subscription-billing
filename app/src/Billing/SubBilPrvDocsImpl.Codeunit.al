@@ -75,12 +75,15 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
         ResponseJson: JsonObject;
         BillingTemplateCode: Code[20];
         GroupBy: Text;
+        Skip: Integer;
+        Take: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
         BillingTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'billingTemplateCode', true);
         GroupBy := Helper.GetText(RequestJson, 'groupBy', false);
+        Argument.EvaluateSkipTake(RequestJson, Skip, Take);
 
-        PreviewDocuments(BillingTemplateCode, GroupBy, ResponseJson);
+        PreviewDocuments(BillingTemplateCode, GroupBy, Skip, Take, ResponseJson);
 
         ResponseJson.Add('preview', true);
         ResponseJson.Add('rollback', true);
@@ -88,7 +91,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
     end;
 
     /// <summary>Reads the Billing Template's unbilled proposal lines and fills ResponseJson with the grouping and warnings a real run would produce.</summary>
-    local procedure PreviewDocuments(BillingTemplateCode: Code[20]; GroupBy: Text; var ResponseJson: JsonObject)
+    local procedure PreviewDocuments(BillingTemplateCode: Code[20]; GroupBy: Text; Skip: Integer; Take: Integer; var ResponseJson: JsonObject)
     var
         BillingTemplate: Record "Billing Template";
         BillingLine: Record "Billing Line";
@@ -99,6 +102,8 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
         VendorLineCount: Integer;
         UpdateRequiredCount: Integer;
         GroupByCustomer: Boolean;
+        DocumentCount: Integer;
+        HasMore: Boolean;
     begin
         if not BillingTemplate.Get(BillingTemplateCode) then
             Error(TemplateNotFoundErr, BillingTemplateCode);
@@ -109,12 +114,15 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
 
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('billingTemplateCode', BillingTemplateCode);
+        ResponseJson.Add('skip', Skip);
+        ResponseJson.Add('take', Take);
 
         if BillingLineCount = 0 then begin
             ResponseJson.Add('message', StrSubstNo(NothingPendingMsg, BillingTemplateCode));
             ResponseJson.Add('billingLineCount', 0);
             ResponseJson.Add('documentCount', 0);
             ResponseJson.Add('documents', DocumentsArray);
+            ResponseJson.Add('hasMore', false);
             ResponseJson.Add('warnings', WarningsArray);
             exit;
         end;
@@ -142,12 +150,13 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
                 Error(InvalidGroupByErr);
         end;
 
-        BuildDocumentsPreview(BillingLine, GroupByCustomer, DocumentsArray);
+        BuildDocumentsPreview(BillingLine, GroupByCustomer, Skip, Take, DocumentsArray, DocumentCount, HasMore);
         BuildWarnings(BillingTemplateCode, CustomerLineCount, VendorLineCount, UpdateRequiredCount, WarningsArray);
 
         ResponseJson.Add('billingLineCount', BillingLineCount);
-        ResponseJson.Add('documentCount', DocumentsArray.Count());
+        ResponseJson.Add('documentCount', DocumentCount);
         ResponseJson.Add('documents', DocumentsArray);
+        ResponseJson.Add('hasMore', HasMore);
         ResponseJson.Add('warnings', WarningsArray);
     end;
 
@@ -157,7 +166,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
     /// entry per group. contractNo is left blank on a per-customer entry because that grouping can
     /// span several contracts under the same Partner No.
     /// </summary>
-    local procedure BuildDocumentsPreview(var BillingLine: Record "Billing Line"; GroupByCustomer: Boolean; var DocumentsArray: JsonArray)
+    local procedure BuildDocumentsPreview(var BillingLine: Record "Billing Line"; GroupByCustomer: Boolean; Skip: Integer; Take: Integer; var DocumentsArray: JsonArray; var DocumentCount: Integer; var HasMore: Boolean)
     var
         DocumentJson: JsonObject;
         // The keys are kept in their own list as well, because the preview reports the groups in the
@@ -169,6 +178,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
         GroupPartnerNos: Dictionary of [Code[20], Code[20]];
         GroupKey: Code[20];
         ContractNo: Code[20];
+        GroupIndex: Integer;
     begin
         // One pass over the rows, accumulating per group as they arrive. Reading the table once per
         // group instead - a Count and a FindSet each - re-reads the same proposal N+1 times over.
@@ -193,18 +203,25 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori"
                     GroupPartnerNos.Set(GroupKey, BillingLine."Partner No.");
             until BillingLine.Next() = 0;
 
-        foreach GroupKey in GroupKeys do begin
-            if GroupByCustomer then
-                ContractNo := ''
-            else
-                ContractNo := GroupKey;
+        DocumentCount := GroupKeys.Count();
+        HasMore := (Skip + Take) < DocumentCount;
 
-            Clear(DocumentJson);
-            DocumentJson.Add('contractNo', ContractNo);
-            DocumentJson.Add('partnerNo', GroupPartnerNos.Get(GroupKey));
-            DocumentJson.Add('lineCount', GroupLineCounts.Get(GroupKey));
-            DocumentJson.Add('totalAmount', Helper.FormatDecimal(GroupTotals.Get(GroupKey)));
-            DocumentsArray.Add(DocumentJson);
+        GroupIndex := 0;
+        foreach GroupKey in GroupKeys do begin
+            if (GroupIndex >= Skip) and (DocumentsArray.Count() < Take) then begin
+                if GroupByCustomer then
+                    ContractNo := ''
+                else
+                    ContractNo := GroupKey;
+
+                Clear(DocumentJson);
+                DocumentJson.Add('contractNo', ContractNo);
+                DocumentJson.Add('partnerNo', GroupPartnerNos.Get(GroupKey));
+                DocumentJson.Add('lineCount', GroupLineCounts.Get(GroupKey));
+                DocumentJson.Add('totalAmount', Helper.FormatDecimal(GroupTotals.Get(GroupKey)));
+                DocumentsArray.Add(DocumentJson);
+            end;
+            GroupIndex += 1;
         end;
     end;
 
