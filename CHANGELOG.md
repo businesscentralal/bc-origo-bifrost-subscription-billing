@@ -10,6 +10,10 @@
 - Bifrost Foundation Exact pin `28.0.0.100` → `28.0.0.110`; AL-Go core probe `1.0.0.100` → `1.0.0.110` (latestBuild + Exact).
 - New test codeunit 95705 `Sub Bil PrvDocs SkipTst ori`.
 
+### Changed
+
+- App logo: new Bifröst wordmark with "Powered by origo." tagline; app-name line unchanged.
+
 
 ## [29.0.0.0] - 2026-09-06
 
