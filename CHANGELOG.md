@@ -12,7 +12,7 @@
 
 ### Changed
 
-- App logo: new Bifröst wordmark with "Powered by origo." tagline; app-name line unchanged.
+- App logo: new Bifröst wordmark with "Powered by origo." tagline; app name renders in the blank space above the wordmark, tagline position unchanged.
 
 
 ## [29.0.0.0] - 2026-09-06
