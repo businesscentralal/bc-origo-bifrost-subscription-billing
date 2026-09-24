@@ -7,9 +7,9 @@
   "description": "Adds Bifrost message types for the Microsoft Dynamics 365 Business Central Subscription Billing app. Covers subscription lines, customer and vendor contracts, the billing pipeline, price updates and indexation, renewal, usage-based billing, deferrals, contract analysis and migration - so an agent can operate Subscription Billing end to end without manual UI steps.",
   "url": "https://www.origo.is/",
   "help": "https://businesscentralal.github.io/bifrost/en-us/subscription-billing/",
-  "privacyStatement": "https://www.origo.is/um-origo/stefnur/personuverndarstefna",
-  "EULA": "https://new-origo.cdn.prismic.io/new-origo/lp1r1WElZFfmWAJU_Origo_BC_Cloud_Events_Terms_of_Use_-1-.pdf",
-  "applicationInsightsConnectionString": "InstrumentationKey=ef087c74-194c-4bdc-9cd2-2e6525378e23;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=d02fa3c8-356f-4c2b-ab61-9f0cd1b8734c",
+  "privacyStatement": "https://businesscentralal.github.io/bifrost/en-us/foundation/privacy/",
+  "EULA": "https://businesscentralal.github.io/bifrost/en-us/foundation/eula/",
+  "applicationInsightsConnectionString": "InstrumentationKey=71e55012-b22f-4ff7-a6e4-7b50d83f8cc2;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=d917dc45-172a-44ac-a0ba-85fd4ec5a725",
   "contextSensitiveHelpUrl": "https://businesscentralal.github.io/bifrost/{0}/help/subscription-billing/",
   "keyVaultUrls": [],
   "supportedLocales": [
