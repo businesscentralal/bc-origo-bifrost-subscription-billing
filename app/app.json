@@ -9,7 +9,7 @@
   "help": "https://businesscentralal.github.io/bifrost/en-us/subscription-billing/",
   "privacyStatement": "https://businesscentralal.github.io/bifrost/en-us/foundation/privacy/",
   "EULA": "https://businesscentralal.github.io/bifrost/en-us/foundation/eula/",
-  "applicationInsightsConnectionString": "InstrumentationKey=71e55012-b22f-4ff7-a6e4-7b50d83f8cc2;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=d917dc45-172a-44ac-a0ba-85fd4ec5a725",
+  "applicationInsightsConnectionString": "InstrumentationKey=af411133-5e22-486f-b23a-081b79ed4168;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=c4476f32-5dfb-490a-8ad0-fb8ffad1c050",
   "contextSensitiveHelpUrl": "https://businesscentralal.github.io/bifrost/{0}/help/subscription-billing/",
   "keyVaultUrls": [],
   "supportedLocales": [
