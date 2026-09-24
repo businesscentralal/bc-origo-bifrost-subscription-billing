@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go-Actions/v9.0/.Modules/settings.schema.json",
+  "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go-Actions/v9.2/.Modules/settings.schema.json",
   "country": "w1",
   "appSourceCopMandatoryAffixes": [
     "ori"
@@ -21,5 +21,29 @@
       "authTokenSecret": "ghTokenWorkflow"
     }
   ],
-  "nuGetFeedSelectMode": "Exact"
+  "nuGetFeedSelectMode": "Exact",
+  "buildModes": [
+    "Default",
+    "Test"
+  ],
+  "keyVaultCodesignCertificateName": "CodeSigning-2025",
+  "conditionalSettings": [
+    {
+      "buildModes": [
+        "Default"
+      ],
+      "settings": {
+        "doNotBuildTests": true,
+        "doNotRunTests": true
+      }
+    },
+    {
+      "buildModes": [
+        "Test"
+      ],
+      "settings": {
+        "doNotSignApps": true
+      }
+    }
+  ]
 }
