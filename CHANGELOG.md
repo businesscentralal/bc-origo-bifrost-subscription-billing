@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Security
+
+- Default (release) builds no longer ship the test app's internalsVisibleTo grant; the strip moved to PipelineInitialize.ps1 because Alpaca never ran PreCompileApp.ps1 (core#129).
 ### Changed (2026-09-25) - latest Foundation CI build
 
 - The app builds against the latest Foundation CI build, with a Foundation floor of 28.0.0.0.
