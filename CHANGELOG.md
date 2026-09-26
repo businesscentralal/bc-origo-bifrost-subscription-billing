@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed (2026-09-25) - latest Foundation CI build
+
+- The app builds against the latest Foundation CI build, with a Foundation floor of 28.0.0.0.
+- AL-Go core probe for `bc-origo-bifrost-core`: `1.0.0.110` → `latest` (`release_status` remains `latestBuild`).
+
 ### Added (2026-09-18) - PreviewDocuments Foundation skip/take (issue #8)
 
 - `Subscription.Billing.PreviewDocuments` now calls Foundation `EvaluateSkipTake` (omit→0/100, negatives Error, take clamped to 1000).
