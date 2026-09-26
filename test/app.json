@@ -15,7 +15,7 @@
       "id": "7505e808-6e52-4b96-a328-82573391297a",
       "name": "Bifrost Foundation",
       "publisher": "Origo",
-      "version": "28.0.0.110"
+      "version": "28.0.0.0"
     },
     {
       "id": "3099ffc7-4cf7-4df6-9b96-7e4bc2bb587c",
@@ -27,7 +27,7 @@
       "id": "dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d",
       "name": "Bifrost Subscription Billing",
       "publisher": "Origo",
-      "version": "29.0.0.0"
+      "version": "28.0.0.0"
     },
     {
       "id": "5d86850b-0d76-4eca-bd7b-951ad998e997",
