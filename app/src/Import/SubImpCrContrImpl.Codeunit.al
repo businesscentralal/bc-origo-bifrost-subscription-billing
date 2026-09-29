@@ -11,9 +11,10 @@ using Origo.Bifrost;
 /// do this because each stage derives and cross-links keys (contract numbers, line entry
 /// numbers) that only Microsoft's own codeunits know how to compute.
 /// </summary>
-codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori"
+codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
     var
+        ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         UnknownStageErr: Label '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', Comment = '%1 = stage name||is-IS=''%1'' er ekki þekkt innflutningsstig. Notaðu SubscriptionHeaders, CustomerContracts, SubscriptionLines eða ContractLines.';
         MaxErrorsCappedMsg: Label 'Only the first %1 errors are listed; more rows may have failed.', Comment = '%1 = maximum error count||is-IS=Aðeins fyrstu %1 villurnar eru sýndar; fleiri línur gætu hafa mistekist.';
@@ -38,6 +39,22 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori"
     begin
         exit(DescriptionLbl);
     end;
+
+    procedure GetKeywords(): Text begin exit(GetDescription()); end;
+    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
+    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
+    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
+    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
+    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
+    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
+    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
+    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
+    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
+    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
+    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    local procedure ContractType(): Text begin exit('Subscription.Import.CreateContracts'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

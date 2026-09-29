@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Added (2026-09-29) - message type contracts (issue #18)
+
+- All 22 Subscription Billing message types now expose Foundation contract chapters for their
+  envelope, target, parameters, response, errors, effect, metering and related message types.
+- Discovery metadata is available for every type, including bilingual selection text and keywords.
+- Added batch conformance tests for contract presence and operation effects, and raised the
+  Bifrost Foundation dependency to 28.0.1.0, which contains the contract builders.
+
 ### Security
 
 - Default (release) builds no longer ship the test app's internalsVisibleTo grant; the strip moved to PipelineInitialize.ps1 because Alpaca never ran PreCompileApp.ps1 (core#129).

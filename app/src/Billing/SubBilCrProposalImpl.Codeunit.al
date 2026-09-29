@@ -10,9 +10,10 @@ using Origo.Bifrost;
 /// A plain Data.Records.Set cannot do this because the proposal is produced by a codeunit
 /// that walks every due Subscription Line and derives the periods to bill.
 /// </summary>
-codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori"
+codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
     var
+        ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Billing Template ''%1'' does not exist.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er ekki til.';
         DescriptionLbl: Label 'Creates billing proposal lines for a Billing Template and a billing date. Returns the number of proposal lines created and the contracts they cover.', MaxLength = 250, Comment = 'is-IS=Býr til reikningstillögulínur fyrir reikningssniðmát og reikningsdagsetningu. Skilar fjölda tillögulína sem urðu til og þeim samningum sem þær ná yfir.';
@@ -31,6 +32,22 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori"
     begin
         exit(DescriptionLbl);
     end;
+
+    procedure GetKeywords(): Text begin exit(GetDescription()); end;
+    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
+    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
+    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
+    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
+    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
+    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
+    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
+    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
+    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
+    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
+    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    local procedure ContractType(): Text begin exit('Subscription.Billing.CreateProposal'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

@@ -13,9 +13,10 @@ using Origo.Bifrost;
 /// table, then write the normalised text (or nothing, when it equals the table's blank view)
 /// into the field's Blob stream.
 /// </summary>
-codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori"
+codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
     var
+        ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Price Update Template ''%1'' does not exist.', Comment = '%1 = price update template code||is-IS=Verðuppfærslusniðmátið ''%1'' er ekki til.';
         InvalidTargetErr: Label 'The parameter ''target'' must be one of ''contract'', ''subscription'' or ''line'', not ''%1''.', Comment = '%1 = the supplied target value||is-IS=Færibreytan ''target'' verður að vera ein af ''contract'', ''subscription'' eða ''line'', ekki ''%1''.';
@@ -39,6 +40,22 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori"
     begin
         exit(DescriptionLbl);
     end;
+
+    procedure GetKeywords(): Text begin exit(GetDescription()); end;
+    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
+    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
+    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
+    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
+    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
+    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
+    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
+    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
+    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
+    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
+    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    local procedure ContractType(): Text begin exit('Subscription.PriceUpdate.SetTemplateFilter'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

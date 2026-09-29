@@ -14,9 +14,10 @@ using System.Utilities;
 /// (UsageDataImport.NewDataImport and UsageDataBlob.ImportFromFile) are internal, and creating
 /// the imported lines requires running that codeunit, not just inserting rows.
 /// </summary>
-codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori"
+codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
     var
+        ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         NoContentErr: Label 'The request must supply either ''content'' (raw text) or ''contentBase64'' (base64 encoded) for the usage data file.', Comment = 'is-IS=Beiðnin verður að innihalda annaðhvort ''content'' (hreinan texta) eða ''contentBase64'' (base64-kóðað) fyrir notkunargögnin.';
         DefaultFileNameTok: Label 'bifrost-usage.csv', Locked = true;
@@ -36,6 +37,22 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori"
     begin
         exit(DescriptionLbl);
     end;
+
+    procedure GetKeywords(): Text begin exit(GetDescription()); end;
+    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
+    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
+    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
+    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
+    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
+    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
+    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
+    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
+    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
+    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
+    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    local procedure ContractType(): Text begin exit('Subscription.Usage.ImportData'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
