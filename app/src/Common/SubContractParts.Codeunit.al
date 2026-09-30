@@ -245,14 +245,18 @@ codeunit 10035075 "Sub Contract Parts ori"
     /// <summary>Builds the operation effect.</summary>
     procedure GetEffect(MessageType: Text) Effect: JsonObject
     begin
-        if MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments', 'Subscription.Analysis.Recalculate'] then
+        if MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments'] then
             Effect.Add('effect', 'read')
         else
             if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates'] then
                 Effect.Add('effect', 'irreversible')
             else
                 Effect.Add('effect', 'write');
-        Effect.Add('changes', 'The operation invokes Microsoft Subscription Billing logic and changes the records described by the request.');
+        // Create Contract Analysis adds analysis entries and skips a line that already has one for the current month.
+        if MessageType = 'Subscription.Analysis.Recalculate' then
+            Effect.Add('changes', 'Create Contract Analysis adds analysis entries for Subscription Lines with a contract and skips a line that already has an entry for the current month.')
+        else
+            Effect.Add('changes', 'The operation invokes Microsoft Subscription Billing logic and changes the records described by the request.');
         Effect.Add('idempotent', MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments', 'Subscription.Analysis.Recalculate']);
         Effect.Add('permissionSet', 'BIFROST SubBil ori');
         Effect.Add('preconditions', 'Microsoft Subscription Billing is installed and configured, and the caller has the required permissions.');

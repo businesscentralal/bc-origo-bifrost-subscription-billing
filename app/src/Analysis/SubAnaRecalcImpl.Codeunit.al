@@ -43,7 +43,7 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Analysis.Recalculate: Rebuilds contract analysis entries. Read-only.', Comment = 'is-IS=Subscription.Analysis.Recalculate: Endurreiknar greiningarfærslur samninga. Lesaðgerð.';
+        SelectionLbl: Label 'Subscription.Analysis.Recalculate: Rebuilds contract analysis entries.', Comment = 'is-IS=Subscription.Analysis.Recalculate: Endurreiknar greiningarfærslur samninga.';
     begin
         exit(SelectionLbl);
     end;

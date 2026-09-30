@@ -40,7 +40,7 @@ codeunit 95707 "Sub Contract Batch2 Tst ori"
         AssertEffect('Subscription.Usage.ImportData', 'irreversible');
         AssertEffect('Subscription.Usage.Process', 'irreversible');
         AssertEffect('Subscription.Deferral.Release', 'irreversible');
-        AssertEffect('Subscription.Analysis.Recalculate', 'read');
+        AssertEffect('Subscription.Analysis.Recalculate', 'write');
         AssertEffect('Subscription.Import.CreateContracts', 'irreversible');
     end;
 
