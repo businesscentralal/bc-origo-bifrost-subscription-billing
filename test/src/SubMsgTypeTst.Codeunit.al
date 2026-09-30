@@ -123,6 +123,7 @@ codeunit 95701 "Sub Msg Type Tst ori"
     procedure AllTypes_HaveDistinctDiscoveryText()
     var
         MessageTypeInterface: Interface "Msg Interface ori";
+        DiscoveryInterface: Interface "Msg Discovery ori";
         MessageType: Enum "Message Type ori";
         Ordinal: Integer;
         DescriptionText: Text;
@@ -136,9 +137,10 @@ codeunit 95701 "Sub Msg Type Tst ori"
             if IsSubscriptionBillingType(Ordinal) then begin
                 MessageType := Enum::"Message Type ori".FromInteger(Ordinal);
                 MessageTypeInterface := MessageType;
+                DiscoveryInterface := MessageType;
                 DescriptionText := MessageTypeInterface.GetDescription();
-                KeywordsText := MessageTypeInterface.GetKeywords();
-                SelectionText := MessageTypeInterface.GetSelectionDescription();
+                KeywordsText := DiscoveryInterface.GetKeywords();
+                SelectionText := DiscoveryInterface.GetSelectionDescription();
 
                 // [THEN] Discovery provides dedicated text rather than reusing the description
                 Assert.AreNotEqual(DescriptionText, KeywordsText, StrSubstNo('%1 must have dedicated keywords.', Format(MessageType)));

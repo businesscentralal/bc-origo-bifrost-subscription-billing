@@ -12,6 +12,8 @@
   follow Create Contract Analysis: the report adds analysis entries and skips a line that already
   has an entry for the current month, so the operation stays idempotent. The selection text no
   longer says read-only, and the batch effect test expects `write`.
+- The discovery test reads keywords and selection text through `Msg Discovery ori`. Foundation
+  28.0.0.166 does not declare those procedures on `Msg Interface ori`.
 
 ### Added (2026-09-29) - message type contracts (issue #18)
 
