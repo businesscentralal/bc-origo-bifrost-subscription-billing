@@ -14,6 +14,8 @@
   longer says read-only, and the batch effect test expects `write`.
 - The discovery test reads keywords and selection text through `Msg Discovery ori`. Foundation
   28.0.0.166 does not declare those procedures on `Msg Interface ori`.
+- `Sub Contract Batch2 Tst ori` resolves message types with `Enum::"Message Type ori".FromInteger`,
+  the same method call as the first batch.
 
 ### Added (2026-09-29) - message type contracts (issue #18)
 
