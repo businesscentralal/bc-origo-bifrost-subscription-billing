@@ -2,13 +2,30 @@
 
 ## [Unreleased]
 
+### Fixed (2026-09-30) - Foundation floor, is-IS xlf, Recalculate effect (post-#20) (#21)
+
+- Pinned Bifrost Foundation to 28.0.0.166 in the app and the test app. 28.0.1.0 is not a
+  published Foundation build, and 28.0.0.166 is the first build that contains the contract builders.
+- Added is-IS translations for the 44 new keyword and selection labels across the 22 message
+  implementations.
+- Declared `Subscription.Analysis.Recalculate` as a write. Its effect, idempotency and description
+  follow Create Contract Analysis: the report adds analysis entries and skips a line that already
+  has an entry for the current month, so the operation stays idempotent. The selection text no
+  longer says read-only, and the batch effect test expects `write`.
+- The discovery test reads keywords and selection text through `Msg Discovery ori`. Foundation
+  28.0.0.166 does not declare those procedures on `Msg Interface ori`.
+- `Sub Contract Batch2 Tst ori` resolves message types with `Enum::"Message Type ori".FromInteger`,
+  the same method call as the first batch.
+- Related chapters now include the links the help already names for the blocked contract operations,
+  price-update perform, renewal quote, deferral release, analysis recalculate and import.
+
 ### Added (2026-09-29) - message type contracts (issue #18)
 
 - All 22 Subscription Billing message types now expose Foundation contract chapters for their
   envelope, target, parameters, response, errors, effect, metering and related message types.
 - Discovery metadata is available for every type, including bilingual selection text and keywords.
 - Added batch conformance tests for contract presence and operation effects, and raised the
-  Bifrost Foundation dependency to 28.0.1.0, which contains the contract builders.
+  Bifrost Foundation dependency to 28.0.0.166, which contains the contract builders.
 - Corrected contract parameters and response fields to match the customer invoice, usage and
   analysis implementations, and added regression coverage for dedicated discovery text.
 

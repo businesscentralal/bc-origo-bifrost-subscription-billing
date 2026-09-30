@@ -20,7 +20,7 @@ codeunit 95707 "Sub Contract Batch2 Tst ori"
         TypeName: Text;
     begin
         foreach TypeName in Batch2Types() do begin
-            MessageType := Enum::"Message Type ori"::FromInteger(OrdinalOf(TypeName));
+            MessageType := Enum::"Message Type ori".FromInteger(OrdinalOf(TypeName));
             Assert.IsTrue(ContractMgt.GetContract(MessageType, Contract), TypeName + ' must declare a contract.');
             Assert.IsTrue(Contract.Contains('envelope'), TypeName + ' must declare envelope.');
             Assert.IsTrue(Contract.Contains('parameters'), TypeName + ' must declare parameters.');
@@ -40,7 +40,7 @@ codeunit 95707 "Sub Contract Batch2 Tst ori"
         AssertEffect('Subscription.Usage.ImportData', 'irreversible');
         AssertEffect('Subscription.Usage.Process', 'irreversible');
         AssertEffect('Subscription.Deferral.Release', 'irreversible');
-        AssertEffect('Subscription.Analysis.Recalculate', 'read');
+        AssertEffect('Subscription.Analysis.Recalculate', 'write');
         AssertEffect('Subscription.Import.CreateContracts', 'irreversible');
     end;
 
@@ -52,7 +52,7 @@ codeunit 95707 "Sub Contract Batch2 Tst ori"
         Effect: JsonObject;
         Token: JsonToken;
     begin
-        MessageType := Enum::"Message Type ori"::FromInteger(OrdinalOf(TypeName));
+        MessageType := Enum::"Message Type ori".FromInteger(OrdinalOf(TypeName));
         ContractMgt.GetContract(MessageType, Contract);
         Contract.Get('effect', Token);
         Effect := Token.AsObject();
