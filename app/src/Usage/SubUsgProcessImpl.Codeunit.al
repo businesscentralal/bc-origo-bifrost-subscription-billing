@@ -11,9 +11,10 @@ using Origo.Bifrost;
 /// is internal, so this replicates its stage-by-stage dispatch using the accessible codeunits
 /// directly - a plain Data.Records.Set cannot run these processing codeunits.
 /// </summary>
-codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori"
+codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
     var
+        ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         NotFoundErr: Label 'The Usage Data Import entry %1 does not exist.', Comment = '%1 = entry no.||is-IS=Innflutningsfærslan %1 fyrir notkunargögn er ekki til.';
         AlreadyClosedErr: Label 'Usage Data Import entry %1 is already Closed and cannot be processed again.', Comment = '%1 = entry no.||is-IS=Innflutningsfærslan %1 fyrir notkunargögn er þegar lokuð og er ekki hægt að vinna aftur.';
@@ -39,6 +40,33 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori"
     begin
         exit(DescriptionLbl);
     end;
+
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Usage.Process, Subscription, Usage, Process, usage, billable quantity', Comment = 'is-IS=Subscription.Usage.Process, áskrift, notkun, vinna, notkun, gjaldgengt magn';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Usage.Process: Processes imported usage data. Irreversible.', Comment = 'is-IS=Subscription.Usage.Process: Vinnur úr innfluttum notkunargögnum. Óafturkræf aðgerð.';
+    begin
+        exit(SelectionLbl);
+    end;
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
+    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
+    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
+    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
+    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
+    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
+    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
+    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
+    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
+    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
+    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    local procedure ContractType(): Text begin exit('Subscription.Usage.Process'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

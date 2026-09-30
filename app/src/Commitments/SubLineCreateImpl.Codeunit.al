@@ -10,10 +10,11 @@ using Origo.Bifrost;
 /// Line. A plain Data.Records.Set cannot do this because the lines to insert, and the values on
 /// them, are computed by the package application codeunit rather than supplied by the caller.
 /// </summary>
-codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori"
+codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
     var
         Helper: Codeunit "Sub Helper ori";
+        ContractParts: Codeunit "Sub Contract Parts ori";
         HeaderNotFoundErr: Label 'The Subscription Header ''%1'' does not exist.', Comment = '%1 = subscription header no.||is-IS=Áskriftarhausinn ''%1'' er ekki til.';
         PackageNotFoundErr: Label 'The Subscription Package ''%1'' does not exist.', Comment = '%1 = subscription package code||is-IS=Áskriftarpakkinn ''%1'' er ekki til.';
         DescriptionLbl: Label 'Applies a Subscription Package to a Subscription Header, creating Subscription Lines from the package. Returns the number and entry numbers of the lines created.', MaxLength = 250, Comment = 'is-IS=Beitir áskriftarpakka á áskriftarhaus og býr til áskriftarlínur út frá pakkanum. Skilar fjölda og færslunúmerum þeirra lína sem urðu til.';
@@ -31,6 +32,94 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori"
     procedure GetDescription() Description: Text[250]
     begin
         exit(DescriptionLbl);
+    end;
+
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Line.Create, Subscription, Line, Create, package, billing', Comment = 'is-IS=Subscription.Line.Create, áskrift, lína, stofna, pakki, reikningur';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Line.Create: Applies a package and creates subscription lines.', Comment = 'is-IS=Subscription.Line.Create: Beitir pakka og stofnar áskriftarlínur.';
+    begin
+        exit(SelectionLbl);
+    end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Clear(Overview);
+        exit(false);
+    end;
+
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Clear(Notes);
+        exit(false);
+    end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Line.Create');
     end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
