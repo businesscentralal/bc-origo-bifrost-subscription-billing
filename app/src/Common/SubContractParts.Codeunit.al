@@ -277,6 +277,16 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice':
                 Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.GetLines', 'Attach eligible lines before billing.'));
+            'Subscription.Contract.UpdateLineDates':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.UpdateExchangeRates', 'Also blocked in this version, for a different reason.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.CreateInvoice', 'Create an invoice once line dates are current.'));
+                end;
+            'Subscription.Contract.UpdateExchangeRates':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.UpdateLineDates', 'Also blocked in this version, for a different reason.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.CreateInvoice', 'Create an invoice once exchange rates are current.'));
+                end;
             'Subscription.VendorContract.GetLines':
                 Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.CreateInvoice', 'Create a vendor invoice after attaching lines.'));
             'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
@@ -291,8 +301,24 @@ codeunit 10035075 "Sub Contract Parts ori"
                 Related.Add(ContractMgt.RelatedEntry('Subscription.PriceUpdate.CreateProposal', 'Create a proposal after setting filters.'));
             'Subscription.PriceUpdate.CreateProposal':
                 Related.Add(ContractMgt.RelatedEntry('Subscription.PriceUpdate.Perform', 'Apply a price update proposal.'));
+            'Subscription.PriceUpdate.Perform':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.PriceUpdate.SetTemplateFilter', 'Set the template filter before creating a proposal.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.PriceUpdate.CreateProposal', 'Create a proposal before applying it.'));
+                end;
             'Subscription.Renewal.Extend':
                 Related.Add(ContractMgt.RelatedEntry('Subscription.Renewal.CreateQuote', 'Create a renewal quote instead of extending directly.'));
+            'Subscription.Renewal.CreateQuote':
+                Related.Add(ContractMgt.RelatedEntry('Subscription.Renewal.Extend', 'Extend the contract directly instead of creating a quote.'));
+            'Subscription.Deferral.Release':
+                Related.Add(ContractMgt.RelatedEntry('Subscription.Analysis.Recalculate', 'Rebuild contract analysis entries.'));
+            'Subscription.Analysis.Recalculate':
+                Related.Add(ContractMgt.RelatedEntry('Subscription.Deferral.Release', 'Release deferred revenue or cost.'));
+            'Subscription.Import.CreateContracts':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Line.Create', 'Create subscription lines without a staged import.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.GetLines', 'Attach lines to a customer contract after import.'));
+                end;
             'Subscription.Usage.ImportData':
                 Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.Process', 'Process the imported usage entry.'));
             'Subscription.Usage.Process':

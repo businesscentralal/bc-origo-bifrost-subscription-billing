@@ -16,6 +16,8 @@
   28.0.0.166 does not declare those procedures on `Msg Interface ori`.
 - `Sub Contract Batch2 Tst ori` resolves message types with `Enum::"Message Type ori".FromInteger`,
   the same method call as the first batch.
+- Related chapters now include the links the help already names for the blocked contract operations,
+  price-update perform, renewal quote, deferral release, analysis recalculate and import.
 
 ### Added (2026-09-29) - message type contracts (issue #18)
 
