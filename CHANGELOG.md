@@ -9,6 +9,8 @@
 - Discovery metadata is available for every type, including bilingual selection text and keywords.
 - Added batch conformance tests for contract presence and operation effects, and raised the
   Bifrost Foundation dependency to 28.0.1.0, which contains the contract builders.
+- Corrected contract parameters and response fields to match the customer invoice, usage and
+  analysis implementations, and added regression coverage for dedicated discovery text.
 
 ### Security
 

@@ -45,14 +45,25 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', false, 'Optional Subscription Header number.'));
                     Parameters.Add(ContractMgt.Parameter('subscriptionLineEntryNos', 'array', false, 'Optional whole-number Subscription Line entry numbers.'));
                 end;
-            'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
+            'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice':
                 begin
                     Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The contract number; it may be supplied as subject.'));
                     Parameters.Add(ContractMgt.Parameter('billingDate', 'string', false, 'Billing date in ISO format; defaults to WorkDate.'));
                     Parameters.Add(ContractMgt.Parameter('billingToDate', 'string', false, 'Optional inclusive billing end date.'));
                 end;
+            'Subscription.Contract.CreateInvoice':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The contract number; it may be supplied as subject.'));
+                    Parameters.Add(ContractMgt.Parameter('billingDate', 'string', false, 'Billing date in ISO format; defaults to WorkDate.'));
+                    Parameters.Add(ContractMgt.Parameter('billingToDate', 'string', false, 'Optional inclusive billing end date.'));
+                    Parameters.Add(ContractMgt.Parameter('documentDate', 'string', false, 'Document date in ISO format.'));
+                    Parameters.Add(ContractMgt.Parameter('postingDate', 'string', false, 'Posting date in ISO format.'));
+                end;
             'Subscription.VendorContract.CreateInvoice':
                 begin
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The contract number; it may be supplied as subject.'));
+                    Parameters.Add(ContractMgt.Parameter('billingDate', 'string', false, 'Billing date in ISO format; defaults to WorkDate.'));
+                    Parameters.Add(ContractMgt.Parameter('billingToDate', 'string', false, 'Optional inclusive billing end date.'));
                     Parameters.Add(ContractMgt.Parameter('documentDate', 'string', false, 'Document date in ISO format.'));
                     Parameters.Add(ContractMgt.Parameter('postingDate', 'string', false, 'Posting date in ISO format.'));
                     Parameters.Add(ContractMgt.Parameter('vendorInvoiceNo', 'string', false, 'Vendor invoice number.'));
@@ -104,7 +115,10 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Parameters.Add(ContractMgt.Parameter('runProcessing', 'boolean', false, 'Whether to process the imported data immediately.'));
                 end;
             'Subscription.Usage.Process':
-                Parameters.Add(ContractMgt.Parameter('usageDataImportEntryNo', 'integer', true, 'The usage data import entry number.'));
+                begin
+                    Parameters.Add(ContractMgt.Parameter('usageDataImportEntryNo', 'integer', true, 'The usage data import entry number.'));
+                    Parameters.Add(ContractMgt.Parameter('steps', 'array', false, 'Optional processing steps; defaults to all processing steps.'));
+                end;
             'Subscription.Deferral.Release':
                 begin
                     Parameters.Add(ContractMgt.Parameter('postingDate', 'string', false, 'Posting date in ISO format.'));
@@ -137,6 +151,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Line.Create':
                 begin
                     Fields.Add(ContractMgt.ResponseField('subscriptionHeaderNo', 'string', 'The affected Subscription Header.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionPackageCode', 'string', 'The applied Subscription Package.'));
                     Fields.Add(ContractMgt.ResponseField('linesCreated', 'integer', 'Number of lines created.'));
                     Fields.Add(ContractMgt.ResponseField('createdLines', 'array', 'Created Subscription Line entry numbers.'));
                 end;
@@ -150,6 +165,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
                 begin
                     Fields.Add(ContractMgt.ResponseField('contractNo', 'string', 'The affected contract.'));
+                    Fields.Add(ContractMgt.ResponseField('billingDate', 'string', 'The effective billing date.'));
                     Fields.Add(ContractMgt.ResponseField('documents', 'array', 'Created or previewed document details.'));
                     Fields.Add(ContractMgt.ResponseField('billingLineCount', 'integer', 'Billing lines processed.'));
                 end;
@@ -182,7 +198,26 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Renewal.CreateQuote':
                 Fields.Add(ContractMgt.ResponseField('quoteNo', 'string', 'The created renewal quote number.'));
             'Subscription.Usage.ImportData':
-                Fields.Add(ContractMgt.ResponseField('entryNo', 'integer', 'The created usage import entry number.'));
+                begin
+                    Fields.Add(ContractMgt.ResponseField('usageDataImportEntryNo', 'integer', 'The created usage import entry number.'));
+                    Fields.Add(ContractMgt.ResponseField('processingStatus', 'string', 'The resulting processing status.'));
+                    Fields.Add(ContractMgt.ResponseField('reason', 'string', 'The processing reason, when present.'));
+                    Fields.Add(ContractMgt.ResponseField('importedLineCount', 'integer', 'Number of imported usage lines.'));
+                end;
+            'Subscription.Usage.Process':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('usageDataImportEntryNo', 'integer', 'The processed usage import entry number.'));
+                    Fields.Add(ContractMgt.ResponseField('steps', 'array', 'Processing steps and their results.'));
+                    Fields.Add(ContractMgt.ResponseField('processingStatus', 'string', 'The resulting processing status.'));
+                    Fields.Add(ContractMgt.ResponseField('usageDataBillingCount', 'integer', 'Number of usage billing rows.'));
+                    Fields.Add(ContractMgt.ResponseField('usageDataBillingErrorCount', 'integer', 'Number of usage billing rows in error.'));
+                end;
+            'Subscription.Analysis.Recalculate':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('analysisDate', 'string', 'The date used for the analysis run.'));
+                    Fields.Add(ContractMgt.ResponseField('entriesCreated', 'integer', 'Number of analysis entries created.'));
+                    Fields.Add(ContractMgt.ResponseField('totalEntries', 'integer', 'Total analysis entries for the selected contract or all contracts.'));
+                end;
             'Subscription.Import.CreateContracts':
                 begin
                     Fields.Add(ContractMgt.ResponseField('stages', 'array', 'Import stage results.'));

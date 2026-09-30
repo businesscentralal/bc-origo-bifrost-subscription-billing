@@ -34,8 +34,19 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
         exit(DescriptionLbl);
     end;
 
-    procedure GetKeywords(): Text begin exit(GetDescription()); end;
-    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.VendorContract.GetLines, Subscription, VendorContract, GetLines, vendor, attach lines', Comment = 'is-IS=Subscription.VendorContract.GetLines, áskrift, birgjasamningur, sækja línur, birgir, tengja línur';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.VendorContract.GetLines: Attaches eligible lines to a vendor contract.', Comment = 'is-IS=Subscription.VendorContract.GetLines: Tengir hæfar línur við birgjasamning.';
+    begin
+        exit(SelectionLbl);
+    end;
     procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
     procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
     procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;

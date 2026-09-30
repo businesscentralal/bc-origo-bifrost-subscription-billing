@@ -34,8 +34,19 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
         exit(DescriptionLbl);
     end;
 
-    procedure GetKeywords(): Text begin exit(GetDescription()); end;
-    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Analysis.Recalculate, Subscription, Analysis, Recalculate, contract analysis', Comment = 'is-IS=Subscription.Analysis.Recalculate, áskrift, greining, endurreikna, samningsgreining';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Analysis.Recalculate: Rebuilds contract analysis entries. Read-only.', Comment = 'is-IS=Subscription.Analysis.Recalculate: Endurreiknar greiningarfærslur samninga. Lesaðgerð.';
+    begin
+        exit(SelectionLbl);
+    end;
     procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
     procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
     procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;

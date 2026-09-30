@@ -23,6 +23,7 @@ codeunit 95707 "Sub Contract Batch2 Tst ori"
             MessageType := Enum::"Message Type ori"::FromInteger(OrdinalOf(TypeName));
             Assert.IsTrue(ContractMgt.GetContract(MessageType, Contract), TypeName + ' must declare a contract.');
             Assert.IsTrue(Contract.Contains('envelope'), TypeName + ' must declare envelope.');
+            Assert.IsTrue(Contract.Contains('parameters'), TypeName + ' must declare parameters.');
             Assert.IsTrue(Contract.Contains('response'), TypeName + ' must declare response.');
             Assert.IsTrue(Contract.Contains('errors'), TypeName + ' must declare errors.');
             Assert.IsTrue(Contract.Contains('effect'), TypeName + ' must declare effect.');

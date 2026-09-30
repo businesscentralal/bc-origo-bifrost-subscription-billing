@@ -35,13 +35,17 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori", "Ms
     end;
 
     procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Line.Create, Subscription, Line, Create, package, billing', Comment = 'is-IS=Subscription.Line.Create, áskrift, lína, stofna, pakki, reikningur';
     begin
-        exit(GetDescription());
+        exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Line.Create: Applies a package and creates subscription lines.', Comment = 'is-IS=Subscription.Line.Create: Beitir pakka og stofnar áskriftarlínur.';
     begin
-        exit(GetDescription());
+        exit(SelectionLbl);
     end;
 
     procedure GetEnvelope(var Envelope: JsonObject): Boolean

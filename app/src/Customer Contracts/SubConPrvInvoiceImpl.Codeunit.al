@@ -39,8 +39,19 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
         exit(DescriptionLbl);
     end;
 
-    procedure GetKeywords(): Text begin exit(GetDescription()); end;
-    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Contract.PreviewInvoice, Subscription, Contract, PreviewInvoice, customer, preview', Comment = 'is-IS=Subscription.Contract.PreviewInvoice, áskrift, samningur, forskoða reikning, viðskiptavinur, forskoðun';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Contract.PreviewInvoice: Previews a customer invoice without writing. Read-only.', Comment = 'is-IS=Subscription.Contract.PreviewInvoice: Forskoðar viðskiptareikning án þess að skrifa. Lesaðgerð.';
+    begin
+        exit(SelectionLbl);
+    end;
     procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
     procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
     procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;

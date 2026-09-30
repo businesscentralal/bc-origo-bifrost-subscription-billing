@@ -36,8 +36,19 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
         exit(DescriptionLbl);
     end;
 
-    procedure GetKeywords(): Text begin exit(GetDescription()); end;
-    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Deferral.Release, Subscription, Deferral, Release, deferred revenue, posting', Comment = 'is-IS=Subscription.Deferral.Release, áskrift, frestun, losa, frestaðar tekjur, bókun';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Deferral.Release: Releases deferred revenue or cost. Irreversible.', Comment = 'is-IS=Subscription.Deferral.Release: Losar frestaðar tekjur eða kostnað. Óafturkræf aðgerð.';
+    begin
+        exit(SelectionLbl);
+    end;
     procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
     procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
     procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;

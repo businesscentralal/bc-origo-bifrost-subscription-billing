@@ -34,8 +34,19 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
         exit(DescriptionLbl);
     end;
 
-    procedure GetKeywords(): Text begin exit(GetDescription()); end;
-    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.PriceUpdate.Perform, Subscription, PriceUpdate, Perform, apply prices, subscription lines', Comment = 'is-IS=Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.PriceUpdate.Perform: Applies a price update proposal. Irreversible.', Comment = 'is-IS=Subscription.PriceUpdate.Perform: Beitir tillögu að verðuppfærslu. Óafturkræf aðgerð.';
+    begin
+        exit(SelectionLbl);
+    end;
     procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
     procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
     procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;

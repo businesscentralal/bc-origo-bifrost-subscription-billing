@@ -36,8 +36,19 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
         exit(DescriptionLbl);
     end;
 
-    procedure GetKeywords(): Text begin exit(GetDescription()); end;
-    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Contract.UpdateLineDates, Subscription, Contract, UpdateLineDates, customer, dates', Comment = 'is-IS=Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, viðskiptavinur, dagsetningar';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Contract.UpdateLineDates: Recalculates customer contract line dates. Irreversible.', Comment = 'is-IS=Subscription.Contract.UpdateLineDates: Endurreiknar dagsetningar lína í viðskiptasamningi. Óafturkræf aðgerð.';
+    begin
+        exit(SelectionLbl);
+    end;
     procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
     procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
     procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;

@@ -40,8 +40,19 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
         exit(DescriptionLbl);
     end;
 
-    procedure GetKeywords(): Text begin exit(GetDescription()); end;
-    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Billing.PreviewDocuments, Subscription, Billing, PreviewDocuments, preview, invoice', Comment = 'is-IS=Subscription.Billing.PreviewDocuments, áskrift, reikningagerð, forskoða skjöl, forskoðun, reikningur';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Billing.PreviewDocuments: Previews the bulk billing run without writing. Read-only.', Comment = 'is-IS=Subscription.Billing.PreviewDocuments: Forskoðar magnreikningagerð án þess að skrifa. Lesaðgerð.';
+    begin
+        exit(SelectionLbl);
+    end;
     procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
     procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
     procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;

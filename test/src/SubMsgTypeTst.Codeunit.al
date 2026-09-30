@@ -120,6 +120,33 @@ codeunit 95701 "Sub Msg Type Tst ori"
     end;
 
     [Test]
+    procedure AllTypes_HaveDistinctDiscoveryText()
+    var
+        MessageTypeInterface: Interface "Msg Interface ori";
+        MessageType: Enum "Message Type ori";
+        Ordinal: Integer;
+        DescriptionText: Text;
+        KeywordsText: Text;
+        SelectionText: Text;
+    begin
+        // [GIVEN] The registered Subscription Billing message types
+        Initialize();
+
+        foreach Ordinal in Enum::"Message Type ori".Ordinals() do
+            if IsSubscriptionBillingType(Ordinal) then begin
+                MessageType := Enum::"Message Type ori".FromInteger(Ordinal);
+                MessageTypeInterface := MessageType;
+                DescriptionText := MessageTypeInterface.GetDescription();
+                KeywordsText := MessageTypeInterface.GetKeywords();
+                SelectionText := MessageTypeInterface.GetSelectionDescription();
+
+                // [THEN] Discovery provides dedicated text rather than reusing the description
+                Assert.AreNotEqual(DescriptionText, KeywordsText, StrSubstNo('%1 must have dedicated keywords.', Format(MessageType)));
+                Assert.AreNotEqual(DescriptionText, SelectionText, StrSubstNo('%1 must have a dedicated selection description.', Format(MessageType)));
+            end;
+    end;
+
+    [Test]
     procedure AllTypes_ReturnAHelpDocument()
     var
         TempArgument: Record "Message Argument ori" temporary;

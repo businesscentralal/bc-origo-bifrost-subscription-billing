@@ -39,8 +39,19 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
         exit(DescriptionLbl);
     end;
 
-    procedure GetKeywords(): Text begin exit(GetDescription()); end;
-    procedure GetSelectionDescription(): Text begin exit(GetDescription()); end;
+    procedure GetKeywords(): Text
+    var
+        KeywordsLbl: Label 'Subscription.Billing.CreateDocuments, Subscription, Billing, CreateDocuments, invoice, post', Comment = 'is-IS=Subscription.Billing.CreateDocuments, áskrift, reikningagerð, stofna skjöl, reikningur, bóka';
+    begin
+        exit(KeywordsLbl);
+    end;
+
+    procedure GetSelectionDescription(): Text
+    var
+        SelectionLbl: Label 'Subscription.Billing.CreateDocuments: Creates billing documents and may post them. Irreversible.', Comment = 'is-IS=Subscription.Billing.CreateDocuments: Stofnar reikningaskjöl og getur bókað þau. Óafturkræf aðgerð.';
+    begin
+        exit(SelectionLbl);
+    end;
     procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
     procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
     procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
