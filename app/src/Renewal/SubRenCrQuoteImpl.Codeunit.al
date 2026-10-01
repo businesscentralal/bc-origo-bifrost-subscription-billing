@@ -51,19 +51,60 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
     procedure GetWorkflow(var Workflow: JsonObject): Boolean
     begin
         Workflow := ContractParts.GetWorkflow(ContractType());
         exit(Workflow.Keys().Count() > 0);
     end;
+
     procedure GetExamples(var Examples: JsonArray): Boolean
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
@@ -73,12 +114,14 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
             '{"status":"Success","contractNo":"CC000010","renewalLinesCreated":4,"salesQuoteNo":"SQ000123"}'));
         exit(true);
     end;
+
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Creates a renewal sales quote for a Customer Subscription Contract through Microsoft''s Create Sub. Contract Renewal, without the interactive renewal ' +
             'wrapper, its dialog or request page.';
         exit(true);
     end;
+
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('Renewal lines left from an earlier run against the contract are deleted first. A renewal line is then built for every Subscription Line of the ' +
@@ -86,7 +129,11 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
             ContractParts.IsolationNote()).TrimEnd();
         exit(true);
     end;
-    local procedure ContractType(): Text begin exit('Subscription.Renewal.CreateQuote'); end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Renewal.CreateQuote');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

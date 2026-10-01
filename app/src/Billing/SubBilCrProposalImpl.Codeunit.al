@@ -46,19 +46,60 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
     procedure GetWorkflow(var Workflow: JsonObject): Boolean
     begin
         Workflow := ContractParts.GetWorkflow(ContractType());
         exit(Workflow.Keys().Count() > 0);
     end;
+
     procedure GetExamples(var Examples: JsonArray): Boolean
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
@@ -68,12 +109,14 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
             '{"status":"Success","billingTemplateCode":"MONTHLY","billingDate":"2026-08-31","billingToDate":"2026-09-30","proposalLinesCreated":12,"proposalLineCount":12,"contracts":["CC000010","CC000011"]}'));
         exit(true);
     end;
+
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Creates billing proposal lines (Billing Line) for a Billing Template: every Subscription Line due on or before the billing date that matches the ' +
             'template''s filter is proposed. Nothing is invoiced; Subscription.Billing.CreateDocuments turns the proposal into documents.';
         exit(true);
     end;
+
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('proposalLinesCreated counts what this call added; proposalLineCount and contracts cover every proposal line now standing for the template, including ' +
@@ -82,7 +125,11 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
             ContractParts.BooleanNote()).TrimEnd();
         exit(true);
     end;
-    local procedure ContractType(): Text begin exit('Subscription.Billing.CreateProposal'); end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Billing.CreateProposal');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

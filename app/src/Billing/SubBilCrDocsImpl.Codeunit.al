@@ -52,19 +52,60 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
     procedure GetWorkflow(var Workflow: JsonObject): Boolean
     begin
         Workflow := ContractParts.GetWorkflow(ContractType());
         exit(Workflow.Keys().Count() > 0);
     end;
+
     procedure GetExamples(var Examples: JsonArray): Boolean
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
@@ -74,12 +115,14 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
             '{"status":"Success","billingTemplateCode":"MONTHLY","billingLinesProcessed":12,"documentCount":5,"documents":[{"documentType":"Invoice","documentNo":"INV-000123","contractNo":"CC000010"}]}'));
         exit(true);
     end;
+
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Turns every unbilled Billing Line (Document Type None) under a Billing Template into sales or purchase documents, one per contract by default. Run ' +
             'Subscription.Billing.CreateProposal first.';
         exit(true);
     end;
+
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('The run is not atomic. Business Central commits each document as it creates it, so a failure part way, such as a posting error on one document, ' +
@@ -89,7 +132,11 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
             ContractParts.BooleanNote()).TrimEnd();
         exit(true);
     end;
-    local procedure ContractType(): Text begin exit('Subscription.Billing.CreateDocuments'); end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Billing.CreateDocuments');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

@@ -54,19 +54,60 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
     procedure GetWorkflow(var Workflow: JsonObject): Boolean
     begin
         Workflow := ContractParts.GetWorkflow(ContractType());
         exit(Workflow.Keys().Count() > 0);
     end;
+
     procedure GetExamples(var Examples: JsonArray): Boolean
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
@@ -76,12 +117,14 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
             '{"status":"Success","usageDataImportEntryNo":137,"steps":[{"step":"ProcessImportedLines","status":"Ok","reason":""},{"step":"CreateUsageDataBilling","status":"Ok","reason":""}],"processingStatus":"Ok","usageDataBillingCount":10,"usageDataBillingErrorCount":0}'));
         exit(true);
     end;
+
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Runs processing steps over an existing Usage Data Import: turning imported lines into quantities, creating Usage Data Billing rows, and processing ' +
             'those into billing lines. Each step runs Microsoft''s own codeunit for it.';
         exit(true);
     end;
+
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := 'Each step commits before it runs, so a later failure does not undo an earlier step; rerun the remaining steps instead. A step that fails on its own ' +
@@ -91,7 +134,11 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
             'setup problem, such as a Data Exchange Definition that did not match the file, to retry without sending the file again.';
         exit(true);
     end;
-    local procedure ContractType(): Text begin exit('Subscription.Usage.Process'); end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Usage.Process');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

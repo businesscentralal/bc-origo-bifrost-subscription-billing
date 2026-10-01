@@ -22,8 +22,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure AC01_OmittedSkipTake_DefaultsTo0And100_AndPagesGroups()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         ResponseJson: JsonObject;
         Documents: JsonArray;
     begin
@@ -47,8 +47,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure AC02_NegativeSkip_FailsWithFoundationError()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         RequestJson: JsonObject;
     begin
         // [SCENARIO] skip: -1 → Foundation Error.
@@ -70,8 +70,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure AC03_NegativeTake_FailsWithFoundationError()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         RequestJson: JsonObject;
     begin
         // [SCENARIO] take: -1 → Foundation Error.
@@ -93,8 +93,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure AC04_TakeAbove1000_IsClampedTo1000()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         ResponseJson: JsonObject;
     begin
         // [SCENARIO] take above Foundation max → clamped to 1000 (not rejected). No product clamp below 1000.
@@ -138,8 +138,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure DocumentCountDivergesFromPage_WhenTakeIsSmaller()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         ResponseJson: JsonObject;
     begin
         // [SCENARIO] take=2 with 5 groups → documentCount=5, documents.Count=2, hasMore=true.

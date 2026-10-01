@@ -47,19 +47,60 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
     procedure GetWorkflow(var Workflow: JsonObject): Boolean
     begin
         Workflow := ContractParts.GetWorkflow(ContractType());
         exit(Workflow.Keys().Count() > 0);
     end;
+
     procedure GetExamples(var Examples: JsonArray): Boolean
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
@@ -69,11 +110,13 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
             '{"status":"Success","analysisDate":"2026-08-30","entriesCreated":4,"totalEntries":96}'));
         exit(true);
     end;
+
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Runs Microsoft''s Create Contract Analysis report, which adds Sub. Contr. Analysis Entry rows for every Subscription Line that belongs to a contract.';
         exit(true);
     end;
+
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('The report takes no parameters: it always analyses as of the system date, not the work date, always covers every contract, and only adds. A line that ' +
@@ -82,7 +125,11 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
             ContractParts.IsolationNote()).TrimEnd();
         exit(true);
     end;
-    local procedure ContractType(): Text begin exit('Subscription.Analysis.Recalculate'); end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Analysis.Recalculate');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin

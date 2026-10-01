@@ -53,19 +53,60 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
     procedure GetWorkflow(var Workflow: JsonObject): Boolean
     begin
         Workflow := ContractParts.GetWorkflow(ContractType());
         exit(Workflow.Keys().Count() > 0);
     end;
+
     procedure GetExamples(var Examples: JsonArray): Boolean
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
@@ -75,12 +116,14 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
             '{"status":"Success","billingTemplateCode":"MONTHLY","skip":0,"take":50,"billingLineCount":12,"documentCount":5,"documents":[{"contractNo":"CC000010","partnerNo":"10000","lineCount":3,"totalAmount":"297"}],"hasMore":false,"warnings":[],"preview":true,"rollback":true}'));
         exit(true);
     end;
+
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Shows what Subscription.Billing.CreateDocuments would create for a Billing Template, by reading its unbilled proposal lines and grouping them as a ' +
             'real run would: one entry per document, per contract by default. Nothing is written.';
         exit(true);
     end;
+
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := 'Unlike the invoice previews, this type builds no proposal lines and needs no cleanup; preview and rollback are true because nothing was written. A ' +
@@ -89,7 +132,11 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
             'defaults to 0, take defaults to 100 (also when 0) and is clamped to the hard maximum of 1000; negative values are refused.';
         exit(true);
     end;
-    local procedure ContractType(): Text begin exit('Subscription.Billing.PreviewDocuments'); end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Billing.PreviewDocuments');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
