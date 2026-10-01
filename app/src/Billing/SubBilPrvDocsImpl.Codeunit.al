@@ -96,13 +96,6 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        BilHelp: Codeunit "Sub Bil Help ori";
-    begin
-        Argument.SetResponseMarkdown(BilHelp.GetHelpMarkdown('Subscription.Billing.PreviewDocuments'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

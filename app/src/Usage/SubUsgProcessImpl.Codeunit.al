@@ -98,13 +98,6 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        UsgHelp: Codeunit "Sub Usg Help ori";
-    begin
-        Argument.SetResponseMarkdown(UsgHelp.GetHelpMarkdown('Subscription.Usage.Process'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

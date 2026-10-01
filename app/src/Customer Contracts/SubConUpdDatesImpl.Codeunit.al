@@ -88,14 +88,6 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    /// <summary>Builds the Markdown help document returned when the message type is inspected.</summary>
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        ConHelp: Codeunit "Sub Con Help ori";
-    begin
-        Argument.SetResponseMarkdown(ConHelp.GetHelpMarkdown('Subscription.Contract.UpdateLineDates'));
-    end;
-
     /// <summary>Always responds with a structured error - see the class summary for why this message type cannot write.</summary>
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin

@@ -85,13 +85,6 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        PUHelp: Codeunit "Sub PU Help ori";
-    begin
-        Argument.SetResponseMarkdown(PUHelp.GetHelpMarkdown('Subscription.PriceUpdate.Perform'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin
         Argument.AssertVersion1();

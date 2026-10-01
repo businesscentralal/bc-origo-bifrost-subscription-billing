@@ -86,13 +86,6 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        PUHelp: Codeunit "Sub PU Help ori";
-    begin
-        Argument.SetResponseMarkdown(PUHelp.GetHelpMarkdown('Subscription.PriceUpdate.CreateProposal'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin
         Argument.AssertVersion1();

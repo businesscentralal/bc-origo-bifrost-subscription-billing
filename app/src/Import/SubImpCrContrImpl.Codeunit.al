@@ -96,13 +96,6 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        ImpHelp: Codeunit "Sub Imp Help ori";
-    begin
-        Argument.SetResponseMarkdown(ImpHelp.GetHelpMarkdown('Subscription.Import.CreateContracts'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

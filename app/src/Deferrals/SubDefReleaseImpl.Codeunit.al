@@ -93,13 +93,6 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        DefHelp: Codeunit "Sub Def Help ori";
-    begin
-        Argument.SetResponseMarkdown(DefHelp.GetHelpMarkdown('Subscription.Deferral.Release'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

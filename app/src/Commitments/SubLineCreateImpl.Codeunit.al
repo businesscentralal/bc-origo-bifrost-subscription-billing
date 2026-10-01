@@ -136,14 +136,6 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    /// <summary>Builds the Markdown help document returned when the message type is inspected.</summary>
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        LineHelp: Codeunit "Sub Line Help ori";
-    begin
-        Argument.SetResponseMarkdown(LineHelp.GetHelpMarkdown('Subscription.Line.Create'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

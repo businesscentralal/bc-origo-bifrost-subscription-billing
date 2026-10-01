@@ -94,13 +94,6 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        RenHelp: Codeunit "Sub Ren Help ori";
-    begin
-        Argument.SetResponseMarkdown(RenHelp.GetHelpMarkdown('Subscription.Renewal.Extend'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

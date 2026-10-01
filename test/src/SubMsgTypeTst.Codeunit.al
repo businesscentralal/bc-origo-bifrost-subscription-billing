@@ -6,9 +6,10 @@ using System.TestLibraries.Utilities;
 
 /// <summary>
 /// Contract tests over every Subscription Billing message type. They assert the registration
-/// itself: that each type resolves to an implementation, describes itself, and returns a usable
-/// help document. These are the guarantees the Bifrost discovery surface depends on, and
-/// they hold without any Subscription Billing master data in the company.
+/// itself: that each type resolves to an implementation, describes itself, and answers
+/// Help.Implementation.Get with contract chapters. These are the guarantees the Bifrost
+/// discovery surface depends on, and they hold without any Subscription Billing master data
+/// in the company.
 /// </summary>
 codeunit 95701 "Sub Msg Type Tst ori"
 {
@@ -149,13 +150,12 @@ codeunit 95701 "Sub Msg Type Tst ori"
     end;
 
     [Test]
-    procedure AllTypes_ReturnAHelpDocument()
+    procedure AllTypes_HaveAnOverviewAndNotes()
     var
-        TempArgument: Record "Message Argument ori" temporary;
-        MessageTypeInterface: Interface "Msg Interface ori";
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
         MessageType: Enum "Message Type ori";
+        Contract: JsonObject;
         Ordinal: Integer;
-        HelpText: Text;
     begin
         // [GIVEN] The registered Subscription Billing message types
         Initialize();
@@ -163,40 +163,23 @@ codeunit 95701 "Sub Msg Type Tst ori"
         foreach Ordinal in Enum::"Message Type ori".Ordinals() do
             if IsSubscriptionBillingType(Ordinal) then begin
                 MessageType := Enum::"Message Type ori".FromInteger(Ordinal);
-                MessageTypeInterface := MessageType;
 
-                TempArgument.Reset();
-                TempArgument.DeleteAll();
-                TempArgument.Init();
-                TempArgument."Type" := MessageType;
-                // GetResponseText calls CalcFields, which reads the BLOB back from the (temporary)
-                // table - the record has to exist there or the response comes back empty.
-                TempArgument.Insert();
+                // [WHEN] The contract is read, which is what Help.Implementation.Get returns
+                ContractMgt.GetContract(MessageType, Contract);
 
-                // [WHEN] The help document is requested, which is what Help.Implementation.Get calls
-                MessageTypeInterface.GetMessageHelpAsMarkdownDocument(TempArgument);
-                HelpText := TempArgument.GetResponseText();
-
-                // [THEN] A markdown document comes back, titled after the message type
-                Assert.AreNotEqual('', HelpText, StrSubstNo('%1 must return a help document.', Format(MessageType)));
-                Assert.AreEqual(
-                    TempArgument.GetContentTypeMarkdown(),
-                    TempArgument."Content Type",
-                    StrSubstNo('%1 help must be served as markdown.', Format(MessageType)));
-                Assert.IsTrue(
-                    StrPos(HelpText, '# ' + Format(MessageType)) > 0,
-                    StrSubstNo('The help document for %1 should be titled with the message type name.', Format(MessageType)));
+                // [THEN] It explains the type in text, which is where the old help's prose now lives
+                Assert.AreNotEqual('', ReadChapterText(Contract, 'overview'), StrSubstNo('%1 must have an overview chapter.', Format(MessageType)));
+                Assert.AreNotEqual('', ReadChapterText(Contract, 'notes'), StrSubstNo('%1 must have a notes chapter.', Format(MessageType)));
             end;
     end;
 
     [Test]
-    procedure AllTypes_HelpDocumentsTheRequestAndResponse()
+    procedure AllTypes_ContractDocumentsTheRequestAndResponse()
     var
-        TempArgument: Record "Message Argument ori" temporary;
-        MessageTypeInterface: Interface "Msg Interface ori";
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
         MessageType: Enum "Message Type ori";
+        Contract: JsonObject;
         Ordinal: Integer;
-        HelpText: Text;
     begin
         // [GIVEN] The registered Subscription Billing message types
         Initialize();
@@ -204,26 +187,16 @@ codeunit 95701 "Sub Msg Type Tst ori"
         foreach Ordinal in Enum::"Message Type ori".Ordinals() do
             if IsSubscriptionBillingType(Ordinal) then begin
                 MessageType := Enum::"Message Type ori".FromInteger(Ordinal);
-                MessageTypeInterface := MessageType;
 
-                TempArgument.Reset();
-                TempArgument.DeleteAll();
-                TempArgument.Init();
-                TempArgument."Type" := MessageType;
-                // GetResponseText calls CalcFields, which reads the BLOB back from the (temporary)
-                // table - the record has to exist there or the response comes back empty.
-                TempArgument.Insert();
+                // [WHEN] The contract is read
+                ContractMgt.GetContract(MessageType, Contract);
 
-                // [WHEN] The help document is read
-                MessageTypeInterface.GetMessageHelpAsMarkdownDocument(TempArgument);
-                HelpText := TempArgument.GetResponseText();
-
-                // [THEN] It carries the sections a caller needs to build a request and read the answer
-                Assert.IsTrue(StrPos(HelpText, '## Overview') > 0, StrSubstNo('%1 help needs an Overview section.', Format(MessageType)));
-                Assert.IsTrue(StrPos(HelpText, '## Request Parameters') > 0, StrSubstNo('%1 help needs a Request Parameters section.', Format(MessageType)));
-                Assert.IsTrue(StrPos(HelpText, '## Response Shape') > 0, StrSubstNo('%1 help needs a Response Shape section.', Format(MessageType)));
-                Assert.IsTrue(StrPos(HelpText, '## Errors') > 0, StrSubstNo('%1 help needs an Errors section.', Format(MessageType)));
-                Assert.IsTrue(StrPos(HelpText, '## Safety') > 0, StrSubstNo('%1 help needs a Safety section.', Format(MessageType)));
+                // [THEN] It carries the chapters a caller needs to build a request and read the answer
+                Assert.IsTrue(Contract.Contains('envelope'), StrSubstNo('%1 needs an envelope chapter.', Format(MessageType)));
+                Assert.IsTrue(Contract.Contains('parameters'), StrSubstNo('%1 needs a parameters chapter.', Format(MessageType)));
+                Assert.IsTrue(Contract.Contains('response'), StrSubstNo('%1 needs a response chapter.', Format(MessageType)));
+                Assert.IsTrue(Contract.Contains('errors'), StrSubstNo('%1 needs an errors chapter.', Format(MessageType)));
+                Assert.IsTrue(Contract.Contains('effect'), StrSubstNo('%1 needs an effect chapter.', Format(MessageType)));
             end;
     end;
 
@@ -236,5 +209,14 @@ codeunit 95701 "Sub Msg Type Tst ori"
     local procedure IsSubscriptionBillingType(Ordinal: Integer): Boolean
     begin
         exit((Ordinal >= FirstTypeOrdinal) and (Ordinal <= LastTypeOrdinal));
+    end;
+
+    local procedure ReadChapterText(Contract: JsonObject; ChapterKey: Text): Text
+    var
+        Token: JsonToken;
+    begin
+        if not Contract.Get(ChapterKey, Token) then
+            exit('');
+        exit(Token.AsValue().AsText());
     end;
 }

@@ -89,13 +89,6 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        AnaHelp: Codeunit "Sub Ana Help ori";
-    begin
-        Argument.SetResponseMarkdown(AnaHelp.GetHelpMarkdown('Subscription.Analysis.Recalculate'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

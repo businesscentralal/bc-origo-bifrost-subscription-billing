@@ -89,14 +89,6 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori", "M
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    /// <summary>Builds the Markdown help document returned when the message type is inspected.</summary>
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        ConHelp: Codeunit "Sub Con Help ori";
-    begin
-        Argument.SetResponseMarkdown(ConHelp.GetHelpMarkdown('Subscription.Contract.GetLines'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

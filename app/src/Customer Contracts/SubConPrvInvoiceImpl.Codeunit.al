@@ -96,14 +96,6 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    /// <summary>Builds the Markdown help document returned when the message type is inspected.</summary>
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        ConHelp: Codeunit "Sub Con Help ori";
-    begin
-        Argument.SetResponseMarkdown(ConHelp.GetHelpMarkdown('Subscription.Contract.PreviewInvoice'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         BillingLine: Record "Billing Line";

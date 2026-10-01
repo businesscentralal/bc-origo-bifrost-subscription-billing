@@ -95,13 +95,6 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        VendHelp: Codeunit "Sub Vend Help ori";
-    begin
-        Argument.SetResponseMarkdown(VendHelp.GetHelpMarkdown('Subscription.VendorContract.CreateInvoice'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

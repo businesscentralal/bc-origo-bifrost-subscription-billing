@@ -89,13 +89,6 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        VendHelp: Codeunit "Sub Vend Help ori";
-    begin
-        Argument.SetResponseMarkdown(VendHelp.GetHelpMarkdown('Subscription.VendorContract.GetLines'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";

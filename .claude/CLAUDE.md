@@ -19,14 +19,17 @@ App:
 - 10035059 codeunit `Sub Write Process ori`
 - 10035060 codeunit `Sub Registration ori` (registers the app with Foundation's `App Registry ori`)
 - 10035062-10035064 the three permission sets
-- 10035065-10035074 the ten `Sub <Domain> Help ori` codeunits
-- Free: 10035061, 10035075-10035084
+- 10035075 codeunit `Sub Contract Parts ori` (shared contract chapters, #18)
+- Freed by #19: 10035065-10035074, the ten markdown help codeunits `Sub <Domain> Help ori`
+  (Line, Con, Vend, Bil, PU, Ren, Usg, Def, Ana, Imp), deleted with `GetMessageHelpAsMarkdownDocument`
+- Free: 10035061, 10035065-10035074, 10035076-10035084
 
 Tests:
 - 95700 `Sub Test Install ori`, 95701 `Sub Msg Type Tst ori`, 95702 `Sub Helper Tst ori`,
   95703 `Sub Test Upgrade ori`, 95704 `Sub Registration Tst ori`
 - 95705 `Sub Bil PrvDocs SkipTst ori`
-- Free: 95706-95799
+- 95706 `Sub Contract Batch1 Tst ori`, 95707 `Sub Contract Batch2 Tst ori` (#18)
+- Free: 95708-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
@@ -46,7 +49,8 @@ Repository: bc-origo-bifrost-subscription-billing
 Default branch: main
 
 ## Dependencies
-- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.0.110)
+- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.0.187, a build
+  without `GetMessageHelpAsMarkdownDocument` on `Msg Interface ori`, core#198)
 - Subscription Billing (Microsoft, 28.0.0.0)
 
 ## Naming Rules
@@ -75,7 +79,7 @@ Key rules always in effect:
 - `SetLoadFields` on all record reads
 - `Format(guid, 0, 4)` for GUIDs, `Format(value, 0, 9)` / `Evaluate(var, text, 9)` for culture-invariant serialization
 - Never use `Format()` / `Evaluate()` on enum values - use `.Names()`, `.Ordinals()`, `.AsInteger()`, `.FromInteger()`
-- Implementation = code + tests + documentation (help text returned by `GetMessageHelpAsMarkdownDocument`)
+- Implementation = code + tests + documentation (the contract chapters of `Msg Contract ori`)
 
 ## Development Environment
 - Two COSMO Alpaca containers, both defined in `app/.vscode/launch.json` (git-ignored, the authority
@@ -98,9 +102,12 @@ Key rules always in effect:
 - Enum extension `Sub Msg Type ori` (10035035) extends Foundation's `Message Type ori` with 22
   values, all named `Subscription.<Domain>.<Verb>` (`Help.Bifrost.Get` lists every type) - these
   keys are the published external API contract and must never be renamed or removed.
-- Each type has a `Sub <Domain><Verb> Impl ori` codeunit implementing `Msg Interface ori`; help is
-  returned inline by each Impl's `GetMessageHelpAsMarkdownDocument` (this app has not yet moved to
-  the shared per-domain Help codeunit pattern used by Foundation/Nornir - see CHANGELOG 29.0.0.0).
+- Each type has a `Sub <Domain><Verb> Impl ori` codeunit implementing `Msg Interface ori`,
+  `Msg Discovery ori` and `Msg Contract ori`. A type describes itself only through its contract
+  chapters, which `Help.Implementation.Get` returns: envelope, target, parameters, response,
+  errors, effect, related and workflow are built per type name in `Sub Contract Parts ori`;
+  overview, notes and examples live on the Impl codeunit. There is no markdown help procedure and
+  no help codeunit (removed in #19, following core#198).
 - `Sub Write Process ori` runs writes in an isolated transaction so a failed write always rolls back
   cleanly, mirroring Foundation's own write-process pattern.
 - Errors must be returned as `status = Error` with a helpful message; never let an unhandled

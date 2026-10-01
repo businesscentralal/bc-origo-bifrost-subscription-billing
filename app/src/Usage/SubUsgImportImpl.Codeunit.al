@@ -95,13 +95,6 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        UsgHelp: Codeunit "Sub Usg Help ori";
-    begin
-        Argument.SetResponseMarkdown(UsgHelp.GetHelpMarkdown('Subscription.Usage.ImportData'));
-    end;
-
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         WriteProcess: Codeunit "Sub Write Process ori";
