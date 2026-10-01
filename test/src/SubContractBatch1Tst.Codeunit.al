@@ -44,12 +44,40 @@ codeunit 95706 "Sub Contract Batch1 Tst ori"
         AssertEffect('Subscription.VendorContract.GetLines', 'write');
         AssertEffect('Subscription.VendorContract.CreateInvoice', 'irreversible');
         AssertEffect('Subscription.VendorContract.PreviewInvoice', 'read');
-        AssertEffect('Subscription.Billing.CreateProposal', 'write');
+        AssertEffect('Subscription.Billing.CreateProposal', 'irreversible');
         AssertEffect('Subscription.Billing.CreateDocuments', 'irreversible');
         AssertEffect('Subscription.Billing.PreviewDocuments', 'read');
         AssertEffect('Subscription.PriceUpdate.SetTemplateFilter', 'write');
         AssertEffect('Subscription.PriceUpdate.CreateProposal', 'write');
         AssertEffect('Subscription.PriceUpdate.Perform', 'irreversible');
+    end;
+
+    [Test]
+    procedure CommittingTypes_AreIrreversible_WriteTypesStayWrite()
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+        Contract: JsonObject;
+        Effect: JsonObject;
+        Token: JsonToken;
+    begin
+        // [SCENARIO #22] Microsoft's billing proposal commits every CommitBatchSize contracts, so the type is irreversible
+        AssertEffect('Subscription.Billing.CreateProposal', 'irreversible');
+        ContractMgt.GetContract(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", Contract);
+        Contract.Get('effect', Token);
+        Effect := Token.AsObject();
+        Effect.Get('changes', Token);
+        Assert.IsTrue(Token.AsValue().AsText().Contains('CommitBatchSize'), 'The changes text must name the CommitBatchSize commit.');
+
+        // [THEN] The six types that only write inside the caller's transaction stay write, and the previews stay read
+        AssertEffect('Subscription.Line.Create', 'write');
+        AssertEffect('Subscription.Contract.GetLines', 'write');
+        AssertEffect('Subscription.VendorContract.GetLines', 'write');
+        AssertEffect('Subscription.PriceUpdate.SetTemplateFilter', 'write');
+        AssertEffect('Subscription.PriceUpdate.CreateProposal', 'write');
+        AssertEffect('Subscription.Analysis.Recalculate', 'write');
+        AssertEffect('Subscription.Contract.PreviewInvoice', 'read');
+        AssertEffect('Subscription.VendorContract.PreviewInvoice', 'read');
+        AssertEffect('Subscription.Billing.PreviewDocuments', 'read');
     end;
 
     local procedure AssertEffect(TypeName: Text; Expected: Text)
