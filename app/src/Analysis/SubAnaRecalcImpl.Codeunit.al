@@ -47,30 +47,93 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
-    local procedure ContractType(): Text begin exit('Subscription.Analysis.Recalculate'); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Recalculate and count one contract',
+            '{"type":"Subscription.Analysis.Recalculate","data":{"contractNo":"CC000010"}}',
+            '{"status":"Success","analysisDate":"2026-08-30","entriesCreated":4,"totalEntries":96}'));
+        exit(true);
+    end;
+
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Runs Microsoft''s Create Contract Analysis report, which adds Sub. Contr. Analysis Entry rows for every Subscription Line that belongs to a contract.';
+        exit(true);
+    end;
+
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := ('The report takes no parameters: it always analyses as of the system date, not the work date, always covers every contract, and only adds. A line that ' +
+            'already has an entry for the current month is skipped, so a second call in the same month adds nothing and still succeeds. contractNo only narrows ' +
+            'the counts in the answer. The report writes only the analysis entries; no ledger, contract or Subscription Line changes. ' +
+            ContractParts.IsolationNote()).TrimEnd();
+        exit(true);
+    end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Analysis.Recalculate');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
-    end;
-
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        AnaHelp: Codeunit "Sub Ana Help ori";
-    begin
-        Argument.SetResponseMarkdown(AnaHelp.GetHelpMarkdown('Subscription.Analysis.Recalculate'));
     end;
 
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")

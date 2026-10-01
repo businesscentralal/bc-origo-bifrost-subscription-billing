@@ -53,30 +53,94 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
-    local procedure ContractType(): Text begin exit('Subscription.Import.CreateContracts'); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Run all stages',
+            '{"type":"Subscription.Import.CreateContracts","data":{}}',
+            '{"status":"Success","stages":[{"stage":"SubscriptionHeaders","processed":5,"succeeded":5,"failed":0},{"stage":"CustomerContracts","processed":5,"succeeded":4,"failed":1},{"stage":"SubscriptionLines","processed":5,"succeeded":5,"failed":0},{"stage":"ContractLines","processed":5,"succeeded":4,"failed":1}],"errors":[{"stage":"CustomerContracts","key":"12","error":"..."}]}'));
+        exit(true);
+    end;
+
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Turns staged import rows (Imported Subscription Header, Imported Cust. Sub. Contract, Imported Subscription Line) into Subscription Headers, Customer ' +
+            'Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines, through Microsoft''s import codeunits.';
+        exit(true);
+    end;
+
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := 'The stages run in a fixed order, because each needs the keys the earlier ones wrote back onto the staging rows. Each stage picks up only rows whose ' +
+            'created flag is still false, so a second call processes only what is outstanding. A failing row does not stop the batch: its error text is stored on ' +
+            'the staging row and committed, and the next row is tried. A failed row is reported in stages and errors while the call still answers Success. The run ' +
+            'cannot be rolled back as a whole once it has started.';
+        exit(true);
+    end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.Import.CreateContracts');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
-    end;
-
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        ImpHelp: Codeunit "Sub Imp Help ori";
-    begin
-        Argument.SetResponseMarkdown(ImpHelp.GetHelpMarkdown('Subscription.Import.CreateContracts'));
     end;
 
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")

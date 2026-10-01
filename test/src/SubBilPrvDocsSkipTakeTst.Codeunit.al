@@ -22,8 +22,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure AC01_OmittedSkipTake_DefaultsTo0And100_AndPagesGroups()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         ResponseJson: JsonObject;
         Documents: JsonArray;
     begin
@@ -47,8 +47,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure AC02_NegativeSkip_FailsWithFoundationError()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         RequestJson: JsonObject;
     begin
         // [SCENARIO] skip: -1 → Foundation Error.
@@ -70,8 +70,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure AC03_NegativeTake_FailsWithFoundationError()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         RequestJson: JsonObject;
     begin
         // [SCENARIO] take: -1 → Foundation Error.
@@ -93,8 +93,8 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     [Test]
     procedure AC04_TakeAbove1000_IsClampedTo1000()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         ResponseJson: JsonObject;
     begin
         // [SCENARIO] take above Foundation max → clamped to 1000 (not rejected). No product clamp below 1000.
@@ -113,33 +113,33 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     end;
 
     [Test]
-    procedure AC05_HelpContainsPaginationLimits1000()
+    procedure AC05_ContractDocumentsPaginationLimits1000()
     var
-        TempArgument: Record "Message Argument ori" temporary;
-        MsgInterface: Interface "Msg Interface ori";
-        HelpText: Text;
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+        Contract: JsonObject;
+        SkipParameter: JsonObject;
+        TakeParameter: JsonObject;
     begin
-        // [SCENARIO] PreviewDocuments help includes ## Pagination Limits with Foundation ceiling 1000.
+        // [SCENARIO] The PreviewDocuments contract documents skip and take with their defaults and the Foundation ceiling 1000.
         Initialize();
 
-        TempArgument.Init();
-        TempArgument."Type" := Enum::"Message Type ori"::"Subscription.Billing.PreviewDocuments";
-        TempArgument.Insert(true);
-        MsgInterface := TempArgument."Type";
-        MsgInterface.GetMessageHelpAsMarkdownDocument(TempArgument);
-        HelpText := TempArgument.GetResponseText();
+        // [WHEN] The contract chapters are read, as Help.Implementation.Get reads them
+        ContractMgt.GetContract(Enum::"Message Type ori"::"Subscription.Billing.PreviewDocuments", Contract);
 
-        Assert.IsTrue(HelpText.Contains('## Pagination Limits'), 'Help must include ## Pagination Limits.');
-        Assert.IsTrue(HelpText.Contains('hard maximum of 1000'), 'Help must document Foundation ceiling 1000.');
-        Assert.IsTrue(HelpText.Contains('skip'), 'Help must document skip.');
-        Assert.IsTrue(HelpText.Contains('take'), 'Help must document take.');
+        // [THEN] skip and take are parameters with their defaults, and the ceiling is stated
+        Assert.IsTrue(FindParameter(Contract, 'skip', SkipParameter), 'The parameters chapter must document skip.');
+        Assert.IsTrue(FindParameter(Contract, 'take', TakeParameter), 'The parameters chapter must document take.');
+        Assert.AreEqual(0, ReadInteger(SkipParameter, 'default'), 'skip must default to 0.');
+        Assert.AreEqual(100, ReadInteger(TakeParameter, 'default'), 'take must default to 100.');
+        Assert.IsTrue(ReadText(TakeParameter, 'description').Contains('1000'), 'The take parameter must state the ceiling 1000.');
+        Assert.IsTrue(ReadText(Contract, 'notes').Contains('hard maximum of 1000'), 'The notes must document the Foundation ceiling 1000.');
     end;
 
     [Test]
     procedure DocumentCountDivergesFromPage_WhenTakeIsSmaller()
     var
-        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         TempArgument: Record "Message Argument ori" temporary;
+        Impl: Codeunit "Sub Bil PrvDocs Impl ori";
         ResponseJson: JsonObject;
     begin
         // [SCENARIO] take=2 with 5 groups → documentCount=5, documents.Count=2, hasMore=true.
@@ -270,5 +270,17 @@ codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
     begin
         Assert.IsTrue(Json.Get(Name, Token), StrSubstNo('Missing property %1', Name));
         exit(Token.AsArray());
+    end;
+
+    local procedure FindParameter(Contract: JsonObject; Name: Text; var Parameter: JsonObject): Boolean
+    var
+        Token: JsonToken;
+    begin
+        foreach Token in ReadArray(Contract, 'parameters') do
+            if ReadText(Token.AsObject(), 'name') = Name then begin
+                Parameter := Token.AsObject();
+                exit(true);
+            end;
+        exit(false);
     end;
 }

@@ -54,30 +54,94 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
     begin
         exit(SelectionLbl);
     end;
-    procedure GetEnvelope(var Envelope: JsonObject): Boolean begin Envelope := ContractParts.GetEnvelope(ContractType()); exit(true); end;
-    procedure GetTarget(var Target: JsonArray): Boolean begin Target := ContractParts.GetTarget(ContractType()); exit(Target.Count() > 0); end;
-    procedure GetParameters(var Parameters: JsonArray): Boolean begin Parameters := ContractParts.GetParameters(ContractType()); exit(true); end;
-    procedure GetResponse(var Response: JsonObject): Boolean begin Response := ContractParts.GetResponse(ContractType()); exit(true); end;
-    procedure GetErrors(var Errors: JsonArray): Boolean begin Errors := ContractParts.GetErrors(ContractType()); exit(true); end;
-    procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
-    procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
-    procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
-    local procedure ContractType(): Text begin exit('Subscription.PriceUpdate.SetTemplateFilter'); end;
+
+    procedure GetEnvelope(var Envelope: JsonObject): Boolean
+    begin
+        Envelope := ContractParts.GetEnvelope(ContractType());
+        exit(true);
+    end;
+
+    procedure GetTarget(var Target: JsonArray): Boolean
+    begin
+        Target := ContractParts.GetTarget(ContractType());
+        exit(Target.Count() > 0);
+    end;
+
+    procedure GetParameters(var Parameters: JsonArray): Boolean
+    begin
+        Parameters := ContractParts.GetParameters(ContractType());
+        exit(true);
+    end;
+
+    procedure GetResponse(var Response: JsonObject): Boolean
+    begin
+        Response := ContractParts.GetResponse(ContractType());
+        exit(true);
+    end;
+
+    procedure GetErrors(var Errors: JsonArray): Boolean
+    begin
+        Errors := ContractParts.GetErrors(ContractType());
+        exit(true);
+    end;
+
+    procedure GetEffect(var Effect: JsonObject): Boolean
+    begin
+        Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    procedure GetMetering(var Metering: JsonObject): Boolean
+    begin
+        exit(false);
+    end;
+
+    procedure GetRelated(var Related: JsonArray): Boolean
+    begin
+        Related := ContractParts.GetRelated(ContractType());
+        exit(Related.Count() > 0);
+    end;
+
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Limit a template to one contract',
+            '{"type":"Subscription.PriceUpdate.SetTemplateFilter","subject":"ANNUAL","data":{"target":"contract","filter":"WHERE(No.=FILTER(CC000010))"}}',
+            '{"status":"Success","priceUpdateTemplateCode":"ANNUAL","target":"contract","filter":"<normalised view>","filters":{"contract":"<normalised view>","subscription":"","line":""}}'));
+        exit(true);
+    end;
+
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Writes one of the three view filters of a Price Update Template: the contract, subscription or line filter. The view is normalised through a ' +
+            'RecordRef of the target table before it is stored, in the syntax the Contract Price Update page stores.';
+        exit(true);
+    end;
+
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := ('The contract filter applies to Customer Subscription Contract when the template''s Partner is Customer, otherwise to Vendor Subscription Contract. A ' +
+            'view without filters clears the stored filter. filters reports all three stored filters after the write, so a caller can confirm the other two were ' +
+            'left alone; an empty string means no filter. ' +
+            ContractParts.IsolationNote()).TrimEnd();
+        exit(true);
+    end;
+
+    local procedure ContractType(): Text
+    begin
+        exit('Subscription.PriceUpdate.SetTemplateFilter');
+    end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
     begin
         exit(Enum::"Msg Direction ori"::Inbound);
-    end;
-
-    procedure GetMessageHelpAsMarkdownDocument(var Argument: Record "Message Argument ori")
-    var
-        PUHelp: Codeunit "Sub PU Help ori";
-    begin
-        Argument.SetResponseMarkdown(PUHelp.GetHelpMarkdown('Subscription.PriceUpdate.SetTemplateFilter'));
     end;
 
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")

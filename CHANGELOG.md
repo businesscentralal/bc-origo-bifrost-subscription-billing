@@ -2,6 +2,37 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-01) - Billing.CreateProposal is irreversible (issue #22)
+
+- `Subscription.Billing.CreateProposal` now declares effect `irreversible`. Microsoft Subscription
+  Billing's `CreateBillingProposal` commits the proposal lines every `CommitBatchSize` (50) contracts,
+  so the run cannot roll back with the caller's transaction. The `changes` text and the notes say so.
+- The contract test asserts the new effect and that the six types that only write inside the caller's
+  transaction (Line.Create, Contract.GetLines, VendorContract.GetLines, PriceUpdate.SetTemplateFilter,
+  PriceUpdate.CreateProposal, Analysis.Recalculate) stay `write`, and the three previews stay `read`.
+
+### Removed (2026-10-01) - markdown help (issue #19)
+
+- `GetMessageHelpAsMarkdownDocument` is gone from all 22 message type codeunits, following its
+  removal from Foundation's `Msg Interface ori` (core#198). Every type describes itself only through
+  its contract chapters, which `Help.Implementation.Get` returns.
+- Deleted the ten markdown help codeunits `Sub <Domain> Help ori` (ids 10035065-10035074, now free)
+  and their permission lines.
+- Tests read the contract chapters through `Msg Contract Mgt ori.GetContract` instead of the markdown.
+- Pinned Bifrost Foundation 28.0.0.186, the first build without the procedure, in the app and the test app.
+- The contract and interface procedures of the message type codeunits are written one statement per
+  line, which clears the CodeCop AA0018 warnings.
+
+### Changed (2026-10-01) - help facts moved into the contract chapters (issue #18)
+
+- Every fact the markdown help still carried, checked against the code, is now in a contract chapter:
+  per-type subject use and target, parameters with defaults, date format and allowed values, the full
+  response fields, the error texts the code answers with, per-type `changes` and `preconditions`,
+  related types and domain workflows, and an overview, notes and examples for every type.
+- Where the old help or the earlier contract disagreed with the code, the chapters now follow the code;
+  for example the PreviewInvoice response fields, the CreateQuote `salesQuoteNo` field, the Usage.Process
+  step order, and Analysis.Recalculate's `contractNo`, which narrows only the counts.
+
 ### Fixed (2026-09-30) - Foundation floor, is-IS xlf, Recalculate effect (post-#20) (#21)
 
 - Pinned Bifrost Foundation to 28.0.0.166 in the app and the test app. 28.0.1.0 is not a
