@@ -42,7 +42,7 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Billing.CreateProposal: Generates billing proposal lines.', Comment = 'is-IS=Subscription.Billing.CreateProposal: Býr til línur í reikningatillögu.';
+        SelectionLbl: Label 'Subscription.Billing.CreateProposal: Irreversible. Generates billing proposal lines; Microsoft Subscription Billing commits them every 50 contracts.', Comment = 'is-IS=Subscription.Billing.CreateProposal: Óafturkræft. Býr til línur í reikningatillögu; Microsoft Subscription Billing vistar þær eftir hverja 50 samninga.';
     begin
         exit(SelectionLbl);
     end;

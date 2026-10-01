@@ -19,7 +19,7 @@
 - Deleted the ten markdown help codeunits `Sub <Domain> Help ori` (ids 10035065-10035074, now free)
   and their permission lines.
 - Tests read the contract chapters through `Msg Contract Mgt ori.GetContract` instead of the markdown.
-- Pinned Bifrost Foundation 28.0.0.187 in the app and the test app.
+- Pinned Bifrost Foundation 28.0.0.186, the first build without the procedure, in the app and the test app.
 - The contract and interface procedures of the message type codeunits are written one statement per
   line, which clears the CodeCop AA0018 warnings.
 

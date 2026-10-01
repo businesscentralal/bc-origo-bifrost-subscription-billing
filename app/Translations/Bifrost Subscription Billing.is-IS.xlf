@@ -94,9 +94,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrProposal Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 794001358 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Billing.CreateProposal: Generates billing proposal lines.</source>
-          <target>Subscription.Billing.CreateProposal: Býr til línur í reikningatillögu.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.CreateProposal: Býr til línur í reikningatillögu.</note>
+          <source>Subscription.Billing.CreateProposal: Irreversible. Generates billing proposal lines; Microsoft Subscription Billing commits them every 50 contracts.</source>
+          <target>Subscription.Billing.CreateProposal: Óafturkræft. Býr til línur í reikningatillögu; Microsoft Subscription Billing vistar þær eftir hverja 50 samninga.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.CreateProposal: Óafturkræft. Býr til línur í reikningatillögu; Microsoft Subscription Billing vistar þær eftir hverja 50 samninga.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
