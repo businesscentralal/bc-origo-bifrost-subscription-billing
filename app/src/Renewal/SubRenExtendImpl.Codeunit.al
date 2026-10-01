@@ -59,10 +59,34 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Extend onto a customer contract with an extra package',
+            '{"type":"Subscription.Renewal.Extend","subject":"SUB000010","data":{"customerContractNo":"CC000010","subscriptionPackageCodes":["SUPPORT"]}}',
+            '{"status":"Success","subscriptionHeaderNo":"SUB000010","customerContractNo":"CC000010","custContractLineCountBefore":3,"custContractLineCountAfter":5,"custContractLinesCreated":2,"newSubscriptionLineEntryNos":[1044,1045],"newSubscriptionLineCount":2}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Extends an existing Subscription onto a customer contract, a vendor contract or both, through Microsoft''s Extend Sub. Contract Mgt. The Subscription ' +
+            'must exist; this type does not create one.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := ('Microsoft always applies the item''s standard packages; subscriptionPackageCodes adds packages beyond those. Microsoft''s completion dialog is ' +
+            'suppressed, so the call never waits for input. ' +
+            ContractParts.BooleanNote() +
+            ContractParts.IsolationNote()).TrimEnd();
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Renewal.Extend'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

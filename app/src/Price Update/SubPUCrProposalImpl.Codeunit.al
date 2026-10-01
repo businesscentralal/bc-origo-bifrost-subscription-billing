@@ -56,10 +56,29 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    begin
+        // A blocked type has no successful call to show.
+        exit(false);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Blocked. Creating a price update proposal needs Price Update Management.CreatePriceUpdateProposal, which is internal in Business Central 28.4, as are ' +
+            'the Contract Price Update interface with all its implementations and codeunit 8013 Process Price Update.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := ContractParts.BlockedNote() +
+            'Microsoft''s price update logic is not re-implemented here: a copy could diverge from Microsoft''s rounding, currency and binding-period rules and ' +
+            'misprice live contracts.';
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.PriceUpdate.CreateProposal'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

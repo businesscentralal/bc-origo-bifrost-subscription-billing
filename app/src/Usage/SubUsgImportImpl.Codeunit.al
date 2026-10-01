@@ -59,10 +59,35 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Import a CSV and process it',
+            '{"type":"Subscription.Usage.ImportData","subject":"USUP0010","data":{"fileName":"august-usage.csv","content":"SubscriptionID,ProductID,Quantity\n1001,PROD1,10","runProcessing":true}}',
+            '{"status":"Success","usageDataImportEntryNo":137,"processingStatus":"Ok","reason":"","importedLineCount":10}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Stores a usage data file from a Usage Data Supplier as a Usage Data Import with a Usage Data Blob, then runs Microsoft''s Import And Process Usage ' +
+            'Data with the Create Imported Lines step, which parses the file into Usage Data Generic Import rows. Call Subscription.Usage.Process next, or set ' +
+            'runProcessing.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := ('The call commits the import and the blob before Microsoft''s step runs, and commits again before Process Imported Lines, so an error after that leaves ' +
+            'the import entry in place. A file that parses with row-level problems is still a success: check processingStatus and reason, and the import in the ' +
+            'client for row detail. The blob''s Import Status is left at None, so Microsoft''s processing picks it up. ' +
+            ContractParts.BooleanNote()).TrimEnd();
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Usage.ImportData'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

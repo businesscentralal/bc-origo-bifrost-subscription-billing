@@ -60,10 +60,35 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Preview a contract''s August billing',
+            '{"type":"Subscription.Contract.PreviewInvoice","subject":"CC000010","data":{"billingDate":"2026-08-31"}}',
+            '{"status":"Success","contractNo":"CC000010","billingDate":"2026-08-31","lines":[{"subscriptionLineEntryNo":1001,"billingFrom":"2026-08-01","billingTo":"2026-08-31","unitPrice":"99","amount":"99"}],"wouldBillLineCount":1,"totalAmount":"99","preview":true,"rollback":true}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Shows what Subscription.Contract.CreateInvoice would bill for one customer Subscription Contract, without creating a document. It builds the real ' +
+            'proposal lines through the same entry point, so lines, periods and amounts match a real run, and then deletes them.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := 'The call notes the last Billing Line entry number first, builds the proposal lines, reads back exactly the lines above that mark for the contract, ' +
+            'and deletes them again, newest first, because Business Central only lets the last billing line of a Subscription Line be removed. When the proposal ' +
+            'fails, the lines above the mark are deleted too, except under Omit Commit. No document is created, even for a moment. Another contract''s pending ' +
+            'template-less proposal lines block the preview, as they block the write call. There are no documentDate or postingDate parameters, because no ' +
+            'document is created.';
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Contract.PreviewInvoice'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

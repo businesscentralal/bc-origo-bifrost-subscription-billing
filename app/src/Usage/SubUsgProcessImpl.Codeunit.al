@@ -62,10 +62,35 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Process imported lines and create usage billing',
+            '{"type":"Subscription.Usage.Process","subject":"137","data":{"steps":["ProcessImportedLines","CreateUsageDataBilling"]}}',
+            '{"status":"Success","usageDataImportEntryNo":137,"steps":[{"step":"ProcessImportedLines","status":"Ok","reason":""},{"step":"CreateUsageDataBilling","status":"Ok","reason":""}],"processingStatus":"Ok","usageDataBillingCount":10,"usageDataBillingErrorCount":0}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Runs processing steps over an existing Usage Data Import: turning imported lines into quantities, creating Usage Data Billing rows, and processing ' +
+            'those into billing lines. Each step runs Microsoft''s own codeunit for it.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := 'Each step commits before it runs, so a later failure does not undo an earlier step; rerun the remaining steps instead. A step that fails on its own ' +
+            'data is still a successful call: read status and reason of each entry in steps, and processingStatus. The status and reason an earlier step left are ' +
+            'cleared before each step, so every entry reports its own outcome. Steps run in the order given, and a step named twice runs twice. ' +
+            'CreateImportedLines parses the stored file again. It is not a default step, because Subscription.Usage.ImportData runs it already; ask for it after a ' +
+            'setup problem, such as a Data Exchange Definition that did not match the file, to retry without sending the file again.';
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Usage.Process'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

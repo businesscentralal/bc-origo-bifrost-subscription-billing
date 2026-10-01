@@ -54,10 +54,33 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Propose a monthly run',
+            '{"type":"Subscription.Billing.CreateProposal","subject":"MONTHLY","data":{"billingDate":"2026-08-31","billingToDate":"2026-09-30"}}',
+            '{"status":"Success","billingTemplateCode":"MONTHLY","billingDate":"2026-08-31","billingToDate":"2026-09-30","proposalLinesCreated":12,"proposalLineCount":12,"contracts":["CC000010","CC000011"]}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Creates billing proposal lines (Billing Line) for a Billing Template: every Subscription Line due on or before the billing date that matches the ' +
+            'template''s filter is proposed. Nothing is invoiced; Subscription.Billing.CreateDocuments turns the proposal into documents.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := ('proposalLinesCreated counts what this call added; proposalLineCount and contracts cover every proposal line now standing for the template, including ' +
+            'earlier runs. ' +
+            ContractParts.BooleanNote()).TrimEnd();
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Billing.CreateProposal'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

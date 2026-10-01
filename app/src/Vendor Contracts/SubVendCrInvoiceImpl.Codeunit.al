@@ -60,10 +60,34 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Bill a vendor contract with the vendor''s invoice number',
+            '{"type":"Subscription.VendorContract.CreateInvoice","subject":"VC000010","data":{"billingDate":"2026-08-31","vendorInvoiceNo":"INV-2026-0912"}}',
+            '{"status":"Success","contractNo":"VC000010","billingDate":"2026-08-31","billingLineCount":3,"documents":[{"documentType":"Invoice","documentNo":"PINV-000123"}]}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Bills the due Subscription Lines of one Vendor Subscription Contract to an unposted purchase invoice or credit memo, through an ad-hoc billing ' +
+            'proposal with a blank Billing Template Code. Post the document separately after review.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := 'The blank-template proposal is shared by the whole company, so the call refuses to run while another contract has such lines pending. Only vendor ' +
+            'lines are billed, and Microsoft''s purchase document creation never posts. vendorInvoiceNo is validated, not written directly, so the vendor''s ' +
+            'duplicate invoice number check applies to every created document. When nothing is due, or nothing new could be billed, the call succeeds with an ' +
+            'empty documents list and a message. Microsoft commits each document it creates, so a failure after that point does not roll the document back.';
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.VendorContract.CreateInvoice'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

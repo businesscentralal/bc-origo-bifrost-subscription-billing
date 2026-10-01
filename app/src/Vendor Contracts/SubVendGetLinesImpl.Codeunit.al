@@ -55,10 +55,33 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Attach two named lines',
+            '{"type":"Subscription.VendorContract.GetLines","subject":"VC000010","data":{"subscriptionLineEntryNos":[101,102]}}',
+            '{"status":"Success","contractNo":"VC000010","linesAttached":2,"attachedLines":[{"subscriptionLineEntryNo":101,"contractLineNo":10000},{"subscriptionLineEntryNo":102,"contractLineNo":20000}]}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Attaches Subscription Lines that are on no contract yet to a Vendor Subscription Contract, creating a Vend. Sub. Contract Line for each. Microsoft ' +
+            'exposes only the single-line attach procedure, so the call runs it once per candidate line.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := ('A candidate line is invoiced via contract, belongs to the vendor partner, is on no contract, and has no end date or one after the work date. Unlike ' +
+            'Subscription.Contract.GetLines, no candidate is skipped, and the answer has no linesSkipped. ' +
+            ContractParts.IsolationNote()).TrimEnd();
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.VendorContract.GetLines'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

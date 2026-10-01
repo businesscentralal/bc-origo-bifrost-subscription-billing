@@ -97,24 +97,33 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetWorkflow(var Workflow: JsonObject): Boolean
     begin
-        exit(false);
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
     end;
 
     procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
     begin
-        exit(false);
+        Examples.Add(ContractMgt.Example('Apply a package to a Subscription',
+            '{"type":"Subscription.Line.Create","subject":"SUB000010","data":{"subscriptionPackageCode":"STANDARD","subscriptionLineStartDate":"2026-09-01"}}',
+            '{"status":"Success","subscriptionHeaderNo":"SUB000010","subscriptionPackageCode":"STANDARD","linesCreated":3,"createdLines":[1001,1002,1003]}'));
+        exit(true);
     end;
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Clear(Overview);
-        exit(false);
+        Overview := 'Creates Subscription Lines on an existing Subscription Header by applying a Subscription Package, through Microsoft''s own package application, the ' +
+            'logic the Subscription page uses. Prices, billing rhythm and dates come from the package.';
+        exit(true);
     end;
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Clear(Notes);
-        exit(false);
+        Notes := ('Every package line becomes a Subscription Line, unless usageBasedBillingPackageLinesOnly leaves it out. ' +
+            ContractParts.BooleanNote() +
+            ContractParts.IsolationNote()).TrimEnd();
+        exit(true);
     end;
 
     local procedure ContractType(): Text

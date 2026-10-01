@@ -57,10 +57,35 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Release up to the work date',
+            '{"type":"Subscription.Deferral.Release","data":{"postingDate":"2026-08-31","postUntilDate":"2026-08-31"}}',
+            '{"status":"Success","postingDate":"2026-08-31","postUntilDate":"2026-08-31","customerDeferralsReleased":8,"vendorDeferralsReleased":3,"totalDeferralsReleased":11}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Runs Microsoft''s Contract Deferrals Release report, which releases every eligible customer and vendor deferral and posts the release to the general ' +
+            'ledger.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := 'The report always uses the session work date: its dates live on its request page, SetRequestPageParameters is internal, and request page XML is not ' +
+            'applied to it. postingDate and postUntilDate are therefore a guard, not instructions: the call refuses to run when the release would reach further ' +
+            'than the caller asked. To release up to an earlier date, set the session work date first. The release is not scoped to a contract and cannot be ' +
+            'undone except by the normal deferral correction. If deferrals outside the window are released anyway, the answer carries ' +
+            'releasedOutsideRequestedWindow and a warning.';
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Deferral.Release'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

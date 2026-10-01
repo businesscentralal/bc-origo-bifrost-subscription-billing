@@ -61,10 +61,34 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Preview the first page',
+            '{"type":"Subscription.Billing.PreviewDocuments","subject":"MONTHLY","data":{"take":50}}',
+            '{"status":"Success","billingTemplateCode":"MONTHLY","skip":0,"take":50,"billingLineCount":12,"documentCount":5,"documents":[{"contractNo":"CC000010","partnerNo":"10000","lineCount":3,"totalAmount":"297"}],"hasMore":false,"warnings":[],"preview":true,"rollback":true}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Shows what Subscription.Billing.CreateDocuments would create for a Billing Template, by reading its unbilled proposal lines and grouping them as a ' +
+            'real run would: one entry per document, per contract by default. Nothing is written.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := 'Unlike the invoice previews, this type builds no proposal lines and needs no cleanup; preview and rollback are true because nothing was written. A ' +
+            'mix of customer and vendor proposal lines is not an error here: it is reported as a MixedPartners warning, because ' +
+            'Subscription.Billing.CreateDocuments would refuse to run. Lines flagged Update Required are reported as an UpdateRequired warning. Paging: skip ' +
+            'defaults to 0, take defaults to 100 (also when 0) and is clamped to the hard maximum of 1000; negative values are refused.';
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Billing.PreviewDocuments'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

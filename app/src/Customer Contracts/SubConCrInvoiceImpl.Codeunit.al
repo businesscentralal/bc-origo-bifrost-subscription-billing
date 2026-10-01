@@ -58,10 +58,34 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Bill a contract up to the end of August',
+            '{"type":"Subscription.Contract.CreateInvoice","subject":"CC000010","data":{"billingDate":"2026-08-31"}}',
+            '{"status":"Success","contractNo":"CC000010","billingDate":"2026-08-31","documents":[{"documentType":"Invoice","documentNo":"SINV-000123"}],"billingLineCount":3}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Bills one customer Subscription Contract to an unposted sales invoice, or a credit memo when a line calls for one. The due Subscription Lines go to ' +
+            'Microsoft''s ad-hoc billing proposal, the entry point of the per-contract billing dialog, and the document is created from those proposal lines.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := 'The proposal lines carry a blank Billing Template Code. Microsoft''s document creation converts every blank-template proposal line in the company, so ' +
+            'the call refuses to run while another contract has such lines pending, and names that contract. Nothing is posted and the document is never opened. ' +
+            'When nothing is due, or the due lines already sit on a proposal or an unposted document, the call succeeds with an empty documents list and a ' +
+            'message. Microsoft commits each document it creates, so a failure after that point does not roll the document back.';
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Contract.CreateInvoice'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"

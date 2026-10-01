@@ -54,10 +54,34 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori", "M
     procedure GetEffect(var Effect: JsonObject): Boolean begin Effect := ContractParts.GetEffect(ContractType()); exit(true); end;
     procedure GetMetering(var Metering: JsonObject): Boolean begin exit(false); end;
     procedure GetRelated(var Related: JsonArray): Boolean begin Related := ContractParts.GetRelated(ContractType()); exit(Related.Count() > 0); end;
-    procedure GetWorkflow(var Workflow: JsonObject): Boolean begin exit(false); end;
-    procedure GetExamples(var Examples: JsonArray): Boolean begin exit(false); end;
-    procedure GetOverview(var Overview: Text): Boolean begin Clear(Overview); exit(false); end;
-    procedure GetNotes(var Notes: Text): Boolean begin Clear(Notes); exit(false); end;
+    procedure GetWorkflow(var Workflow: JsonObject): Boolean
+    begin
+        Workflow := ContractParts.GetWorkflow(ContractType());
+        exit(Workflow.Keys().Count() > 0);
+    end;
+    procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+    begin
+        Examples.Add(ContractMgt.Example('Attach the lines of one Subscription',
+            '{"type":"Subscription.Contract.GetLines","subject":"CC000010","data":{"subscriptionHeaderNo":"SUB000010"}}',
+            '{"status":"Success","contractNo":"CC000010","linesAttached":2,"attachedLines":[{"subscriptionLineEntryNo":1001,"contractLineNo":10000},{"subscriptionLineEntryNo":1002,"contractLineNo":20000}],"linesSkipped":1}'));
+        exit(true);
+    end;
+    procedure GetOverview(var Overview: Text): Boolean
+    begin
+        Overview := 'Attaches Subscription Lines that are on no contract yet to a customer Subscription Contract. The candidates are the lines Microsoft''s Get ' +
+            'Subscription Lines action on the contract offers.';
+        exit(true);
+    end;
+    procedure GetNotes(var Notes: Text): Boolean
+    begin
+        Notes := ('A candidate line is invoiced via contract, is on no contract, belongs to a customer, and has no end date or one after the work date. A candidate ' +
+            'whose Subscription Header names another End-User Customer No. than the contract''s Sell-to Customer No. is skipped and counted in linesSkipped, not ' +
+            'refused. ' +
+            ContractParts.IsolationNote()).TrimEnd();
+        exit(true);
+    end;
     local procedure ContractType(): Text begin exit('Subscription.Contract.GetLines'); end;
 
     procedure GetMessageDirection() MessageDirection: Enum "Msg Direction ori"
