@@ -1,5 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/AL-Go-Actions/v9.2/.Modules/settings.schema.json",
+  "CICDPushBranches": [
+    "main"
+  ],
+  "CICDPullRequestBranches": [
+    "**"
+  ],
   "type": "AppSource App",
   "templateUrl": "https://github.com/cosmoconsult/Alpaca-AppSource@main",
   "templateSha": "4cd474c40c167da7b929d5032d30c23a6bb3b225",
