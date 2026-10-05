@@ -49,7 +49,7 @@ Repository: bc-origo-bifrost-subscription-billing
 Default branch: main
 
 ## Dependencies
-- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.0.186, a build
+- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.1.0, a build
   without `GetMessageHelpAsMarkdownDocument` on `Msg Interface ori`, core#198)
 - Subscription Billing (Microsoft, 28.0.0.0)
 
