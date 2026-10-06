@@ -37,7 +37,7 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal', Comment = 'is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, verðuppfærsla, stofna tillögu, verðuppfærsla, tillaga, viðbót1';
+        KeywordsLbl: Label 'Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal', Comment = 'is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga';
     begin
         exit(KeywordsLbl);
     end;

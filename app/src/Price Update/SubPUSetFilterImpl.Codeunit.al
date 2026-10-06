@@ -9,7 +9,7 @@ using Origo.Bifrost;
 /// Price Update Template. Microsoft's own <c>WriteFilter</c>/<c>ReadFilter</c>/<c>EditFilter</c>
 /// table methods on "Price Update Template" are internal, so a plain Data.Records.Set cannot
 /// reach them - the Blob fields themselves are public, so this codeunit replicates exactly
-/// what WriteFilter does: normalise the supplied view through a RecordRef on the matching
+/// what WriteFilter does: validate and normalise the supplied view through Foundation on the matching
 /// table, then write the normalised text (or nothing, when it equals the table's blank view)
 /// into the field's Blob stream.
 /// </summary>
@@ -177,6 +177,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
         FilterText: Text;
         BlankView: Text;
         TargetTableNo: Integer;
+        ViewApplied: Boolean;
     begin
         RequestJson := Argument.GetRequestJson();
         PriceUpdateTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'priceUpdateTemplateCode', true);
@@ -202,11 +203,13 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
 
         RRef.Open(TargetTableNo);
         BlankView := RRef.GetView(false);
-        // The view comes straight from the caller. Business Central raises its own parser error on a
-        // malformed one, which says nothing about which parameter was wrong and can name internals of
-        // the table being opened. Catch it and answer with the contract this message type documents.
-        if not TrySetView(RRef, SuppliedFilter) then
+        // Preserve the published filter parameter while using Foundation's fail-closed validation.
+        if not TryApplyTableView(Argument, RRef, SuppliedFilter, ViewApplied) then
             Error(InvalidFilterErr, TargetName);
+        if not ViewApplied then begin
+            Clear(RRef);
+            exit;
+        end;
         FilterText := RRef.GetView(false);
         Clear(RRef);
 
@@ -251,11 +254,14 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
         Helper.RespondWithSuccess(Argument, ResponseJson);
     end;
 
-    /// <summary>Applies a caller-supplied view to the RecordRef, reporting failure instead of raising Business Central's own parser error.</summary>
+    /// <summary>Adapts filter to Foundation's tableView contract and validates before applying it.</summary>
     [TryFunction]
-    local procedure TrySetView(var RRef: RecordRef; View: Text)
+    local procedure TryApplyTableView(var Argument: Record "Message Argument ori"; var RRef: RecordRef; View: Text; var ViewApplied: Boolean)
+    var
+        ViewRequest: JsonObject;
     begin
-        RRef.SetView(View);
+        ViewRequest.Add('tableView', View);
+        ViewApplied := Argument.ApplyTableView(ViewRequest, RRef);
     end;
 
     /// <summary>Reads the remaining text of an InStream, or an empty string when it holds nothing.</summary>

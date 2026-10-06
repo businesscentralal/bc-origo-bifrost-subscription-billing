@@ -29,7 +29,8 @@ Tests:
   95703 `Sub Test Upgrade ori`, 95704 `Sub Registration Tst ori`
 - 95705 `Sub Bil PrvDocs SkipTst ori`
 - 95706 `Sub Contract Batch1 Tst ori`, 95707 `Sub Contract Batch2 Tst ori` (#18)
-- Free: 95708-95799
+- 95708 `Sub PU Filter Tst ori` (PR #25 filter validation regression)
+- Free: 95709-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
@@ -49,8 +50,8 @@ Repository: bc-origo-bifrost-subscription-billing
 Default branch: main
 
 ## Dependencies
-- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.1.0, a build
-  without `GetMessageHelpAsMarkdownDocument` on `Msg Interface ori`, core#198)
+- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.1.0 minimum; includes the public
+  `Message Argument ori.ApplyTableView` validation used by price update template filters)
 - Subscription Billing (Microsoft, 28.0.0.0)
 
 ## Naming Rules

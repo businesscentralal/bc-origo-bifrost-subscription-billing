@@ -1,15 +1,23 @@
-## Unreleased
+# Changelog
+
+## [Unreleased]
+
+### Fixed (2026-10-06) - price update filter validation and Icelandic keywords (PR #25)
+
+- `Sub PU SetFilter Impl ori` (10035048) validates the caller's `filter` with
+  Foundation's `Message Argument ori.ApplyTableView` before applying or storing it.
+  Invalid views return a structured error and preserve all template filters.
+  `Sub PU Filter Tst ori` (95708) covers valid customer/vendor/subscription/line views,
+  malformed and unknown fields, required values and explicit clearing.
+- `Sub PU CrProposal Impl ori` (10035049) uses distinct Icelandic search terms;
+  the regenerated translation matches the AL source and Developer note.
 
 ### Changed (2026-10-05) - align with Bifrost Foundation 28.0.1
 
 - The Foundation dependency floor is **28.0.1.0** in `app/app.json` and `test/app.json`, the same floor as Bifrost Language Models and Bifrost Attachments.
-- Every table and page now declares `Extensible`. Objects nothing extends are `Extensible = false`; opening one later is non-breaking.
 - `tools/` carries Foundation's source guards. The Source Guards workflow runs the checks that already pass on Attachments: no call stack in answers, validated table views, no obsolete, permission coverage, and Icelandic keyword counts. Contract-parameter and mixed-language guards are copied but not wired in.
 - Help Links is not wired in until `businesscentralal/bifrost` main has `help/subscription-billing/`.
 
-# Changelog
-
-## [Unreleased]
 
 ### Fixed (2026-10-01) - Billing.CreateProposal is irreversible (issue #22)
 
