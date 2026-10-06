@@ -13,8 +13,8 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         Helper: Codeunit "Sub Helper ori";
         UnknownStageErr: Label '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', Comment = '%1 = stage name||is-IS=''%1'' er ekki þekkt innflutningsstig. Notaðu SubscriptionHeaders, CustomerContracts, SubscriptionLines eða ContractLines.';
         MaxErrorsCappedMsg: Label 'Only the first %1 errors are listed; more rows may have failed.', Comment = '%1 = maximum error count||is-IS=Aðeins fyrstu %1 villurnar eru sýndar; fleiri línur gætu hafa mistekist.';
-        LineTypeRequiredErr: Label 'Sub_ContractLineType is required: Subscription Line / Comment', Comment = 'is-IS=Sub_ContractLineType er nauðsynlegt: áskriftarlína / athugasemd';
-        LineNotCreatedErr: Label 'Subscription Line was not created. Subscription Line Entry No. is still 0.', Comment = 'is-IS=Áskriftarlína var ekki stofnuð. Færslunúmer áskriftarlínu er enn 0.';
+        LineTypeRequiredErr: Label 'Sub_ContractLineType is required: Subscription Line / Comment', Comment = 'is-IS=Sub_ContractLineType er nauðsynlegt: Áskriftarlína / Athugasemd';
+        LineNotCreatedErr: Label 'Create Subscription Line reported success but Subscription Line Entry No. is still 0.', Comment = 'is-IS=Stofnun áskriftarlínu tilkynnti árangur en númer áskriftarlínu er enn 0.';
         SubscriptionHeadersTok: Label 'SubscriptionHeaders', Locked = true;
         CustomerContractsTok: Label 'CustomerContracts', Locked = true;
         SubscriptionLinesTok: Label 'SubscriptionLines', Locked = true;
@@ -116,13 +116,13 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Turns staged import rows into Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines.';
+        Overview := 'Turns staged import rows into subscription records through Microsoft''s import codeunits.';
         exit(true);
     end;
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := 'SubscriptionLines requires Sub_ContractLineType. Comment, the zero value, fails the row and does not create a Subscription Line. A row whose Subscription Line Entry No. stays 0 also fails. A row failure is listed in errors; the call still answers Success.';
+        Notes := 'Sub_ContractLineType is required for a SubscriptionLines row. Comment, the field default, fails the row and does not create a comment line. A row whose Subscription Line Entry No. is still 0 after Create Subscription Line is also failed. A row failure does not fail the call.';
         exit(true);
     end;
 
@@ -229,7 +229,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         ErrorsArray.Add(ErrorJson);
     end;
 
-    local procedure FailImportedLine(var ImportedSubscriptionLine: Record "Imported Subscription Line"; var ErrorsArray: JsonArray; var ErrorCount: Integer; ErrorMessage: Text)
+    local procedure FailLine(var ImportedSubscriptionLine: Record "Imported Subscription Line"; var ErrorsArray: JsonArray; var ErrorCount: Integer; ErrorMessage: Text)
     begin
         ImportedSubscriptionLine."Error Text" := CopyStr(ErrorMessage, 1, MaxStrLen(ImportedSubscriptionLine."Error Text"));
         ImportedSubscriptionLine."Subscription Line created" := false;
@@ -297,21 +297,22 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
     begin
         ImportedSubscriptionLine.SetLoadFields("Entry No.", "Sub. Contract Line Type", "Subscription Line Entry No.", "Error Text", "Subscription Line created");
         ImportedSubscriptionLine.SetRange("Subscription Line created", false);
+        ImportedSubscriptionLine.SetLoadFields("Entry No.", "Sub. Contract Line Type", "Subscription Line Entry No.", "Error Text", "Subscription Line created");
         if ImportedSubscriptionLine.FindSet() then
             repeat
                 Processed += 1;
                 if ImportedSubscriptionLine."Sub. Contract Line Type" = ImportedSubscriptionLine."Sub. Contract Line Type"::Comment then begin
                     Failed += 1;
-                    FailImportedLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, LineTypeRequiredErr);
+                    FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, LineTypeRequiredErr);
                 end else begin
                     ClearLastError();
                     if not Codeunit.Run(Codeunit::"Create Subscription Line", ImportedSubscriptionLine) then begin
                         Failed += 1;
-                        FailImportedLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, GetLastErrorText());
+                        FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, GetLastErrorText());
                     end else
                         if ImportedSubscriptionLine."Subscription Line Entry No." = 0 then begin
                             Failed += 1;
-                            FailImportedLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, LineNotCreatedErr);
+                            FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, LineNotCreatedErr);
                         end else
                             Succeeded += 1;
                 end;
