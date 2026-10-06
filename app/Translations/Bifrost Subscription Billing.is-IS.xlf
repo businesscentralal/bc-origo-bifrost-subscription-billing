@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
-  <file datatype="xml" source-language="en-US" target-language="is-IS" original="Bifrost Subscription Billing.g.xlf">
+  <file datatype="xml" source-language="en-US" target-language="is-IS" original="Bifrost Subscription Billing">
     <body>
       <group id="body">
         <trans-unit id="Codeunit 202989448 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
@@ -467,8 +467,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal</source>
-          <target>Subscription.PriceUpdate.CreateProposal, áskrift, verðuppfærsla, stofna tillögu, verðuppfærsla, tillaga</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, verðuppfærsla, stofna tillögu, verðuppfærsla, tillaga</note>
+          <target>Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
