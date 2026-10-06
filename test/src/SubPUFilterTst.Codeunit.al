@@ -83,14 +83,14 @@ codeunit 95708 "Sub PU Filter Tst ori"
         Initialize(false);
         SubscriptionHeader.SetRange("No.", 'XPR25SUB');
         // [WHEN] A subscription filter is dispatched.
-        ResponseJson := InvokeFilter('subscription', SubscriptionHeader.GetView(false), true);
+        ResponseJson := InvokeFilter('subscription', SubscriptionHeader.GetView(true), true);
         // [THEN] Only that Blob is replaced.
         Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Subscription filter must succeed.');
         Assert.AreEqual(SubscriptionHeader.GetView(false), ReadStoredFilter('subscription'), 'Wrong subscription view.');
         AssertOtherFiltersUnchanged('subscription');
         Initialize(false);
         SubscriptionLine.SetRange("Entry No.", 987654321);
-        ResponseJson := InvokeFilter('line', SubscriptionLine.GetView(false), true);
+        ResponseJson := InvokeFilter('line', SubscriptionLine.GetView(true), true);
         Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Line filter must succeed.');
         Assert.AreEqual(SubscriptionLine.GetView(false), ReadStoredFilter('line'), 'Wrong line view.');
         AssertOtherFiltersUnchanged('line');
@@ -128,20 +128,23 @@ codeunit 95708 "Sub PU Filter Tst ori"
         AssertRejectedFilter('123');
     end;
 
-    /// <summary>Empty and missing filters retain the published required-parameter behavior.</summary>
+    /// <summary>An empty filter clears only the selected Blob; an absent required property fails without writing.</summary>
     [Test]
-    procedure Filter_EmptyOrMissingRequiredValue_ReturnsErrorWithoutWrite()
+    procedure Filter_EmptyClearsAndMissingRequiredValue_DoesNotWrite()
     var
         ResponseJson: JsonObject;
     begin
         // PR #25 B2 | Time: no date dependence | Risk: None
         // [GIVEN] Existing template filters.
         Initialize(false);
-        // [WHEN] The required filter is empty or omitted.
+        // [WHEN] The required filter property contains an empty string.
         ResponseJson := InvokeFilter('contract', '', true);
-        // [THEN] Both requests fail and preserve the template.
-        Assert.AreEqual('Error', ReadText(ResponseJson, 'status'), 'Empty filter remains required.');
-        AssertAllFiltersUnchanged();
+        // [THEN] The selected Blob is cleared; the other filters are preserved.
+        Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'An empty string is a valid clear operation.');
+        Assert.AreEqual('', ReadStoredFilter('contract'), 'Empty input must clear only the selected Blob.');
+        AssertOtherFiltersUnchanged('contract');
+        Initialize(false);
+        // [WHEN] The required property is absent, the request fails before any write.
         ResponseJson := InvokeFilter('contract', '', false);
         Assert.AreEqual('Error', ReadText(ResponseJson, 'status'), 'Missing filter remains required.');
         AssertAllFiltersUnchanged();
@@ -158,7 +161,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         // [GIVEN] A stored contract filter.
         Initialize(false);
         // [WHEN] The default, unfiltered view is supplied (the documented clear operation).
-        ResponseJson := InvokeFilter('CONTRACT', CustomerContract.GetView(false), true);
+        ResponseJson := InvokeFilter('CONTRACT', CustomerContract.GetView(true), true);
         // [THEN] Only the contract Blob is cleared and the normalized target is returned.
         Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Unfiltered view must be valid.');
         Assert.AreEqual('contract', ReadText(ResponseJson, 'target'), 'Target casing must be normalized.');
