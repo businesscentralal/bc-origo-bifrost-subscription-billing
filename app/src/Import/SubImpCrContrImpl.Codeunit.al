@@ -5,11 +5,6 @@ using Origo.Bifrost;
 
 /// <summary>
 /// Implements the <c>Subscription.Import.CreateContracts</c> Bifrost message type.
-/// Builds real Subscription Header, Customer Subscription Contract, Subscription Line and
-/// Cust. Sub. Contract Line records from staged import rows, by running Microsoft's four
-/// TableNo-bound creation codeunits one staging row at a time. A plain Data.Records.Set cannot
-/// do this because each stage derives and cross-links keys (contract numbers, line entry
-/// numbers) that only Microsoft's own codeunits know how to compute.
 /// </summary>
 codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
@@ -18,6 +13,8 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         Helper: Codeunit "Sub Helper ori";
         UnknownStageErr: Label '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', Comment = '%1 = stage name||is-IS=''%1'' er ekki þekkt innflutningsstig. Notaðu SubscriptionHeaders, CustomerContracts, SubscriptionLines eða ContractLines.';
         MaxErrorsCappedMsg: Label 'Only the first %1 errors are listed; more rows may have failed.', Comment = '%1 = maximum error count||is-IS=Aðeins fyrstu %1 villurnar eru sýndar; fleiri línur gætu hafa mistekist.';
+        LineTypeRequiredErr: Label 'Sub_ContractLineType is required: Subscription Line / Comment', Comment = 'is-IS=Sub_ContractLineType er nauðsynlegt: áskriftarlína / athugasemd';
+        LineNotCreatedErr: Label 'Subscription Line was not created. Subscription Line Entry No. is still 0.', Comment = 'is-IS=Áskriftarlína var ekki stofnuð. Færslunúmer áskriftarlínu er enn 0.';
         SubscriptionHeadersTok: Label 'SubscriptionHeaders', Locked = true;
         CustomerContractsTok: Label 'CustomerContracts', Locked = true;
         SubscriptionLinesTok: Label 'SubscriptionLines', Locked = true;
@@ -119,17 +116,13 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Turns staged import rows (Imported Subscription Header, Imported Cust. Sub. Contract, Imported Subscription Line) into Subscription Headers, Customer ' +
-            'Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines, through Microsoft''s import codeunits.';
+        Overview := 'Turns staged import rows into Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines.';
         exit(true);
     end;
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := 'The stages run in a fixed order, because each needs the keys the earlier ones wrote back onto the staging rows. Each stage picks up only rows whose ' +
-            'created flag is still false, so a second call processes only what is outstanding. A failing row does not stop the batch: its error text is stored on ' +
-            'the staging row and committed, and the next row is tried. A failed row is reported in stages and errors while the call still answers Success. The run ' +
-            'cannot be rolled back as a whole once it has started.';
+        Notes := 'SubscriptionLines requires Sub_ContractLineType. Comment, the zero value, fails the row and does not create a Subscription Line. A row whose Subscription Line Entry No. stays 0 also fails. A row failure is listed in errors; the call still answers Success.';
         exit(true);
     end;
 
@@ -149,18 +142,15 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
             exit;
         end;
-
         Clear(WriteProcess);
         if not WriteProcess.Run(Argument) then
             Argument.RespondWithLastError();
     end;
 
-    /// <summary>Runs the requested import stages over the staged rows. Called directly, or through the isolated write process.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
@@ -174,7 +164,6 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         GetRequestedStages(RequestJson, RequestedStages);
         MaxErrorCount := 50;
         ErrorCount := 0;
-
         if RequestedStages.Contains(SubscriptionHeadersTok) then
             RunSubscriptionHeaders(StagesArray, ErrorsArray, ErrorCount);
         if RequestedStages.Contains(CustomerContractsTok) then
@@ -183,7 +172,6 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
             RunSubscriptionLines(StagesArray, ErrorsArray, ErrorCount);
         if RequestedStages.Contains(ContractLinesTok) then
             RunContractLines(StagesArray, ErrorsArray, ErrorCount);
-
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('stages', StagesArray);
         ResponseJson.Add('errors', ErrorsArray);
@@ -239,6 +227,15 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         ErrorJson.Add('key', RowKey);
         ErrorJson.Add('error', ErrorMessage);
         ErrorsArray.Add(ErrorJson);
+    end;
+
+    local procedure FailImportedLine(var ImportedSubscriptionLine: Record "Imported Subscription Line"; var ErrorsArray: JsonArray; var ErrorCount: Integer; ErrorMessage: Text)
+    begin
+        ImportedSubscriptionLine."Error Text" := CopyStr(ErrorMessage, 1, MaxStrLen(ImportedSubscriptionLine."Error Text"));
+        ImportedSubscriptionLine."Subscription Line created" := false;
+        ImportedSubscriptionLine.Modify(false);
+        Commit();
+        AddError(ErrorsArray, ErrorCount, SubscriptionLinesTok, Format(ImportedSubscriptionLine."Entry No.", 0, 9), ImportedSubscriptionLine."Error Text");
     end;
 
     local procedure RunSubscriptionHeaders(var StagesArray: JsonArray; var ErrorsArray: JsonArray; var ErrorCount: Integer)
@@ -298,19 +295,25 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         Succeeded: Integer;
         Failed: Integer;
     begin
+        ImportedSubscriptionLine.SetLoadFields("Entry No.", "Sub. Contract Line Type", "Subscription Line Entry No.", "Error Text", "Subscription Line created");
         ImportedSubscriptionLine.SetRange("Subscription Line created", false);
         if ImportedSubscriptionLine.FindSet() then
             repeat
                 Processed += 1;
-                ClearLastError();
-                if Codeunit.Run(Codeunit::"Create Subscription Line", ImportedSubscriptionLine) then
-                    Succeeded += 1
-                else begin
+                if ImportedSubscriptionLine."Sub. Contract Line Type" = ImportedSubscriptionLine."Sub. Contract Line Type"::Comment then begin
                     Failed += 1;
-                    ImportedSubscriptionLine."Error Text" := CopyStr(GetLastErrorText(), 1, MaxStrLen(ImportedSubscriptionLine."Error Text"));
-                    ImportedSubscriptionLine.Modify(false);
-                    Commit();
-                    AddError(ErrorsArray, ErrorCount, SubscriptionLinesTok, Format(ImportedSubscriptionLine."Entry No.", 0, 9), ImportedSubscriptionLine."Error Text");
+                    FailImportedLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, LineTypeRequiredErr);
+                end else begin
+                    ClearLastError();
+                    if not Codeunit.Run(Codeunit::"Create Subscription Line", ImportedSubscriptionLine) then begin
+                        Failed += 1;
+                        FailImportedLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, GetLastErrorText());
+                    end else
+                        if ImportedSubscriptionLine."Subscription Line Entry No." = 0 then begin
+                            Failed += 1;
+                            FailImportedLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, LineNotCreatedErr);
+                        end else
+                            Succeeded += 1;
                 end;
             until ImportedSubscriptionLine.Next() = 0;
         AddStageResult(StagesArray, SubscriptionLinesTok, Processed, Succeeded, Failed);
