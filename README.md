@@ -70,7 +70,7 @@ extension is operated entirely through message types.
 
 | App | ID | Publisher | Version |
 | --- | --- | --- | --- |
-| Bifrost Foundation | `7505e808-6e52-4b96-a328-82573391297a` | Origo | 28.0.0.0 |
+| Bifrost Foundation | `7505e808-6e52-4b96-a328-82573391297a` | Origo | 28.0.1.0 |
 | Subscription Billing | `3099ffc7-4cf7-4df6-9b96-7e4bc2bb587c` | Microsoft | 28.0.0.0 |
 
 The test app additionally depends on Bifrost Subscription Billing itself and on Microsoft's
