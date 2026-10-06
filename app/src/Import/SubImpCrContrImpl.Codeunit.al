@@ -295,6 +295,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         Succeeded: Integer;
         Failed: Integer;
     begin
+        ImportedSubscriptionLine.SetLoadFields("Entry No.", "Sub. Contract Line Type", "Subscription Line Entry No.", "Error Text", "Subscription Line created");
         ImportedSubscriptionLine.SetRange("Subscription Line created", false);
         ImportedSubscriptionLine.SetLoadFields("Entry No.", "Sub. Contract Line Type", "Subscription Line Entry No.", "Error Text", "Subscription Line created");
         if ImportedSubscriptionLine.FindSet() then
