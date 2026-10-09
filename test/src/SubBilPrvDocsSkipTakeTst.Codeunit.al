@@ -10,7 +10,7 @@ using System.TestLibraries.Utilities;
 /// negatives Error, take clamped to 1000, documentCount unpaginated, documents paged).
 /// Invokes PerformWrite directly to avoid Foundation 110+ trial gate on the dispatcher.
 /// </summary>
-codeunit 95705 "Sub Bil PrvDocs SkipTst ori"
+codeunit 95709 "Sub Bil PrvDocs SkipTst ori"
 {
     Subtype = Test;
     TestPermissions = Disabled;

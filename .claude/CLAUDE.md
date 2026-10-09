@@ -27,10 +27,12 @@ App:
 Tests:
 - 95700 `Sub Test Install ori`, 95701 `Sub Msg Type Tst ori`, 95702 `Sub Helper Tst ori`,
   95703 `Sub Test Upgrade ori`, 95704 `Sub Registration Tst ori`
-- 95705 `Sub Bil PrvDocs SkipTst ori`
+- 95705 `Sub Imp CrContr Tst ori` (import contract stage tests, #30)
 - 95706 `Sub Contract Batch1 Tst ori`, 95707 `Sub Contract Batch2 Tst ori` (#18)
 - 95708 `Sub PU Filter Tst ori` (PR #25 filter validation regression)
-- Free: 95709-95799
+- 95709 `Sub Bil PrvDocs SkipTst ori` (renumbered from 95705 to resolve the same-app
+  ID collision, PR #32; fresh allocation verified against the full main tree 4ba0248)
+- Free: 95710-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
