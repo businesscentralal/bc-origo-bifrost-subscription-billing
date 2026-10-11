@@ -9,8 +9,10 @@
   compile with AL0264 "already declared" on main and on PR #32. Both suites, names,
   assertions and behavior are unchanged; the 95709 allocation is verified free against
   the full main tree 4ba0248 and the `.claude/CLAUDE.md` free-ID ledger, which is updated.
-- `tools/Test-ObjectIdsUnique.ps1` scans `app/src` and `test/src` and fails the guard
-  when any numeric object ID is declared twice within the same app.
+- `tools/Test-ObjectIdsUnique.ps1` is the Source Guards `ObjectIdsUnique` job.
+  It scans `app/src` and `test/src` and fails when the same object type and ID
+  are declared twice in one app. A table and a page may share a number. App and
+  test are separate apps. The Python harness is not part of the repo.
 - `CommentLineTypeFailsSubscriptionLinesStage` stores its request on an inserted temporary
   `Message Argument ori` before `PerformWrite`. `GetRequestJson` otherwise reads an empty
   blob and fails with "The data does not represent a valid JSON token." The assertion is unchanged.
