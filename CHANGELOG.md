@@ -11,6 +11,9 @@
   the full main tree 4ba0248 and the `.claude/CLAUDE.md` free-ID ledger, which is updated.
 - `tools/Test-ObjectIdsUnique.ps1` scans `app/src` and `test/src` and fails the guard
   when any numeric object ID is declared twice within the same app.
+- `CommentLineTypeFailsSubscriptionLinesStage` stores its request on an inserted temporary
+  `Message Argument ori` before `PerformWrite`. `GetRequestJson` otherwise reads an empty
+  blob and fails with "The data does not represent a valid JSON token." The assertion is unchanged.
 
 ### Changed (2026-10-04) - CI/CD builds only main; every pull request gets a Pull Request Build
 
