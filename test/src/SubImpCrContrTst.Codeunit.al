@@ -13,7 +13,7 @@ codeunit 95705 "Sub Imp CrContr Tst ori"
     procedure CommentLineTypeFailsSubscriptionLinesStage()
     var
         ImportedSubscriptionLine: Record "Imported Subscription Line";
-        Argument: Record "Message Argument ori";
+        Argument: Record "Message Argument ori" temporary;
         Impl: Codeunit "Sub Imp CrContr Impl ori";
         ResponseJson: JsonObject;
         Stages: JsonArray;
@@ -32,6 +32,9 @@ codeunit 95705 "Sub Imp CrContr Tst ori"
 
         RequestedStages.Add('SubscriptionLines');
         RequestJson.Add('stages', RequestedStages);
+        Argument.Init();
+        Argument."Type" := Enum::"Message Type ori"::"Subscription.Import.CreateContracts";
+        Argument.Insert(true);
         Argument.SetRequestJson(RequestJson);
         Impl.PerformWrite(Argument);
 
