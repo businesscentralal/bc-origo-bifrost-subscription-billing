@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed (2026-10-10) - UAT dependency installation
+
+- UAT feature-app deployment uses the Foundation app already deployed by its own pipeline in Dev scope, avoiding an unauthorized AppSource Foundation installation. `.github/AL-Go-Settings.json`: `DeployToBifrost.DependencyInstallMode = "ignore"`. AppSource delivery is unchanged; no AL objects or IDs change.
+
 ### Fixed (2026-10-09) - test app object ID collision (PR #32, follow-up to #30)
 
 - `Sub Bil PrvDocs SkipTst ori` is renumbered from 95705 to 95709 in the test app.
