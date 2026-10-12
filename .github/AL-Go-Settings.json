@@ -36,6 +36,7 @@
       "main"
     ],
     "ContinuousDeployment": true,
-    "Scope": "Dev"
+    "Scope": "Dev",
+    "DependencyInstallMode": "ignore"
   }
 }
