@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Changed (2026-10-11) - CI compiles on Business Central 28.5
+
+- `.AL-Go/settings.json` sets `artifact` to `/sandbox/28.5.54151.55751/w1/latest`. AL-Go reads that as the default storage account, type sandbox, version 28.5.54151.55751, country w1, and select latest, so pull request builds and CI/CD compile on that Business Central 28.5 sandbox artifact.
+- The same file is listed in `fullBuildPatterns`. An incremental pull request build otherwise leaves `.AL-Go/settings.json` out of the project folders it compares, skips compilation, and reports success against the previous BC 29 artifacts.
+- `app/app.json` and `test/app.json` already set `runtime` to `17.0` and `application` and `platform` to `28.0.0.0`. The app version stays 29.0.0.0.
+- `.github/Test Current.settings.json` sets the same artifact, `/sandbox/28.5.54151.55751/w1/latest`. That workflow file overrides the project setting, and it previously selected `////latest`.
+- Test Next Minor and Test Next Major keep `////nextminor` and `////nextmajor`. `.github/AL-Go-Settings.json` does not set `artifact`.
+
 ### Fixed (2026-10-10) - UAT dependency installation
 
 - UAT feature-app deployment uses the Foundation app already deployed by its own pipeline in Dev scope, avoiding an unauthorized AppSource Foundation installation. `.github/AL-Go-Settings.json`: `DeployToBifrost.DependencyInstallMode = "ignore"`. AppSource delivery is unchanged; no AL objects or IDs change.
