@@ -13,6 +13,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -67,7 +69,7 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.BillingDocumentsParameters();
         exit(true);
     end;
 
@@ -143,9 +145,12 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -155,12 +160,11 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Bil CrDocs Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
-    /// <summary>Processes the pending proposal lines into documents. Called directly, or through the isolated write process.</summary>
+    /// <summary>Processes the pending proposal lines into documents. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
@@ -176,7 +180,7 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
         FailureReason: Text;
     begin
         RequestJson := Argument.GetRequestJson();
-        BillingTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'billingTemplateCode', true);
+        BillingTemplateCode := Helper.GetSubjectOr(RequestJson, 'billingTemplateCode', Argument, true);
         DocumentDate := Helper.GetDateOrDefault(RequestJson, 'documentDate', WorkDate());
         PostingDate := Helper.GetDateOrDefault(RequestJson, 'postingDate', WorkDate());
         PostDocuments := Helper.GetBoolean(RequestJson, 'postDocuments', false);

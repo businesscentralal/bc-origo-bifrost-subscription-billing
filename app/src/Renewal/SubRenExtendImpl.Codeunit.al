@@ -13,6 +13,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -66,7 +68,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.RenewalExtendParameters();
         exit(true);
     end;
 
@@ -141,9 +143,12 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -153,8 +158,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Ren Extend Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -191,7 +195,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         NewLineCount: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        SubscriptionHeaderNo := Helper.GetSubjectOr(Argument, RequestJson, 'subscriptionHeaderNo', true);
+        SubscriptionHeaderNo := Helper.GetSubjectOr(RequestJson, 'subscriptionHeaderNo', Argument, true);
         CustomerContractNo := Helper.GetCode20(RequestJson, 'customerContractNo', false);
         VendorContractNo := Helper.GetCode20(RequestJson, 'vendorContractNo', false);
         UsageBasedBillingPackageLinesOnly := Helper.GetBoolean(RequestJson, 'usageBasedBillingPackageLinesOnly', false);

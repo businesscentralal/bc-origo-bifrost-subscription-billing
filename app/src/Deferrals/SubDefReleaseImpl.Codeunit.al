@@ -12,6 +12,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -64,7 +66,7 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.DeferralReleaseParameters();
         exit(true);
     end;
 
@@ -140,9 +142,12 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -152,12 +157,11 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Def Release Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
-    /// <summary>Runs the deferral release report. Called directly, or through the isolated write process.</summary>
+    /// <summary>Runs the deferral release report. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;

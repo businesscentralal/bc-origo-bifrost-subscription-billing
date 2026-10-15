@@ -15,7 +15,6 @@ permissionset 10035062 "BIFROST SubBil ori"
 
     Permissions =
         codeunit "Sub Helper ori" = X,
-        codeunit "Sub Write Process ori" = X,
         codeunit "Sub Line Create Impl ori" = X,
         codeunit "Sub Con GetLines Impl ori" = X,
         codeunit "Sub Con CrInvoice Impl ori" = X,

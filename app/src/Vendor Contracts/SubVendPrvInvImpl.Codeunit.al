@@ -15,6 +15,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -67,7 +69,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.InvoiceParameters('Vendor Subscription Contract', false, false);
         exit(true);
     end;
 
@@ -142,10 +144,14 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         BillingLine: Record "Billing Line";
-        WriteProcess: Codeunit "Sub Write Process ori";
         ContractNo: Code[20];
         WatermarkEntryNo: Integer;
     begin
@@ -157,13 +163,12 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
             exit;
         end;
 
-        ContractNo := Helper.GetSubjectOr(Argument, Argument.GetRequestJson(), 'contractNo', false);
+        ContractNo := Helper.GetSubjectOr(Argument.GetRequestJson(), 'contractNo', Argument, false);
         BillingLine.SetLoadFields("Entry No.");
         if BillingLine.FindLast() then
             WatermarkEntryNo := BillingLine."Entry No.";
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then begin
+        if not Codeunit.Run(Codeunit::"Sub Vend PrvInv Impl ori", Argument) then begin
             // The proposal commits internally, so a rolled-back failure can still leave rows
             // behind. Remove them here, outside the isolation, where the delete itself sticks.
             if ContractNo <> '' then
@@ -172,7 +177,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
         end;
     end;
 
-    /// <summary>Builds and reports the preview, then cleans up after itself. Called directly, or through the isolated write process.</summary>
+    /// <summary>Builds and reports the preview, then cleans up after itself. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
@@ -182,7 +187,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
         BillingToDate: Date;
     begin
         RequestJson := Argument.GetRequestJson();
-        ContractNo := Helper.GetSubjectOr(Argument, RequestJson, 'contractNo', true);
+        ContractNo := Helper.GetSubjectOr(RequestJson, 'contractNo', Argument, true);
         BillingDate := Helper.GetDateOrDefault(RequestJson, 'billingDate', WorkDate());
         BillingToDate := Helper.GetDate(RequestJson, 'billingToDate', false);
 

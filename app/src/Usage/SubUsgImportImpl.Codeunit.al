@@ -16,6 +16,8 @@ using System.Utilities;
 /// </summary>
 codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -66,7 +68,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.UsageImportParameters();
         exit(true);
     end;
 
@@ -142,9 +144,12 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -154,12 +159,11 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Usg Import Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
-    /// <summary>Imports the usage data file and runs the import processing step. Called directly, or through the isolated write process.</summary>
+    /// <summary>Imports the usage data file and runs the import processing step. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         UsageDataImport: Record "Usage Data Import";
@@ -180,7 +184,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         ReasonText: Text;
     begin
         RequestJson := Argument.GetRequestJson();
-        SupplierNo := Helper.GetSubjectOr(Argument, RequestJson, 'supplierNo', true);
+        SupplierNo := Helper.GetSubjectOr(RequestJson, 'supplierNo', Argument, true);
         FileName := Helper.GetText(RequestJson, 'fileName', false);
         if FileName = '' then
             FileName := DefaultFileNameTok;

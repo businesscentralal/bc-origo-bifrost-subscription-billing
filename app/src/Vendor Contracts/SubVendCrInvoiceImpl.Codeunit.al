@@ -15,6 +15,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -67,7 +69,7 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.InvoiceParameters('Vendor Subscription Contract', true, true);
         exit(true);
     end;
 
@@ -142,9 +144,12 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -154,12 +159,11 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Vend CrInvoice Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
-    /// <summary>Builds the ad-hoc proposal and creates the purchase document. Called directly, or through the isolated write process.</summary>
+    /// <summary>Builds the ad-hoc proposal and creates the purchase document. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
@@ -175,7 +179,7 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
         Message: Text;
     begin
         RequestJson := Argument.GetRequestJson();
-        ContractNo := Helper.GetSubjectOr(Argument, RequestJson, 'contractNo', true);
+        ContractNo := Helper.GetSubjectOr(RequestJson, 'contractNo', Argument, true);
         BillingDate := Helper.GetDateOrDefault(RequestJson, 'billingDate', WorkDate());
         BillingToDate := Helper.GetDate(RequestJson, 'billingToDate', false);
         DocumentDate := Helper.GetDateOrDefault(RequestJson, 'documentDate', WorkDate());

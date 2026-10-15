@@ -35,6 +35,14 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-15) - ContractParameterKeys guard passes for the repo (#26)
+
+- `tools/Test-ContractParameterKeys.ps1` reported 388 problems on main. Two code structures hid each type's own keys from it; the contracts and the code otherwise agreed. The guard itself is unchanged and now passes with no allow-list (`Every contract parameter is a key the code reads, and every key the code reads is declared (0 allow-listed).`); its self-tests pass.
+- Reads: every Impl ran its write through `Sub Write Process ori` (10035059), whose dispatcher called the `PerformWrite` of all 18 types, so each type appeared to read every other type's keys. Each Impl now has `TableNo = "Message Argument ori"` and an `OnRun` that calls its own `PerformWrite`, and `ExecuteBifrostTask` runs `Codeunit.Run(Codeunit::"<the Impl>", Argument)`. The isolation is the same (a failed write rolls back on its own and is answered with `RespondWithLastError`; `Omit Commit` still runs inline). `Sub Write Process ori` is deleted and its id 10035059 is free.
+- Declarations: `Sub Contract Parts ori` (10035075) built every type's parameters in one `GetParameters` case over type names, through helpers that took the key as a variable. Each domain now has its own procedure (`LineCreateParameters`, `GetLinesParameters`, `InvoiceParameters`, `BillingProposalParameters`, `BillingDocumentsParameters`, `BillingPreviewParameters`, `SetTemplateFilterParameters`, `RenewalExtendParameters`, `RenewalQuoteParameters`, `UsageImportParameters`, `UsageProcessParameters`, `DeferralReleaseParameters`, `AnalysisParameters`, `ImportParameters`) that names its keys literally in `ContractMgt.Parameter`, and each Impl's `GetParameters` calls its own. The parameter texts, types, defaults and allowed values are unchanged. `GetParameters(MessageType)` stays for the four blocked types and returns no parameters.
+- `Sub Helper ori`.`GetSubjectOr` takes the request and the key first (`GetSubjectOr(RequestJson, 'contractNo', Argument, true)`), like every other reader, so a key read from the subject or the request counts as a read (Renewal.CreateQuote reads nothing else).
+- `BIFROST SubBil ori` no longer lists the deleted codeunit.
+
 ### Changed (2026-10-15) - help states the setup preconditions per type (#44, part)
 
 - `Sub Contract Parts ori` (10035075) adds a precondition to the effect chapter of the 14 types that read Subscription Billing records they do not create (Line.Create, the six customer and vendor contract types, the three Billing types, Renewal.Extend and Renewal.CreateQuote, Usage.ImportData and Import.CreateContracts): the record must exist, and writing it with `Data.Records.Set` needs the Bifrost Setup write guard Open or Change Log coverage, because the guard is Blocked by default. Usage.Process, Deferral.Release and Analysis.Recalculate need no prepared record and say nothing more.
