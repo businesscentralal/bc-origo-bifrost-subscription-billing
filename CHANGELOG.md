@@ -35,6 +35,12 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-15) - help links follow the documentation rules (#27)
+
+- `app/app.json` links move to the public site, as DOCUMENTATION-RULES (bifrost-support, Addresses) requires: `help` is `https://docs.bifrost.origo.is/en-us/subscription-billing/` (the app page that bifrost#104 publishes), and `privacyStatement` and `EULA` are `https://docs.bifrost.origo.is/en-us/licensing/privacy/` and `.../licensing/eula/`, as for Foundation and Attachments. The version is unchanged.
+- The app has no Business Central pages, so the site has no help instance for it. `contextSensitiveHelpUrl` cannot be removed, because AppSourceCop requires it (AS0051 is an error), so it now points at the app's own page, `https://docs.bifrost.origo.is/{0}/subscription-billing/`, instead of the help instance `.../{0}/help/subscription-billing/` that does not exist and never will.
+- `tools/Test-HelpLinks.ps1` checks the app.json links too: `help`, `privacyStatement` and `EULA` must be on `https://docs.bifrost.origo.is/`, and `contextSensitiveHelpUrl` must be the help instance when the app has pages and the app page when it has none. For an app without pages it no longer needs `-DocsPath`, because there is no help page to look up; with pages it checks every slug in both locales as before. It passes for the repo.
+
 ### Fixed (2026-10-15) - ContractParameterKeys guard passes for the repo (#26)
 
 - `tools/Test-ContractParameterKeys.ps1` reported 388 problems on main. Two code structures hid each type's own keys from it; the contracts and the code otherwise agreed. The guard itself is unchanged and now passes with no allow-list (`Every contract parameter is a key the code reads, and every key the code reads is declared (0 allow-listed).`); its self-tests pass.
