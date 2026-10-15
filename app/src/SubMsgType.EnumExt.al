@@ -178,4 +178,18 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
         Caption = 'Subscription.Billing.DeleteDocuments', Locked = true;
         Implementation = "Msg Interface ori" = "Sub Bil DelDocs Impl ori", "Msg Discovery ori" = "Sub Bil DelDocs Impl ori", "Msg Contract ori" = "Sub Bil DelDocs Impl ori";
     }
+
+    /// <summary>Connects a usage data supplier's subscriptions to Subscriptions through Microsoft's Connect to Subscription.</summary>
+    value(10035066; "Subscription.Usage.ConnectSubscriptions")
+    {
+        Caption = 'Subscription.Usage.ConnectSubscriptions', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Usg Connect Impl ori", "Msg Discovery ori" = "Sub Usg Connect Impl ori", "Msg Contract ori" = "Sub Usg Connect Impl ori";
+    }
+
+    /// <summary>Disconnects a Subscription Line from its usage data supplier's subscription.</summary>
+    value(10035067; "Subscription.Usage.DisconnectSubscription")
+    {
+        Caption = 'Subscription.Usage.DisconnectSubscription', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Usg Disconnect Impl ori", "Msg Discovery ori" = "Sub Usg Disconnect Impl ori", "Msg Contract ori" = "Sub Usg Disconnect Impl ori";
+    }
 }

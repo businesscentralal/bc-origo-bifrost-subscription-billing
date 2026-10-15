@@ -741,6 +741,102 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Renewal.Extend: Framlengir gildistíma áskriftarsamnings. Óafturkræf aðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren Extend Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 3271990264" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 is already connected to Subscription Line %2. Disconnect it first with Subscription.Usage.DisconnectSubscription.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna er þegar tengd áskriftarlínu %2. Aftengdu hana fyrst með Subscription.Usage.DisconnectSubscription.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = subscription line entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er þegar tengd áskriftarlínu %2. Aftengdu hana fyrst með Subscription.Usage.DisconnectSubscription.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType AlreadyConnectedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Connects a usage data suppliers subscriptions to Subscriptions through Microsofts Connect to Subscription, and returns which entries were connected and which were skipped, with the reason.</source>
+          <target>Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 2791289126" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 does not exist for supplier '%2'.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna er ekki til fyrir birgi '%2'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = supplier number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er ekki til fyrir birgi '%2'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType EntryNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 1460884527" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 has no Connect to Subscription Method. Set Connect to Sub. Header No. on the entry first, for example with Data.Records.Set.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna hefur engan tengimáta við áskrift. Settu fyrst Tengjast áskriftarnr. á færsluna, til dæmis með Data.Records.Set.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna hefur engan tengimáta við áskrift. Settu fyrst Tengjast áskriftarnr. á færsluna, til dæmis með Data.Records.Set.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType NoConnectMethodErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 3627855224" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entries %1 and %2 both connect to Subscription '%3'. Connect them in separate calls after checking that this is intended.</source>
+          <target>Færslur %1 og %2 í áskriftum birgis notkunargagna tengjast báðar áskriftinni '%3'. Tengdu þær í aðskildum köllum eftir að hafa gengið úr skugga um að það sé ætlunin.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = first entry number, %2 = second entry number, %3 = subscription number||is-IS=Færslur %1 og %2 í áskriftum birgis notkunargagna tengjast báðar áskriftinni '%3'. Tengdu þær í aðskildum köllum eftir að hafa gengið úr skugga um að það sé ætlunin.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType SameSubscriptionErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 1706861390" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Usage Data Supplier '%1' does not exist.</source>
+          <target>Birgir notkunargagna '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = supplier number||is-IS=Birgir notkunargagna '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType SupplierNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.ConnectSubscriptions, Subscription, Usage, ConnectSubscriptions, connect, supplier, usage based billing</source>
+          <target>Subscription.Usage.ConnectSubscriptions, áskrift, notkun, tengja áskriftir, tengja, birgir, notkunartengd reikningagerð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.ConnectSubscriptions, áskrift, notkun, tengja áskriftir, tengja, birgir, notkunartengd reikningagerð</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.ConnectSubscriptions: Irreversible. Connects supplier subscriptions to Subscriptions; with New Subscription Lines it also ends the old lines.</source>
+          <target>Subscription.Usage.ConnectSubscriptions: Óafturkræft. Tengir áskriftir birgis við áskriftir; með nýjum áskriftarlínum lýkur það einnig gömlu línunum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.ConnectSubscriptions: Óafturkræft. Tengir áskriftir birgis við áskriftir; með nýjum áskriftarlínum lýkur það einnig gömlu línunum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Disconnects a Subscription Line from its usage data suppliers subscription, like Disconnect from Subscription, and returns the link that was removed.</source>
+          <target>Aftengir áskriftarlínu frá áskrift birgis notkunargagna, eins og Aftengjast áskrift, og skilar tengingunni sem var fjarlægð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Aftengir áskriftarlínu frá áskrift birgis notkunargagna, eins og Aftengjast áskrift, og skilar tengingunni sem var fjarlægð.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 352622013" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 is not connected to a Subscription Line.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna er ekki tengd áskriftarlínu.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er ekki tengd áskriftarlínu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType EntryNotConnectedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 2791289126" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 does not exist.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType EntryNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 2439084459" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Line %1 is not connected to a usage data supplier's subscription.</source>
+          <target>Áskriftarlína %1 er ekki tengd áskrift birgis notkunargagna.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = subscription line entry number||is-IS=Áskriftarlína %1 er ekki tengd áskrift birgis notkunargagna.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType LineNotConnectedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 3085223924" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Line %1 does not exist.</source>
+          <target>Áskriftarlína %1 er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = subscription line entry number||is-IS=Áskriftarlína %1 er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType LineNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 684409259" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The request must supply 'subscriptionLineEntryNo' or 'usageDataSubscriptionEntryNo'.</source>
+          <target>Beiðnin verður að innihalda 'subscriptionLineEntryNo' eða 'usageDataSubscriptionEntryNo'.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Beiðnin verður að innihalda 'subscriptionLineEntryNo' eða 'usageDataSubscriptionEntryNo'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType MissingSelectionErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.DisconnectSubscription, Subscription, Usage, DisconnectSubscription, disconnect, supplier, usage based billing</source>
+          <target>Subscription.Usage.DisconnectSubscription, áskrift, notkun, aftengja áskrift, aftengja, birgir, notkunartengd reikningagerð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.DisconnectSubscription, áskrift, notkun, aftengja áskrift, aftengja, birgir, notkunartengd reikningagerð</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.DisconnectSubscription: Removes the link between a Subscription Line and a supplier subscription. Lines and contracts stay.</source>
+          <target>Subscription.Usage.DisconnectSubscription: Fjarlægir tenginguna milli áskriftarlínu og áskriftar birgis. Línur og samningar standa óbreyttir.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.DisconnectSubscription: Fjarlægir tenginguna milli áskriftarlínu og áskriftar birgis. Línur og samningar standa óbreyttir.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2570584800 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Imports a usage data file (as raw text or base64) for metered Subscription Lines and creates the imported usage data lines. Optionally also processes those lines into billable quantities.</source>
           <target>Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.</target>

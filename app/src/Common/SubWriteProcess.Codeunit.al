@@ -44,6 +44,8 @@ codeunit 10035059 "Sub Write Process ori"
         ConUpdDatesImpl: Codeunit "Sub Con UpdDates Impl ori";
         BilClrProposalImpl: Codeunit "Sub Bil ClrProposal Impl ori";
         BilDelDocsImpl: Codeunit "Sub Bil DelDocs Impl ori";
+        UsgConnectImpl: Codeunit "Sub Usg Connect Impl ori";
+        UsgDisconnectImpl: Codeunit "Sub Usg Disconnect Impl ori";
     begin
         case Argument."Type" of
             Argument."Type"::"Subscription.Line.Create":
@@ -88,6 +90,10 @@ codeunit 10035059 "Sub Write Process ori"
                 BilClrProposalImpl.PerformWrite(Argument);
             Argument."Type"::"Subscription.Billing.DeleteDocuments":
                 BilDelDocsImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Usage.ConnectSubscriptions":
+                UsgConnectImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Usage.DisconnectSubscription":
+                UsgDisconnectImpl.PerformWrite(Argument);
         end;
     end;
 }

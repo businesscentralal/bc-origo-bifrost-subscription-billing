@@ -154,6 +154,16 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Parameters.Add(ContractMgt.Parameter('usageDataImportEntryNo', 'integer', true, 'The Usage Data Import entry to process. May be supplied as the subject instead.'));
                     Parameters.Add(AllowedParameter('steps', 'array', false, 'The processing steps to run, in the order given. Defaults to ProcessImportedLines, CreateUsageDataBilling, ProcessUsageDataBilling. CreateImportedLines parses the stored file again and is never run by default.', 'CreateImportedLines,ProcessImportedLines,CreateUsageDataBilling,ProcessUsageDataBilling'));
                 end;
+            'Subscription.Usage.ConnectSubscriptions':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('supplierNo', 'string', true, 'The Usage Data Supplier whose subscriptions are connected. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('entryNos', 'array', false, 'Connects only these Usage Data Supp. Subscription entries, written as whole numbers. Each must belong to the supplier, have a Connect to Subscription Method and not be connected yet. Omit it to connect every such entry of the supplier.'));
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('subscriptionLineEntryNo', 'integer', false, 'Entry No. of the connected Subscription Line. One of subscriptionLineEntryNo and usageDataSubscriptionEntryNo is required; when both are sent this one is used.'));
+                    Parameters.Add(ContractMgt.Parameter('usageDataSubscriptionEntryNo', 'integer', false, 'Entry No. of the connected Usage Data Supp. Subscription, as an alternative to subscriptionLineEntryNo.'));
+                end;
             'Subscription.Deferral.Release':
                 begin
                     Parameters.Add(DateParameter('postingDate', 'The date the caller expects the release to post under. Must equal the work date, the only date Business Central uses. Defaults to the work date.'));
@@ -348,6 +358,26 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Fields.Add(ContractMgt.ResponseField('usageDataBillingCount', 'integer', 'Usage Data Billing rows of the entry.'));
                     Fields.Add(ContractMgt.ResponseField('usageDataBillingErrorCount', 'integer', 'Usage Data Billing rows of the entry whose Processing Status is Error.'));
                 end;
+            'Subscription.Usage.ConnectSubscriptions':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('supplierNo', 'string', 'The Usage Data Supplier.'));
+                    Fields.Add(ContractMgt.ResponseField('connected', 'integer', 'Entries now connected to a Subscription Line. Zero is still a success.'));
+                    Fields.Add(ContractMgt.ResponseField('skipped', 'integer', 'Entries Microsoft could not connect; see reason.'));
+                    Children.Add(ContractMgt.ResponseField('entryNo', 'integer', 'Entry No. of the Usage Data Supp. Subscription.'));
+                    Children.Add(ContractMgt.ResponseField('connected', 'boolean', 'True when the entry is now connected.'));
+                    Children.Add(ContractMgt.ResponseField('subscriptionHeaderNo', 'string', 'The Subscription it is connected to; empty when skipped.'));
+                    Children.Add(ContractMgt.ResponseField('subscriptionLineEntryNo', 'integer', 'The Subscription Line it is connected to; 0 when skipped.'));
+                    Children.Add(ContractMgt.ResponseField('reason', 'string', 'Why Microsoft skipped the entry; empty when it was connected.'));
+                    Fields.Add(FieldWithChildren('entries', 'array', 'One entry per supplier subscription the call tried to connect.', Children));
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('subscriptionLineEntryNo', 'integer', 'The Subscription Line that was disconnected.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionHeaderNo', 'string', 'Its Subscription.'));
+                    Fields.Add(ContractMgt.ResponseField('usageDataSubscriptionEntryNo', 'integer', 'The Usage Data Supp. Subscription that was disconnected.'));
+                    Fields.Add(ContractMgt.ResponseField('supplierReferenceEntryNo', 'integer', 'The Supplier Reference Entry No. the link used.'));
+                    Fields.Add(ContractMgt.ResponseField('linesDisconnected', 'integer', 'Lines of the Subscription whose Supplier Reference Entry No. was cleared.'));
+                end;
             'Subscription.Deferral.Release':
                 begin
                     Fields.Add(ContractMgt.ResponseField('postingDate', 'string', 'The posting date, as YYYY-MM-DD.'));
@@ -411,7 +441,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         if MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments'] then
             Effect.Add('effect', 'read')
         else
-            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments'] then
+            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.ConnectSubscriptions'] then
                 Effect.Add('effect', 'irreversible')
             else
                 Effect.Add('effect', 'write');
@@ -429,7 +459,14 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Renewal.CreateQuote':
                 Preconditions.Add('The contract has Subscription Lines with an end date.');
             'Subscription.Usage.Process':
-                Preconditions.Add('The Usage Data Import entry exists and is not Closed.');
+                begin
+                    Preconditions.Add('The Usage Data Import entry exists and is not Closed.');
+                    Preconditions.Add('The supplier subscriptions in the file are connected to Subscriptions (Subscription.Usage.ConnectSubscriptions); Process Imported Lines fails on an unconnected one.');
+                end;
+            'Subscription.Usage.ConnectSubscriptions':
+                Preconditions.Add('Each entry to connect has Connect to Sub. Header No. set, which sets its Connect to Subscription Method; the Subscription has usage based lines (Existing Subscription Lines) or its item has a usage based package (New Subscription Lines).');
+            'Subscription.Usage.DisconnectSubscription':
+                Preconditions.Add('The Subscription Line is connected: it has a Supplier Reference Entry No. that a supplier subscription carries.');
             'Subscription.Billing.ClearProposal':
                 begin
                     Preconditions.Add('The selected proposal lines are not on a document yet.');
@@ -558,9 +595,22 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.GetLines', 'Attach lines to a customer contract after import.'));
                 end;
             'Subscription.Usage.ImportData':
-                Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.Process', 'Process the imported usage entry.'));
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.Process', 'Process the imported usage entry.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ConnectSubscriptions', 'Connect new supplier subscriptions before processing.'));
+                end;
             'Subscription.Usage.Process':
-                Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ImportData', 'Import usage data when no entry exists.'));
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ConnectSubscriptions', 'Run first for new supplier subscriptions: processing fails on an unconnected one.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ImportData', 'Import usage data when no entry exists.'));
+                end;
+            'Subscription.Usage.ConnectSubscriptions':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.Process', 'Process the imported usage once the subscriptions are connected.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.DisconnectSubscription', 'Remove a link again.'));
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ConnectSubscriptions', 'Connect the supplier subscription again, for example to another Subscription.'));
         end;
     end;
 
@@ -592,9 +642,10 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Billing.CreateDocuments', 'Turn the proposal lines into documents.'));
                     Workflow.Add('text', 'Bill every contract a Billing Template covers in one run.');
                 end;
-            'Subscription.Usage.ImportData', 'Subscription.Usage.Process':
+            'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Usage.DisconnectSubscription':
                 begin
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Usage.ImportData', 'Store the supplier''s usage file and parse it into imported lines.'));
+                    Steps.Add(ContractMgt.WorkflowStep('Subscription.Usage.ConnectSubscriptions', 'Connect new supplier subscriptions to Subscriptions; needed once per new subscription.'));
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Usage.Process', 'Process the imported lines into usage data billing and billing lines.'));
                     Workflow.Add('text', 'Bill usage-based Subscription Lines from a supplier''s usage file.');
                 end;
@@ -665,6 +716,10 @@ codeunit 10035075 "Sub Contract Parts ori"
                 exit('Creates a Usage Data Import with a Usage Data Blob holding the file and commits them, then runs the Create Imported Lines step, and Process Imported Lines when runProcessing is true, each after a commit. Nothing is posted.');
             'Subscription.Usage.Process':
                 exit('Runs the requested processing steps on the Usage Data Import, committing before each, so a later failure does not undo an earlier step. Creates and processes Usage Data Billing rows; nothing is posted by this call.');
+            'Subscription.Usage.ConnectSubscriptions':
+                exit('Runs Microsoft''s Connect to Subscription for each selected supplier subscription. Existing Subscription Lines: the Subscription''s usage based lines get the Supplier Reference Entry No. and the supplier subscription gets the Subscription and line. New Subscription Lines: the current lines end the day before the connect date and the contracts are extended with new usage based lines. Disconnect does not undo the new lines. Imported usage rows of the supplier get the Subscription No.');
+            'Subscription.Usage.DisconnectSubscription':
+                exit('Clears the Supplier Reference Entry No. of the Subscription''s lines that carry it, and the Subscription No. and Subscription Line Entry No. of the supplier subscription. No line, contract or usage data is deleted.');
             'Subscription.Deferral.Release':
                 exit('Runs Microsoft''s Contract Deferrals Release report, which releases every eligible customer and vendor deferral of every contract up to the work date and posts the release to the general ledger.');
             'Subscription.Analysis.Recalculate':
@@ -688,7 +743,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 SetSubjectKey(DataKey, SubjectForm, 'billingTemplateCode', 'Billing Template Code');
             'Subscription.PriceUpdate.SetTemplateFilter':
                 SetSubjectKey(DataKey, SubjectForm, 'priceUpdateTemplateCode', 'Price Update Template Code');
-            'Subscription.Usage.ImportData':
+            'Subscription.Usage.ImportData', 'Subscription.Usage.ConnectSubscriptions':
                 SetSubjectKey(DataKey, SubjectForm, 'supplierNo', 'Usage Data Supplier No.');
             'Subscription.Usage.Process':
                 SetSubjectKey(DataKey, SubjectForm, 'usageDataImportEntryNo', 'Usage Data Import Entry No.');
@@ -713,17 +768,17 @@ codeunit 10035075 "Sub Contract Parts ori"
 
     local procedure AddParameterErrors(MessageType: Text; var Errors: JsonArray)
     begin
-        if not (MessageType in ['Subscription.Deferral.Release', 'Subscription.Analysis.Recalculate', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments']) then
+        if not (MessageType in ['Subscription.Deferral.Release', 'Subscription.Analysis.Recalculate', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.DisconnectSubscription']) then
             AddBusinessCentralError(Errors, 'The request is missing the required parameter ''%1''.', 'A required parameter is missing, and the subject does not carry it either.', 'Send the parameter named in the error.');
-        if not (MessageType in ['Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates']) then
+        if not (MessageType in ['Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates', 'Subscription.Usage.DisconnectSubscription']) then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' is longer than the %2 characters allowed.', 'A record number or code, or the subject, is longer than 20 characters.', 'Send the number as it is stored in Business Central.');
         if MessageType in ['Subscription.Line.Create', 'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Deferral.Release'] then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' is not a valid date. Use the ISO format YYYY-MM-DD.', 'A date parameter is not a date in the ISO format.', 'Send the date as YYYY-MM-DD.');
-        if MessageType in ['Subscription.Renewal.Extend', 'Subscription.Usage.Process'] then
+        if MessageType in ['Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Usage.DisconnectSubscription'] then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', 'An integer parameter is not a number.', 'Send a whole number.');
-        if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines', 'Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Import.CreateContracts'] then
+        if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines', 'Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Import.CreateContracts', 'Subscription.Usage.ConnectSubscriptions'] then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' must be a JSON array.', 'An array parameter has a value that is not an array.', 'Send a JSON array, or leave the parameter out.');
-        if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines'] then
+        if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines', 'Subscription.Usage.ConnectSubscriptions'] then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' must be a JSON array of entry numbers, written as whole numbers.', 'An entry of subscriptionLineEntryNos is not a whole number.', 'Send whole numbers only.');
     end;
 
@@ -812,6 +867,22 @@ codeunit 10035075 "Sub Contract Parts ori"
                     AddBusinessCentralError(Errors, 'The subject ''%1'' is not a Usage Data Import entry number. ...', 'The subject is set but is not a whole number.', 'Send the entry number as the subject, or as usageDataImportEntryNo.');
                     AddBusinessCentralError(Errors, 'Usage Data Import entry %1 is already Closed and cannot be processed again.', 'The entry''s Processing Status is Closed.', 'Import the data again with Subscription.Usage.ImportData.');
                     AddBusinessCentralError(Errors, '''%1'' is not a known processing step. ...', 'An entry of steps is not one of the four step names. The steps before it have already run and committed.', 'Use CreateImportedLines, ProcessImportedLines, CreateUsageDataBilling or ProcessUsageDataBilling.');
+                end;
+            'Subscription.Usage.ConnectSubscriptions':
+                begin
+                    AddNotFoundError(Errors, 'The Usage Data Supplier ''%1'' does not exist.', 'supplierNo or the subject names no Usage Data Supplier.');
+                    AddNotFoundError(Errors, 'Usage Data Supp. Subscription entry %1 does not exist for supplier ''%2''.', 'An entry of entryNos does not exist or belongs to another supplier.');
+                    AddBusinessCentralError(Errors, 'Usage Data Supp. Subscription entry %1 has no Connect to Subscription Method. ...', 'A listed entry has no method, because Connect to Sub. Header No. is not set.', 'Set Connect to Sub. Header No. on the entry first, for example with Data.Records.Set.');
+                    AddBusinessCentralError(Errors, 'Usage Data Supp. Subscription entry %1 is already connected to Subscription Line %2. ...', 'A listed entry is connected already.', 'Disconnect it first with Subscription.Usage.DisconnectSubscription, or leave it out.');
+                    AddBusinessCentralError(Errors, 'Usage Data Supp. Subscription entries %1 and %2 both connect to Subscription ''%3''. ...', 'Two selected entries name the same Subscription; Microsoft would ask for confirmation, which an unattended call cannot give.', 'Connect them in separate calls, after checking that this is intended.');
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                begin
+                    AddBusinessCentralError(Errors, 'The request must supply ''subscriptionLineEntryNo'' or ''usageDataSubscriptionEntryNo''.', 'Neither parameter was sent.', 'Send one of the two entry numbers.');
+                    AddNotFoundError(Errors, 'Subscription Line %1 does not exist.', 'subscriptionLineEntryNo names no Subscription Line.');
+                    AddNotFoundError(Errors, 'Usage Data Supp. Subscription entry %1 does not exist.', 'usageDataSubscriptionEntryNo names no entry.');
+                    AddBusinessCentralError(Errors, 'Usage Data Supp. Subscription entry %1 is not connected to a Subscription Line.', 'The supplier subscription has no Subscription Line.', 'Nothing to disconnect.');
+                    AddBusinessCentralError(Errors, 'Subscription Line %1 is not connected to a usage data supplier''s subscription.', 'The line has no Supplier Reference Entry No., or no supplier subscription carries it.', 'Nothing to disconnect.');
                 end;
             'Subscription.Deferral.Release':
                 begin
