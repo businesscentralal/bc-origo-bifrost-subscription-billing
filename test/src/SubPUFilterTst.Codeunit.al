@@ -172,8 +172,11 @@ codeunit 95708 "Sub PU Filter Tst ori"
     local procedure Initialize(VendorPartner: Boolean)
     var
         PriceUpdateTemplate: Record "Price Update Template";
+        TestLibrary: Codeunit "Sub Test Library ori";
         FilterStream: OutStream;
     begin
+        // The public dispatcher refuses every call while a registered Bifrost app has HTTP disabled.
+        TestLibrary.EnableHttpForBifrostApps();
         if PriceUpdateTemplate.Get(TemplateCodeTok) then
             PriceUpdateTemplate.Delete(false);
         PriceUpdateTemplate.Init();
@@ -201,11 +204,16 @@ codeunit 95708 "Sub PU Filter Tst ori"
         CustomerContract.Insert(false);
     end;
 
-    local procedure ResponseAsText(ResponseJson: JsonObject) Result: Text
-    begin
-        ResponseJson.WriteTo(Result);
-    end;
-
+    local procedure ResponseAsText(ResponseJson: JsonObject) Result: Text
+
+    begin
+
+        ResponseJson.WriteTo(Result);
+
+    end;
+
+
+
     local procedure InvokeFilter(TargetName: Text; FilterText: Text; IncludeFilter: Boolean) ResponseJson: JsonObject
     var
         Dispatcher: Codeunit "Dispatcher ori";

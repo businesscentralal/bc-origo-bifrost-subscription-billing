@@ -62,6 +62,7 @@ codeunit 95775 "Sub Billing Run Tst ori"
     end;
 
     [Test]
+    [HandlerFunctions('DocumentsCreatedMessageHandler')]
     procedure Scenario_AC05_CreateDocumentsPosted_PostsSalesInvoice()
     var
         CustomerContract: Record "Customer Subscription Contract";
@@ -97,6 +98,7 @@ codeunit 95775 "Sub Billing Run Tst ori"
     end;
 
     [Test]
+    [HandlerFunctions('DocumentsCreatedMessageHandler')]
     procedure Scenario_AC05_CreateDocumentsPosted_LeavesPurchaseInvoiceUnposted()
     var
         VendorContract: Record "Vendor Subscription Contract";
@@ -152,5 +154,11 @@ codeunit 95775 "Sub Billing Run Tst ori"
     local procedure TemplateRequest(TemplateCode: Text) RequestJson: JsonObject
     begin
         RequestJson.Add('billingTemplateCode', TemplateCode);
+    end;
+
+    [MessageHandler]
+    procedure DocumentsCreatedMessageHandler(Message: Text[1024])
+    begin
+        // Microsoft's Create Billing Documents reports what it created; an API session shows no message.
     end;
 }
