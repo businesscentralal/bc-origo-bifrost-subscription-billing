@@ -109,7 +109,7 @@ codeunit 95777 "Sub Usage Tst ori"
         // [GIVEN] An imported usage file
         CreateGenericSupplier(UsageDataSupplier);
         RequestJson.Add('supplierNo', UsageDataSupplier."No.");
-        RequestJson.Add('content', UsageFile('XNOSUB', 'XNOCUST', 'XNOSUBID', 1));
+        RequestJson.Add('content', UsageFile('', 'XNOCUST', 'XNOSUBID', 1));
         ImportResponse := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Usage.ImportData", RequestJson);
 
         // [WHEN] Usage.Process names a step that does not exist
@@ -266,13 +266,14 @@ codeunit 95777 "Sub Usage Tst ori"
     begin
         UsageDataSupplierReference.SetRange("Supplier No.", SupplierNo);
         UsageDataSupplierReference.SetRange(Type, Enum::"Usage Data Reference Type"::Subscription);
-        UsageDataSupplierReference.SetRange("Supplier Reference", SupplierSubscriptionId);
+        // Microsoft stores supplier references in lower case.
+        UsageDataSupplierReference.SetRange("Supplier Reference", LowerCase(SupplierSubscriptionId));
         if not UsageDataSupplierReference.FindFirst() then begin
             UsageDataSupplierReference.Init();
             UsageDataSupplierReference."Entry No." := 0;
             UsageDataSupplierReference."Supplier No." := SupplierNo;
             UsageDataSupplierReference.Type := Enum::"Usage Data Reference Type"::Subscription;
-            UsageDataSupplierReference."Supplier Reference" := SupplierSubscriptionId;
+            UsageDataSupplierReference.Validate("Supplier Reference", SupplierSubscriptionId);
             UsageDataSupplierReference.Insert(false);
         end;
         SubscriptionLine.Get(SubscriptionLine."Entry No.");
