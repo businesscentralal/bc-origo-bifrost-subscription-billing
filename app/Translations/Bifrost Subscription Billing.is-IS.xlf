@@ -262,27 +262,51 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked: Microsoft has not exposed a public API to roll a contract's Subscription Line dates forward. Always returns a structured error naming the internal procedures involved.</source>
-          <target>Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að færa dagsetningar áskriftarlína samnings áfram. Skilar alltaf skipulagðri villu sem nefnir þau innri ferli sem við eiga.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að færa dagsetningar áskriftarlína samnings áfram. Skilar alltaf skipulagðri villu sem nefnir þau innri ferli sem við eiga.</note>
+          <source>Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, by running Microsoft's codeunit 8058 through a Job Queue Entry. Needs BIFROST Force ori.</source>
+          <target>Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með því að keyra kótaeiningu 8058 frá Microsoft í verkraðarfærslu. Krefst BIFROST Force ori.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með því að keyra kótaeiningu 8058 frá Microsoft í verkraðarfærslu. Krefst BIFROST Force ori.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 2002185568 - NamedType 2164942842" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateLineDates has no supported public API in this Business Central version. Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() and codeunit 8058 "Update Sub. Lines Term. Dates" are all internal to Microsoft's Subscription Billing app and cannot be called from this extension. Run the "Update Subscription Line Dates" action on the contract in the Business Central client instead, or schedule Microsoft's own job queue entry for the batch job that does this in bulk.</source>
-          <target>Subscription.Contract.UpdateLineDates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() og codeunit 8058 "Update Sub. Lines Term. Dates" eru öll innri í Subscription Billing-forriti Microsoft og því ekki hægt að kalla þau úr þessu appi. Keyrðu aðgerðina „Uppfæra dagsetningar áskriftarlína“ ("Update Subscription Line Dates") á samningnum í Business Central-biðlaranum í staðinn, eða settu upp vinnsluraðarfærslu Microsoft sjálfs fyrir hópkeyrsluna sem gerir þetta í lotum.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() og codeunit 8058 "Update Sub. Lines Term. Dates" eru öll innri í Subscription Billing-forriti Microsoft og því ekki hægt að kalla þau úr þessu appi. Keyrðu aðgerðina „Uppfæra dagsetningar áskriftarlína“ ("Update Subscription Line Dates") á samningnum í Business Central-biðlaranum í staðinn, eða settu upp vinnsluraðarfærslu Microsoft sjálfs fyrir hópkeyrsluna sem gerir þetta í lotum.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType NotSupportedErr</note>
+        <trans-unit id="Codeunit 2002185568 - NamedType 3314699509" size-unit="char" translate="yes" xml:space="preserve">
+          <source>the BIFROST Force ori permission set</source>
+          <target>heimildasamstæðan BIFROST Force ori</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=heimildasamstæðan BIFROST Force ori</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForceExpectedTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2002185568 - NamedType 775780324" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Ask an administrator to assign the BIFROST Force ori permission set to your user, then call again.</source>
+          <target>Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForceNextStepTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2002185568 - NamedType 1817117493" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Contract.UpdateLineDates schedules a Job Queue Entry, which needs the BIFROST Force ori permission set. Your user does not have it.</source>
+          <target>Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar BIFROST Force ori. Notandinn þinn hefur hana ekki.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar BIFROST Force ori. Notandinn þinn hefur hana ekki.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForcePermissionErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2002185568 - NamedType 46511362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter 'runMode' must be either 'foreground' or 'background', not '%1'.</source>
+          <target>Færibreytan 'runMode' verður að vera annaðhvort 'foreground' eða 'background', ekki '%1'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = the supplied run mode||is-IS=Færibreytan 'runMode' verður að vera annaðhvort 'foreground' eða 'background', ekki '%1'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType InvalidRunModeErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2002185568 - NamedType 2938394307" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bifrost: update Subscription Line term dates</source>
+          <target>Bifröst: uppfæra samningstímadagsetningar áskriftarlína</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bifröst: uppfæra samningstímadagsetningar áskriftarlína</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType JobDescriptionTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateLineDates, Subscription, Contract, UpdateLineDates, customer, dates</source>
-          <target>Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, viðskiptavinur, dagsetningar</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, viðskiptavinur, dagsetningar</note>
+          <source>Subscription.Contract.UpdateLineDates, Subscription, Contract, UpdateLineDates, term dates, close, job queue</source>
+          <target>Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, samningstími, loka, verkröð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, samningstími, loka, verkröð</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateLineDates: Recalculates customer contract line dates. Irreversible.</source>
-          <target>Subscription.Contract.UpdateLineDates: Endurreiknar dagsetningar lína í viðskiptasamningi. Óafturkræf aðgerð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates: Endurreiknar dagsetningar lína í viðskiptasamningi. Óafturkræf aðgerð.</note>
+          <source>Subscription.Contract.UpdateLineDates: Irreversible. Closes ended Subscription Lines in every Subscription through a Job Queue Entry; needs BIFROST Force ori.</source>
+          <target>Subscription.Contract.UpdateLineDates: Óafturkræft. Lokar áskriftarlínum sem er lokið í öllum áskriftum með verkraðarfærslu; krefst BIFROST Force ori.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates: Óafturkræft. Lokar áskriftarlínum sem er lokið í öllum áskriftum með verkraðarfærslu; krefst BIFROST Force ori.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
@@ -398,6 +422,18 @@
           <target>Býr til áskriftarhausa, áskriftarsamninga viðskiptavina, áskriftarlínur og samningslínur áskriftarsamnings viðskiptavinar út frá innfluttum bráðabirgðalínum, eitt skref í einu.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptavina, áskriftarlínur og samningslínur áskriftarsamnings viðskiptavinar út frá innfluttum bráðabirgðalínum, eitt skref í einu.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2484466267 - NamedType 3794037818" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Create Subscription Line reported success but Subscription Line Entry No. is still 0.</source>
+          <target>Stofnun áskriftarlínu tilkynnti árangur en númer áskriftarlínu er enn 0.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Stofnun áskriftarlínu tilkynnti árangur en númer áskriftarlínu er enn 0.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType LineNotCreatedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2484466267 - NamedType 1529208534" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sub_ContractLineType is required: Subscription Line / Comment</source>
+          <target>Sub_ContractLineType er nauðsynlegt: Áskriftarlína / Athugasemd</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sub_ContractLineType er nauðsynlegt: Áskriftarlína / Athugasemd</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType LineTypeRequiredErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 274557919" size-unit="char" translate="yes" xml:space="preserve">
           <source>Only the first %1 errors are listed; more rows may have failed.</source>

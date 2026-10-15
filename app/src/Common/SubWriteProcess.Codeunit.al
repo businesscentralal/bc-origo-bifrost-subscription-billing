@@ -41,6 +41,7 @@ codeunit 10035059 "Sub Write Process ori"
         DefReleaseImpl: Codeunit "Sub Def Release Impl ori";
         AnaRecalcImpl: Codeunit "Sub Ana Recalc Impl ori";
         ImpCrContrImpl: Codeunit "Sub Imp CrContr Impl ori";
+        ConUpdDatesImpl: Codeunit "Sub Con UpdDates Impl ori";
     begin
         case Argument."Type" of
             Argument."Type"::"Subscription.Line.Create":
@@ -79,6 +80,8 @@ codeunit 10035059 "Sub Write Process ori"
                 AnaRecalcImpl.PerformWrite(Argument);
             Argument."Type"::"Subscription.Import.CreateContracts":
                 ImpCrContrImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Contract.UpdateLineDates":
+                ConUpdDatesImpl.PerformWrite(Argument);
         end;
     end;
 }

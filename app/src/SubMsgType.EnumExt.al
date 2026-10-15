@@ -39,7 +39,7 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
         Implementation = "Msg Interface ori" = "Sub Con PrvInvoice Impl ori", "Msg Discovery ori" = "Sub Con PrvInvoice Impl ori", "Msg Contract ori" = "Sub Con PrvInvoice Impl ori";
     }
 
-    /// <summary>Recalculates next billing and term dates across a Subscription Contract.</summary>
+    /// <summary>Closes ended Subscription Lines and rolls term dates forward for every Subscription through a Job Queue Entry for codeunit 8058.</summary>
     value(10035040; "Subscription.Contract.UpdateLineDates")
     {
         Caption = 'Subscription.Contract.UpdateLineDates', Locked = true;

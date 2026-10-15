@@ -35,6 +35,13 @@
 
 ## [Unreleased]
 
+### Added (2026-10-15) - Subscription.Contract.UpdateLineDates runs through the job queue (#36)
+
+- `Sub Con UpdDates Impl ori` (codeunit 10035040, enum value 10035040) is no longer blocked. It creates a Job Queue Entry for Microsoft's codeunit 8058 "Update Sub. Lines Term. Dates" and runs it at once through the Job Queue Dispatcher (`runMode` foreground, the default, as the Run once (foreground) action does) or hands it to the job queue (`runMode` background). Codeunit 8058 closes every ended, fully invoiced Subscription Line with its customer or vendor contract line and rolls the term dates of the other lines forward, for every Subscription in the company.
+- The caller needs the BIFROST Force ori permission set (write permission on Foundation's Force Access gate table, the check Foundation applies to a forced Job Queue Entry write). Without it the call is refused with `PermissionDenied`, in en-US and is-IS, before anything is read.
+- When an entry for codeunit 8058 is already Ready, Waiting or In Process, nothing is created: the answer has `alreadyQueued` true and names that entry. A foreground answer reports the run result and the Subscription Lines and customer and vendor contract lines it closed. `effect` stays irreversible.
+- Tests: `Sub Test Lib ori` (95710, shared fixtures and dispatch for the Branch A tests) and `Sub Con UpdDates Tst ori` (95711): ended customer and vendor lines and their contract lines close, a running line stays open, a caller without Force is refused, a pending entry is returned instead of a second one, and an unknown `runMode` is refused.
+
 ### Fixed (2026-10-06) - price update filter validation and Icelandic keywords (PR #25)
 
 - `Sub PU SetFilter Impl ori` (10035048) validates the caller's `filter` with
