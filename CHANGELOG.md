@@ -35,6 +35,16 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-15) - Import.CreateContracts imports explicit comment lines again (#39, closes #6)
+
+- `Subscription.Import.CreateContracts` (`Sub Imp CrContr Impl ori`, 10035057) reads a new optional request flag `allowCommentLines` (boolean, default false). With it, staged `Imported Subscription Line` rows whose `Sub_ContractLineType` is Comment are skipped by the SubscriptionLines stage and turned into contract comment lines by the ContractLines stage, through Microsoft's `Create Sub. Contract Line`. Comment is also the value of a row whose line type was never set, so the opt-in is how the caller says the Comment rows are meant.
+- Without the flag the #6 guard is unchanged: a Comment row fails the SubscriptionLines stage with `LineTypeRequiredErr`, whose text now names the real line types (Item, G/L Account, or Comment with `allowCommentLines`). A call that runs ContractLines without SubscriptionLines refuses such a row in ContractLines too, so an omitted line type never becomes a comment line.
+- When the call also runs SubscriptionLines, the ContractLines stage skips the rows that stage failed (a Comment row without the opt-in, or a row whose Subscription Line was not created). The default four-stage call therefore no longer leaves a comment contract line behind for a failed row (#6 decision d, AC-8).
+- Every stage entry in the response carries a new `skipped` count. The contract chapters (parameters, response, effect, notes and a comment-line example) document the flag and the line type rules.
+- `RunSubscriptionLines` no longer calls `SetLoadFields` twice on a record it then modifies and passes to Microsoft's codeunit.
+- Tests: `Sub Imp CrContr Tst ori` (95705) covers an omitted type refused, the default call creating no contract line, ContractLines alone refusing a Comment row, an opted-in Comment row creating the comment line, an explicit Item row creating its Subscription Line, and the documented parameter. New shared seeding codeunit `Sub Test Library ori` (95770).
+- The is-IS xlf is regenerated, which also adds the two units main was missing.
+
 ### Fixed (2026-10-06) - price update filter validation and Icelandic keywords (PR #25)
 
 - `Sub PU SetFilter Impl ori` (10035048) validates the caller's `filter` with

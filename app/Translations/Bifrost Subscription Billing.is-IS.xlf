@@ -399,6 +399,18 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptavina, áskriftarlínur og samningslínur áskriftarsamnings viðskiptavinar út frá innfluttum bráðabirgðalínum, eitt skref í einu.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2484466267 - NamedType 3794037818" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Create Subscription Line reported success but Subscription Line Entry No. is still 0.</source>
+          <target>Stofnun áskriftarlínu tilkynnti árangur en númer áskriftarlínu er enn 0.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Stofnun áskriftarlínu tilkynnti árangur en númer áskriftarlínu er enn 0.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType LineNotCreatedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2484466267 - NamedType 1529208534" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sub_ContractLineType is required: set it to Item or G/L Account, or to Comment and send allowCommentLines = true.</source>
+          <target>Sub_ContractLineType er nauðsynlegt: veldu Vara eða Fjárhagsreikningur, eða Athugasemd og sendu allowCommentLines = true.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sub_ContractLineType er nauðsynlegt: veldu Vara eða Fjárhagsreikningur, eða Athugasemd og sendu allowCommentLines = true.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType LineTypeRequiredErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 274557919" size-unit="char" translate="yes" xml:space="preserve">
           <source>Only the first %1 errors are listed; more rows may have failed.</source>
           <target>Aðeins fyrstu %1 villurnar eru sýndar; fleiri línur gætu hafa mistekist.</target>

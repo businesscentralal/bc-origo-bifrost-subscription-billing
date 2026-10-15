@@ -32,7 +32,8 @@ Tests:
 - 95708 `Sub PU Filter Tst ori` (PR #25 filter validation regression)
 - 95709 `Sub Bil PrvDocs SkipTst ori` (renumbered from 95705 to resolve the same-app
   ID collision, PR #32; fresh allocation verified against the full main tree 4ba0248)
-- Free: 95710-95799
+- 95770 `Sub Test Library ori` (shared Subscription Billing seeding for the behaviour tests, #39/#43)
+- Free: 95710-95769 (reserved for parallel branches A and B), 95771-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
