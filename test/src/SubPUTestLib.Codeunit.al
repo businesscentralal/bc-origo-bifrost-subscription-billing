@@ -31,10 +31,17 @@ codeunit 95740 "Sub PU Test Lib ori"
     procedure Initialize()
     var
         SubscriptionLine: Record "Subscription Line";
+        ExcludedLine: Record "Subscription Line";
         ContractPriceUpdateLine: Record "Sub. Contr. Price Update Line";
     begin
         SubscriptionLine.SetRange("Exclude from Price Update", false);
-        SubscriptionLine.ModifyAll("Exclude from Price Update", true, false);
+        SubscriptionLine.SetLoadFields("Entry No.");
+        if SubscriptionLine.FindSet() then
+            repeat
+                ExcludedLine.Get(SubscriptionLine."Entry No.");
+                ExcludedLine."Exclude from Price Update" := true;
+                ExcludedLine.Modify(false);
+            until SubscriptionLine.Next() = 0;
         ContractPriceUpdateLine.DeleteAll(false);
     end;
 
@@ -165,6 +172,32 @@ codeunit 95740 "Sub PU Test Lib ori"
         if FilterText <> '' then
             FilterStream.WriteText(FilterText);
         PriceUpdateTemplate.Modify(false);
+    end;
+
+    /// <summary>Limits a customer template to one contract, so lines other tests left behind cannot match it.</summary>
+    procedure RestrictTemplateToContract(var PriceUpdateTemplate: Record "Price Update Template"; ContractNo: Code[20])
+    var
+        CustomerContract: Record "Customer Subscription Contract";
+    begin
+        CustomerContract.SetRange("No.", ContractNo);
+        WriteTemplateFilter(PriceUpdateTemplate, PriceUpdateTemplate.FieldNo("Subscription Contract Filter"), CustomerContract.GetView(false));
+    end;
+
+    /// <summary>
+    /// Runs Subscription.PriceUpdate.CreateProposal on the committing path, where the dispatcher turns an error into
+    /// a structured answer. Commits the test's pending writes first, as Microsoft's tests do before Codeunit.Run.
+    /// </summary>
+    procedure InvokeCreateProposalCommitted(PriceUpdateTemplateCode: Code[20]; IncludeLinesUpToDate: Date; PerformUpdateOnDate: Date) ResponseJson: JsonObject
+    var
+        RequestJson: JsonObject;
+    begin
+        RequestJson.Add('priceUpdateTemplateCode', PriceUpdateTemplateCode);
+        if IncludeLinesUpToDate <> 0D then
+            RequestJson.Add('includeLinesUpToDate', Format(IncludeLinesUpToDate, 0, 9));
+        if PerformUpdateOnDate <> 0D then
+            RequestJson.Add('performUpdateOnDate', Format(PerformUpdateOnDate, 0, 9));
+        Commit();
+        ResponseJson := Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.CreateProposal", '', RequestJson, false);
     end;
 
     /// <summary>Runs Microsoft's own Create Proposal action on its public Contract Price Update page: the oracle.</summary>

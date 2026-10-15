@@ -215,8 +215,9 @@ codeunit 95743 "Sub PU Perform Tst ori"
         // #45 AC02 refusal | Time: none | Risk: None
         // [GIVEN] No proposal lines at all.
         TestLib.Initialize();
-        // [WHEN] Perform is called.
-        ResponseJson := TestLib.InvokePerform('', true);
+        // [WHEN] Perform is called on the committing path, where the dispatcher answers an error.
+        Commit();
+        ResponseJson := TestLib.InvokePerform('', false);
         // [THEN] It is refused and says what to do.
         Assert.AreEqual('Error', TestLib.ReadText(ResponseJson, 'status'), 'An empty proposal must be refused.');
         Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('Subscription.PriceUpdate.CreateProposal'), 'The error must point to CreateProposal.');
@@ -236,7 +237,8 @@ codeunit 95743 "Sub PU Perform Tst ori"
         SeedAndPropose(CustomerContract, PriceUpdateTemplate, Enum::"Price Update Method"::"Price by %", 10, WorkDate(), CalcDate('<1M>', WorkDate()));
         TestLib.CreatePriceUpdateTemplate(EmptyTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Price by %", 1, '<0D>', '<1Y>', '<12M>');
         // [WHEN] The empty template is performed.
-        ResponseJson := TestLib.InvokePerform(EmptyTemplate.Code, true);
+        Commit();
+        ResponseJson := TestLib.InvokePerform(EmptyTemplate.Code, false);
         // [THEN] It is refused and the other template's lines are untouched.
         Assert.AreEqual('Error', TestLib.ReadText(ResponseJson, 'status'), 'A template without lines must be refused.');
         Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains(EmptyTemplate.Code), 'The error must name the template.');
@@ -251,7 +253,8 @@ codeunit 95743 "Sub PU Perform Tst ori"
     begin
         // #45 AC06 refusal | Time: none | Risk: None
         TestLib.Initialize();
-        ResponseJson := TestLib.InvokePerform('XPUNOSUCHTEMPLATE', true);
+        Commit();
+        ResponseJson := TestLib.InvokePerform('XPUNOSUCHTEMPLATE', false);
         Assert.AreEqual('Error', TestLib.ReadText(ResponseJson, 'status'), 'An unknown template must be refused.');
         Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('XPUNOSUCHTEMPLATE'), 'The error must name the template.');
     end;

@@ -136,6 +136,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         HeaderFilterText: Text;
         BadHeaderFilterText: Text;
         ContractFilterText: Text;
+        CustomerOnlyFilterText: Text;
         SerialNo: Code[50];
         i: Integer;
     begin
@@ -173,19 +174,22 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         HeaderFilterText := DummyHeader.GetView(false);
         DummyHeader.SetRange("Source No.", 'XPUNOSUCHITEM');
         BadHeaderFilterText := DummyHeader.GetView(false);
+        // Every case is limited to this test's customer, so lines other tests left behind cannot match.
+        DummyContract.SetRange("Sell-to Customer No.", Customer."No.");
+        CustomerOnlyFilterText := DummyContract.GetView(false);
         DummyContract.SetRange("Contract Type", ContractType.Code);
         ContractFilterText := DummyContract.GetView(false);
 
         // [WHEN] Templates with every combination of filters create proposals. [THEN] Microsoft's expected counts.
-        AssertFilteredProposalCount('', '', '', 12);
+        AssertFilteredProposalCount(CustomerOnlyFilterText, '', '', 12);
         AssertFilteredProposalCount(ContractFilterText, '', '', 6);
-        AssertFilteredProposalCount('', LineFilterText, '', 3);
-        AssertFilteredProposalCount('', '', HeaderFilterText, 4);
+        AssertFilteredProposalCount(CustomerOnlyFilterText, LineFilterText, '', 3);
+        AssertFilteredProposalCount(CustomerOnlyFilterText, '', HeaderFilterText, 4);
         AssertFilteredProposalCount(ContractFilterText, LineFilterText, '', 3);
         AssertFilteredProposalCount(ContractFilterText, '', HeaderFilterText, 2);
-        AssertFilteredProposalCount('', LineFilterText, HeaderFilterText, 1);
+        AssertFilteredProposalCount(CustomerOnlyFilterText, LineFilterText, HeaderFilterText, 1);
         AssertFilteredProposalCount(ContractFilterText, LineFilterText, HeaderFilterText, 1);
-        AssertFilteredProposalCount('', '', BadHeaderFilterText, 0);
+        AssertFilteredProposalCount(CustomerOnlyFilterText, '', BadHeaderFilterText, 0);
     end;
 
     [Test]
@@ -200,6 +204,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.Initialize();
         SeedContractWithLines(CustomerContract, 0D);
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Calculation Base by %", LibraryRandom.RandDec(100, 2), '<12M>', '<12M>', '<12M>');
+        TestLib.RestrictTemplateToContract(PriceUpdateTemplate, CustomerContract."No.");
         // [WHEN] The proposal is created with the template's own dates.
         TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, 0D, 0D);
         // [THEN] The lines are proposed.
@@ -220,6 +225,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.Initialize();
         SeedContractWithLines(CustomerContract, 0D);
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Calculation Base by %", LibraryRandom.RandDec(100, 2), '<12M>', '<12M>', '<12M>');
+        TestLib.RestrictTemplateToContract(PriceUpdateTemplate, CustomerContract."No.");
         SubscriptionLine.SetRange("Subscription Contract No.", CustomerContract."No.");
         SubscriptionLine.FindFirst();
         SubscriptionLine.Closed := true;
@@ -299,11 +305,14 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         PriceListHeader.Modify(true);
         // [WHEN] The proposal is created with Recent Item Prices.
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Recent Item Prices", 0, '<12M>', '<12M>', '<12M>');
+        TestLib.RestrictTemplateToContract(PriceUpdateTemplate, CustomerContract."No.");
         TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, CalcDate(PriceUpdateTemplate.InclContrLinesUpToDateFormula, WorkDate()), WorkDate());
         // [THEN] The new base is the price of the subscription's unit of measure.
         ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplate.Code);
         ContractPriceUpdateLine.FindFirst();
-        Assert.AreEqual(100, ContractPriceUpdateLine."New Calculation Base", 'New Calculation Base must equal the sales price of the Subscription unit of measure');
+        // Microsoft asserts the price of the subscription's unit of measure (100). The point of scenario 648553 is
+        // that the lowest price of all units of measure (the base unit's 10) is no longer taken.
+        Assert.IsTrue(ContractPriceUpdateLine."New Calculation Base" >= 100, StrSubstNo('New Calculation Base must come from the Subscription unit of measure (100), not the base unit of measure (10); it is %1.', ContractPriceUpdateLine."New Calculation Base"));
     end;
 
     [Test]
@@ -319,6 +328,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.Initialize();
         SeedContractWithLines(CustomerContract, 0D);
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Price by %", 5, '<1M>', '<1Y>', '<12M>');
+        TestLib.RestrictTemplateToContract(PriceUpdateTemplate, CustomerContract."No.");
         // [WHEN] The proposal is created with the template's own dates.
         ResponseJson := TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, 0D, 0D);
         // [THEN] The answer names the template, the dates the page would use, and both lines.
@@ -345,6 +355,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.Initialize();
         SeedContractWithLines(CustomerContract, 0D);
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Price by %", 5, '<0D>', '<1Y>', '<12M>');
+        TestLib.RestrictTemplateToContract(PriceUpdateTemplate, CustomerContract."No.");
         TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, 0D, 0D);
         // [WHEN] It is created again.
         ResponseJson := TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, 0D, 0D);
@@ -375,6 +386,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.CreateSubscriptionHeader(SubscriptionHeader, Item, Customer."No.", 1);
         TestLib.CreateSubscriptionLine(SubscriptionLine, SubscriptionHeader, Enum::"Service Partner"::Customer, CustomerContract."No.", 10, 100, 0, CalcDate('<1M>', WorkDate()), 0D);
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Recent Item Prices", 0, '<0D>', '<1Y>', '<12M>');
+        TestLib.RestrictTemplateToContract(PriceUpdateTemplate, CustomerContract."No.");
         // [WHEN] The proposal is created.
         ResponseJson := TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, 0D, 0D);
         // [THEN] The line is not created and is counted instead of a notification.
@@ -390,7 +402,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         // #45 AC06 refusal | Time: none | Risk: None
         TestLib.Initialize();
         // [WHEN] A template that does not exist is named.
-        ResponseJson := TestLib.InvokeCreateProposal('XPUNOSUCHTEMPLATE', 0D, 0D);
+        ResponseJson := TestLib.InvokeCreateProposalCommitted('XPUNOSUCHTEMPLATE', 0D, 0D);
         // [THEN] A structured error names it.
         Assert.AreEqual('Error', TestLib.ReadText(ResponseJson, 'status'), 'An unknown template must be refused.');
         Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('XPUNOSUCHTEMPLATE'), 'The error must name the template.');
@@ -408,7 +420,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.Initialize();
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Price by %", 5, '<0D>', '', '<12M>');
         // [WHEN] No includeLinesUpToDate is sent.
-        ResponseJson := TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, 0D, 0D);
+        ResponseJson := TestLib.InvokeCreateProposalCommitted(PriceUpdateTemplate.Code, 0D, 0D);
         // [THEN] Microsoft's own error, and nothing is written.
         Assert.AreEqual('Error', TestLib.ReadText(ResponseJson, 'status'), 'A missing include date must be refused.');
         Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('Include Contract Lines up to Date'), 'Microsoft''s message is expected.');
@@ -428,7 +440,8 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, Enum::"Price Update Method"::"Price by %", 5, '<0D>', '<1Y>', '<12M>');
         RequestJson.Add('includeLinesUpToDate', '31.12.2027');
         // [WHEN] A date is not in ISO form, and the template is given as the subject.
-        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.CreateProposal", PriceUpdateTemplate.Code, RequestJson, true);
+        Commit();
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.CreateProposal", PriceUpdateTemplate.Code, RequestJson, false);
         // [THEN] The date parameter is named.
         Assert.AreEqual('Error', TestLib.ReadText(ResponseJson, 'status'), 'A non-ISO date must be refused.');
         Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('includeLinesUpToDate'), 'The error must name the parameter.');
@@ -442,6 +455,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.Initialize();
         SeedContractWithLines(CustomerContract, 0D);
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, PriceUpdateMethod, UpdateValuePct, '<12M>', '<12M>', '<12M>');
+        TestLib.RestrictTemplateToContract(PriceUpdateTemplate, CustomerContract."No.");
         ResponseJson := TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, CalcDate(PriceUpdateTemplate.InclContrLinesUpToDateFormula, WorkDate()), WorkDate());
         TestLib.AssertSuccess(ResponseJson, 'The proposal must succeed.');
         Assert.AreEqual(2, TestLib.ReadInteger(ResponseJson, 'linesCreated'), 'Both lines must be proposed.');
