@@ -191,7 +191,10 @@ codeunit 95710 "Sub Test Lib ori"
         VendorContract: Record "Vendor Subscription Contract";
         VendSubContractLine: Record "Vend. Sub. Contract Line";
         BillingLine: Record "Billing Line";
+        SubscriptionLineArchive: Record "Subscription Line Archive";
     begin
+        SubscriptionLineArchive.SetFilter("Subscription Header No.", Prefix + '*');
+        SubscriptionLineArchive.DeleteAll(false);
         BillingLine.SetFilter("Subscription Contract No.", Prefix + '*');
         BillingLine.DeleteAll(false);
         SubscriptionLine.SetFilter("Subscription Header No.", Prefix + '*');

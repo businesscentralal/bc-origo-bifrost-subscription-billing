@@ -387,28 +387,46 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates: Óafturkræft. Lokar áskriftarlínum sem er lokið í öllum áskriftum með verkraðarfærslu; krefst BIFROST Force ori.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 4134144049 - NamedType 2156165308" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Customer Subscription Contract '%1' does not exist.</source>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType CustomerContractNotFoundErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 4134144049 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked: Microsoft has not exposed a public API to recalculate a contract's exchange rates, and the underlying flow is unsafe unattended. Always returns a structured error.</source>
-          <target>Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að endurreikna gengi samnings og undirliggjandi ferli er óöruggt án eftirlits. Skilar alltaf skipulagðri villu.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að endurreikna gengi samnings og undirliggjandi ferli er óöruggt án eftirlits. Skilar alltaf skipulagðri villu.</note>
+          <source>Recalculates the currency data of a Subscription Contracts Subscription Lines with a new exchange rate, like Update Exchange Rates, for customer or vendor contracts.</source>
+          <target>Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 4134144049 - NamedType 2164942842" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateExchangeRates has no supported public API in this Business Central version. Customer Subscription Contract.UpdateAndRecalculateServiceCommitmentCurrencyData() is internal to Microsoft's Subscription Billing app. It also drives the interactive "Exchange Rate Selection" page, which returns false and lets a zero exchange rate through when GuiAllowed is false, so it would be unsafe to call unattended even if it were public. Use the "Update Exchange Rates" action on the contract in the Business Central client instead.</source>
-          <target>Subscription.Contract.UpdateExchangeRates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateAndRecalculateServiceCommitmentCurrencyData() er innri í Subscription Billing-forriti Microsoft. Hún keyrir einnig gagnvirku síðuna "Exchange Rate Selection", sem skilar false og hleypir í gegn núllgengi þegar GuiAllowed er false, svo það væri óöruggt að kalla hana án eftirlits jafnvel þótt hún væri opinber. Notaðu aðgerðina „Uppfæra gengi“ ("Update Exchange Rates") á samningnum í Business Central-biðlaranum í staðinn.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateAndRecalculateServiceCommitmentCurrencyData() er innri í Subscription Billing-forriti Microsoft. Hún keyrir einnig gagnvirku síðuna "Exchange Rate Selection", sem skilar false og hleypir í gegn núllgengi þegar GuiAllowed er false, svo það væri óöruggt að kalla hana án eftirlits jafnvel þótt hún væri opinber. Notaðu aðgerðina „Uppfæra gengi“ ("Update Exchange Rates") á samningnum í Business Central-biðlaranum í staðinn.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType NotSupportedErr</note>
+        <trans-unit id="Codeunit 4134144049 - NamedType 2919723209" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Contract '%1' has no Currency Code, so its Subscription Lines are in local currency and have no exchange rate to update.</source>
+          <target>Áskriftarsamningur '%1' hefur engan gjaldmiðilskóða, svo áskriftarlínur hans eru í staðbundnum gjaldmiðli og hafa ekkert gengi til að uppfæra.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur '%1' hefur engan gjaldmiðilskóða, svo áskriftarlínur hans eru í staðbundnum gjaldmiðli og hafa ekkert gengi til að uppfæra.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType LocalCurrencyErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134144049 - NamedType 2173629572" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Vendor Subscription Contract '%1' does not exist.</source>
+          <target>Áskriftarsamningur lánardrottins '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur lánardrottins '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType VendorContractNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134144049 - NamedType 1679449610" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The exchange rate for currency '%1' on %2 is %3. Send a currencyFactor greater than zero, or set up an exchange rate for that date.</source>
+          <target>Gengi gjaldmiðilsins '%1' þann %2 er %3. Sendu currencyFactor sem er stærri en núll, eða settu upp gengi fyrir þá dagsetningu.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = currency code, %2 = date, %3 = the rate||is-IS=Gengi gjaldmiðilsins '%1' þann %2 er %3. Sendu currencyFactor sem er stærri en núll, eða settu upp gengi fyrir þá dagsetningu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType ZeroExchangeRateErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateExchangeRates, Subscription, Contract, UpdateExchangeRates, customer, currency</source>
-          <target>Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengisupplýsingar, viðskiptavinur, gjaldmiðill</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengisupplýsingar, viðskiptavinur, gjaldmiðill</note>
+          <source>Subscription.Contract.UpdateExchangeRates, Subscription, Contract, UpdateExchangeRates, currency, exchange rate, foreign currency</source>
+          <target>Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengi, gjaldmiðill, gengi, erlendur gjaldmiðill</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengi, gjaldmiðill, gengi, erlendur gjaldmiðill</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateExchangeRates: Refreshes customer contract exchange rates. Irreversible.</source>
-          <target>Subscription.Contract.UpdateExchangeRates: Uppfærir gengisupplýsingar viðskiptasamnings. Óafturkræf aðgerð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates: Uppfærir gengisupplýsingar viðskiptasamnings. Óafturkræf aðgerð.</note>
+          <source>Subscription.Contract.UpdateExchangeRates: Recalculates a foreign-currency contracts Subscription Lines with a new exchange rate.</source>
+          <target>Subscription.Contract.UpdateExchangeRates: Endurreiknar áskriftarlínur samnings í erlendum gjaldmiðli með nýju gengi.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates: Endurreiknar áskriftarlínur samnings í erlendum gjaldmiðli með nýju gengi.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3806649106 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">

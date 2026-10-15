@@ -135,6 +135,15 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Renewal.CreateQuote':
                 Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The Customer Subscription Contract to renew. May be supplied as the subject instead.'));
+            'Subscription.Contract.UpdateExchangeRates':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The Subscription Contract to recalculate. May be supplied as the subject instead.'));
+                    Entry := AllowedParameter('partner', 'string', false, 'Customer for a Customer Subscription Contract, Vendor for a Vendor Subscription Contract. Any casing.', 'Customer,Vendor');
+                    Entry.Add('default', 'Customer');
+                    Parameters.Add(Entry);
+                    Parameters.Add(DateParameter('currencyFactorDate', 'The key date of the exchange rate, stored as Currency Factor Date on the lines. Defaults to the work date.'));
+                    Parameters.Add(ContractMgt.Parameter('currencyFactor', 'number', false, 'The currency factor to store: foreign currency per unit of local currency. Omit it to use the exchange rate of currencyFactorDate, as the Exchange Rate Selection page proposes. Must be greater than zero.'));
+                end;
             'Subscription.Contract.UpdateLineDates':
                 begin
                     Entry := AllowedParameter('runMode', 'string', false, 'foreground runs the Job Queue Entry in this call and reports what it closed; background hands it to the job queue and returns at once. Any casing.', 'foreground,background');
@@ -322,6 +331,16 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Fields.Add(ContractMgt.ResponseField('newSubscriptionLineEntryNos', 'array', 'Entry No. of every Subscription Line the call added to the Subscription, whichever contract it went to.'));
                     Fields.Add(ContractMgt.ResponseField('newSubscriptionLineCount', 'integer', 'Number of entries in newSubscriptionLineEntryNos.'));
                 end;
+            'Subscription.Contract.UpdateExchangeRates':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('contractNo', 'string', 'The recalculated contract.'));
+                    Fields.Add(ContractMgt.ResponseField('partner', 'string', 'Customer or Vendor.'));
+                    Fields.Add(ContractMgt.ResponseField('currencyCode', 'string', 'The contract''s Currency Code, now on every recalculated line.'));
+                    Fields.Add(ContractMgt.ResponseField('currencyFactor', 'string', 'The currency factor used, as a culture-invariant decimal string.'));
+                    Fields.Add(ContractMgt.ResponseField('currencyFactorDate', 'string', 'The key date used, as YYYY-MM-DD.'));
+                    Fields.Add(ContractMgt.ResponseField('linesRecalculated', 'integer', 'Subscription Lines recalculated. Zero is still a success.'));
+                    Fields.Add(ContractMgt.ResponseField('linesSkipped', 'integer', 'Subscription Lines left unchanged because their contract line is closed.'));
+                end;
             'Subscription.Contract.UpdateLineDates':
                 begin
                     Fields.Add(ContractMgt.ResponseField('runMode', 'string', 'foreground or background, as run.'));
@@ -417,8 +436,6 @@ codeunit 10035075 "Sub Contract Parts ori"
         case MessageType of
             'Subscription.Contract.UpdateLineDates':
                 Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'The caller does not hold the BIFROST Force ori permission set. Nothing is created or run.', 'Have BIFROST Force ori assigned, then call again.'));
-            'Subscription.Contract.UpdateExchangeRates':
-                Errors.Add(ContractMgt.TextErrorEntry('Subscription.Contract.UpdateExchangeRates has no supported public API in this Business Central version. ...', 'Always: the Microsoft procedure is internal, and its flow is unsafe unattended.', 'Use the Update Exchange Rates action on the contract in the Business Central client.'));
             'Subscription.PriceUpdate.CreateProposal':
                 Errors.Add(ContractMgt.TextErrorEntry('Subscription.PriceUpdate.CreateProposal cannot run: Codeunit "Price Update Management".CreatePriceUpdateProposal is internal ...', 'Always: Microsoft has not exposed the procedure.', 'Create the proposal on the Contract Price Update page in the Business Central client. Subscription.PriceUpdate.SetTemplateFilter can prepare the template''s filters first.'));
             'Subscription.PriceUpdate.Perform':
@@ -441,7 +458,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         if MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments'] then
             Effect.Add('effect', 'read')
         else
-            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.ConnectSubscriptions'] then
+            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.ConnectSubscriptions'] then
                 Effect.Add('effect', 'irreversible')
             else
                 Effect.Add('effect', 'write');
@@ -477,6 +494,8 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Preconditions.Add('The documents are not posted.');
                     Preconditions.Add('When any Billing Template bills automatically, the user has Auto Contract Billing in User Setup.');
                 end;
+            'Subscription.Contract.UpdateExchangeRates':
+                Preconditions.Add('The contract has a Currency Code, and an exchange rate exists for that currency on currencyFactorDate unless currencyFactor is sent.');
             'Subscription.Contract.UpdateLineDates':
                 begin
                     Preconditions.Add('The caller holds the BIFROST Force ori permission set, checked before anything is read: scheduling work through the job queue is reserved for it.');
@@ -521,8 +540,8 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Contract.UpdateExchangeRates':
                 begin
-                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.UpdateLineDates', 'Also blocked in this version, for a different reason.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.CreateInvoice', 'Create an invoice once exchange rates are current.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.CreateInvoice', 'Create a vendor invoice once exchange rates are current.'));
                 end;
             'Subscription.VendorContract.GetLines':
                 begin
@@ -675,7 +694,7 @@ codeunit 10035075 "Sub Contract Parts ori"
 
     local procedure IsBlocked(MessageType: Text): Boolean
     begin
-        exit(MessageType in ['Subscription.Contract.UpdateExchangeRates', 'Subscription.PriceUpdate.CreateProposal', 'Subscription.PriceUpdate.Perform']);
+        exit(MessageType in ['Subscription.PriceUpdate.CreateProposal', 'Subscription.PriceUpdate.Perform']);
     end;
 
     local procedure GetChanges(MessageType: Text): Text
@@ -704,8 +723,10 @@ codeunit 10035075 "Sub Contract Parts ori"
                 exit('Deletes the selected unposted sales or purchase invoices and credit memos with their delete trigger. Microsoft then returns their billing lines to the proposal, or deletes billing lines without a Billing Template and resets their Subscription Lines. Posted documents are never touched.');
             'Subscription.PriceUpdate.SetTemplateFilter':
                 exit('Writes one of the three view filters on the Price Update Template. Contracts, Subscriptions and Subscription Lines are not touched.');
-            'Subscription.Contract.UpdateExchangeRates', 'Subscription.PriceUpdate.CreateProposal', 'Subscription.PriceUpdate.Perform':
+            'Subscription.PriceUpdate.CreateProposal', 'Subscription.PriceUpdate.Perform':
                 exit('Nothing: the call is answered with an error before anything is written.');
+            'Subscription.Contract.UpdateExchangeRates':
+                exit('Writes Currency Code, Currency Factor and Currency Factor Date on every Subscription Line of the contract whose contract line is open, converts its Calculation Base Amount again from the local currency amount, which recalculates price and amount, flags its billing lines Update Required and archives the previous amounts. The contract itself is not changed.');
             'Subscription.Contract.UpdateLineDates':
                 exit('Creates a Job Queue Entry for Microsoft''s codeunit 8058. In foreground mode the entry runs at once: every Subscription in the company gets its ended, fully invoiced Subscription Lines and their customer and vendor contract lines closed and the term dates of its other lines rolled forward, with a commit after each Subscription; the entry is then deleted and its Job Queue Log Entry kept. In background mode the entry is handed to the job queue, which does the same later. Nothing is created when such an entry is already pending.');
             'Subscription.Renewal.Extend':
@@ -739,6 +760,8 @@ codeunit 10035075 "Sub Contract Parts ori"
                 SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Customer Subscription Contract No.');
             'Subscription.VendorContract.GetLines', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
                 SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Vendor Subscription Contract No.');
+            'Subscription.Contract.UpdateExchangeRates':
+                SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Customer or Vendor Subscription Contract No., following partner');
             'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments':
                 SetSubjectKey(DataKey, SubjectForm, 'billingTemplateCode', 'Billing Template Code');
             'Subscription.PriceUpdate.SetTemplateFilter':
@@ -850,6 +873,16 @@ codeunit 10035075 "Sub Contract Parts ori"
                 begin
                     AddBusinessCentralError(Errors, 'The parameter ''target'' must be one of ''contract'', ''subscription'' or ''line'', not ''%1''.', 'target is none of the three names.', 'Send contract, subscription or line.');
                     AddBusinessCentralError(Errors, 'The parameter ''filter'' is not a valid Business Central view for target ''%1''. ...', 'Business Central cannot parse filter as a view of the target''s table.', 'Send a view such as WHERE(Field=FILTER(Value)) with field names of that table.');
+                end;
+            'Subscription.Contract.UpdateExchangeRates':
+                begin
+                    AddNotFoundError(Errors, 'The Customer Subscription Contract ''%1'' does not exist.', 'partner is Customer (the default) and contractNo or the subject names no Customer Subscription Contract.');
+                    AddNotFoundError(Errors, 'The Vendor Subscription Contract ''%1'' does not exist.', 'partner is Vendor and contractNo or the subject names no Vendor Subscription Contract.');
+                    AddBusinessCentralError(Errors, 'The parameter ''%1'' must be either ''Customer'' or ''Vendor''.', 'partner is neither Customer nor Vendor.', 'Send Customer or Vendor, or leave partner out.');
+                    AddBusinessCentralError(Errors, 'Subscription Contract ''%1'' has no Currency Code, so its Subscription Lines are in local currency ...', 'The contract is in local currency.', 'Set the Currency Code on the contract first; nothing needs recalculating in local currency.');
+                    AddBusinessCentralError(Errors, 'The exchange rate for currency ''%1'' on %2 is %3. ...', 'currencyFactor is zero or negative, or no exchange rate exists for currencyFactorDate.', 'Send a currencyFactor greater than zero, or set up the exchange rate.');
+                    AddBusinessCentralError(Errors, 'The parameter ''%1'' is not a valid date. Use the ISO format YYYY-MM-DD.', 'currencyFactorDate is not a date in the ISO format.', 'Send the date as YYYY-MM-DD.');
+                    AddBusinessCentralError(Errors, 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', 'currencyFactor is not a number.', 'Send a number with a decimal point.');
                 end;
             'Subscription.Contract.UpdateLineDates':
                 AddBusinessCentralError(Errors, 'The parameter ''runMode'' must be either ''foreground'' or ''background'', not ''%1''.', 'runMode is neither foreground nor background.', 'Send foreground or background, or leave runMode out.');

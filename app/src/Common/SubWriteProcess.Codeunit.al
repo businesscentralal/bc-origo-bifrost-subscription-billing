@@ -46,6 +46,7 @@ codeunit 10035059 "Sub Write Process ori"
         BilDelDocsImpl: Codeunit "Sub Bil DelDocs Impl ori";
         UsgConnectImpl: Codeunit "Sub Usg Connect Impl ori";
         UsgDisconnectImpl: Codeunit "Sub Usg Disconnect Impl ori";
+        ConUpdFCYImpl: Codeunit "Sub Con UpdFCY Impl ori";
     begin
         case Argument."Type" of
             Argument."Type"::"Subscription.Line.Create":
@@ -94,6 +95,8 @@ codeunit 10035059 "Sub Write Process ori"
                 UsgConnectImpl.PerformWrite(Argument);
             Argument."Type"::"Subscription.Usage.DisconnectSubscription":
                 UsgDisconnectImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Contract.UpdateExchangeRates":
+                ConUpdFCYImpl.PerformWrite(Argument);
         end;
     end;
 }

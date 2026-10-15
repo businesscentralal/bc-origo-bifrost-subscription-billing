@@ -46,7 +46,7 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
         Implementation = "Msg Interface ori" = "Sub Con UpdDates Impl ori", "Msg Discovery ori" = "Sub Con UpdDates Impl ori", "Msg Contract ori" = "Sub Con UpdDates Impl ori";
     }
 
-    /// <summary>Refreshes foreign currency exchange rates on a Subscription Contract.</summary>
+    /// <summary>Recalculates the Subscription Lines of a foreign-currency customer or vendor Subscription Contract with a new exchange rate.</summary>
     value(10035041; "Subscription.Contract.UpdateExchangeRates")
     {
         Caption = 'Subscription.Contract.UpdateExchangeRates', Locked = true;
