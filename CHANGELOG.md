@@ -1,12 +1,19 @@
 # Changelog
 
-## Unreleased
+## [Unreleased]
+
+### Changed (2026-10-14) - Version reset to 28.0.0.0
+
+- Owner decision (Gunnar, 2026-10-14): `app/app.json` and `test/app.json` go from 29.0.0.0 to 28.0.0.0, so the first AppSource version aligns with the other Bifröst apps on Business Central 28. The test app's dependency on Bifrost Subscription Billing moves to 28.0.0.0 as well.
+- The v29 builds were never published outside test environments. Gunnar removed both v29 apps from the UAT environment and cleaned their data.
+- Upgrade caveat: a tenant that still has the legacy *Origo Cloud Events Subscription Billing* 28.x (same app id) installed must uninstall it before installing this version, because Business Central cannot downgrade an installed app.
+- The earlier "version 29" rationale further down this file (the first-release section, formerly headed 29.0.0.0) is kept as history and is superseded by this entry.
 
 ### Changed (2026-10-11) - CI compiles on Business Central 28.5
 
 - `.AL-Go/settings.json` sets `artifact` to `/sandbox/28.5.54151.55751/w1/latest`. AL-Go reads that as the default storage account, type sandbox, version 28.5.54151.55751, country w1, and select latest, so pull request builds and CI/CD compile on that Business Central 28.5 sandbox artifact.
 - The same file is listed in `fullBuildPatterns`. An incremental pull request build otherwise leaves `.AL-Go/settings.json` out of the project folders it compares, skips compilation, and reports success against the previous BC 29 artifacts.
-- `app/app.json` and `test/app.json` already set `runtime` to `17.0` and `application` and `platform` to `28.0.0.0`. The app version stays 29.0.0.0.
+- `app/app.json` and `test/app.json` already set `runtime` to `17.0` and `application` and `platform` to `28.0.0.0`. The app version stayed 29.0.0.0 at the time (reset to 28.0.0.0 on 2026-10-14).
 - `.github/Test Current.settings.json` sets the same artifact, `/sandbox/28.5.54151.55751/w1/latest`. That workflow file overrides the project setting, and it previously selected `////latest`.
 - Test Next Minor and Test Next Major keep `////nextminor` and `////nextmajor`. `.github/AL-Go-Settings.json` does not set `artifact`.
 
@@ -32,8 +39,6 @@
 ### Changed (2026-10-04) - CI/CD builds only main; every pull request gets a Pull Request Build
 
 - Build policy only, no app change. `CI/CD` runs on pushes to `main` only, and `Pull Request Build` runs for pull requests into any branch. `.github/AL-Go-Settings.json` sets `CICDPushBranches` to `main` and `CICDPullRequestBranches` to `**`, so Update AL-Go System Files keeps the triggers.
-
-## [Unreleased]
 
 ### Fixed (2026-10-06) - price update filter validation and Icelandic keywords (PR #25)
 
@@ -132,7 +137,7 @@
 - `privacyStatement` and `EULA` in `app.json` now point at the Bifrost Foundation privacy and EULA pages (<https://businesscentralal.github.io/bifrost/en-us/foundation/privacy/> and <https://businesscentralal.github.io/bifrost/en-us/foundation/eula/>), and the Application Insights connection string now uses the shared Bifrost telemetry resource.
 
 
-## [29.0.0.0] - 2026-09-06
+## [28.0.0.0] - unreleased (first AppSource version; developed as 29.0.0.0 until 2026-10-14)
 
 ### Fixed (2026-09-17) - Icelandic translations and AL Comment authority (PR #7)
 
@@ -172,7 +177,7 @@
 
 ### Release notes
 
-- **Version 29.0.0.0, not 28.x.** The predecessor *Origo Cloud Events Subscription Billing* had
+- **Version 29.0.0.0, not 28.x.** (Superseded 2026-10-14: Gunnar reset the version to 28.0.0.0 before the first AppSource publish; see the Unreleased entry. Original rationale kept below.) The predecessor *Origo Cloud Events Subscription Billing* had
   already reached 28.x, and this is an in-place successor with the same app id, so the version had
   to move forward. The sibling Bifröst apps sit at 28.x because they are new app identities. The
   app still targets `application`/`platform` 28.0.0.0 and runtime 17.0 - the major number is a
@@ -354,7 +359,7 @@ a side-by-side install.
   and a Foundation-wide secret store are both being built in parallel; this app has no setup page
   today, so neither applies yet.
 
-## [28.0.0.0] - 2026-09-01
+## [Legacy 28.0.0.0] - 2026-09-01 (predecessor *Origo Cloud Events Subscription Billing*, pre-rename)
 
 ### Added
 

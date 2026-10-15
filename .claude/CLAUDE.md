@@ -119,7 +119,7 @@ Key rules always in effect:
 ## Migration Tooling
 - Migrated in place from `origo-bc-cloudevents-subscriptionbilling` on 2026-09-06 using
   `bc-origo-bifrost-core/tools/migration/migrate.py` (same app id, same object ids, offset 0 - the
-  app was never published). See CHANGELOG 29.0.0.0 for the full rename table.
+  app was never published). See the CHANGELOG first-release section (developed as 29.0.0.0) for the full rename table.
 
 ## Test App Rules
 - **The test app uses Bifröst Foundation's public API only.** Bifrost Subscription Billing - Tests is not listed in
