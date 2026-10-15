@@ -375,7 +375,10 @@ codeunit 95770 "Sub Test Library ori"
         exit(Token.AsArray());
     end;
 
-    local procedure AsText(Json: JsonObject) Result: Text
+    /// <summary>Writes a response as JSON text, for assertion messages.</summary>
+    /// <param name="Json">The response.</param>
+    /// <returns>The JSON text.</returns>
+    procedure AsText(Json: JsonObject) Result: Text
     begin
         Json.WriteTo(Result);
     end;

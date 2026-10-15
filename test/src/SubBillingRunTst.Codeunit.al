@@ -86,7 +86,7 @@ codeunit 95775 "Sub Billing Run Tst ori"
         ResponseJson := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateDocuments", RequestJson);
 
         // [THEN] The sales invoice is posted for the contract customer and the proposal line is archived
-        Assert.AreEqual('Success', TestLibrary.ReadText(ResponseJson, 'status'), 'CreateDocuments must succeed.');
+        Assert.AreEqual('Success', TestLibrary.ReadText(ResponseJson, 'status'), 'CreateDocuments must succeed. ' + TestLibrary.AsText(ResponseJson));
         Assert.AreEqual(1, TestLibrary.ReadInteger(ResponseJson, 'documentCount'), 'One document must be created.');
         TestLibrary.ReadArray(ResponseJson, 'documents').Get(0, DocumentToken);
         DocumentNo := CopyStr(TestLibrary.ReadText(DocumentToken.AsObject(), 'documentNo'), 1, MaxStrLen(DocumentNo));
@@ -121,7 +121,7 @@ codeunit 95775 "Sub Billing Run Tst ori"
         ResponseJson := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateDocuments", RequestJson);
 
         // [THEN] The purchase invoice exists unposted for the contract vendor
-        Assert.AreEqual(1, TestLibrary.ReadInteger(ResponseJson, 'documentCount'), 'One document must be created.');
+        Assert.AreEqual(1, TestLibrary.ReadInteger(ResponseJson, 'documentCount'), 'One document must be created. ' + TestLibrary.AsText(ResponseJson));
         TestLibrary.ReadArray(ResponseJson, 'documents').Get(0, DocumentToken);
         DocumentNo := CopyStr(TestLibrary.ReadText(DocumentToken.AsObject(), 'documentNo'), 1, MaxStrLen(DocumentNo));
         Assert.IsTrue(PurchaseHeader.Get(PurchaseHeader."Document Type"::Invoice, DocumentNo), 'The purchase invoice must stay unposted.');

@@ -21,6 +21,7 @@ codeunit 95774 "Sub Invoice Tst ori"
         TestLibrary: Codeunit "Sub Test Library ori";
 
     [Test]
+    [HandlerFunctions('DocumentsCreatedMessageHandler')]
     procedure Scenario_AC03_ContractCreateInvoice_CreatesLinkedSalesInvoice()
     var
         CustomerContract: Record "Customer Subscription Contract";
@@ -98,6 +99,7 @@ codeunit 95774 "Sub Invoice Tst ori"
     end;
 
     [Test]
+    [HandlerFunctions('DocumentsCreatedMessageHandler')]
     procedure Scenario_AC03_VendorContractCreateInvoice_CreatesLinkedPurchaseInvoice()
     var
         VendorContract: Record "Vendor Subscription Contract";
@@ -206,5 +208,11 @@ codeunit 95774 "Sub Invoice Tst ori"
         BillingLine.SetRange("Document Type", Enum::"Rec. Billing Document Type"::None);
         if not BillingLine.IsEmpty() then
             BillingLine.DeleteAll(false);
+    end;
+
+    [MessageHandler]
+    procedure DocumentsCreatedMessageHandler(Message: Text[1024])
+    begin
+        // Microsoft's Create Billing Documents reports what it created; an API session shows no message.
     end;
 }

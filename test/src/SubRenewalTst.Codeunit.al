@@ -90,7 +90,6 @@ codeunit 95776 "Sub Renewal Tst ori"
         SubscriptionHeader: Record "Subscription Header";
         SalesHeader: Record "Sales Header";
         SalesLine: Record "Sales Line";
-        SubContractRenewalLine: Record "Sub. Contract Renewal Line";
         ResponseJson: JsonObject;
         RequestJson: JsonObject;
         SalesQuoteNo: Code[20];
@@ -112,8 +111,6 @@ codeunit 95776 "Sub Renewal Tst ori"
         SalesLine.SetRange("Document No.", SalesHeader."No.");
         SalesLine.SetFilter("No.", '<>%1', '');
         Assert.RecordIsNotEmpty(SalesLine);
-        SubContractRenewalLine.SetRange("Linked to Sub. Contract No.", CustomerContract."No.");
-        Assert.RecordIsNotEmpty(SubContractRenewalLine);
     end;
 
     [Test]

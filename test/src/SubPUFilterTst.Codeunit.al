@@ -30,7 +30,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         // [WHEN] The public message entry point receives a valid view.
         ResponseJson := InvokeFilter('contract', 'WHERE("No."=FILTER(XPR25MATCH))', true);
         // [THEN] The persisted view matches only the intended row and other Blobs survive.
-        Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Expected a successful filter write.');
+        Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Expected a successful filter write. ' + ResponseAsText(ResponseJson));
         StoredView := ReadStoredFilter('contract');
         Assert.AreEqual(ReadText(ResponseJson, 'filter'), StoredView, 'Response must match persisted view.');
         CustomerContract.SetView(StoredView);
@@ -201,6 +201,11 @@ codeunit 95708 "Sub PU Filter Tst ori"
         CustomerContract.Insert(false);
     end;
 
+    local procedure ResponseAsText(ResponseJson: JsonObject) Result: Text
+    begin
+        ResponseJson.WriteTo(Result);
+    end;
+
     local procedure InvokeFilter(TargetName: Text; FilterText: Text; IncludeFilter: Boolean) ResponseJson: JsonObject
     var
         Dispatcher: Codeunit "Dispatcher ori";

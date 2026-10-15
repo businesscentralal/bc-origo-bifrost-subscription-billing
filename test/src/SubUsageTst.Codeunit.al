@@ -51,7 +51,7 @@ codeunit 95777 "Sub Usage Tst ori"
 
         // [THEN] One imported line exists with the file's values
         ImportEntryNo := TestLibrary.ReadInteger(ImportResponse, 'usageDataImportEntryNo');
-        Assert.AreEqual(1, TestLibrary.ReadInteger(ImportResponse, 'importedLineCount'), 'The file row must become one imported line.');
+        Assert.AreEqual(1, TestLibrary.ReadInteger(ImportResponse, 'importedLineCount'), 'The file row must become one imported line. ' + TestLibrary.AsText(ImportResponse));
         UsageDataGenericImport.SetRange("Usage Data Import Entry No.", ImportEntryNo);
         UsageDataGenericImport.FindFirst();
         Assert.AreEqual(5, UsageDataGenericImport.Quantity, 'The quantity must be read from the file.');
@@ -65,7 +65,7 @@ codeunit 95777 "Sub Usage Tst ori"
         ProcessResponse := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Usage.Process", RequestJson);
 
         // [THEN] Usage Data Billing rows exist for the customer line and none is in error
-        Assert.AreNotEqual(0, TestLibrary.ReadInteger(ProcessResponse, 'usageDataBillingCount'), 'Usage Data Billing rows must be created.');
+        Assert.AreNotEqual(0, TestLibrary.ReadInteger(ProcessResponse, 'usageDataBillingCount'), 'Usage Data Billing rows must be created. ' + TestLibrary.AsText(ProcessResponse));
         Assert.AreEqual(0, TestLibrary.ReadInteger(ProcessResponse, 'usageDataBillingErrorCount'), 'No Usage Data Billing row may be in error.');
         UsageDataBilling.SetRange("Usage Data Import Entry No.", ImportEntryNo);
         UsageDataBilling.SetRange(Partner, Enum::"Service Partner"::Customer);

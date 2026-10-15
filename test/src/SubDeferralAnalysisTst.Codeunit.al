@@ -23,6 +23,7 @@ codeunit 95778 "Sub Deferral Analysis Tst ori"
         TestLibrary: Codeunit "Sub Test Library ori";
 
     [Test]
+    [HandlerFunctions('DocumentsCreatedMessageHandler')]
     procedure Scenario_AC09_Release_ReleasesDeferralAndPostsToGL()
     var
         CustSubContractDeferral: Record "Cust. Sub. Contract Deferral";
@@ -173,5 +174,11 @@ codeunit 95778 "Sub Deferral Analysis Tst ori"
         VendSubContractDeferral.SetRange(Released, false);
         if not VendSubContractDeferral.IsEmpty() then
             VendSubContractDeferral.ModifyAll(Released, true, false);
+    end;
+
+    [MessageHandler]
+    procedure DocumentsCreatedMessageHandler(Message: Text[1024])
+    begin
+        // Microsoft's Create Billing Documents reports what it created; an API session shows no message.
     end;
 }
