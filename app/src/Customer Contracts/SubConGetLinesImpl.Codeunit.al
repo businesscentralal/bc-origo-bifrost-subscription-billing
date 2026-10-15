@@ -15,8 +15,8 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori", "M
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
-        ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar ''%1'' er ekki til.';
-        DescriptionLbl: Label 'Attaches unassigned Subscription Lines to a customer Subscription Contract. Returns the lines attached and any skipped.', MaxLength = 250, Comment = 'is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning viðskiptavinar. Skilar tengdum línum og línum sem var sleppt.';
+        ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract no.||is-IS=Áskriftarsamningur viðskiptamanns ''%1'' er ekki til.';
+        DescriptionLbl: Label 'Attaches unassigned Subscription Lines to a customer Subscription Contract. Returns the lines attached and any skipped.', MaxLength = 250, Comment = 'is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning viðskiptamanns. Skilar tengdum línum og línum sem var sleppt.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -35,14 +35,14 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori", "M
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.GetLines, Subscription, Contract, GetLines, customer, attach lines', Comment = 'is-IS=Subscription.Contract.GetLines, áskrift, samningur, sækja línur, viðskiptavinur, tengja línur';
+        KeywordsLbl: Label 'Subscription.Contract.GetLines, Subscription, Contract, GetLines, customer, attach lines', Comment = 'is-IS=Subscription.Contract.GetLines, áskrift, samningur, sækja línur, viðskiptamaður, tengja línur';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.GetLines: Attaches eligible lines to a customer contract.', Comment = 'is-IS=Subscription.Contract.GetLines: Tengir hæfar línur við viðskiptasamning.';
+        SelectionLbl: Label 'Subscription.Contract.GetLines: Attaches eligible lines to a customer contract.', Comment = 'is-IS=Subscription.Contract.GetLines: Tengir hæfar línur við áskriftarsamning viðskiptamanns.';
     begin
         exit(SelectionLbl);
     end;

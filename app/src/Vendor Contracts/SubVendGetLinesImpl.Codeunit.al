@@ -16,8 +16,8 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
-        ContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Birgjaáskriftarsamningurinn ''%1'' er ekki til.';
-        DescriptionLbl: Label 'Attaches unassigned Subscription Lines to a vendor subscription contract, creating a Vend. Sub. Contract Line for each one. Returns how many lines were attached.', MaxLength = 250, Comment = 'is-IS=Tengir ótengdar áskriftarlínur við birgjaáskriftarsamning og býr til samningslínu fyrir áskrift birgis fyrir hverja línu. Skilar fjölda tengdra lína.';
+        ContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur lánardrottins ''%1'' er ekki til.';
+        DescriptionLbl: Label 'Attaches unassigned Subscription Lines to a vendor subscription contract, creating a Vend. Sub. Contract Line for each one. Returns how many lines were attached.', MaxLength = 250, Comment = 'is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning lánardrottins og býr til samningslínu lánardrottins fyrir hverja línu. Skilar fjölda tengdra lína.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -36,14 +36,14 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.VendorContract.GetLines, Subscription, VendorContract, GetLines, vendor, attach lines', Comment = 'is-IS=Subscription.VendorContract.GetLines, áskrift, birgjasamningur, sækja línur, birgir, tengja línur';
+        KeywordsLbl: Label 'Subscription.VendorContract.GetLines, Subscription, VendorContract, GetLines, vendor, attach lines', Comment = 'is-IS=Subscription.VendorContract.GetLines, áskrift, áskriftarsamningur lánardrottins, sækja línur, lánardrottinn, tengja línur';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.VendorContract.GetLines: Attaches eligible lines to a vendor contract.', Comment = 'is-IS=Subscription.VendorContract.GetLines: Tengir hæfar línur við birgjasamning.';
+        SelectionLbl: Label 'Subscription.VendorContract.GetLines: Attaches eligible lines to a vendor contract.', Comment = 'is-IS=Subscription.VendorContract.GetLines: Tengir hæfar línur við áskriftarsamning lánardrottins.';
     begin
         exit(SelectionLbl);
     end;

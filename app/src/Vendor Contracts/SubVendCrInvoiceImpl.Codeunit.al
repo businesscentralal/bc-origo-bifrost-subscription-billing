@@ -18,11 +18,11 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
-        ContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Birgjaáskriftarsamningurinn ''%1'' er ekki til.';
+        ContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur lánardrottins ''%1'' er ekki til.';
         ForeignPendingProposalErr: Label 'There are %1 pending billing proposal line(s) left over for a different subscription contract (''%2''). Clear or process that proposal before creating an invoice for ''%3''.', Comment = '%1 = row count, %2 = the other contract number, %3 = this contract number||is-IS=Það eru %1 óafgreiddar tillögulínur í reikningstillögu fyrir annan áskriftarsamning (''%2''). Hreinsaðu eða vinndu úr þeirri tillögu áður en reikningur er búinn til fyrir ''%3''.';
         NothingDueMsg: Label 'No Subscription Lines were due for billing on or before %1 for contract %2.', Comment = '%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru komnar á gjalddaga til reikningsfærslu á eða fyrir %1 fyrir samning %2.';
         NothingNewMsg: Label 'Nothing new could be billed for contract %1. Its due Subscription Lines already sit on a billing proposal or on an unposted document - post or clear those first.', Comment = '%1 = contract number||is-IS=Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Gjaldfallnar áskriftarlínur hans eru þegar á reikningstillögu eða óbókuðu skjali - bókaðu þær eða hreinsaðu þær fyrst.';
-        DescriptionLbl: Label 'Creates an unposted purchase invoice or credit memo for the due Subscription Lines of a vendor subscription contract. Never posts the document.', MaxLength = 250, Comment = 'is-IS=Býr til óbókfærðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur birgjaáskriftarsamnings. Skjalið er aldrei bókfært.';
+        DescriptionLbl: Label 'Creates an unposted purchase invoice or credit memo for the due Subscription Lines of a vendor subscription contract. Never posts the document.', MaxLength = 250, Comment = 'is-IS=Býr til óbókaðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur áskriftarsamnings lánardrottins. Skjalið er aldrei bókað.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -41,14 +41,14 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.VendorContract.CreateInvoice, Subscription, VendorContract, CreateInvoice, vendor, invoice', Comment = 'is-IS=Subscription.VendorContract.CreateInvoice, áskrift, birgjasamningur, stofna reikning, birgir, reikningur';
+        KeywordsLbl: Label 'Subscription.VendorContract.CreateInvoice, Subscription, VendorContract, CreateInvoice, vendor, invoice', Comment = 'is-IS=Subscription.VendorContract.CreateInvoice, áskrift, áskriftarsamningur lánardrottins, stofna reikning, lánardrottinn, reikningur';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.VendorContract.CreateInvoice: Creates an unposted vendor invoice. Irreversible.', Comment = 'is-IS=Subscription.VendorContract.CreateInvoice: Stofnar óbókaðan birgjareikning. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Subscription.VendorContract.CreateInvoice: Creates an unposted vendor invoice. Irreversible.', Comment = 'is-IS=Subscription.VendorContract.CreateInvoice: Stofnar óbókaðan reikning lánardrottins. Óafturkræf aðgerð.';
     begin
         exit(SelectionLbl);
     end;

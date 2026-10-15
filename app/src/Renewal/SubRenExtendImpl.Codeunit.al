@@ -17,11 +17,11 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         SubscriptionHeaderNotFoundErr: Label 'The Subscription ''%1'' does not exist.', Comment = '%1 = subscription header no.||is-IS=Áskriftin ''%1'' er ekki til.';
-        CustomerContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = customer contract no.||is-IS=Viðskiptavinasamningurinn ''%1'' er ekki til.';
-        VendorContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = vendor contract no.||is-IS=Birgjasamningurinn ''%1'' er ekki til.';
+        CustomerContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = customer contract no.||is-IS=Áskriftarsamningur viðskiptamanns ''%1'' er ekki til.';
+        VendorContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = vendor contract no.||is-IS=Áskriftarsamningur lánardrottins ''%1'' er ekki til.';
         PackageNotFoundErr: Label 'The Subscription Package ''%1'' does not exist.', Comment = '%1 = subscription package code||is-IS=Áskriftarpakkinn ''%1'' er ekki til.';
         NeitherContractErr: Label 'The request must supply at least one of ''customerContractNo'' or ''vendorContractNo''.', Comment = 'is-IS=Beiðnin verður að innihalda a.m.k. annað af ''customerContractNo'' eða ''vendorContractNo''.';
-        DescriptionLbl: Label 'Extends a Subscription with a new customer and/or vendor contract, applying the item''s standard packages plus any extra packages supplied. Returns the contract line counts created.', MaxLength = 250, Comment = 'is-IS=Framlengir áskrift með nýjum viðskiptavina- og/eða birgjasamningi og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.';
+        DescriptionLbl: Label 'Extends a Subscription with a new customer and/or vendor contract, applying the item''s standard packages plus any extra packages supplied. Returns the contract line counts created.', MaxLength = 250, Comment = 'is-IS=Framlengir áskrift með nýjum áskriftarsamningi viðskiptamanns og/eða lánardrottins og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.';
 
     procedure IsEnabled(): Boolean
     begin

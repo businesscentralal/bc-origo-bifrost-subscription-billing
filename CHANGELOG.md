@@ -35,6 +35,13 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-15) - Icelandic glossary for customers, vendors, contracts and posting (Gunnar 14.10, core#702)
+
+- 37 `is-IS=` comments in 12 implementation codeunits follow the Bifröst glossary: the BC Customer is `viðskiptamaður` (was `viðskiptavinur`), the BC Vendor is `lánardrottinn` (was `birgir`), and posting is `bóka` throughout (`bókar`, `óbókaður`, `bókað`; was `bókfæra`).
+- The contract records have one name each: `áskriftarsamningur viðskiptamanns` (Customer Subscription Contract; was also `viðskiptavinasamningur`, `viðskiptasamningur` and `áskriftarsamningur viðskiptavinar`) and `áskriftarsamningur lánardrottins` (Vendor Subscription Contract, as in Microsoft's caption; was `birgjasamningur` and `birgjaáskriftarsamningur`). Microsoft's own Subscription Billing caption for the customer contract says `viðskiptavinar`; the Bifröst glossary's BC Customer word wins here so one word names the customer everywhere.
+- The labels of `Contract.UpdateLineDates`, `Contract.UpdateExchangeRates` and the three PriceUpdate types are left to the branches that rewrite those types.
+- The is-IS xlf is regenerated.
+
 ### Fixed (2026-10-15) - BIFROST SubBFull ori grants what the message types call (#42)
 
 - `BIFROST SubBFull ori` (permissionsetextension 10035063 on `BIFROST Full ori`) listed 23 codeunits and missed `Sub Contract Parts ori` (10035075), which `Sub Ana Recalc Impl ori`, `Sub Bil CrDocs Impl ori`, `Sub Bil CrProposal Impl ori` and `Sub Bil PrvDocs Impl ori` call. It now has `IncludedPermissionSets = "BIFROST SubBil ori"` instead of its own list, so the full set grants exactly what `BIFROST SubBil ori` grants and the two cannot drift again. New objects go into `BIFROST SubBil ori` only.

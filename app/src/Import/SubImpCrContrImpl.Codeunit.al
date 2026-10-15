@@ -20,7 +20,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         SubscriptionLinesTok: Label 'SubscriptionLines', Locked = true;
         ContractLinesTok: Label 'ContractLines', Locked = true;
         MaxErrorCount: Integer;
-        DescriptionLbl: Label 'Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.', MaxLength = 250, Comment = 'is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptavina, áskriftarlínur og samningslínur áskriftarsamnings viðskiptavinar út frá innfluttum bráðabirgðalínum, eitt skref í einu.';
+        DescriptionLbl: Label 'Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.', MaxLength = 250, Comment = 'is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur áskriftarsamnings viðskiptamanns út frá innfluttum bráðabirgðalínum, eitt skref í einu.';
 
     procedure IsEnabled(): Boolean
     begin
