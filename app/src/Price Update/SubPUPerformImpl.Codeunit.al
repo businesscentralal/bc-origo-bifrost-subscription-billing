@@ -5,19 +5,23 @@ using Origo.Bifrost;
 
 /// <summary>
 /// Implements the <c>Subscription.PriceUpdate.Perform</c> Bifrost message type.
-/// There is no supported public path for this operation: <c>Codeunit "Price Update
-/// Management".PerformPriceUpdate</c> is internal and its worker codeunit 8013"Process Price
-/// Update" is declared <c>Access = Internal</c>. A plain Data.Records call cannot reach either
-/// of them, and this codeunit deliberately does not attempt to re-implement Microsoft's price
-/// update application logic - silently diverging from it would corrupt customer contracts. It
-/// always responds with a clear, structured error instead.
+/// Applies the Contract Price Update Lines the way Perform Price Update on Microsoft's "Contract Price
+/// Update" page does: each line updates its Subscription Line now (archiving the old prices) or, when the
+/// change cannot take effect yet, writes a Planned Subscription Line; a processed line is deleted. Nothing
+/// is posted. Microsoft's PerformPriceUpdate and codeunit 8013 "Process Price Update" are internal in
+/// Business Central 28, so this runs "Sub PU Price Update Mgt ori" and "Sub PU Process Price Upd ori",
+/// referenced copies of them (see docs/microsoft-dependencies.md).
 /// </summary>
 codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
-        NotAccessibleErr: Label 'Subscription.PriceUpdate.Perform cannot run: Codeunit "Price Update Management".PerformPriceUpdate is internal in Business Central 28.4 and has not been exposed for external callers. Use the "Contract Price Update" page in the Business Central client to perform the price update.', Comment = 'is-IS=Subscription.PriceUpdate.Perform er ekki hægt að keyra: Codeunit "Price Update Management".PerformPriceUpdate er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að framkvæma verðuppfærsluna.';
-        DescriptionLbl: Label 'Blocked: Microsoft has not exposed a public API to perform price updates. Use the "Contract Price Update" page instead.', MaxLength = 250, Comment = 'is-IS=Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að framkvæma verðuppfærslur. Notaðu síðuna "Contract Price Update" í staðinn.';
+        Helper: Codeunit "Sub Helper ori";
+        TemplateNotFoundErr: Label 'The Price Update Template ''%1'' does not exist.', Comment = '%1 = price update template code||is-IS=Sniðmát fyrir verðuppfærslu ''%1'' er ekki til.';
+        NothingToPerformErr: Label 'There are no Contract Price Update Lines to perform. Run Subscription.PriceUpdate.CreateProposal first.', Comment = 'is-IS=Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.';
+        NothingToPerformForTemplateErr: Label 'There are no Contract Price Update Lines for Price Update Template ''%1'' to perform. Run Subscription.PriceUpdate.CreateProposal first.', Comment = '%1 = price update template code||is-IS=Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma fyrir sniðmát fyrir verðuppfærslu ''%1''. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.';
+        PartlyFailedErr: Label '%1 of %2 Contract Price Update Lines could not be performed and were left in the proposal; see ''results''. The other lines were performed and committed one by one, so they were not rolled back.', Comment = '%1 = number of failed lines, %2 = number of lines processed||is-IS=Ekki tókst að framkvæma %1 af %2 línum verðuppfærslu áskriftarsamnings og þær voru skildar eftir í tillögunni; sjá ''results''. Hinar línurnar voru framkvæmdar og staðfestar ein í einu og voru því ekki afturkallaðar.';
+        DescriptionLbl: Label 'Applies the Contract Price Update Lines: updates Subscription Lines or writes Planned Subscription Lines, and deletes each performed line. Nothing is posted.', MaxLength = 250, Comment = 'is-IS=Beitir línum verðuppfærslu áskriftarsamnings: uppfærir áskriftarlínur eða skrifar áætlaðar áskriftarlínur og eyðir hverri framkvæmdri línu. Ekkert er bókað.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -36,7 +40,7 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.PriceUpdate.Perform, Subscription, PriceUpdate, Perform, apply prices, subscription lines', Comment = 'is-IS=Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur';
+        KeywordsLbl: Label 'Subscription.PriceUpdate.Perform, Subscription, PriceUpdate, Perform, apply prices, subscription lines, indexation', Comment = 'is-IS=Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur, vísitölutenging';
     begin
         exit(KeywordsLbl);
     end;
@@ -102,23 +106,32 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
     end;
 
     procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
     begin
-        // A blocked type has no successful call to show.
-        exit(false);
+        Examples.Add(ContractMgt.Example('Perform the proposal of one template',
+            '{"type":"Subscription.PriceUpdate.Perform","subject":"ANNUAL"}',
+            '{"status":"Success","priceUpdateTemplateCode":"ANNUAL","linesProcessed":2,"subscriptionLinesUpdated":1,"plannedSubscriptionLinesCreated":1,"linesSkipped":0,"linesFailed":0,"results":[{"entryNo":17,"subscriptionLineEntryNo":42,"outcome":"Updated"},{"entryNo":18,"subscriptionLineEntryNo":43,"outcome":"Planned"}]}'));
+        exit(true);
     end;
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Blocked. Performing a price update needs Price Update Management.PerformPriceUpdate, which is internal in Business Central 28.4, and its worker ' +
-            'codeunit 8013 Process Price Update is internal too.';
+        Overview := 'Applies the Contract Price Update Lines, as Perform Price Update on the Contract Price Update page does. A line whose change can take effect now updates ' +
+            'its Subscription Line and archives the old prices; otherwise it writes a Planned Subscription Line that Microsoft applies when the line is next billed. ' +
+            'Each performed line is deleted. Nothing is posted.';
         exit(true);
     end;
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ContractParts.BlockedNote() +
-            'Microsoft''s PerformPriceUpdate applies every row of the price update proposal across all templates, with no template or contract filter of its own; ' +
-            'the filtering happens when the proposal is created.';
+        Notes := 'Microsoft''s PerformPriceUpdate and codeunit 8013 are internal in Business Central 28, so this runs referenced copies of them; the copies are checked ' +
+            'against Microsoft''s own page by tests. Without priceUpdateTemplateCode or a subject every line of every template is performed, which is what Microsoft does; ' +
+            'with one, only that template''s lines. A Planned Subscription Line is written instead of changing the line when Perform Update On is after the line''s Next ' +
+            'Billing Date, when the line is on an unposted invoice or credit memo, or when its Next Billing Date is before its Next Price Update. A line that already has ' +
+            'a Planned Subscription Line is left unchanged and its price update line is deleted (outcome SkippedPlannedExists), as Microsoft does. Each line is committed ' +
+            'on its own, so a failed line stays in the proposal while the others are kept; the answer is then status Error with the results. Under Omit Commit nothing is ' +
+            'committed: the first failure stops the call and the caller''s transaction rolls everything back.';
         exit(true);
     end;
 
@@ -133,9 +146,88 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
     end;
 
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    var
+        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-        Argument.RespondWithError(NotAccessibleErr);
+
+        if Argument."Omit Commit" then begin
+            PerformWrite(Argument);
+            exit;
+        end;
+
+        Clear(WriteProcess);
+        if not WriteProcess.Run(Argument) then
+            Argument.RespondWithLastError();
+    end;
+
+    /// <summary>
+    /// Performs the price update lines and reports each line's outcome. Called directly under Omit Commit, where
+    /// nothing is committed, or through the isolated write process, where each line commits on its own.
+    /// </summary>
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
+    var
+        PriceUpdateTemplate: Record "Price Update Template";
+        ContractPriceUpdateLine: Record "Sub. Contr. Price Update Line";
+        PriceUpdateManagement: Codeunit "Sub PU Price Update Mgt ori";
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+        ResultJson: JsonObject;
+        Results: JsonArray;
+        ResultToken: JsonToken;
+        OutcomeToken: JsonToken;
+        PriceUpdateTemplateCode: Code[20];
+        UpdatedCount: Integer;
+        PlannedCount: Integer;
+        SkippedCount: Integer;
+        FailedCount: Integer;
+    begin
+        RequestJson := Argument.GetRequestJson();
+        PriceUpdateTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'priceUpdateTemplateCode', false);
+        if PriceUpdateTemplateCode <> '' then begin
+            if not PriceUpdateTemplate.Get(PriceUpdateTemplateCode) then
+                Error(TemplateNotFoundErr, PriceUpdateTemplateCode);
+            ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplateCode);
+        end;
+
+        if ContractPriceUpdateLine.IsEmpty() then
+            if PriceUpdateTemplateCode = '' then
+                Error(NothingToPerformErr)
+            else
+                Error(NothingToPerformForTemplateErr, PriceUpdateTemplateCode);
+
+        PriceUpdateManagement.PerformPriceUpdate(ContractPriceUpdateLine, not Argument."Omit Commit", Results);
+
+        foreach ResultToken in Results do begin
+            ResultJson := ResultToken.AsObject();
+            ResultJson.Get('outcome', OutcomeToken);
+            case OutcomeToken.AsValue().AsText() of
+                'Updated':
+                    UpdatedCount += 1;
+                'Planned':
+                    PlannedCount += 1;
+                'SkippedPlannedExists':
+                    SkippedCount += 1;
+                else
+                    FailedCount += 1;
+            end;
+        end;
+
+        if FailedCount > 0 then begin
+            ResponseJson.Add('status', 'Error');
+            ResponseJson.Add('error', StrSubstNo(PartlyFailedErr, FailedCount, Results.Count()));
+            ResponseJson.Add('rolledBack', false);
+        end else
+            ResponseJson.Add('status', 'Success');
+        ResponseJson.Add('priceUpdateTemplateCode', PriceUpdateTemplateCode);
+        ResponseJson.Add('linesProcessed', Results.Count());
+        ResponseJson.Add('subscriptionLinesUpdated', UpdatedCount);
+        ResponseJson.Add('plannedSubscriptionLinesCreated', PlannedCount);
+        ResponseJson.Add('linesSkipped', SkippedCount);
+        ResponseJson.Add('linesFailed', FailedCount);
+        ResponseJson.Add('results', Results);
+        Argument.SetResponseJson(ResponseJson);
+        Argument."Content Type" := Argument.GetContentTypeJson();
     end;
 }

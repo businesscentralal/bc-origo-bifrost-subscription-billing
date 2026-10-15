@@ -5,20 +5,21 @@ using Origo.Bifrost;
 
 /// <summary>
 /// Implements the <c>Subscription.PriceUpdate.CreateProposal</c> Bifrost message type.
-/// There is no supported public path for this operation: <c>Codeunit "Price Update
-/// Management".CreatePriceUpdateProposal</c> is internal, the whole <c>Interface"Contract
-/// Price Update"</c> and its implementations are internal, and the worker codeunit 8013
-/// "Process Price Update" is declared <c>Access = Internal</c>. A plain Data.Records call
-/// cannot reach any of them, and this codeunit deliberately does not attempt to re-implement
-/// Microsoft's price update proposal logic - silently diverging from it would mis-price
-/// customer contracts. It always responds with a clear, structured error instead.
+/// Creates the Contract Price Update Lines of a Price Update Template the way Microsoft's
+/// "Contract Price Update" page does: same default dates, same filters, same three price update
+/// methods and the same rounding. Microsoft's own procedure, Price Update Management.CreatePriceUpdateProposal,
+/// is internal in Business Central 28, so the call runs "Sub PU Price Update Mgt ori", a referenced copy of it
+/// (see docs/microsoft-dependencies.md). No Subscription Line is changed; Subscription.PriceUpdate.Perform
+/// applies the proposal.
 /// </summary>
 codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
-        NotAccessibleErr: Label 'Subscription.PriceUpdate.CreateProposal cannot run: Codeunit "Price Update Management".CreatePriceUpdateProposal is internal in Business Central 28.4 and has not been exposed for external callers. Use the "Contract Price Update" page in the Business Central client to create the proposal, or call Subscription.PriceUpdate.SetTemplateFilter first to prepare the template''s filters.', Comment = 'is-IS=Subscription.PriceUpdate.CreateProposal er ekki hægt að keyra: Codeunit "Price Update Management".CreatePriceUpdateProposal er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að útbúa tillöguna, eða kallaðu á Subscription.PriceUpdate.SetTemplateFilter fyrst til að undirbúa síur sniðmátsins.';
-        DescriptionLbl: Label 'Blocked: Microsoft has not exposed a public API to create price update proposals. Use the "Contract Price Update" page instead.', MaxLength = 250, Comment = 'is-IS=Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að búa til verðuppfærslutillögur. Notaðu síðuna "Contract Price Update" í staðinn.';
+        Helper: Codeunit "Sub Helper ori";
+        TemplateNotFoundErr: Label 'The Price Update Template ''%1'' does not exist.', Comment = '%1 = price update template code||is-IS=Sniðmát fyrir verðuppfærslu ''%1'' er ekki til.';
+        NoLinesCreatedMsg: Label 'No Contract Price Update Line was created for Price Update Template ''%1''. No Subscription Line matched the template''s partner, filters and dates, or every match already has a price update line.', Comment = '%1 = price update template code||is-IS=Engin lína verðuppfærslu áskriftarsamnings var stofnuð fyrir sniðmát fyrir verðuppfærslu ''%1''. Engin áskriftarlína passaði við viðskiptaaðila, síur og dagsetningar sniðmátsins, eða allar sem pössuðu eru þegar með línu verðuppfærslu.';
+        DescriptionLbl: Label 'Creates the Contract Price Update Lines of a Price Update Template, as the Contract Price Update page does. Subscription Lines are not changed.', MaxLength = 250, Comment = 'is-IS=Stofnar línur verðuppfærslu áskriftarsamnings fyrir sniðmát fyrir verðuppfærslu, eins og síðan Verðuppfærsla áskriftarsamnings gerir. Áskriftarlínum er ekki breytt.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -37,7 +38,7 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal', Comment = 'is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga';
+        KeywordsLbl: Label 'Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal, indexation', Comment = 'is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga, vísitölutenging';
     begin
         exit(KeywordsLbl);
     end;
@@ -103,23 +104,33 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
     end;
 
     procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
     begin
-        // A blocked type has no successful call to show.
-        exit(false);
+        Examples.Add(ContractMgt.Example('Propose a yearly price update with the template''s own dates',
+            '{"type":"Subscription.PriceUpdate.CreateProposal","subject":"ANNUAL"}',
+            '{"status":"Success","priceUpdateTemplateCode":"ANNUAL","priceUpdateMethod":"Price by %","includeLinesUpToDate":"2027-01-31","performUpdateOnDate":"2027-01-01","linesCreated":1,"linesNotCreated":0,"proposalLineCount":1,"lines":[{"entryNo":17,"subscriptionLineEntryNo":42,"subscriptionHeaderNo":"SUB000010","contractNo":"CC000010","partnerNo":"10000","oldPrice":"100","newPrice":"103","oldAmount":"1200","newAmount":"1236","additionalAmount":"36","oldCalculationBase":"100","newCalculationBase":"103","newCalculationBasePct":"100","discountPct":"0","discountAmount":"0","performUpdateOn":"2027-01-01","nextPriceUpdate":"2028-01-01"}],"hasMore":false}'));
+        Examples.Add(ContractMgt.Example('Propose with explicit dates',
+            '{"type":"Subscription.PriceUpdate.CreateProposal","subject":"ANNUAL","data":{"includeLinesUpToDate":"2027-03-31","performUpdateOnDate":"2027-04-01"}}',
+            '{"status":"Success","priceUpdateTemplateCode":"ANNUAL","linesCreated":0,"message":"No Contract Price Update Line was created for Price Update Template ''ANNUAL''. ..."}'));
+        exit(true);
     end;
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Blocked. Creating a price update proposal needs Price Update Management.CreatePriceUpdateProposal, which is internal in Business Central 28.4, as are ' +
-            'the Contract Price Update interface with all its implementations and codeunit 8013 Process Price Update.';
+        Overview := 'Creates the Contract Price Update Lines of a Price Update Template, the proposal a person creates with Create Proposal on the Contract Price Update page. ' +
+            'The template''s Price Update Method decides the new price: Calculation Base by %, Price by % or Recent Item Prices. Run Subscription.PriceUpdate.Perform to apply it.';
         exit(true);
     end;
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ContractParts.BlockedNote() +
-            'Microsoft''s price update logic is not re-implemented here: a copy could diverge from Microsoft''s rounding, currency and binding-period rules and ' +
-            'misprice live contracts.';
+        Notes := ('Microsoft''s CreatePriceUpdateProposal is internal in Business Central 28, so this runs a referenced copy of it; the copy is checked against ' +
+            'Microsoft''s own page by tests. A Subscription Line is proposed only when it belongs to the template''s partner, is invoiced via a contract, is not excluded from ' +
+            'price updates, not closed, not usage based, has no Planned Subscription Line and its Next Price Update is empty or on or before includeLinesUpToDate. A line that ' +
+            'already has a price update line, under any template, is left out. A line whose new calculation base would be zero or less is not created and is counted in ' +
+            'linesNotCreated. Perform Update On is the latest of the line''s Next Billing Date, its Next Price Update and performUpdateOnDate; Next Price Update becomes ' +
+            'Perform Update On plus the template''s Price Binding Period. ' + ContractParts.IsolationNote()).TrimEnd();
         exit(true);
     end;
 
@@ -134,9 +145,117 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
     end;
 
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
+    var
+        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-        Argument.RespondWithError(NotAccessibleErr);
+
+        if Argument."Omit Commit" then begin
+            PerformWrite(Argument);
+            exit;
+        end;
+
+        Clear(WriteProcess);
+        if not WriteProcess.Run(Argument) then
+            Argument.RespondWithLastError();
+    end;
+
+    /// <summary>Creates the proposal and reports the lines it created. Called directly, or through the isolated write process.</summary>
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
+    var
+        PriceUpdateTemplate: Record "Price Update Template";
+        ContractPriceUpdateLine: Record "Sub. Contr. Price Update Line";
+        PriceUpdateManagement: Codeunit "Sub PU Price Update Mgt ori";
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+        LinesJson: JsonArray;
+        PriceUpdateTemplateCode: Code[20];
+        IncludeLinesUpToDate: Date;
+        PerformUpdateOnDate: Date;
+        WatermarkEntryNo: Integer;
+        LinesCreated: Integer;
+        MaxLinesReturned: Integer;
+    begin
+        RequestJson := Argument.GetRequestJson();
+        PriceUpdateTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'priceUpdateTemplateCode', true);
+        if not PriceUpdateTemplate.Get(PriceUpdateTemplateCode) then
+            Error(TemplateNotFoundErr, PriceUpdateTemplateCode);
+
+        // The Contract Price Update page's defaults (ApplyPriceUpdateTemplateFilter): both dates come from the template's formulas and the work date.
+        IncludeLinesUpToDate := Helper.GetDate(RequestJson, 'includeLinesUpToDate', false);
+        if (IncludeLinesUpToDate = 0D) and (Format(PriceUpdateTemplate.InclContrLinesUpToDateFormula) <> '') then
+            IncludeLinesUpToDate := CalcDate(PriceUpdateTemplate.InclContrLinesUpToDateFormula, WorkDate());
+        PerformUpdateOnDate := Helper.GetDateOrDefault(RequestJson, 'performUpdateOnDate', CalcDate(PriceUpdateTemplate."Perform Update on Formula", WorkDate()));
+
+        ContractPriceUpdateLine.ReadIsolation := IsolationLevel::ReadCommitted;
+        ContractPriceUpdateLine.SetLoadFields("Entry No.");
+        if ContractPriceUpdateLine.FindLast() then
+            WatermarkEntryNo := ContractPriceUpdateLine."Entry No.";
+
+        PriceUpdateManagement.CreatePriceUpdateProposal(PriceUpdateTemplateCode, IncludeLinesUpToDate, PerformUpdateOnDate);
+
+        MaxLinesReturned := 1000;
+        ContractPriceUpdateLine.Reset();
+        ContractPriceUpdateLine.SetFilter("Entry No.", '>%1', WatermarkEntryNo);
+        ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplateCode);
+        if ContractPriceUpdateLine.FindSet() then
+            repeat
+                LinesCreated += 1;
+                if LinesCreated <= MaxLinesReturned then
+                    LinesJson.Add(LineToJson(ContractPriceUpdateLine));
+            until ContractPriceUpdateLine.Next() = 0;
+
+        ContractPriceUpdateLine.Reset();
+        ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplateCode);
+
+        ResponseJson.Add('status', 'Success');
+        ResponseJson.Add('priceUpdateTemplateCode', PriceUpdateTemplateCode);
+        ResponseJson.Add('priceUpdateMethod', PriceUpdateMethodName(PriceUpdateTemplate."Price Update Method"));
+        ResponseJson.Add('includeLinesUpToDate', Helper.FormatDate(IncludeLinesUpToDate));
+        ResponseJson.Add('performUpdateOnDate', Helper.FormatDate(PerformUpdateOnDate));
+        ResponseJson.Add('linesCreated', LinesCreated);
+        ResponseJson.Add('linesNotCreated', PriceUpdateManagement.GetNotInsertedLineCount());
+        ResponseJson.Add('proposalLineCount', ContractPriceUpdateLine.Count());
+        ResponseJson.Add('lines', LinesJson);
+        ResponseJson.Add('hasMore', LinesCreated > MaxLinesReturned);
+        if LinesCreated = 0 then
+            ResponseJson.Add('message', StrSubstNo(NoLinesCreatedMsg, PriceUpdateTemplateCode));
+        Helper.RespondWithSuccess(Argument, ResponseJson);
+    end;
+
+    local procedure LineToJson(ContractPriceUpdateLine: Record "Sub. Contr. Price Update Line") LineJson: JsonObject
+    begin
+        LineJson.Add('entryNo', ContractPriceUpdateLine."Entry No.");
+        LineJson.Add('subscriptionLineEntryNo', ContractPriceUpdateLine."Subscription Line Entry No.");
+        LineJson.Add('subscriptionHeaderNo', ContractPriceUpdateLine."Subscription Header No.");
+        LineJson.Add('contractNo', ContractPriceUpdateLine."Subscription Contract No.");
+        LineJson.Add('partnerNo', ContractPriceUpdateLine."Partner No.");
+        LineJson.Add('oldPrice', Helper.FormatDecimal(ContractPriceUpdateLine."Old Price"));
+        LineJson.Add('newPrice', Helper.FormatDecimal(ContractPriceUpdateLine."New Price"));
+        LineJson.Add('oldAmount', Helper.FormatDecimal(ContractPriceUpdateLine."Old Amount"));
+        LineJson.Add('newAmount', Helper.FormatDecimal(ContractPriceUpdateLine."New Amount"));
+        LineJson.Add('additionalAmount', Helper.FormatDecimal(ContractPriceUpdateLine."Additional Amount"));
+        LineJson.Add('oldCalculationBase', Helper.FormatDecimal(ContractPriceUpdateLine."Old Calculation Base"));
+        LineJson.Add('newCalculationBase', Helper.FormatDecimal(ContractPriceUpdateLine."New Calculation Base"));
+        LineJson.Add('newCalculationBasePct', Helper.FormatDecimal(ContractPriceUpdateLine."New Calculation Base %"));
+        LineJson.Add('discountPct', Helper.FormatDecimal(ContractPriceUpdateLine."Discount %"));
+        LineJson.Add('discountAmount', Helper.FormatDecimal(ContractPriceUpdateLine."Discount Amount"));
+        LineJson.Add('performUpdateOn', Helper.FormatDate(ContractPriceUpdateLine."Perform Update On"));
+        LineJson.Add('nextPriceUpdate', Helper.FormatDate(ContractPriceUpdateLine."Next Price Update"));
+    end;
+
+    /// <summary>
+    /// Names the price update method for a JSON response with Microsoft's enum value names, for the reason
+    /// Sub Helper ori.FormatDocumentType gives: Format() would return a translated caption.
+    /// </summary>
+    local procedure PriceUpdateMethodName(PriceUpdateMethod: Enum "Price Update Method"): Text
+    var
+        Names: List of [Text];
+        Ordinals: List of [Integer];
+    begin
+        Names := Enum::"Price Update Method".Names();
+        Ordinals := Enum::"Price Update Method".Ordinals();
+        exit(Names.Get(Ordinals.IndexOf(PriceUpdateMethod.AsInteger())));
     end;
 }

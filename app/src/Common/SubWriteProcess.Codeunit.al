@@ -34,6 +34,8 @@ codeunit 10035059 "Sub Write Process ori"
         BilCrDocsImpl: Codeunit "Sub Bil CrDocs Impl ori";
         BilPrvDocsImpl: Codeunit "Sub Bil PrvDocs Impl ori";
         PUSetFilterImpl: Codeunit "Sub PU SetFilter Impl ori";
+        PUCrProposalImpl: Codeunit "Sub PU CrProposal Impl ori";
+        PUPerformImpl: Codeunit "Sub PU Perform Impl ori";
         RenExtendImpl: Codeunit "Sub Ren Extend Impl ori";
         RenCrQuoteImpl: Codeunit "Sub Ren CrQuote Impl ori";
         UsgImportImpl: Codeunit "Sub Usg Import Impl ori";
@@ -65,6 +67,10 @@ codeunit 10035059 "Sub Write Process ori"
                 BilPrvDocsImpl.PerformWrite(Argument);
             Argument."Type"::"Subscription.PriceUpdate.SetTemplateFilter":
                 PUSetFilterImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.PriceUpdate.CreateProposal":
+                PUCrProposalImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.PriceUpdate.Perform":
+                PUPerformImpl.PerformWrite(Argument);
             Argument."Type"::"Subscription.Renewal.Extend":
                 RenExtendImpl.PerformWrite(Argument);
             Argument."Type"::"Subscription.Renewal.CreateQuote":
