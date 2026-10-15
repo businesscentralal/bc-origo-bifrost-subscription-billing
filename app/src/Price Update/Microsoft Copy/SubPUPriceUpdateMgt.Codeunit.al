@@ -159,6 +159,8 @@ codeunit 10035076 "Sub PU Price Update Mgt ori"
             ServiceCommitmentFilterText := ReadFilter(PriceUpdateTemplate, PriceUpdateTemplate.FieldNo("Subscription Line Filter"));
 
         if ServiceCommitmentFilterText <> '' then begin
+            // The view is stored on the Price Update Template by Subscription.PriceUpdate.SetTemplateFilter (Foundation ApplyTableView) or Microsoft's FilterPageBuilder; Microsoft applies it the same way.
+            // tableView validated by the caller
             ServiceCommitment.SetView(ServiceCommitmentFilterText);
             ApplyDefaultFiltering(ServiceCommitment, PriceUpdateTemplate, IncludeServiceCommitmentUpToDate);
             FindAndMarkMatchedAndDeleteUnmarkedServiceCommitment(ServiceCommitment, TempServiceCommitment);
@@ -254,6 +256,8 @@ codeunit 10035076 "Sub PU Price Update Mgt ori"
         ServiceObject: Record "Subscription Header";
     begin
         ServiceCommitment.Reset();
+        // The view is stored on the Price Update Template by Subscription.PriceUpdate.SetTemplateFilter (Foundation ApplyTableView) or Microsoft's FilterPageBuilder; Microsoft applies it the same way.
+        // tableView validated by the caller
         ServiceObject.SetView(ServiceObjectFilterText);
         ServiceObject.SetLoadFields("No.");
         if ServiceObject.FindSet() then
@@ -284,6 +288,8 @@ codeunit 10035076 "Sub PU Price Update Mgt ori"
         case PriceUpdateTemplate.Partner of
             "Service Partner"::Customer:
                 begin
+                    // The view is stored on the Price Update Template by Subscription.PriceUpdate.SetTemplateFilter (Foundation ApplyTableView) or Microsoft's FilterPageBuilder; Microsoft applies it the same way.
+                    // tableView validated by the caller
                     CustomerContract.SetView(ContractFilterText);
                     if CustomerContract.FindSet() then
                         repeat
@@ -292,6 +298,8 @@ codeunit 10035076 "Sub PU Price Update Mgt ori"
                 end;
             "Service Partner"::Vendor:
                 begin
+                    // The view is stored on the Price Update Template by Subscription.PriceUpdate.SetTemplateFilter (Foundation ApplyTableView) or Microsoft's FilterPageBuilder; Microsoft applies it the same way.
+                    // tableView validated by the caller
                     VendorContract.SetView(ContractFilterText);
                     if VendorContract.FindSet() then
                         repeat

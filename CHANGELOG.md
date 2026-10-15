@@ -35,6 +35,13 @@
 
 ## [Unreleased]
 
+### Added (2026-10-15) - price update and indexation run without the client (#45)
+
+- `Subscription.PriceUpdate.CreateProposal` (`Sub PU CrProposal Impl ori`, 10035049) and `Subscription.PriceUpdate.Perform` (`Sub PU Perform Impl ori`, 10035050) are no longer blocked. CreateProposal creates the Contract Price Update Lines of a Price Update Template as the Contract Price Update page does (same default dates, filters, three price update methods, rounding and Next Price Update), and answers with the lines it created. Perform applies them: it updates the Subscription Lines and archives the old prices, or writes Planned Subscription Lines, deletes each performed line, commits per line and posts nothing. It can be limited to one template, refuses an empty proposal, and answers status Error with per-line results when a line fails.
+- Microsoft's logic is internal in Business Central 28, so it is copied from microsoft/BCApps releases/28.x commit a674a13 (MIT) into `app/src/Price Update/Microsoft Copy/`: `Sub PU Price Update Mgt ori` (10035076), `Sub PU Calc Base By Perc ori` (10035077), `Sub PU Price By Percent ori` (10035078), `Sub PU Recent Item Price ori` (10035079), `Sub PU Process Price Upd ori` (10035080), `Sub PU Line Mgt ori` (10035081) and the interface `Sub PU Contract Price Upd ori`. Each copied procedure names its Microsoft source and the change that would let us delete it; `docs/microsoft-dependencies.md` lists them all with the known differences. The six codeunits are granted by `BIFROST SubBil ori` (10035062) and `BIFROST SubBFull ori` (10035063).
+- The contract chapters (parameters, response, errors, effect, preconditions, workflow) of both types are written out in `Sub Contract Parts ori` (10035075); `Sub Write Process ori` (10035059) dispatches both. New labels carry is-IS translations.
+- Tests: `Sub PU Test Lib ori` (95740), `Sub PU Oracle Tst ori` (95741, runs Microsoft's own Contract Price Update page next to the copy on the same data and compares every field), `Sub PU Proposal Tst ori` (95742) and `Sub PU Perform Tst ori` (95743), ported from Microsoft's Contract Price Proposal Test (139690) plus refusals and edge cases.
+
 ### Fixed (2026-10-06) - price update filter validation and Icelandic keywords (PR #25)
 
 - `Sub PU SetFilter Impl ori` (10035048) validates the caller's `filter` with
