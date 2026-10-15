@@ -52,3 +52,16 @@ The copied logic comes from Microsoft BCApps, which is released under the MIT Li
 - **Deviations:** Microsoft calls the internal `SetUpdateRequiredOnBillingLines` and `ArchiveServiceCommitment` and then `Modify(false)`; the copy uses `Modify(true)`, because the Subscription Line OnModify trigger runs exactly those two. That trigger refuses a line whose contract line is closed, so such lines are skipped and counted.
 - **Investigation (#40 AC01):** validating Currency Code on the contract does not reach the same recalculation. The OnValidate calls the procedure only when the code changes, so an unchanged currency is never refreshed; and `OpenExchangeSelectionPage` returns false without a user interface, leaving the contract's CurrencyFactor and CurrencyFactorDate at 0 and 0D, so the lines would be recalculated with a zero factor.
 - **Change we want from Microsoft:** a public `UpdateAndRecalculateServiceCommitmentCurrencyData(CurrencyFactorDate: Date; CurrencyFactor: Decimal)` overload on both contract tables that skips the exchange rate page, and an error instead of a zero factor in `OpenExchangeSelectionPage` when `GuiAllowed` is false.
+
+### Reset a usage import (#41 AC03)
+
+- **Microsoft source:** table 8013 "Usage Data Import", `internal procedure DeleteUsageDataBillingLines` and `local procedure CheckAndDeleteUsageDataBilling`, in `Usage Based Billing/Tables/UsageDataImport.Table.al` (the Delete Usage Data Lines & Billing action of page Usage Data Imports).
+- **Our copy:** `Sub Usg DelData Impl ori` (codeunit 10035069, `app/src/Usage/SubUsgDelDataImpl.Codeunit.al`), local procedures `DeleteUsageDataBillingLines` and `CheckNotBilled`.
+- **Deviations:** Microsoft's local `OnDeleteUsageDataBillingLines` integration event cannot be raised from outside and is not raised. Besides Microsoft's refusal of usage billing on a document, the copy also refuses usage billing on a billing line, so no proposal line points at deleted usage.
+- **Change we want from Microsoft:** make `DeleteUsageDataBillingLines` public (it has no dialog).
+
+### Billing Template filter (#41 AC04)
+
+- **Microsoft source:** table 8060 "Billing Template", `internal procedure WriteFilter` (and `EditFilter`, which opens a FilterPageBuilder), in `Billing/Tables/BillingTemplate.Table.al`.
+- **Our copy:** `Sub Bil SetFilter Impl ori` (codeunit 10035070, `app/src/Billing/SubBilSetFilterImpl.Codeunit.al`): the Filter Blob is cleared and the normalised view written unless it is the blank view of the template's contract table. The view is validated by Foundation's `Message Argument ori.ApplyTableView` first, as `Subscription.PriceUpdate.SetTemplateFilter` does for Price Update Templates.
+- **Change we want from Microsoft:** make `WriteFilter(FieldNumber, FilterText)` public.

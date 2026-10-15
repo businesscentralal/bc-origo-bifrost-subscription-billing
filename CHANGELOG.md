@@ -35,6 +35,17 @@
 
 ## [Unreleased]
 
+### Added (2026-10-15) - should-have flows: vendor invoice lines, usage reset, billing filter, removal, partial renewal (#41)
+
+- AC01, new type `Subscription.VendorContract.AddLinesToInvoice`: `Sub Vend AddToInv Impl ori` (codeunit 10035068, enum value 10035068). Adds the due vendor contract lines of the invoice's vendor (or the listed `subscriptionLineEntryNos`, or one `contractNo`) to an existing unposted purchase invoice through Microsoft's public `CreateBillingProposalForPurchaseHeader` and `CreatePurchaseLines`, as Get Vendor Contract Lines does. Refuses a posted invoice, a line of another vendor, a line that is not billable, and pending template-less proposal lines that Microsoft would add as well.
+- AC03, new type `Subscription.Usage.DeleteData`: `Sub Usg DelData Impl ori` (codeunit 10035069, enum value 10035069). `mode` resetLines deletes the imported lines and Usage Data Billing of an import and resets its status, keeping the file so `Usage.Process` can run it again (Microsoft's Delete Usage Data Lines & Billing, rebuilt because it is internal); deleteImport deletes the import. Refuses usage billing on a document or a billing line. `effect` irreversible.
+- AC04, new type `Subscription.Billing.SetTemplateFilter`: `Sub Bil SetFilter Impl ori` (codeunit 10035070, enum value 10035070). Writes the Billing Template's contract filter after Foundation's fail-closed view validation, mirroring `Subscription.PriceUpdate.SetTemplateFilter`; a bad view is refused with a structured code and nothing is written.
+- AC05, new types `Subscription.Contract.RemoveLine` (`Sub Con RemoveLine Impl ori`, codeunit and enum value 10035071) and `Subscription.Package.RemoveItemAssignment` (`Sub Pkg RemoveItem Impl ori`, codeunit and enum value 10035072). RemoveLine deletes a customer or vendor contract line with `Delete(true)`, detaching its Subscription Line, and refuses closed, billed, in-billing and deferred lines. RemoveItemAssignment deletes an Item Subscription Package row.
+- AC06: `Subscription.Renewal.CreateQuote` accepts `contractLineNos`; without it the behaviour is unchanged. A number that is not a line of the contract is refused.
+- AC02 (merge customer contract lines) is not delivered: Microsoft's public `MergeContractLines` opens the Select Cust. Contract Lines page to pick the reference line, and the merge itself relies on internal procedures (`Subscription Header.UpdateServicesDates`, `TestMergingServiceObjects`, `TestMergingServiceCommitments`). It is left for a follow-up.
+- The copies of Microsoft logic are listed in `docs/microsoft-dependencies.md`.
+- Tests: `Sub Should Have Tst ori` (95715) and `Sub Usg DelData Tst ori` (95716).
+
 ### Added (2026-10-15) - Subscription.Contract.UpdateExchangeRates recalculates currency data (#40)
 
 - `Sub Con UpdFCY Impl ori` (codeunit 10035041, enum value 10035041) is no longer blocked. It recalculates every Subscription Line of a customer or vendor (`partner`) Subscription Contract in a foreign currency: Currency Code, Currency Factor and Currency Factor Date are written and the Calculation Base Amount is converted again from its local currency amount, as the Update Exchange Rates action does. The factor defaults to the exchange rate of `currencyFactorDate` (default the work date), the value the Exchange Rate Selection page proposes; `currencyFactor` overrides it. Returns `linesRecalculated` and `linesSkipped` (lines whose contract line is closed). `effect` is now write. The blocked error, which named Business Central 28.4, is gone.

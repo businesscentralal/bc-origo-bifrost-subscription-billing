@@ -40,5 +40,10 @@ permissionsetextension 10035063 "BIFROST SubBFull ori" extends "BIFROST Full ori
         codeunit "Sub Bil ClrProposal Impl ori" = X,
         codeunit "Sub Bil DelDocs Impl ori" = X,
         codeunit "Sub Usg Connect Impl ori" = X,
-        codeunit "Sub Usg Disconnect Impl ori" = X;
+        codeunit "Sub Usg Disconnect Impl ori" = X,
+        codeunit "Sub Vend AddToInv Impl ori" = X,
+        codeunit "Sub Usg DelData Impl ori" = X,
+        codeunit "Sub Bil SetFilter Impl ori" = X,
+        codeunit "Sub Con RemoveLine Impl ori" = X,
+        codeunit "Sub Pkg RemoveItem Impl ori" = X;
 }

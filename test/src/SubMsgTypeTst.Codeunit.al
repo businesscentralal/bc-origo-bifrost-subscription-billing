@@ -45,8 +45,8 @@ codeunit 95701 "Sub Msg Type Tst ori"
                 FoundCount += 1;
             end;
 
-        // [THEN] All 26 message types are registered
-        Assert.AreEqual(26, FoundCount, 'All Subscription Billing message types should be registered on the Bifrost enum.');
+        // [THEN] All 31 message types are registered
+        Assert.AreEqual(31, FoundCount, 'All Subscription Billing message types should be registered on the Bifrost enum.');
     end;
 
     [Test]

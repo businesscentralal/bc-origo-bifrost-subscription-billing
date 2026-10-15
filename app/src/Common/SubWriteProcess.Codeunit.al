@@ -47,6 +47,11 @@ codeunit 10035059 "Sub Write Process ori"
         UsgConnectImpl: Codeunit "Sub Usg Connect Impl ori";
         UsgDisconnectImpl: Codeunit "Sub Usg Disconnect Impl ori";
         ConUpdFCYImpl: Codeunit "Sub Con UpdFCY Impl ori";
+        VendAddToInvImpl: Codeunit "Sub Vend AddToInv Impl ori";
+        UsgDelDataImpl: Codeunit "Sub Usg DelData Impl ori";
+        BilSetFilterImpl: Codeunit "Sub Bil SetFilter Impl ori";
+        ConRemoveLineImpl: Codeunit "Sub Con RemoveLine Impl ori";
+        PkgRemoveItemImpl: Codeunit "Sub Pkg RemoveItem Impl ori";
     begin
         case Argument."Type" of
             Argument."Type"::"Subscription.Line.Create":
@@ -97,6 +102,16 @@ codeunit 10035059 "Sub Write Process ori"
                 UsgDisconnectImpl.PerformWrite(Argument);
             Argument."Type"::"Subscription.Contract.UpdateExchangeRates":
                 ConUpdFCYImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.VendorContract.AddLinesToInvoice":
+                VendAddToInvImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Usage.DeleteData":
+                UsgDelDataImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Billing.SetTemplateFilter":
+                BilSetFilterImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Contract.RemoveLine":
+                ConRemoveLineImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Package.RemoveItemAssignment":
+                PkgRemoveItemImpl.PerformWrite(Argument);
         end;
     end;
 }
