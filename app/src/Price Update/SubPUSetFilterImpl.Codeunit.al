@@ -15,6 +15,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -69,7 +71,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.SetTemplateFilterParameters();
         exit(true);
     end;
 
@@ -144,9 +146,12 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -156,8 +161,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub PU SetFilter Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -180,7 +184,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
         ViewApplied: Boolean;
     begin
         RequestJson := Argument.GetRequestJson();
-        PriceUpdateTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'priceUpdateTemplateCode', true);
+        PriceUpdateTemplateCode := Helper.GetSubjectOr(RequestJson, 'priceUpdateTemplateCode', Argument, true);
         SuppliedFilter := Helper.GetText(RequestJson, 'filter', true);
         TargetName := LowerCase(Helper.GetText(RequestJson, 'target', true));
 

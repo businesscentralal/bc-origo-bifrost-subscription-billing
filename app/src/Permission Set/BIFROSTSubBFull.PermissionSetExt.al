@@ -5,42 +5,14 @@ using Origo.Bifrost;
 /// <summary>
 /// Extends the Bifrost full access permission set with the Subscription Billing objects,
 /// so anyone already granted full Bifrost access can invoke these message types too.
-/// Execute rights on the implementation codeunits are required for that: without them the
-/// dispatcher resolves the interface and then fails when it tries to run the implementation.
+/// Execute rights on the implementation codeunits and the shared codeunits they call are required
+/// for that: without them the dispatcher resolves the interface and then fails when it runs the
+/// implementation. The extension includes "BIFROST SubBil ori" instead of repeating its list, so
+/// the two always grant the same objects; add a new object to "BIFROST SubBil ori" only.
 /// The message types still run under the caller's own permissions on the Microsoft Subscription
 /// Billing tables, so this does not widen access to subscription or contract data.
 /// </summary>
 permissionsetextension 10035063 "BIFROST SubBFull ori" extends "BIFROST Full ori"
 {
-    Permissions =
-        codeunit "Sub Helper ori" = X,
-        codeunit "Sub Write Process ori" = X,
-        codeunit "Sub Line Create Impl ori" = X,
-        codeunit "Sub Con GetLines Impl ori" = X,
-        codeunit "Sub Con CrInvoice Impl ori" = X,
-        codeunit "Sub Con PrvInvoice Impl ori" = X,
-        codeunit "Sub Con UpdDates Impl ori" = X,
-        codeunit "Sub Con UpdFCY Impl ori" = X,
-        codeunit "Sub Vend GetLines Impl ori" = X,
-        codeunit "Sub Vend CrInvoice Impl ori" = X,
-        codeunit "Sub Vend PrvInv Impl ori" = X,
-        codeunit "Sub Bil CrProposal Impl ori" = X,
-        codeunit "Sub Bil CrDocs Impl ori" = X,
-        codeunit "Sub Bil PrvDocs Impl ori" = X,
-        codeunit "Sub PU SetFilter Impl ori" = X,
-        codeunit "Sub PU CrProposal Impl ori" = X,
-        codeunit "Sub PU Perform Impl ori" = X,
-        codeunit "Sub PU Price Update Mgt ori" = X,
-        codeunit "Sub PU Calc Base By Perc ori" = X,
-        codeunit "Sub PU Price By Percent ori" = X,
-        codeunit "Sub PU Recent Item Price ori" = X,
-        codeunit "Sub PU Process Price Upd ori" = X,
-        codeunit "Sub PU Line Mgt ori" = X,
-        codeunit "Sub Ren Extend Impl ori" = X,
-        codeunit "Sub Ren CrQuote Impl ori" = X,
-        codeunit "Sub Usg Import Impl ori" = X,
-        codeunit "Sub Usg Process Impl ori" = X,
-        codeunit "Sub Def Release Impl ori" = X,
-        codeunit "Sub Ana Recalc Impl ori" = X,
-        codeunit "Sub Imp CrContr Impl ori" = X;
+    IncludedPermissionSets = "BIFROST SubBil ori";
 }

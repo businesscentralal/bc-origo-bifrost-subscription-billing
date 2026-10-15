@@ -16,7 +16,7 @@ App:
 - 10035035 enumextension `Sub Msg Type ori`
 - 10035036-10035057 the 22 `Sub <Domain><Verb> Impl ori` codeunits
 - 10035058 codeunit `Sub Helper ori`
-- 10035059 codeunit `Sub Write Process ori`
+- Freed by #26: 10035059, codeunit `Sub Write Process ori` (each Impl now runs itself in isolation)
 - 10035060 codeunit `Sub Registration ori` (registers the app with Foundation's `App Registry ori`)
 - 10035062-10035064 the three permission sets
 - 10035075 codeunit `Sub Contract Parts ori` (shared contract chapters, #18)
@@ -38,7 +38,13 @@ Tests:
   ID collision, PR #32; fresh allocation verified against the full main tree 4ba0248)
 - 95740 `Sub PU Test Lib ori`, 95741 `Sub PU Oracle Tst ori`, 95742 `Sub PU Proposal Tst ori`,
   95743 `Sub PU Perform Tst ori` (#45)
-- Free: 95710-95739, 95744-95799
+- 95770 `Sub Test Library ori` (shared Subscription Billing seeding for the behaviour tests, #39/#43)
+- 95771 `Sub Perm Full Tst ori` (Full-set-only permission test, #42)
+- 95772 `Sub Help Accuracy Tst ori` (help preconditions and claims, #44)
+- 95773 `Sub Line GetLines Tst ori`, 95774 `Sub Invoice Tst ori`, 95775 `Sub Billing Run Tst ori`,
+  95776 `Sub Renewal Tst ori`, 95777 `Sub Usage Tst ori`, 95778 `Sub Deferral Analysis Tst ori`
+  (behaviour tests that drive Microsoft Subscription Billing, #43)
+- Free: 95710-95739 (reserved for branch A), 95744-95769, 95779-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
@@ -117,8 +123,11 @@ Key rules always in effect:
   errors, effect, related and workflow are built per type name in `Sub Contract Parts ori`;
   overview, notes and examples live on the Impl codeunit. There is no markdown help procedure and
   no help codeunit (removed in #19, following core#198).
-- `Sub Write Process ori` runs writes in an isolated transaction so a failed write always rolls back
-  cleanly, mirroring Foundation's own write-process pattern.
+- Each Impl codeunit has `TableNo = "Message Argument ori"` and an `OnRun` that calls its own `PerformWrite`;
+  `ExecuteBifrostTask` runs `Codeunit.Run(Codeunit::"<the Impl itself>", Argument)`, so a failed write rolls back
+  on its own (Foundation's write-process pattern) and the ContractParameterKeys guard sees only that type's reads (#26).
+  Each Impl's `GetParameters` calls its own `Sub Contract Parts ori` procedure, whose `ContractMgt.Parameter('<key>', ...)`
+  calls name the keys literally; never route a type through a shared dispatcher or a case over all type names.
 - Errors must be returned as `status = Error` with a helpful message; never let an unhandled
   exception reach the API.
 

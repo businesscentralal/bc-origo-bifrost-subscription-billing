@@ -14,6 +14,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -66,7 +68,7 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.PriceUpdatePerformParameters();
         exit(true);
     end;
 
@@ -145,9 +147,12 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -157,14 +162,13 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub PU Perform Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
     /// <summary>
     /// Performs the price update lines and reports each line's outcome. Called directly under Omit Commit, where
-    /// nothing is committed, or through the isolated write process, where each line commits on its own.
+    /// nothing is committed, or in isolation through OnRun, where each line commits on its own.
     /// </summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
@@ -184,7 +188,7 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
         FailedCount: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        PriceUpdateTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'priceUpdateTemplateCode', false);
+        PriceUpdateTemplateCode := Helper.GetSubjectOr(RequestJson, 'priceUpdateTemplateCode', Argument, false);
         if PriceUpdateTemplateCode <> '' then begin
             if not PriceUpdateTemplate.Get(PriceUpdateTemplateCode) then
                 Error(TemplateNotFoundErr, PriceUpdateTemplateCode);

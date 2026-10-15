@@ -25,7 +25,7 @@ codeunit 95740 "Sub PU Test Lib ori"
         LibraryUtility: Codeunit "Library - Utility";
 
     /// <summary>
-    /// Takes every existing Subscription Line out of price updates and removes every proposal line, so a
+    /// Turns on HTTP for the Origo apps, then takes every existing Subscription Line out of price updates and removes every proposal line, so a
     /// template without filters sees only the lines a test seeds, whatever demo data the company holds.
     /// </summary>
     procedure Initialize()
