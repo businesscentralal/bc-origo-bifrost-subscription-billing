@@ -35,6 +35,17 @@
 
 ## [Unreleased]
 
+### Added (2026-10-15) - behaviour tests that drive Microsoft Subscription Billing (#43)
+
+- Six test codeunits seed their own customers, vendors, items, packages, Subscriptions, contracts and templates through `Sub Test Library ori` (95770) and run the types' writes, asserting on the records Microsoft's logic writes, not only on the response:
+  - `Sub Line GetLines Tst ori` (95773): Line.Create applies a package with the requested start, end and next billing dates; an unknown package is refused; usageBasedBillingPackageLinesOnly skips the other lines. Contract.GetLines and VendorContract.GetLines attach all candidate lines or only the selected entry numbers, and a line of another customer is skipped.
+  - `Sub Invoice Tst ori` (95774): Contract.CreateInvoice and VendorContract.CreateInvoice create an unposted sales and purchase invoice with the billed amount, linked from the billing lines (vendorInvoiceNo lands on the purchase invoice); nothing due bills nothing; an unknown contract is refused. Both PreviewInvoice types leave the counts of billing lines and sales or purchase headers unchanged.
+  - `Sub Billing Run Tst ori` (95775): Billing.CreateProposal adds a proposal line for the template's contract; Billing.CreateDocuments with postDocuments = true posts the sales invoice and leaves the purchase invoice unposted; a template without proposal lines answers nothing pending; an unknown template is refused.
+  - `Sub Renewal Tst ori` (95776): Renewal.Extend adds the standard and the extra package's lines, starting on the Provision Start Date, onto the contract; without a contract it is refused. Renewal.CreateQuote builds a renewal sales quote with lines for a contract whose line has an end date, and refuses open-ended lines.
+  - `Sub Usage Tst ori` (95777): a one-row generic CSV runs through Usage.ImportData (runProcessing) and Usage.Process to Usage Data Billing rows for the usage-based contract line, with the imported quantity; missing content and an unknown step are refused.
+  - `Sub Deferral Analysis Tst ori` (95778): Deferral.Release releases the deferral of a posted contract invoice on the work date and posts a G/L entry with the release source code; another posting date or a postUntilDate after it is refused. Analysis.Recalculate adds one entry for the contract and nothing the second time in the same month.
+- `Renewal.Extend` does not move contract terms or Subscription Line end dates: Microsoft's Extend Sub. Contract Mgt. adds new Subscription Lines from the item's packages and attaches them to the contracts. The test asserts that behaviour, which is what the type's help already says.
+
 ### Fixed (2026-10-15) - help links follow the documentation rules (#27)
 
 - `app/app.json` links move to the public site, as DOCUMENTATION-RULES (bifrost-support, Addresses) requires: `help` is `https://docs.bifrost.origo.is/en-us/subscription-billing/` (the app page that bifrost#104 publishes), and `privacyStatement` and `EULA` are `https://docs.bifrost.origo.is/en-us/licensing/privacy/` and `.../licensing/eula/`, as for Foundation and Attachments. The version is unchanged.

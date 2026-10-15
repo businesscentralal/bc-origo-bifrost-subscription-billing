@@ -35,7 +35,10 @@ Tests:
 - 95770 `Sub Test Library ori` (shared Subscription Billing seeding for the behaviour tests, #39/#43)
 - 95771 `Sub Perm Full Tst ori` (Full-set-only permission test, #42)
 - 95772 `Sub Help Accuracy Tst ori` (help preconditions and claims, #44)
-- Free: 95710-95769 (reserved for parallel branches A and B), 95773-95799
+- 95773 `Sub Line GetLines Tst ori`, 95774 `Sub Invoice Tst ori`, 95775 `Sub Billing Run Tst ori`,
+  95776 `Sub Renewal Tst ori`, 95777 `Sub Usage Tst ori`, 95778 `Sub Deferral Analysis Tst ori`
+  (behaviour tests that drive Microsoft Subscription Billing, #43)
+- Free: 95710-95769 (reserved for parallel branches A and B), 95779-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
