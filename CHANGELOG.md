@@ -35,6 +35,12 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-15) - BIFROST SubBFull ori grants what the message types call (#42)
+
+- `BIFROST SubBFull ori` (permissionsetextension 10035063 on `BIFROST Full ori`) listed 23 codeunits and missed `Sub Contract Parts ori` (10035075), which `Sub Ana Recalc Impl ori`, `Sub Bil CrDocs Impl ori`, `Sub Bil CrProposal Impl ori` and `Sub Bil PrvDocs Impl ori` call. It now has `IncludedPermissionSets = "BIFROST SubBil ori"` instead of its own list, so the full set grants exactly what `BIFROST SubBil ori` grants and the two cannot drift again. New objects go into `BIFROST SubBil ori` only.
+- `BIFROST SubBil ori` (10035062) also grants `Sub Registration ori` (10035060), the subscriber that registers the app with Foundation's App Registry.
+- Tests: `Sub Perm Full Tst ori` (95771, TestPermissions Restrictive) builds the contracts of the four types and the chapters of `Sub Bil CrProposal Impl ori` with only `BIFROST Full ori` in the session. The test app depends on Microsoft's Permissions Mock for `Library - Lower Permissions`.
+
 ### Fixed (2026-10-15) - Import.CreateContracts imports explicit comment lines again (#39, closes #6)
 
 - `Subscription.Import.CreateContracts` (`Sub Imp CrContr Impl ori`, 10035057) reads a new optional request flag `allowCommentLines` (boolean, default false). With it, staged `Imported Subscription Line` rows whose `Sub_ContractLineType` is Comment are skipped by the SubscriptionLines stage and turned into contract comment lines by the ContractLines stage, through Microsoft's `Create Sub. Contract Line`. Comment is also the value of a row whose line type was never set, so the opt-in is how the caller says the Comment rows are meant.
