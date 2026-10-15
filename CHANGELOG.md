@@ -35,6 +35,13 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-15) - help states the setup preconditions per type (#44, part)
+
+- `Sub Contract Parts ori` (10035075) adds a precondition to the effect chapter of the 14 types that read Subscription Billing records they do not create (Line.Create, the six customer and vendor contract types, the three Billing types, Renewal.Extend and Renewal.CreateQuote, Usage.ImportData and Import.CreateContracts): the record must exist, and writing it with `Data.Records.Set` needs the Bifrost Setup write guard Open or Change Log coverage, because the guard is Blocked by default. Usage.Process, Deferral.Release and Analysis.Recalculate need no prepared record and say nothing more.
+- Checked: no running type's contract claims end-to-end operation, indexation or a Business Central version. None of these types suggests the job queue route, so none needs BIFROST Force ori.
+- Left to the branches that rewrite them: the help, errors and effect of `Contract.UpdateLineDates`, `Contract.UpdateExchangeRates` and the three PriceUpdate types (the "Business Central 28.4" wording and the irreversible effect of the blocked types), and the README's Known issues section. The `app.json` description is release-manager territory.
+- Tests: `Sub Help Accuracy Tst ori` (95772) asserts the precondition on the 14 types, its absence on the three others, and the absence of end-to-end, indexation and version claims.
+
 ### Changed (2026-10-15) - Icelandic glossary for customers, vendors, contracts and posting (Gunnar 14.10, core#702)
 
 - 37 `is-IS=` comments in 12 implementation codeunits follow the Bifröst glossary: the BC Customer is `viðskiptamaður` (was `viðskiptavinur`), the BC Vendor is `lánardrottinn` (was `birgir`), and posting is `bóka` throughout (`bókar`, `óbókaður`, `bókað`; was `bókfæra`).

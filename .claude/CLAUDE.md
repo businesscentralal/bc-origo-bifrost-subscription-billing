@@ -34,7 +34,8 @@ Tests:
   ID collision, PR #32; fresh allocation verified against the full main tree 4ba0248)
 - 95770 `Sub Test Library ori` (shared Subscription Billing seeding for the behaviour tests, #39/#43)
 - 95771 `Sub Perm Full Tst ori` (Full-set-only permission test, #42)
-- Free: 95710-95769 (reserved for parallel branches A and B), 95772-95799
+- 95772 `Sub Help Accuracy Tst ori` (help preconditions and claims, #44)
+- Free: 95710-95769 (reserved for parallel branches A and B), 95773-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**

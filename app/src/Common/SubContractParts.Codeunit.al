@@ -387,6 +387,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Deferral.Release':
                 Preconditions.Add('postingDate is the session work date, and no unreleased deferral posts after postUntilDate up to the work date.');
         end;
+        AddSetupPreconditions(MessageType, Preconditions);
         Effect.Add('preconditions', Preconditions);
     end;
 
@@ -545,6 +546,36 @@ codeunit 10035075 "Sub Contract Parts ori"
     procedure BlockedNote(): Text
     begin
         exit('This message type is blocked. It is registered so that it can be discovered, but every call answers with an error and writes nothing; the request is not read. ');
+    end;
+
+    /// <summary>
+    /// Adds the precondition on the Subscription Billing records a type reads but does not create.
+    /// A caller prepares them with Foundation's generic writes, which the Bifrost Setup write guard
+    /// blocks by default.
+    /// </summary>
+    local procedure AddSetupPreconditions(MessageType: Text; var Preconditions: JsonArray)
+    var
+        Records: Text;
+    begin
+        case MessageType of
+            'Subscription.Line.Create':
+                Records := 'The Subscription Header and the Subscription Package exist';
+            'Subscription.Contract.GetLines', 'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.Renewal.CreateQuote':
+                Records := 'The Customer Subscription Contract exists';
+            'Subscription.VendorContract.GetLines', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
+                Records := 'The Vendor Subscription Contract exists';
+            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments':
+                Records := 'The Billing Template exists';
+            'Subscription.Renewal.Extend':
+                Records := 'The Subscription and the customer or vendor contract exist';
+            'Subscription.Usage.ImportData':
+                Records := 'The Usage Data Supplier and its Generic Import Settings exist';
+            'Subscription.Import.CreateContracts':
+                Records := 'The staging rows exist in Imported Subscription Header, Imported Cust. Sub. Contract and Imported Subscription Line';
+            else
+                exit;
+        end;
+        Preconditions.Add(Records + '. This call does not create them. Writing them with Data.Records.Set needs the Bifrost Setup write guard set to Open, or Change Log coverage on those Subscription Billing tables, because the guard is Blocked by default.');
     end;
 
     local procedure IsBlocked(MessageType: Text): Boolean
