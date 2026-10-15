@@ -2,6 +2,7 @@ namespace Origo.Bifrost.SubscriptionBilling.Test;
 
 using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
+using System.Environment.Configuration;
 using System.TestLibraries.Utilities;
 
 /// <summary>PR #25 B2: exercises the public dispatcher and persisted price update template filters.</summary>
@@ -174,6 +175,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         PriceUpdateTemplate: Record "Price Update Template";
         FilterStream: OutStream;
     begin
+        EnableHttpForDispatcherFixture();
         if PriceUpdateTemplate.Get(TemplateCodeTok) then
             PriceUpdateTemplate.Delete(false);
         PriceUpdateTemplate.Init();
@@ -190,6 +192,29 @@ codeunit 95708 "Sub PU Filter Tst ori"
         PriceUpdateTemplate."Subscription Line Filter".CreateOutStream(FilterStream, TextEncoding::UTF8);
         FilterStream.WriteText('X existing line filter');
         PriceUpdateTemplate.Insert(false);
+    end;
+
+    /// <summary>Arranges the administrator-owned HTTP prerequisite; dispatch must not enable it implicitly.</summary>
+    local procedure EnableHttpForDispatcherFixture()
+    var
+        TempApps: Record "Registered App ori" temporary;
+        NavAppSetting: Record "NAV App Setting";
+        AppRegistry: Codeunit "App Registry ori";
+    begin
+        AppRegistry.GetApps(TempApps);
+        if TempApps.FindSet() then
+            repeat
+                if not NavAppSetting.Get(TempApps."App Id") then begin
+                    NavAppSetting.Init();
+                    NavAppSetting."App ID" := TempApps."App Id";
+                    NavAppSetting."Allow HttpClient Requests" := true;
+                    NavAppSetting.Insert();
+                end else
+                    if not NavAppSetting."Allow HttpClient Requests" then begin
+                        NavAppSetting."Allow HttpClient Requests" := true;
+                        NavAppSetting.Modify();
+                    end;
+            until TempApps.Next() = 0;
     end;
 
     local procedure CreateCustomerContract(ContractNo: Code[20])

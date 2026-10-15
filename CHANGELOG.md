@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-15) - explicit dispatcher test prerequisites
+
+- `Sub PU Filter Tst ori` (95708) explicitly enables HTTP for the registered
+  Bifrost apps in its test fixture. Foundation 28.0.4.557 no longer changes these
+  administrator settings during dispatch. The nine filter tests retain their
+  public dispatcher calls and their success, structured-error and persisted-state
+  assertions; no production HTTP or licensing policy changes.
+- `Sub Imp CrContr Tst ori` (95705) names its temporary message argument
+  `TempArgument`, clearing CodeCop AA0073 without changing the fixture or assertions.
+
 ### Changed (2026-10-14) - Version reset to 28.0.0.0
 
 - Owner decision (Gunnar, 2026-10-14): `app/app.json` and `test/app.json` go from 29.0.0.0 to 28.0.0.0, so the first AppSource version aligns with the other Bifröst apps on Business Central 28. The test app's dependency on Bifrost Subscription Billing moves to 28.0.0.0 as well.
