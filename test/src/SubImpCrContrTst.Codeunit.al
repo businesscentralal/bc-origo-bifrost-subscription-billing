@@ -246,6 +246,8 @@ codeunit 95705 "Sub Imp CrContr Tst ori"
         TempArgument."Type" := Enum::"Message Type ori"::"Subscription.Import.CreateContracts";
         TempArgument.Insert(true);
         TempArgument.SetRequestJson(RequestJson);
+        // The stages run Microsoft's codeunits with Codeunit.Run and use its result, which needs a committed transaction.
+        Commit();
         Impl.PerformWrite(TempArgument);
         exit(TempArgument.GetResponseJson());
     end;
