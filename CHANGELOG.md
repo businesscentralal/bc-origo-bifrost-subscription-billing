@@ -1,12 +1,19 @@
 # Changelog
 
-## Unreleased
+## [Unreleased]
+
+### Changed (2026-10-14) - Version reset to 28.0.0.0
+
+- Owner decision (Gunnar, 2026-10-14): `app/app.json` and `test/app.json` go from 29.0.0.0 to 28.0.0.0, so the first AppSource version aligns with the other Bifröst apps on Business Central 28. The test app's dependency on Bifrost Subscription Billing moves to 28.0.0.0 as well.
+- The v29 builds were never published outside test environments. Gunnar removed both v29 apps from the UAT environment and cleaned their data.
+- Upgrade caveat: a tenant that still has the legacy *Origo Cloud Events Subscription Billing* 28.x (same app id) installed must uninstall it before installing this version, because Business Central cannot downgrade an installed app.
+- The earlier "version 29" rationale further down this file (the first-release section, formerly headed 29.0.0.0) is kept as history and is superseded by this entry.
 
 ### Changed (2026-10-11) - CI compiles on Business Central 28.5
 
 - `.AL-Go/settings.json` sets `artifact` to `/sandbox/28.5.54151.55751/w1/latest`. AL-Go reads that as the default storage account, type sandbox, version 28.5.54151.55751, country w1, and select latest, so pull request builds and CI/CD compile on that Business Central 28.5 sandbox artifact.
 - The same file is listed in `fullBuildPatterns`. An incremental pull request build otherwise leaves `.AL-Go/settings.json` out of the project folders it compares, skips compilation, and reports success against the previous BC 29 artifacts.
-- `app/app.json` and `test/app.json` already set `runtime` to `17.0` and `application` and `platform` to `28.0.0.0`. The app version stays 29.0.0.0.
+- `app/app.json` and `test/app.json` already set `runtime` to `17.0` and `application` and `platform` to `28.0.0.0`. The app version stayed 29.0.0.0 at the time (reset to 28.0.0.0 on 2026-10-14).
 - `.github/Test Current.settings.json` sets the same artifact, `/sandbox/28.5.54151.55751/w1/latest`. That workflow file overrides the project setting, and it previously selected `////latest`.
 - Test Next Minor and Test Next Major keep `////nextminor` and `////nextmajor`. `.github/AL-Go-Settings.json` does not set `artifact`.
 
@@ -33,8 +40,6 @@
 
 - Build policy only, no app change. `CI/CD` runs on pushes to `main` only, and `Pull Request Build` runs for pull requests into any branch. `.github/AL-Go-Settings.json` sets `CICDPushBranches` to `main` and `CICDPullRequestBranches` to `**`, so Update AL-Go System Files keeps the triggers.
 
-## [Unreleased]
-
 ### Added (2026-10-15) - behaviour tests that drive Microsoft Subscription Billing (#43)
 
 - Six test codeunits seed their own customers, vendors, items, packages, Subscriptions, contracts and templates through `Sub Test Library ori` (95770) and run the types' writes, asserting on the records Microsoft's logic writes, not only on the response:
@@ -46,7 +51,7 @@
   - `Sub Deferral Analysis Tst ori` (95778): Deferral.Release releases the deferral of a posted contract invoice on the work date and posts a G/L entry with the release source code; another posting date or a postUntilDate after it is refused. Analysis.Recalculate adds one entry for the contract and nothing the second time in the same month.
 - Fixed, found by the usage test: `Subscription.Usage.ImportData` (`Sub Usg Import Impl ori`, 10035053) left the Usage Data Blob's Import Status at None, but Microsoft's generic connector parses only blobs whose Import Status is Ok. So no file was ever turned into imported lines, and the import ended with "No data found for processing step". The blob is now stamped Ok with the MD5 hash of its data, as Microsoft's own (internal) `ImportFromFile` does, and the type's notes say so.
 - Microsoft's Create Billing Documents shows a "Creation of documents completed" message when the session allows UI (`GuiAllowed`). An API call never shows it, and the setter that hides it is internal. The tests handle it with a message handler.
-- `Sub PU Filter Tst ori` (95708) turns on Allow HttpClient Requests for the installed Origo apps first (`Sub Test Library ori.EnableHttpForBifrostApps`). Foundation 28.0.4's dispatcher refuses every call while a registered Bifröst app has HTTP disabled, which failed all nine of its tests on the CI container.
+- `Sub PU Filter Tst ori` (95708) keeps its normal dispatcher assertions without enabling HTTP for installed apps. The temporary `Sub Test Library ori.EnableHttpForBifrostApps` workaround was removed per Architect 1792069256.899869; Foundation core#1008 provides the shared dispatcher fix. Green runtime verification depends on that corrected Foundation build.
 - `Renewal.Extend` does not move contract terms or Subscription Line end dates: Microsoft's Extend Sub. Contract Mgt. adds new Subscription Lines from the item's packages and attaches them to the contracts. The test asserts that behaviour, which is what the type's help already says.
 
 ### Fixed (2026-10-15) - help links follow the documentation rules (#27)
@@ -190,7 +195,7 @@
 - `privacyStatement` and `EULA` in `app.json` now point at the Bifrost Foundation privacy and EULA pages (<https://businesscentralal.github.io/bifrost/en-us/foundation/privacy/> and <https://businesscentralal.github.io/bifrost/en-us/foundation/eula/>), and the Application Insights connection string now uses the shared Bifrost telemetry resource.
 
 
-## [29.0.0.0] - 2026-09-06
+## [28.0.0.0] - unreleased (first AppSource version; developed as 29.0.0.0 until 2026-10-14)
 
 ### Fixed (2026-09-17) - Icelandic translations and AL Comment authority (PR #7)
 
@@ -230,7 +235,7 @@
 
 ### Release notes
 
-- **Version 29.0.0.0, not 28.x.** The predecessor *Origo Cloud Events Subscription Billing* had
+- **Version 29.0.0.0, not 28.x.** (Superseded 2026-10-14: Gunnar reset the version to 28.0.0.0 before the first AppSource publish; see the Unreleased entry. Original rationale kept below.) The predecessor *Origo Cloud Events Subscription Billing* had
   already reached 28.x, and this is an in-place successor with the same app id, so the version had
   to move forward. The sibling Bifröst apps sit at 28.x because they are new app identities. The
   app still targets `application`/`platform` 28.0.0.0 and runtime 17.0 - the major number is a
@@ -412,7 +417,7 @@ a side-by-side install.
   and a Foundation-wide secret store are both being built in parallel; this app has no setup page
   today, so neither applies yet.
 
-## [28.0.0.0] - 2026-09-01
+## [Legacy 28.0.0.0] - 2026-09-01 (predecessor *Origo Cloud Events Subscription Billing*, pre-rename)
 
 ### Added
 

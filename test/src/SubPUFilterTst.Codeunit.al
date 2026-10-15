@@ -172,11 +172,8 @@ codeunit 95708 "Sub PU Filter Tst ori"
     local procedure Initialize(VendorPartner: Boolean)
     var
         PriceUpdateTemplate: Record "Price Update Template";
-        TestLibrary: Codeunit "Sub Test Library ori";
         FilterStream: OutStream;
     begin
-        // The public dispatcher refuses every call while a registered Bifrost app has HTTP disabled.
-        TestLibrary.EnableHttpForBifrostApps();
         if PriceUpdateTemplate.Get(TemplateCodeTok) then
             PriceUpdateTemplate.Delete(false);
         PriceUpdateTemplate.Init();
