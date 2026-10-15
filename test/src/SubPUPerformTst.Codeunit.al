@@ -35,7 +35,7 @@ codeunit 95743 "Sub PU Perform Tst ori"
         // [WHEN] It is performed.
         ResponseJson := TestLib.InvokePerform('', true);
         // [THEN] No proposal line is left.
-        Assert.AreEqual('Success', TestLib.ReadText(ResponseJson, 'status'), 'Perform must succeed.');
+        TestLib.AssertSuccess(ResponseJson, 'Perform must succeed.');
         Assert.RecordIsEmpty(ContractPriceUpdateLine);
     end;
 

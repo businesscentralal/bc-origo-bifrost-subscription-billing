@@ -256,6 +256,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
     end;
 
     [Test]
+    [HandlerFunctions('ConfirmHandlerYes')]
     procedure CreateProposal_RecentItemPrices_UsesPriceOfSubscriptionUnitOfMeasure()
     var
         CustomerContract: Record "Customer Subscription Contract";
@@ -321,7 +322,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         // [WHEN] The proposal is created with the template's own dates.
         ResponseJson := TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, 0D, 0D);
         // [THEN] The answer names the template, the dates the page would use, and both lines.
-        Assert.AreEqual('Success', TestLib.ReadText(ResponseJson, 'status'), 'The proposal must succeed.');
+        TestLib.AssertSuccess(ResponseJson, 'The proposal must succeed.');
         Assert.AreEqual(PriceUpdateTemplate.Code, TestLib.ReadText(ResponseJson, 'priceUpdateTemplateCode'), 'Wrong template.');
         Assert.AreEqual('Price by %', TestLib.ReadText(ResponseJson, 'priceUpdateMethod'), 'The method must be the enum value name.');
         Assert.AreEqual(Format(CalcDate('<1Y>', WorkDate()), 0, 9), TestLib.ReadText(ResponseJson, 'includeLinesUpToDate'), 'The include date must default to the template formula.');
@@ -348,7 +349,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         // [WHEN] It is created again.
         ResponseJson := TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, 0D, 0D);
         // [THEN] Nothing new is created, as Microsoft skips lines that already have a price update line; the answer says why.
-        Assert.AreEqual('Success', TestLib.ReadText(ResponseJson, 'status'), 'An empty run is still a success.');
+        TestLib.AssertSuccess(ResponseJson, 'An empty run is still a success.');
         Assert.AreEqual(0, TestLib.ReadInteger(ResponseJson, 'linesCreated'), 'No line may be proposed twice.');
         Assert.AreEqual(2, TestLib.ReadInteger(ResponseJson, 'proposalLineCount'), 'The earlier lines must stand.');
         Assert.AreNotEqual('', TestLib.ReadText(ResponseJson, 'message'), 'An empty run must explain itself.');
@@ -442,7 +443,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         SeedContractWithLines(CustomerContract, 0D);
         TestLib.CreatePriceUpdateTemplate(PriceUpdateTemplate, Enum::"Service Partner"::Customer, PriceUpdateMethod, UpdateValuePct, '<12M>', '<12M>', '<12M>');
         ResponseJson := TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, CalcDate(PriceUpdateTemplate.InclContrLinesUpToDateFormula, WorkDate()), WorkDate());
-        Assert.AreEqual('Success', TestLib.ReadText(ResponseJson, 'status'), 'The proposal must succeed.');
+        TestLib.AssertSuccess(ResponseJson, 'The proposal must succeed.');
         Assert.AreEqual(2, TestLib.ReadInteger(ResponseJson, 'linesCreated'), 'Both lines must be proposed.');
     end;
 
@@ -483,5 +484,11 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         TestLib.InvokeCreateProposal(PriceUpdateTemplate.Code, CalcDate(PriceUpdateTemplate.InclContrLinesUpToDateFormula, WorkDate()), WorkDate());
         ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplate.Code);
         Assert.AreEqual(ExpectedCount, ContractPriceUpdateLine.Count(), 'Filtering failed.');
+    end;
+
+    [ConfirmHandler]
+    procedure ConfirmHandlerYes(Question: Text[1024]; var Reply: Boolean)
+    begin
+        Reply := true;
     end;
 }

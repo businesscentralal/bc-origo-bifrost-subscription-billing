@@ -117,9 +117,9 @@ codeunit 95741 "Sub PU Oracle Tst ori"
         TestLib.RunMicrosoftCreateProposal(MicrosoftTemplate.Code, CalcDate('<1Y>', WorkDate()), WorkDate());
         TestLib.RunMicrosoftPerform();
         ResponseJson := TestLib.InvokeCreateProposal(CopyTemplate.Code, CalcDate('<1Y>', WorkDate()), WorkDate());
-        Assert.AreEqual('Success', TestLib.ReadText(ResponseJson, 'status'), 'The copy must create the proposal.');
+        TestLib.AssertSuccess(ResponseJson, 'The copy must create the proposal.');
         ResponseJson := TestLib.InvokePerform(CopyTemplate.Code, true);
-        Assert.AreEqual('Success', TestLib.ReadText(ResponseJson, 'status'), 'The copy must perform the proposal.');
+        TestLib.AssertSuccess(ResponseJson, 'The copy must perform the proposal.');
 
         // [THEN] Every Subscription Line, Planned Subscription Line and archive entry of the second contract equals its twin.
         ContractPriceUpdateLine.SetFilter("Price Update Template Code", '%1|%2', MicrosoftTemplate.Code, CopyTemplate.Code);

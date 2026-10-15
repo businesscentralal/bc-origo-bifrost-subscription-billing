@@ -289,6 +289,18 @@ codeunit 95740 "Sub PU Test Lib ori"
         end;
     end;
 
+    /// <summary>Fails the test, quoting the answer's error, unless the answer is a Success.</summary>
+    procedure AssertSuccess(ResponseJson: JsonObject; Context: Text)
+    var
+        ErrorToken: JsonToken;
+        ErrorText: Text;
+    begin
+        if ResponseJson.Get('error', ErrorToken) then
+            if ErrorToken.IsValue() then
+                ErrorText := ErrorToken.AsValue().AsText();
+        Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), Context + ' ' + ErrorText);
+    end;
+
     /// <summary>Reads a text property of a JSON answer, failing the test when it is missing.</summary>
     procedure ReadText(ResponseJson: JsonObject; PropertyName: Text): Text
     var
@@ -302,8 +314,12 @@ codeunit 95740 "Sub PU Test Lib ori"
     procedure ReadInteger(ResponseJson: JsonObject; PropertyName: Text): Integer
     var
         PropertyToken: JsonToken;
+        ResponseText: Text;
     begin
-        Assert.IsTrue(ResponseJson.Get(PropertyName, PropertyToken), 'Missing response property: ' + PropertyName);
+        if not ResponseJson.Get(PropertyName, PropertyToken) then begin
+            ResponseJson.WriteTo(ResponseText);
+            Assert.Fail('Missing response property: ' + PropertyName + '. Answer: ' + CopyStr(ResponseText, 1, 800));
+        end;
         exit(PropertyToken.AsValue().AsInteger());
     end;
 
