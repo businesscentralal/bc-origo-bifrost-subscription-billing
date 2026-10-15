@@ -4,6 +4,7 @@ using Microsoft.Finance.Currency;
 using Microsoft.Foundation.UOM;
 using Microsoft.Inventory.Item;
 using Microsoft.Pricing.Asset;
+using Microsoft.Pricing.Calculation;
 using Microsoft.Pricing.PriceList;
 using Microsoft.Pricing.Source;
 using Microsoft.Sales.Customer;
@@ -284,6 +285,8 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         // price for the base unit of measure and a higher one for the subscription's.
         TestLib.Initialize();
         TestLib.CreateCustomer(Customer);
+        LibraryPriceCalculation.EnableExtendedPriceCalculation();
+        LibraryPriceCalculation.SetupDefaultHandler(Enum::"Price Calculation Handler"::"Business Central (Version 16.0)");
         TestLib.CreateItem(Item, 5, 1);
         LibraryInventory.CreateUnitOfMeasureCode(UnitOfMeasure);
         LibraryInventory.CreateItemUnitOfMeasure(ItemUnitOfMeasure, Item."No.", UnitOfMeasure.Code, 1);
@@ -310,9 +313,7 @@ codeunit 95742 "Sub PU Proposal Tst ori"
         // [THEN] The new base is the price of the subscription's unit of measure.
         ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplate.Code);
         ContractPriceUpdateLine.FindFirst();
-        // Microsoft asserts the price of the subscription's unit of measure (100). The point of scenario 648553 is
-        // that the lowest price of all units of measure (the base unit's 10) is no longer taken.
-        Assert.IsTrue(ContractPriceUpdateLine."New Calculation Base" >= 100, StrSubstNo('New Calculation Base must come from the Subscription unit of measure (100), not the base unit of measure (10); it is %1.', ContractPriceUpdateLine."New Calculation Base"));
+        Assert.AreEqual(100, ContractPriceUpdateLine."New Calculation Base", 'New Calculation Base must equal the sales price of the Subscription unit of measure');
     end;
 
     [Test]
