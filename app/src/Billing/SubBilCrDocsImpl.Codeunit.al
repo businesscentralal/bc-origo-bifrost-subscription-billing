@@ -129,6 +129,8 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
             'leaves the earlier documents standing. The call then answers status Error together with the surviving documents and rolledBack false. Errors raised ' +
             'before Business Central is called (an unknown template, mixed partners, an invalid groupBy) write nothing. A posted document is read back from the ' +
             'Billing Line Archive and carries posted true. A mix of customer and vendor proposal lines is always refused. ' +
+            'Subscription.Billing.DeleteDocuments deletes the unposted documents and returns their lines to the proposal. ' +
+            'A posted document cannot be undone by these types: cancel or correct the posted invoice or credit memo instead, for example with Sales.SalesInvoice.Cancel or Sales.SalesInvoice.Correct. ' +
             ContractParts.BooleanNote()).TrimEnd();
         exit(true);
     end;

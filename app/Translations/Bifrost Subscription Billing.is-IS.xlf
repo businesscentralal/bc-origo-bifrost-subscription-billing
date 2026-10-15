@@ -21,6 +21,42 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Analysis.Recalculate: Endurreiknar greiningarfærslur samninga.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Deletes the billing proposal lines of a Billing Template, or of one contract under it, and resets the Next Billing Date of their Subscription Lines. Refuses lines already on a document.</source>
+          <target>Eyðir línum reikningstillögu í reikningssniðmáti, eða eins samnings undir því, og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Hafnar línum sem eru þegar á skjali.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Eyðir línum reikningstillögu í reikningssniðmáti, eða eins samnings undir því, og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Hafnar línum sem eru þegar á skjali.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - NamedType 1476340306" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 billing line(s) of Billing Template '%2' are already on document %3. Delete the documents first with Subscription.Billing.DeleteDocuments, then clear the proposal.</source>
+          <target>%1 reikningslína/-línur í reikningssniðmátinu '%2' eru þegar á skjali %3. Eyddu skjölunum fyrst með Subscription.Billing.DeleteDocuments og hreinsaðu síðan tillöguna.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line count, %2 = billing template code, %3 = document number||is-IS=%1 reikningslína/-línur í reikningssniðmátinu '%2' eru þegar á skjali %3. Eyddu skjölunum fyrst með Subscription.Billing.DeleteDocuments og hreinsaðu síðan tillöguna.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - NamedType LinesOnDocumentErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Billing Template '%1' does not exist.</source>
+          <target>Reikningssniðmátið '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Reikningssniðmátið '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - NamedType TemplateNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - NamedType 2475205022" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The request must name a Billing Template in 'billingTemplateCode' or the subject, or, for the billing lines without a Billing Template, a contract in 'contractNo'.</source>
+          <target>Beiðnin verður að tilgreina reikningssniðmát í 'billingTemplateCode' eða efninu, eða, fyrir reikningslínur án reikningssniðmáts, samning í 'contractNo'.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Beiðnin verður að tilgreina reikningssniðmát í 'billingTemplateCode' eða efninu, eða, fyrir reikningslínur án reikningssniðmáts, samning í 'contractNo'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - NamedType TemplateOrContractErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.ClearProposal, Subscription, Billing, ClearProposal, clear, undo, proposal</source>
+          <target>Subscription.Billing.ClearProposal, áskrift, reikningagerð, hreinsa tillögu, hreinsa, afturkalla, tillaga</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.ClearProposal, áskrift, reikningagerð, hreinsa tillögu, hreinsa, afturkalla, tillaga</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.ClearProposal: Irreversible. Deletes a billing proposal and resets the Next Billing Date of its Subscription Lines.</source>
+          <target>Subscription.Billing.ClearProposal: Óafturkræft. Eyðir reikningstillögu og færir næstu reikningsdagsetningu áskriftarlína hennar til baka.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.ClearProposal: Óafturkræft. Eyðir reikningstillögu og færir næstu reikningsdagsetningu áskriftarlína hennar til baka.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
         <trans-unit id="Codeunit 3224492679 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Turns the unbilled Billing Line rows under a Billing Template into sales or purchase documents. Reports the documents created and how many proposal lines were processed.</source>
           <target>Umbreytir óreikningsfærðum reikningslínum undir reikningssniðmáti í sölu- eða innkaupaskjöl. Skilar þeim skjölum sem urðu til og fjölda tillögulína sem unnið var úr.</target>
@@ -98,6 +134,48 @@
           <target>Subscription.Billing.CreateProposal: Óafturkræft. Býr til línur í reikningatillögu; Microsoft Subscription Billing vistar þær eftir hverja 50 samninga.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.CreateProposal: Óafturkræft. Býr til línur í reikningatillögu; Microsoft Subscription Billing vistar þær eftir hverja 50 samninga.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Deletes the unposted invoices and credit memos created from a Billing Templates billing lines and puts the lines back into the proposal. Refuses posted documents.</source>
+          <target>Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 2974946915" size-unit="char" translate="yes" xml:space="preserve">
+          <source>No billing line of Billing Template '%1' is on document %2.</source>
+          <target>Engin reikningslína í reikningssniðmátinu '%1' er á skjali %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code, %2 = document number||is-IS=Engin reikningslína í reikningssniðmátinu '%1' er á skjali %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType DocumentNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 4058942277" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document %1 is posted and cannot be deleted. Cancel or correct the posted invoice or credit memo instead, for example with Sales.SalesInvoice.Cancel or Sales.SalesInvoice.Correct.</source>
+          <target>Skjal %1 er bókað og ekki er hægt að eyða því. Hættu við eða leiðréttu bókaða reikninginn eða kreditreikninginn í staðinn, til dæmis með Sales.SalesInvoice.Cancel eða Sales.SalesInvoice.Correct.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document number||is-IS=Skjal %1 er bókað og ekki er hægt að eyða því. Hættu við eða leiðréttu bókaða reikninginn eða kreditreikninginn í staðinn, til dæmis með Sales.SalesInvoice.Cancel eða Sales.SalesInvoice.Correct.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType PostedDocumentErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Billing Template '%1' does not exist.</source>
+          <target>Reikningssniðmátið '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Reikningssniðmátið '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType TemplateNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 2475205022" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The request must name a Billing Template in 'billingTemplateCode' or the subject, or, for the billing lines without a Billing Template, a contract in 'contractNo' or a document in 'documentNo'.</source>
+          <target>Beiðnin verður að tilgreina reikningssniðmát í 'billingTemplateCode' eða efninu, eða, fyrir reikningslínur án reikningssniðmáts, samning í 'contractNo' eða skjal í 'documentNo'.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Beiðnin verður að tilgreina reikningssniðmát í 'billingTemplateCode' eða efninu, eða, fyrir reikningslínur án reikningssniðmáts, samning í 'contractNo' eða skjal í 'documentNo'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType TemplateOrContractErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.DeleteDocuments, Subscription, Billing, DeleteDocuments, delete, undo, documents</source>
+          <target>Subscription.Billing.DeleteDocuments, áskrift, reikningagerð, eyða skjölum, eyða, afturkalla, skjöl</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.DeleteDocuments, áskrift, reikningagerð, eyða skjölum, eyða, afturkalla, skjöl</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.DeleteDocuments: Irreversible. Deletes unposted billing documents and returns their lines to the billing proposal.</source>
+          <target>Subscription.Billing.DeleteDocuments: Óafturkræft. Eyðir óbókuðum reikningsskjölum og skilar línum þeirra aftur í reikningstillöguna.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.DeleteDocuments: Óafturkræft. Eyðir óbókuðum reikningsskjölum og skilar línum þeirra aftur í reikningstillöguna.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Previews the documents that Subscription.Billing.CreateDocuments would create for a Billing Template, by reading the existing proposal lines. Reads only; writes nothing.</source>
@@ -416,6 +494,12 @@
           <target>Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</target>
           <note from="Developer" annotates="general" priority="2">%1 = parameter name, %2 = maximum length||is-IS=Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType ValueTooLongErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - Method 1815913811 - NamedType 1545003169" size-unit="char" translate="yes" xml:space="preserve">
+          <source>You are not authorized to clear billing proposals or delete billing documents while a Billing Template bills automatically. Set Auto Contract Billing on your user in User Setup.</source>
+          <target>Þú hefur ekki heimild til að hreinsa reikningstillögur eða eyða reikningsskjölum á meðan reikningssniðmát gerir reikninga sjálfvirkt. Merktu við Reikningsregla samnings á notandanum þínum í Uppsetningu notanda.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Þú hefur ekki heimild til að hreinsa reikningstillögur eða eyða reikningsskjölum á meðan reikningssniðmát gerir reikninga sjálfvirkt. Merktu við Reikningsregla samnings á notandanum þínum í Uppsetningu notanda.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method AssertMayClearBillingProposal - NamedType NotAuthorizedErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.</source>

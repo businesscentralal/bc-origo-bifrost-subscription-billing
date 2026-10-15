@@ -38,5 +38,7 @@ permissionset 10035062 "BIFROST SubBil ori"
         codeunit "Sub Def Release Impl ori" = X,
         codeunit "Sub Ana Recalc Impl ori" = X,
         codeunit "Sub Imp CrContr Impl ori" = X,
-        codeunit "Sub Contract Parts ori" = X;
+        codeunit "Sub Contract Parts ori" = X,
+        codeunit "Sub Bil ClrProposal Impl ori" = X,
+        codeunit "Sub Bil DelDocs Impl ori" = X;
 }

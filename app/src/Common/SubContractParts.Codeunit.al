@@ -107,6 +107,17 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Parameters.Add(IntegerParameter('skip', 0, 'Number of document groups to skip. Must be zero or greater.'));
                     Parameters.Add(IntegerParameter('take', 100, 'Maximum number of document groups to return. Zero means the default; a value above 1000 is clamped to 1000. Must be zero or greater.'));
                 end;
+            'Subscription.Billing.ClearProposal':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', false, 'The Billing Template whose proposal is cleared. May be supplied as the subject instead. Omit it to clear the billing lines without a Billing Template, which contractNo then has to narrow.'));
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Clears only the proposal lines of this Customer or Vendor Subscription Contract. Required when billingTemplateCode is omitted.'));
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', false, 'The Billing Template whose billing documents are deleted. May be supplied as the subject instead. Omit it for the documents made from billing lines without a Billing Template, which contractNo or documentNo then has to narrow.'));
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Deletes only the documents of this Customer or Vendor Subscription Contract.'));
+                    Parameters.Add(ContractMgt.Parameter('documentNo', 'string', false, 'Deletes only this unposted invoice or credit memo. A posted document number is refused by name.'));
+                end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 begin
                     Parameters.Add(ContractMgt.Parameter('priceUpdateTemplateCode', 'string', true, 'The Price Update Template to change. May be supplied as the subject instead.'));
@@ -258,6 +269,25 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Fields.Add(ContractMgt.ResponseField('preview', 'boolean', 'Always true.'));
                     Fields.Add(ContractMgt.ResponseField('rollback', 'boolean', 'Always true; nothing was written.'));
                 end;
+            'Subscription.Billing.ClearProposal':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('billingTemplateCode', 'string', 'The cleared Billing Template; empty for the billing lines without a template.'));
+                    Fields.Add(ContractMgt.ResponseField('contractNo', 'string', 'The contract the call was narrowed to; empty when it was not.'));
+                    Fields.Add(ContractMgt.ResponseField('billingLinesDeleted', 'integer', 'Number of billing proposal lines deleted. Zero is still a success.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionLinesReset', 'integer', 'Number of distinct Subscription Lines whose Next Billing Date was reset.'));
+                    Fields.Add(ContractMgt.ResponseField('contracts', 'array', 'Contract numbers of the deleted lines.'));
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('billingTemplateCode', 'string', 'The Billing Template; empty for the billing lines without a template.'));
+                    Fields.Add(ContractMgt.ResponseField('documentsDeleted', 'integer', 'Number of unposted documents deleted. Zero is still a success.'));
+                    Children.Add(ContractMgt.ResponseField('partner', 'string', 'Customer or Vendor.'));
+                    Children.Add(ContractMgt.ResponseField('documentType', 'string', 'Invoice or Credit Memo.'));
+                    Children.Add(ContractMgt.ResponseField('documentNo', 'string', 'No. of the deleted document.'));
+                    Fields.Add(FieldWithChildren('documents', 'array', 'One entry per deleted document.', Children));
+                    Fields.Add(ContractMgt.ResponseField('billingLinesReturnedToProposal', 'integer', 'Billing lines of the deleted documents that are back in the proposal, without a document.'));
+                    Fields.Add(ContractMgt.ResponseField('billingLinesRemoved', 'integer', 'Billing lines of the deleted documents that Microsoft deleted, with their Subscription Line reset.'));
+                end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 begin
                     Fields.Add(ContractMgt.ResponseField('priceUpdateTemplateCode', 'string', 'The changed Price Update Template.'));
@@ -381,7 +411,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         if MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments'] then
             Effect.Add('effect', 'read')
         else
-            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates'] then
+            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments'] then
                 Effect.Add('effect', 'irreversible')
             else
                 Effect.Add('effect', 'write');
@@ -400,6 +430,16 @@ codeunit 10035075 "Sub Contract Parts ori"
                 Preconditions.Add('The contract has Subscription Lines with an end date.');
             'Subscription.Usage.Process':
                 Preconditions.Add('The Usage Data Import entry exists and is not Closed.');
+            'Subscription.Billing.ClearProposal':
+                begin
+                    Preconditions.Add('The selected proposal lines are not on a document yet.');
+                    Preconditions.Add('When any Billing Template bills automatically, the user has Auto Contract Billing in User Setup.');
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    Preconditions.Add('The documents are not posted.');
+                    Preconditions.Add('When any Billing Template bills automatically, the user has Auto Contract Billing in User Setup.');
+                end;
             'Subscription.Contract.UpdateLineDates':
                 begin
                     Preconditions.Add('The caller holds the BIFROST Force ori permission set, checked before anything is read: scheduling work through the job queue is reserved for it.');
@@ -427,6 +467,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Contract.CreateInvoice':
                 begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Undo: delete the unposted document (no billingTemplateCode, with contractNo or documentNo).'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.PreviewInvoice', 'See what would be billed without creating a document.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.GetLines', 'Attach eligible lines before billing.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Bill many contracts at once through a Billing Template.'));
@@ -453,6 +494,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.VendorContract.CreateInvoice':
                 begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Undo: delete the unposted document (no billingTemplateCode, with contractNo or documentNo).'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.PreviewInvoice', 'See what would be billed without creating a document.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.GetLines', 'Attach eligible lines before billing.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateDocuments', 'Bill many contracts at once from a Billing Template''s proposal.'));
@@ -464,12 +506,14 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Billing.CreateProposal':
                 begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.ClearProposal', 'Undo: delete the proposal and reset the Next Billing Dates.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateDocuments', 'Create documents from the generated proposal.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.PreviewDocuments', 'See the documents the proposal would become.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.CreateInvoice', 'Bill one customer contract without a Billing Template.'));
                 end;
             'Subscription.Billing.CreateDocuments':
                 begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Undo: delete the unposted documents and return their lines to the proposal.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.PreviewDocuments', 'Preview the bulk run before writing documents.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Create the proposal lines this call consumes.'));
                 end;
@@ -477,6 +521,16 @@ codeunit 10035075 "Sub Contract Parts ori"
                 begin
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateDocuments', 'Create documents after reviewing the preview.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Create the proposal lines this call reads.'));
+                end;
+            'Subscription.Billing.ClearProposal':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Delete the documents first when proposal lines are already on one.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Create the proposal again.'));
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.ClearProposal', 'Clear the proposal the documents were made from.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateDocuments', 'Create the documents again.'));
                 end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 Related.Add(ContractMgt.RelatedEntry('Subscription.PriceUpdate.CreateProposal', 'Create a proposal after setting filters.'));
@@ -531,7 +585,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.VendorContract.CreateInvoice', 'Create the unposted purchase document.'));
                     Workflow.Add('text', 'Bill one vendor contract. The purchase document is never posted here; post it separately after review.');
                 end;
-            'Subscription.Billing.CreateProposal', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.CreateDocuments':
+            'Subscription.Billing.CreateProposal', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments':
                 begin
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Billing.CreateProposal', 'Create the billing proposal lines for a Billing Template.'));
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Billing.PreviewDocuments', 'Review the documents the proposal would become, and any warnings.'));
@@ -593,6 +647,10 @@ codeunit 10035075 "Sub Contract Parts ori"
                 exit('Turns the template''s unbilled proposal lines into sales or purchase documents, and posts the sales documents when postDocuments is true. Microsoft commits each document as it creates it, so a failure part way leaves the earlier documents in place.');
             'Subscription.Billing.PreviewDocuments':
                 exit('Reads the template''s unbilled proposal lines. Nothing is written.');
+            'Subscription.Billing.ClearProposal':
+                exit('Deletes the selected billing proposal lines with their delete trigger, which resets the Next Billing Date of each Subscription Line, recalculates the harmonized billing fields of the customer contract and unlinks Usage Data Billing rows. No document is touched.');
+            'Subscription.Billing.DeleteDocuments':
+                exit('Deletes the selected unposted sales or purchase invoices and credit memos with their delete trigger. Microsoft then returns their billing lines to the proposal, or deletes billing lines without a Billing Template and resets their Subscription Lines. Posted documents are never touched.');
             'Subscription.PriceUpdate.SetTemplateFilter':
                 exit('Writes one of the three view filters on the Price Update Template. Contracts, Subscriptions and Subscription Lines are not touched.');
             'Subscription.Contract.UpdateExchangeRates', 'Subscription.PriceUpdate.CreateProposal', 'Subscription.PriceUpdate.Perform':
@@ -626,7 +684,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Customer Subscription Contract No.');
             'Subscription.VendorContract.GetLines', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
                 SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Vendor Subscription Contract No.');
-            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments':
+            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments':
                 SetSubjectKey(DataKey, SubjectForm, 'billingTemplateCode', 'Billing Template Code');
             'Subscription.PriceUpdate.SetTemplateFilter':
                 SetSubjectKey(DataKey, SubjectForm, 'priceUpdateTemplateCode', 'Price Update Template Code');
@@ -655,7 +713,7 @@ codeunit 10035075 "Sub Contract Parts ori"
 
     local procedure AddParameterErrors(MessageType: Text; var Errors: JsonArray)
     begin
-        if not (MessageType in ['Subscription.Deferral.Release', 'Subscription.Analysis.Recalculate', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates']) then
+        if not (MessageType in ['Subscription.Deferral.Release', 'Subscription.Analysis.Recalculate', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments']) then
             AddBusinessCentralError(Errors, 'The request is missing the required parameter ''%1''.', 'A required parameter is missing, and the subject does not carry it either.', 'Send the parameter named in the error.');
         if not (MessageType in ['Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates']) then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' is longer than the %2 characters allowed.', 'A record number or code, or the subject, is longer than 20 characters.', 'Send the number as it is stored in Business Central.');
@@ -681,7 +739,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 AddNotFoundError(Errors, 'The Customer Subscription Contract ''%1'' does not exist.', 'contractNo or the subject names no Customer Subscription Contract.');
             'Subscription.VendorContract.GetLines', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
                 AddNotFoundError(Errors, 'The Vendor Subscription Contract ''%1'' does not exist.', 'contractNo or the subject names no Vendor Subscription Contract.');
-            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments':
+            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments':
                 AddNotFoundError(Errors, 'The Billing Template ''%1'' does not exist.', 'billingTemplateCode or the subject names no Billing Template.');
             'Subscription.PriceUpdate.SetTemplateFilter':
                 AddNotFoundError(Errors, 'The Price Update Template ''%1'' does not exist.', 'priceUpdateTemplateCode or the subject names no Price Update Template.');
@@ -719,6 +777,20 @@ codeunit 10035075 "Sub Contract Parts ori"
                     AddGroupByErrors(Errors);
                     Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::InvalidParameter, 'skip or take is negative or not a whole number.', 'Send zero or a positive whole number.'));
                 end;
+            'Subscription.Billing.ClearProposal':
+                begin
+                    AddBusinessCentralError(Errors, 'The request must name a Billing Template in ''billingTemplateCode'' or the subject, or, for the billing lines without a Billing Template, a contract in ''contractNo''.', 'Neither a Billing Template nor a contract was given.', 'Send billingTemplateCode, or contractNo for the lines without a template.');
+                    AddBusinessCentralError(Errors, '%1 billing line(s) of Billing Template ''%2'' are already on document %3. ...', 'A selected proposal line is already on an unposted document. Nothing is deleted.', 'Delete the documents first with Subscription.Billing.DeleteDocuments.');
+                    AddAutomationError(Errors);
+                    AddBusinessCentralError(Errors, 'Only last Billing Line for Subscription Line can be deleted or all Billing Lines. ...', 'A later billing line of the same Subscription Line sits under another Billing Template or contract. Nothing is deleted.', 'Clear that proposal first, or clear without contractNo.');
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    AddBusinessCentralError(Errors, 'The request must name a Billing Template in ''billingTemplateCode'' or the subject, or, for the billing lines without a Billing Template, a contract in ''contractNo'' or a document in ''documentNo''.', 'No Billing Template, contract or document was given.', 'Send billingTemplateCode, or contractNo or documentNo for the documents without a template.');
+                    AddBusinessCentralError(Errors, 'Document %1 is posted and cannot be deleted. ...', 'documentNo names a posted invoice or credit memo.', 'Cancel or correct the posted document, for example with Sales.SalesInvoice.Cancel or Sales.SalesInvoice.Correct.');
+                    AddBusinessCentralError(Errors, 'No billing line of Billing Template ''%1'' is on document %2.', 'documentNo names no unposted document of the selected billing lines.', 'Use a document number the template''s billing lines carry.');
+                    AddAutomationError(Errors);
+                end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 begin
                     AddBusinessCentralError(Errors, 'The parameter ''target'' must be one of ''contract'', ''subscription'' or ''line'', not ''%1''.', 'target is none of the three names.', 'Send contract, subscription or line.');
@@ -750,6 +822,11 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Import.CreateContracts':
                 AddBusinessCentralError(Errors, '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', 'An entry of stages is not a stage name. Nothing has run yet.', 'Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.');
         end;
+    end;
+
+    local procedure AddAutomationError(var Errors: JsonArray)
+    begin
+        AddBusinessCentralError(Errors, 'You are not authorized to clear billing proposals or delete billing documents while a Billing Template bills automatically. ...', 'A Billing Template has Automation set and the user lacks Auto Contract Billing in User Setup.', 'Set Auto Contract Billing on the user in User Setup, as the client requires.');
     end;
 
     local procedure AddGroupByErrors(var Errors: JsonArray)

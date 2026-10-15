@@ -164,4 +164,18 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
         Caption = 'Subscription.Import.CreateContracts', Locked = true;
         Implementation = "Msg Interface ori" = "Sub Imp CrContr Impl ori", "Msg Discovery ori" = "Sub Imp CrContr Impl ori", "Msg Contract ori" = "Sub Imp CrContr Impl ori";
     }
+
+    /// <summary>Deletes a Billing Template's billing proposal lines and resets the Next Billing Date of their Subscription Lines.</summary>
+    value(10035061; "Subscription.Billing.ClearProposal")
+    {
+        Caption = 'Subscription.Billing.ClearProposal', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Bil ClrProposal Impl ori", "Msg Discovery ori" = "Sub Bil ClrProposal Impl ori", "Msg Contract ori" = "Sub Bil ClrProposal Impl ori";
+    }
+
+    /// <summary>Deletes the unposted documents created from billing lines and returns the lines to the billing proposal.</summary>
+    value(10035065; "Subscription.Billing.DeleteDocuments")
+    {
+        Caption = 'Subscription.Billing.DeleteDocuments', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Bil DelDocs Impl ori", "Msg Discovery ori" = "Sub Bil DelDocs Impl ori", "Msg Contract ori" = "Sub Bil DelDocs Impl ori";
+    }
 }

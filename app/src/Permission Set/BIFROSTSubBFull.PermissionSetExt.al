@@ -36,5 +36,7 @@ permissionsetextension 10035063 "BIFROST SubBFull ori" extends "BIFROST Full ori
         codeunit "Sub Usg Process Impl ori" = X,
         codeunit "Sub Def Release Impl ori" = X,
         codeunit "Sub Ana Recalc Impl ori" = X,
-        codeunit "Sub Imp CrContr Impl ori" = X;
+        codeunit "Sub Imp CrContr Impl ori" = X,
+        codeunit "Sub Bil ClrProposal Impl ori" = X,
+        codeunit "Sub Bil DelDocs Impl ori" = X;
 }

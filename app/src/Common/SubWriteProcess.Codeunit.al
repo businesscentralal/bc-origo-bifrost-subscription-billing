@@ -42,6 +42,8 @@ codeunit 10035059 "Sub Write Process ori"
         AnaRecalcImpl: Codeunit "Sub Ana Recalc Impl ori";
         ImpCrContrImpl: Codeunit "Sub Imp CrContr Impl ori";
         ConUpdDatesImpl: Codeunit "Sub Con UpdDates Impl ori";
+        BilClrProposalImpl: Codeunit "Sub Bil ClrProposal Impl ori";
+        BilDelDocsImpl: Codeunit "Sub Bil DelDocs Impl ori";
     begin
         case Argument."Type" of
             Argument."Type"::"Subscription.Line.Create":
@@ -82,6 +84,10 @@ codeunit 10035059 "Sub Write Process ori"
                 ImpCrContrImpl.PerformWrite(Argument);
             Argument."Type"::"Subscription.Contract.UpdateLineDates":
                 ConUpdDatesImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Billing.ClearProposal":
+                BilClrProposalImpl.PerformWrite(Argument);
+            Argument."Type"::"Subscription.Billing.DeleteDocuments":
+                BilDelDocsImpl.PerformWrite(Argument);
         end;
     end;
 }

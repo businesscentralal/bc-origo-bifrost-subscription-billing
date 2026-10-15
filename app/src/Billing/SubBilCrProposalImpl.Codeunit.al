@@ -121,7 +121,7 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
     begin
         Notes := ('proposalLinesCreated counts what this call added; proposalLineCount and contracts cover every proposal line now standing for the template, including ' +
             'earlier runs. The run is not one transaction: Microsoft commits the proposal lines every CommitBatchSize (50) contracts, also under Omit Commit, ' +
-            'so an error after such a commit leaves those lines in place. ' +
+            'so an error after such a commit leaves those lines in place. Subscription.Billing.ClearProposal undoes a proposal, also a partial one. ' +
             ContractParts.BooleanNote()).TrimEnd();
         exit(true);
     end;

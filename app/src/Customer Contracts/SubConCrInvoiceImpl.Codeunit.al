@@ -126,7 +126,9 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
         Notes := 'The proposal lines carry a blank Billing Template Code. Microsoft''s document creation converts every blank-template proposal line in the company, so ' +
             'the call refuses to run while another contract has such lines pending, and names that contract. Nothing is posted and the document is never opened. ' +
             'When nothing is due, or the due lines already sit on a proposal or an unposted document, the call succeeds with an empty documents list and a ' +
-            'message. Microsoft commits each document it creates, so a failure after that point does not roll the document back.';
+            'message. Microsoft commits each document it creates, so a failure after that point does not roll the document back. ' +
+            'Subscription.Billing.DeleteDocuments without billingTemplateCode, with this contractNo, deletes the unposted document again. ' +
+            'A posted document cannot be undone by these types: cancel or correct the posted invoice or credit memo instead, for example with Sales.SalesInvoice.Cancel or Sales.SalesInvoice.Correct.';
         exit(true);
     end;
 
