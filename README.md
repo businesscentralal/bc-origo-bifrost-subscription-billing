@@ -1,7 +1,7 @@
 # Bifröst Subscription Billing
 
 **App name:** Bifrost Subscription Billing  
-**Publisher:** Origo — **Version:** 29.0.0.0 — **Target:** Cloud (BC 28, runtime 17.0)  
+**Publisher:** Origo — **Version:** 28.0.0.0 — **Target:** Cloud (BC 28, runtime 17.0)  
 **App ID:** `dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d` — **Test app ID:** `a621027d-6e47-4932-bc65-319b8b798bff`  
 **Object ID range:** 10035035–10035084 (tests 95700–95799) — **Namespace:** `Origo.Bifrost.SubscriptionBilling`
 
