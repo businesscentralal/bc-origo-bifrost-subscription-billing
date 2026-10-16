@@ -272,15 +272,12 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         UsageDataGenericImport: Record "Usage Data Generic Import";
         UsageDataBilling: Record "Usage Data Billing";
         GenericImportSettings: Record "Generic Import Settings";
-        UsageDataBillingMetadata: Record "Usage Data Billing Metadata";
     begin
-        UsageDataBillingMetadata.SetRange("Subscription No.", HeaderNoTok);
-        UsageDataBillingMetadata.DeleteAll(false);
         UsageDataImport.SetRange("Supplier No.", SupplierNoTok);
         if UsageDataImport.FindSet() then
             repeat
                 UsageDataBilling.SetRange("Usage Data Import Entry No.", UsageDataImport."Entry No.");
-                UsageDataBilling.DeleteAll(false);
+                UsageDataBilling.DeleteAll(true);
                 UsageDataGenericImport.SetRange("Usage Data Import Entry No.", UsageDataImport."Entry No.");
                 UsageDataGenericImport.DeleteAll(false);
             until UsageDataImport.Next() = 0;
