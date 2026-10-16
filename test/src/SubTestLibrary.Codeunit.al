@@ -9,8 +9,6 @@ using Microsoft.Sales.Customer;
 using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
 using Origo.Bifrost.SubscriptionBilling;
-using System.Apps;
-using System.Environment.Configuration;
 
 /// <summary>
 /// Seeds the Microsoft Subscription Billing data the behaviour tests of this app need: setup with
@@ -60,33 +58,6 @@ codeunit 95770 "Sub Test Library ori"
         end;
         SubscriptionContractSetup.Modify(false);
         EnsureDeferralSourceCode();
-    end;
-
-    /// <summary>
-    /// Turns on Allow HttpClient Requests for every installed Origo app, as the setup wizard asks an
-    /// administrator to do. Foundation's dispatcher refuses every call while a registered Bifrost app
-    /// has HTTP disabled.
-    /// </summary>
-    procedure EnableHttpForBifrostApps()
-    var
-        NavAppInstalledApp: Record "NAV App Installed App";
-        NavAppSetting: Record "NAV App Setting";
-    begin
-        NavAppInstalledApp.SetRange(Publisher, 'Origo');
-        if NavAppInstalledApp.FindSet() then
-            repeat
-                if NavAppSetting.Get(NavAppInstalledApp."App ID") then begin
-                    if not NavAppSetting."Allow HttpClient Requests" then begin
-                        NavAppSetting."Allow HttpClient Requests" := true;
-                        NavAppSetting.Modify(false);
-                    end;
-                end else begin
-                    NavAppSetting.Init();
-                    NavAppSetting."App ID" := NavAppInstalledApp."App ID";
-                    NavAppSetting."Allow HttpClient Requests" := true;
-                    NavAppSetting.Insert(false);
-                end;
-            until NavAppInstalledApp.Next() = 0;
     end;
 
     /// <summary>Creates a customer in local currency.</summary>

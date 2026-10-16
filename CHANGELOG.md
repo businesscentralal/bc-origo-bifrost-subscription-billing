@@ -58,7 +58,7 @@
   - `Sub Deferral Analysis Tst ori` (95778): Deferral.Release releases the deferral of a posted contract invoice on the work date and posts a G/L entry with the release source code; another posting date or a postUntilDate after it is refused. Analysis.Recalculate adds one entry for the contract and nothing the second time in the same month.
 - Fixed, found by the usage test: `Subscription.Usage.ImportData` (`Sub Usg Import Impl ori`, 10035053) left the Usage Data Blob's Import Status at None, but Microsoft's generic connector parses only blobs whose Import Status is Ok. So no file was ever turned into imported lines, and the import ended with "No data found for processing step". The blob is now stamped Ok with the MD5 hash of its data, as Microsoft's own (internal) `ImportFromFile` does, and the type's notes say so.
 - Microsoft's Create Billing Documents shows a "Creation of documents completed" message when the session allows UI (`GuiAllowed`). An API call never shows it, and the setter that hides it is internal. The tests handle it with a message handler.
-- `Sub PU Filter Tst ori` (95708) turns on Allow HttpClient Requests for the installed Origo apps first (`Sub Test Library ori.EnableHttpForBifrostApps`). Foundation 28.0.4's dispatcher refuses every call while a registered Bifröst app has HTTP disabled, which failed all nine of its tests on the CI container.
+- `Sub PU Filter Tst ori` (95708) keeps its normal dispatcher assertions without enabling HTTP for installed apps. The temporary `Sub Test Library ori.EnableHttpForBifrostApps` workaround was removed per Architect 1792069256.899869; Foundation core#1008 provides the shared dispatcher fix. Green runtime verification depends on that corrected Foundation build.
 - `Renewal.Extend` does not move contract terms or Subscription Line end dates: Microsoft's Extend Sub. Contract Mgt. adds new Subscription Lines from the item's packages and attaches them to the contracts. The test asserts that behaviour, which is what the type's help already says.
 
 ### Fixed (2026-10-15) - help links follow the documentation rules (#27)
@@ -72,8 +72,9 @@
 - `tools/Test-ContractParameterKeys.ps1` reported 388 problems on main. Two code structures hid each type's own keys from it; the contracts and the code otherwise agreed. The guard itself is unchanged and now passes with no allow-list (`Every contract parameter is a key the code reads, and every key the code reads is declared (0 allow-listed).`); its self-tests pass.
 - Reads: every Impl ran its write through `Sub Write Process ori` (10035059), whose dispatcher called the `PerformWrite` of all 18 types, so each type appeared to read every other type's keys. Each Impl now has `TableNo = "Message Argument ori"` and an `OnRun` that calls its own `PerformWrite`, and `ExecuteBifrostTask` runs `Codeunit.Run(Codeunit::"<the Impl>", Argument)`. The isolation is the same (a failed write rolls back on its own and is answered with `RespondWithLastError`; `Omit Commit` still runs inline). `Sub Write Process ori` is deleted and its id 10035059 is free.
 - Declarations: `Sub Contract Parts ori` (10035075) built every type's parameters in one `GetParameters` case over type names, through helpers that took the key as a variable. Each domain now has its own procedure (`LineCreateParameters`, `GetLinesParameters`, `InvoiceParameters`, `BillingProposalParameters`, `BillingDocumentsParameters`, `BillingPreviewParameters`, `SetTemplateFilterParameters`, `RenewalExtendParameters`, `RenewalQuoteParameters`, `UsageImportParameters`, `UsageProcessParameters`, `DeferralReleaseParameters`, `AnalysisParameters`, `ImportParameters`) that names its keys literally in `ContractMgt.Parameter`, and each Impl's `GetParameters` calls its own. The parameter texts, types, defaults and allowed values are unchanged. `GetParameters(MessageType)` stays for the four blocked types and returns no parameters.
-- `Sub Helper ori`.`GetSubjectOr` takes the request and the key first (`GetSubjectOr(RequestJson, 'contractNo', Argument, true)`), like every other reader, so a key read from the subject or the request counts as a read (Renewal.CreateQuote reads nothing else).
+- `Sub Helper ori` (10035058) `GetSubjectOr` takes the request and the key first (`GetSubjectOr(RequestJson, 'contractNo', Argument, true)`), like every other reader, so a key read from the subject or the request counts as a read (Renewal.CreateQuote reads nothing else).
 - `BIFROST SubBil ori` no longer lists the deleted codeunit.
+- The codeunits that now run themselves are `Sub Line Create Impl ori` (10035036), `Sub Con GetLines Impl ori` (10035037), `Sub Con CrInvoice Impl ori` (10035038), `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend GetLines Impl ori` (10035042), `Sub Vend CrInvoice Impl ori` (10035043), `Sub Vend PrvInv Impl ori` (10035044), `Sub Bil CrProposal Impl ori` (10035045), `Sub Bil CrDocs Impl ori` (10035046), `Sub Bil PrvDocs Impl ori` (10035047), `Sub Ren Extend Impl ori` (10035051), `Sub Ren CrQuote Impl ori` (10035052), `Sub Usg Process Impl ori` (10035054), `Sub Def Release Impl ori` (10035055), `Sub Ana Recalc Impl ori` (10035056) and `Sub Helper ori` (10035058).
 
 ### Changed (2026-10-15) - help states the setup preconditions per type (#44, part)
 
@@ -91,9 +92,9 @@
 
 ### Fixed (2026-10-15) - BIFROST SubBFull ori grants what the message types call (#42)
 
-- `BIFROST SubBFull ori` (permissionsetextension 10035063 on `BIFROST Full ori`) listed 23 codeunits and missed `Sub Contract Parts ori` (10035075), which `Sub Ana Recalc Impl ori`, `Sub Bil CrDocs Impl ori`, `Sub Bil CrProposal Impl ori` and `Sub Bil PrvDocs Impl ori` call. It now has `IncludedPermissionSets = "BIFROST SubBil ori"` instead of its own list, so the full set grants exactly what `BIFROST SubBil ori` grants and the two cannot drift again. New objects go into `BIFROST SubBil ori` only.
+- `BIFROST SubBFull ori` (permissionsetextension 10035063 on `BIFROST Full ori`) listed 23 codeunits and missed `Sub Contract Parts ori` (10035075), which `Sub Ana Recalc Impl ori` (10035056), `Sub Bil CrDocs Impl ori` (10035046), `Sub Bil CrProposal Impl ori` (10035045) and `Sub Bil PrvDocs Impl ori` (10035047) call. It now has `IncludedPermissionSets = "BIFROST SubBil ori"` instead of its own list, so the full set grants exactly what `BIFROST SubBil ori` grants and the two cannot drift again. New objects go into `BIFROST SubBil ori` only.
 - `BIFROST SubBil ori` (10035062) also grants `Sub Registration ori` (10035060), the subscriber that registers the app with Foundation's App Registry.
-- Tests: `Sub Perm Full Tst ori` (95771, TestPermissions Restrictive) builds the contracts of the four types and the chapters of `Sub Bil CrProposal Impl ori` with only `BIFROST Full ori` in the session. The test app depends on Microsoft's Permissions Mock for `Library - Lower Permissions`.
+- Tests: `Sub Perm Full Tst ori` (95771, TestPermissions Restrictive) builds the contracts of the four types and the chapters of `Sub Bil CrProposal Impl ori` (10035045) with only `BIFROST Full ori` in the session. The test app depends on Microsoft's Permissions Mock for `Library - Lower Permissions`.
 
 ### Fixed (2026-10-15) - Import.CreateContracts imports explicit comment lines again (#39, closes #6)
 
@@ -306,8 +307,8 @@
 - `Subscription.VendorContract.GetLines` read every unassigned Subscription Line and sorted out the
   caller's selection in memory. The selection is pushed into the database filter instead.
 - `SetLoadFields` added to nine watermark and scan reads that use one or two fields
-  (`Sub Ana Recalc`, `Sub Line Create`, `Sub Con CrInvoice`, `Sub Con PrvInvoice`,
-  `Sub Vend CrInvoice`, `Sub Vend PrvInv`, `Sub Ren CrQuote`, `Sub Bil PrvDocs`).
+  (`Sub Ana Recalc` (10035056), `Sub Line Create`, `Sub Con CrInvoice`, `Sub Con PrvInvoice`,
+  `Sub Vend CrInvoice`, `Sub Vend PrvInv`, `Sub Ren CrQuote`, `Sub Bil PrvDocs` (10035047)).
 
 ### Fixed (2026-09-07)
 
@@ -378,9 +379,9 @@ a side-by-side install.
   | `CE Sub Vend GetLines Impl ori` | `Sub Vend GetLines Impl ori` |
   | `CE Sub Vend CrInvoice Impl ori` | `Sub Vend CrInvoice Impl ori` |
   | `CE Sub Vend PrvInv Impl ori` | `Sub Vend PrvInv Impl ori` |
-  | `CE Sub Bil CrProposal Impl ori` | `Sub Bil CrProposal Impl ori` |
-  | `CE Sub Bil CrDocs Impl ori` | `Sub Bil CrDocs Impl ori` |
-  | `CE Sub Bil PrvDocs Impl ori` | `Sub Bil PrvDocs Impl ori` |
+  | `CE Sub Bil CrProposal Impl ori` | `Sub Bil CrProposal Impl ori` (10035045) |
+  | `CE Sub Bil CrDocs Impl ori` | `Sub Bil CrDocs Impl ori` (10035046) |
+  | `CE Sub Bil PrvDocs Impl ori` | `Sub Bil PrvDocs Impl ori` (10035047) |
   | `CE Sub PU SetFilter Impl ori` | `Sub PU SetFilter Impl ori` |
   | `CE Sub PU CrProposal Impl ori` | `Sub PU CrProposal Impl ori` |
   | `CE Sub PU Perform Impl ori` | `Sub PU Perform Impl ori` |
@@ -389,9 +390,9 @@ a side-by-side install.
   | `CE Sub Usg Import Impl ori` | `Sub Usg Import Impl ori` |
   | `CE Sub Usg Process Impl ori` | `Sub Usg Process Impl ori` |
   | `CE Sub Def Release Impl ori` | `Sub Def Release Impl ori` |
-  | `CE Sub Ana Recalc Impl ori` | `Sub Ana Recalc Impl ori` |
+  | `CE Sub Ana Recalc Impl ori` | `Sub Ana Recalc Impl ori` (10035056) |
   | `CE Sub Imp CrContr Impl ori` | `Sub Imp CrContr Impl ori` |
-  | `CE Sub Helper ori` | `Sub Helper ori` |
+  | `CE Sub Helper ori` | `Sub Helper ori` (10035058) |
   | `CE Sub Write Process ori` | `Sub Write Process ori` |
   | `CE Sub Msg Type ori` (enum extension) | `Sub Msg Type ori` |
   | `CE Sub Bil Obj ori` (permission set) | `BIFROST SubBil ori` |
