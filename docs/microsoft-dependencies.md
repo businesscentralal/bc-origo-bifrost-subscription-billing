@@ -67,6 +67,41 @@ codeunit 8055 CalculateUnitPrice, CalculateUnitCost and CalculateDirectUnitCost,
 | Perform under Omit Commit commits nothing and stops at the first failed line | Codeunit.Run with a return value needs a committed transaction | Without Omit Commit each line is committed and a failed line is kept, as Microsoft does |
 | The copy follows commit a674a13 (app 28.7): the temporary sales and purchase lines carry the subscription's Unit of Measure (scenario 648553) | The copy was taken from the 28.7 source | On an installed Subscription Billing older than 28.7, Recent Item Prices for a subscription in a non-base unit of measure can differ from the page; the oracle tests use the base unit of measure, and `CreateProposal_RecentItemPrices_UsesPriceOfSubscriptionUnitOfMeasure` pins the 28.7 behaviour |
 
+## Customer contract line merge (#50)
+
+Used by `Subscription.Contract.MergeLines` (`Sub Con Merge Impl ori`, 10035073). The copy lives in
+`app/src/Customer Contracts/Microsoft Copy/SubConMergeMgt.Codeunit.al` (`Sub Con Merge Mgt ori`, 10035074).
+
+`Cust. Sub. Contract Line.MergeContractLines` (table 8062) is public, but it always opens page 8091
+"Select Cust. Contract Lines". The eligibility checks and the merge are local on that table. The field
+comparisons and `UpdateServicesDates` are internal. The smallest Microsoft change that retires the copy:
+**make `MergeContractLines` take the reference line as a parameter, and make `TestMergingServiceObjects`,
+`TestMergingServiceCommitments` and `UpdateServicesDates` public.** Then the message type calls table 8062
+and codeunit 10035074 is deleted.
+
+| Our object (id) | Our procedure | Microsoft object | Microsoft procedure (access) | Path under `App/` | Change requested from Microsoft |
+|---|---|---|---|---|---|
+| `Sub Con Merge Mgt ori` (10035074) | MergeLines and the local merge procedures | table 8062 "Cust. Sub. Contract Line" | MergeContractLines (public, opens a page) and its local procedures | Customer Contracts/Tables/CustSubContractLine.Table.al | Add a public overload that takes the reference line and does not open a page |
+| `Sub Con Merge Mgt ori` | TestMergingServiceObjects, TestMergingServiceCommitments | codeunit 8059 "Sub. Contracts General Mgt." | same (internal) | Base/Codeunits/SubContractsGeneralMgt.Codeunit.al | Make them public |
+| `Sub Con Merge Mgt ori` | BillingLineExists | codeunit 8059 | BillingLineExists (internal) | as above | Make it public. The copy calls public `Billing Line`.FilterBillingLineOnContractLine |
+| `Sub Con Merge Mgt ori` | UpdateServicesDates and the date helpers it calls | table 8057 "Subscription Header" | UpdateServicesDates (internal) | Service Objects/Tables/SubscriptionHeader.Table.al | Make UpdateServicesDates public |
+| `Sub Con Merge Mgt ori` | IsFullyInvoiced, GetReferenceDate, CalculateTermUntilUsingExtensionTerm, CalculateCancellationPossibleUntil | table 8059 "Subscription Line" | same (internal); IsExtensionTermEmpty is local | Service Commitments/Tables/SubscriptionLine.Table.al | Make UpdateServicesDates public so these do not need to be copied |
+| `Sub Con Merge Impl ori` (10035073) | Assigns the merged line | table "Customer Subscription Contract" | CreateCustomerContractLineFromServiceCommitment (public, three parameters) | Customer Contracts/Tables/CustomerSubscriptionContract.Table.al | None. This one is called, not copied |
+
+Public Microsoft code the copy calls: `Billing Line`.FilterBillingLineOnContractLine, codeunit "Date Time Management",
+codeunit "Calendar Management", and `Customer Subscription Contract`.CreateCustomerContractLineFromServiceCommitment.
+
+### Known differences from Microsoft
+
+| Difference | Why | Effect |
+|---|---|---|
+| Page 8091 is not opened. `referenceLineNo` is the line the user would pick, and it must be one of the lines | An unattended caller cannot answer a modal page | The same reference Subscription is copied |
+| `Message('Customer Subscription Contract lines have been merged.')` is not shown | A message never reaches an unattended caller | The response says `merged: true` |
+| Lines whose contract is not the named contract are refused before Microsoft's checks | The page is opened from one contract, so Microsoft never receives a mixed set. AC02 requires the refusal | Nothing is merged |
+| Microsoft's local events `OnAfterCheckSelectedContractLinesOnMergeContractLines` and `OnBeforeCreateCustomerContractLineFromTempSubscriptionLine` are not raised | An app can raise only its own events | A subscriber of those events sees the page's run but not a Bifrost run |
+| `FilterOnServiceObjectContractLineType` is inlined as a range on Item through G/L Account | The procedure is internal | The same lines are closed by UpdateServicesDates |
+| Vendor contract lines are not merged | Out of scope for #50 | Customer lines only |
+
 ## Licence notice for the copied code
 
 ```

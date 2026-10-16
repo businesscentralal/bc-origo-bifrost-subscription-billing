@@ -164,4 +164,18 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
         Caption = 'Subscription.Import.CreateContracts', Locked = true;
         Implementation = "Msg Interface ori" = "Sub Imp CrContr Impl ori", "Msg Discovery ori" = "Sub Imp CrContr Impl ori", "Msg Contract ori" = "Sub Imp CrContr Impl ori";
     }
+
+    /// <summary>Merges customer contract lines without opening the selection page.</summary>
+    value(10035073; "Subscription.Contract.MergeLines")
+    {
+        Caption = 'Subscription.Contract.MergeLines', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Con Merge Impl ori", "Msg Discovery ori" = "Sub Con Merge Impl ori", "Msg Contract ori" = "Sub Con Merge Impl ori";
+    }
+
+    /// <summary>Posts unposted sales and purchase documents that a billing run created.</summary>
+    value(10035085; "Subscription.Billing.PostDocuments")
+    {
+        Caption = 'Subscription.Billing.PostDocuments', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Bil PostDocs Impl ori", "Msg Discovery ori" = "Sub Bil PostDocs Impl ori", "Msg Contract ori" = "Sub Bil PostDocs Impl ori";
+    }
 }

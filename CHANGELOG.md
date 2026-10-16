@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Added (2026-10-16) - Post billing documents, guard contract currency, merge contract lines (#52, #51, #50)
+
+- `Subscription.Billing.PostDocuments` (codeunit `Sub Bil PostDocs Impl ori`, 10035085) posts unposted sales and purchase documents that a Subscription Billing run created, through Sales-Post and Purch.-Post. It refuses a document the billing run did not create and names Sales.Document.Post or Purch.Document.Post, and it refuses a document that is already posted. The call always commits, including when Omit Commit is set. A blank Vendor Invoice No. is set to the document number before a purchase document is posted. The posting gate is table `Sub Posting ori` (10035083) and codeunit `Sub Posting Gate ori` (10035084). Permission set `BIFROST SubPost ori` (10035086) is assigned on its own and is not included in `BIFROST SubBil ori`, `BIFROST SubBFull ori` or `BIFROST SubBRead ori`.
+- Codeunit `Sub Con Ccy Guard ori` (10035082) refuses a generic Currency Code change on Customer Subscription Contract and Vendor Subscription Contract. The error names `Subscription.Contract.UpdateExchangeRates` (#51). Writing the same currency value is left alone.
+- `Subscription.Contract.MergeLines` (codeunit `Sub Con Merge Impl ori`, 10035073) merges customer contract lines with Microsoft's eligibility rules and resulting line. The reference line replaces page 8091. Codeunit `Sub Con Merge Mgt ori` (10035074) holds the copied local and internal procedures. Vendor contract merge is out of scope. The call does not commit.
+- The app id range now runs through 10035090.
+- Tests: `Sub Con Ccy Tst ori` (95717), `Sub PostDocs Tst ori` (95718), `Sub Post Gate Tst ori` (95719), `Sub Con Merge Tst ori` (95720).
+
 ### Changed (2026-10-14) - Version reset to 28.0.0.0
 
 - Owner decision (Gunnar, 2026-10-14): `app/app.json` and `test/app.json` go from 29.0.0.0 to 28.0.0.0, so the first AppSource version aligns with the other Bifröst apps on Business Central 28. The test app's dependency on Bifrost Subscription Billing moves to 28.0.0.0 as well.

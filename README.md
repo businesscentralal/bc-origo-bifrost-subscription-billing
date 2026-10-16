@@ -3,10 +3,10 @@
 **App name:** Bifrost Subscription Billing  
 **Publisher:** Origo — **Version:** 28.0.0.0 — **Target:** Cloud (BC 28, runtime 17.0)  
 **App ID:** `dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d` — **Test app ID:** `a621027d-6e47-4932-bc65-319b8b798bff`  
-**Object ID range:** 10035035–10035084 (tests 95700–95799) — **Namespace:** `Origo.Bifrost.SubscriptionBilling`
+**Object ID range:** 10035035–10035090 (tests 95700–95799) — **Namespace:** `Origo.Bifrost.SubscriptionBilling`
 
 Subscription Billing is the recurring-revenue module of the Bifröst platform. It makes Microsoft's
-**Subscription Billing** app callable from outside Business Central, publishing 22 Bifröst message
+**Subscription Billing** app callable from outside Business Central, publishing 24 Bifröst message
 types for the operations that otherwise live behind a page action — applying a subscription package,
 attaching lines to customer and vendor contracts, running the billing pipeline, previewing a billing
 run without writing, importing usage data, releasing deferrals, rebuilding contract analysis and

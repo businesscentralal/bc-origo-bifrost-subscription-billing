@@ -24,7 +24,7 @@ codeunit 95701 "Sub Msg Type Tst ori"
     trigger OnRun()
     begin
         FirstTypeOrdinal := 10035036;
-        LastTypeOrdinal := 10035057;
+        LastTypeOrdinal := 10035085;
     end;
 
     [Test]
@@ -45,8 +45,8 @@ codeunit 95701 "Sub Msg Type Tst ori"
                 FoundCount += 1;
             end;
 
-        // [THEN] All 22 message types are registered
-        Assert.AreEqual(22, FoundCount, 'All Subscription Billing message types should be registered on the Bifrost enum.');
+        // [THEN] All 24 message types are registered
+        Assert.AreEqual(24, FoundCount, 'All Subscription Billing message types should be registered on the Bifrost enum.');
     end;
 
     [Test]
@@ -203,7 +203,7 @@ codeunit 95701 "Sub Msg Type Tst ori"
     local procedure Initialize()
     begin
         FirstTypeOrdinal := 10035036;
-        LastTypeOrdinal := 10035057;
+        LastTypeOrdinal := 10035085;
     end;
 
     local procedure IsSubscriptionBillingType(Ordinal: Integer): Boolean

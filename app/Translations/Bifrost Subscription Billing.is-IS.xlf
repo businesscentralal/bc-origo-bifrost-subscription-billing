@@ -3,6 +3,18 @@
   <file datatype="xml" source-language="en-US" target-language="is-IS" original="Bifrost Subscription Billing">
     <body>
       <group id="body">
+        <trans-unit id="Table 1499020996 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>BIFROST SubPost ori</source>
+          <target>Bifröst bókun áskrifta</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bifröst bókun áskrifta</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Sub Posting ori - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Table 1499020996 - Field 1663593181 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Primary Key</source>
+          <target>Aðallykill</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Aðallykill</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Table Sub Posting ori - Field Primary Key - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Codeunit 202989448 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Rebuilds Subscription Contract analysis entries as of today by running Microsoft's Create Contract Analysis report across every Subscription Line with a contract.</source>
           <target>Endurbyggir greiningarfærslur áskriftarsamnings miðað við daginn í dag með því að keyra skýrslu Microsoft, Create Contract Analysis, á allar áskriftarlínur með samningi.</target>
@@ -99,6 +111,102 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.CreateProposal: Óafturkræft. Býr til línur í reikningatillögu; Microsoft Subscription Billing vistar þær eftir hverja 50 samninga.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 1746037662" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document %1 %2 is already posted.</source>
+          <target>Skjal %1 %2 er þegar bókað.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 er þegar bókað.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType AlreadyPostedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posts unposted sales and purchase documents that a Subscription Billing run created, through Business Central's own posting path. Refuses a document that run did not create.</source>
+          <target>Bókar óbókúð sölu- og innkaupaskjöl sem reikningskeyrsla áskrifta bjó til, með eigin bókunarleið Business Central. Hafnar skjali sem sú keyrsla bjó ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bókar óbókúð sölu- og innkaupaskjöl sem reikningskeyrsla áskrifta bjó til, með eigin bókunarleið Business Central. Hafnar skjali sem sú keyrsla bjó ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 4200400207" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Each entry of 'documents' must be a JSON object with partner, documentType and documentNo.</source>
+          <target>Hver færsla í 'documents' verður að vera JSON-hlutur með partner, documentType og documentNo.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Hver færsla í 'documents' verður að vera JSON-hlutur með partner, documentType og documentNo.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType DocumentShapeErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 1060059759" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document %1 is listed more than once. Nothing was posted.</source>
+          <target>Skjal %1 er tilgreint oftar en einu sinni. Ekkert var bókað.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document number||is-IS=Skjal %1 er tilgreint oftar en einu sinni. Ekkert var bókað.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType DuplicateDocumentErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 3542285840" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter 'documents' must contain at least one document.</source>
+          <target>Færibreytan 'documents' verður að innihalda að minnsta kosti eitt skjal.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Færibreytan 'documents' verður að innihalda að minnsta kosti eitt skjal.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType EmptyDocumentsErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 2252604841" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.</source>
+          <target>Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ForeignCustomerErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 345330225" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.</source>
+          <target>Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purch.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purch.Document.Post.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ForeignVendorErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 3172811853" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter 'documentType' must be either 'Invoice' or 'Credit Memo'.</source>
+          <target>Færibreytan 'documentType' verður að vera annaðhvort 'Invoice' eða 'Credit Memo'.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Færibreytan 'documentType' verður að vera annaðhvort 'Invoice' eða 'Credit Memo'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType InvalidDocumentTypeErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 2506076390" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter 'partner' must be either 'Customer' or 'Vendor'.</source>
+          <target>Færibreytan 'partner' verður að vera annaðhvort 'Customer' eða 'Vendor'.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Færibreytan 'partner' verður að vera annaðhvort 'Customer' eða 'Vendor'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType InvalidPartnerErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 300700927" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The request is missing the required parameter '%1'.</source>
+          <target>Beiðnina vantar nauðsynlega færibreytu '%1'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Beiðnina vantar nauðsynlega færibreytu '%1'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType MissingDocumentsErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 1425329136" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Billing document %1 %2 is not an open sales or purchase document.</source>
+          <target>Reikningsskjalið %1 %2 er ekki opið sölu- eða innkaupaskjal.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Reikningsskjalið %1 %2 er ekki opið sölu- eða innkaupaskjal.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType NotOpenErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 303255283" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posting document %1 reported success but no posted document was found.</source>
+          <target>Bókun skjals %1 tilkynnti árangur en ekkert bókað skjal fannst.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document number||is-IS=Bókun skjals %1 tilkynnti árangur en ekkert bókað skjal fannst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType PostedNoMissingErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 474319794" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posting document %1 failed. Documents this call already posted stay posted. %2</source>
+          <target>Bókun skjals %1 mistókst. Skjöl sem þetta kall hefur þegar bókað standa áfram bókuð. %2</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document number, %2 = the underlying error||is-IS=Bókun skjals %1 mistókst. Skjöl sem þetta kall hefur þegar bókað standa áfram bókuð. %2</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType PostFailedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 2127484308" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter '%1' is longer than the %2 characters allowed.</source>
+          <target>Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter name, %2 = maximum length||is-IS=Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ValueTooLongErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.PostDocuments, Subscription, Billing, PostDocuments, invoice, post</source>
+          <target>Subscription.Billing.PostDocuments, áskrift, reikningagerð, bóka skjöl, reikningur, bóka</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.PostDocuments, áskrift, reikningagerð, bóka skjöl, reikningur, bóka</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.PostDocuments: Posts billing documents. Irreversible and always commits.</source>
+          <target>Subscription.Billing.PostDocuments: Bókar reikningsskjöl. Óafturkræf aðgerð sem staðfestir alltaf.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.PostDocuments: Bókar reikningsskjöl. Óafturkræf aðgerð sem staðfestir alltaf.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Previews the documents that Subscription.Billing.CreateDocuments would create for a Billing Template, by reading the existing proposal lines. Reads only; writes nothing.</source>
           <target>Forskoðar þau skjöl sem Subscription.Billing.CreateDocuments myndi búa til fyrir reikningssniðmát, með því að lesa fyrirliggjandi tillögulínur. Les eingöngu; skrifar ekkert.</target>
@@ -152,6 +260,12 @@
           <target>Subscription.Billing.PreviewDocuments: Forskoðar magnreikningagerð án þess að skrifa. Lesaðgerð.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.PreviewDocuments: Forskoðar magnreikningagerð án þess að skrifa. Lesaðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PrvDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3682994850 - NamedType 3405044673" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Currency Code on subscription contract %1 cannot be changed by a generic write. Use Subscription.Contract.UpdateExchangeRates.</source>
+          <target>Ekki er hægt að breyta gjaldmiðilskóða á áskriftarsamningi %1 með almennri skrifun. Notaðu Subscription.Contract.UpdateExchangeRates.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Ekki er hægt að breyta gjaldmiðilskóða á áskriftarsamningi %1 með almennri skrifun. Notaðu Subscription.Contract.UpdateExchangeRates.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Ccy Guard ori - NamedType CurrencyWriteErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1511352918 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
@@ -218,6 +332,120 @@
           <target>Subscription.Contract.GetLines: Tengir hæfar línur við áskriftarsamning viðskiptamanns.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.GetLines: Tengir hæfar línur við áskriftarsamning viðskiptamanns.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con GetLines Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Customer Subscription Contract '%1' does not exist.</source>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType ContractNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Merges customer contract lines the way Microsoft merges them, without opening a page. The reference line names the Subscription that is copied.</source>
+          <target>Sameinar samningslínur viðskiptamanns eins og Microsoft sameinar þær, án þess að opna síðu. Tilvísunarlínan nefnir áskriftina sem er afrituð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sameinar samningslínur viðskiptamanns eins og Microsoft sameinar þær, án þess að opna síðu. Tilvísunarlínan nefnir áskriftina sem er afrituð.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 536713782" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The lines belong to more than one Customer Subscription Contract. Merge lines of one contract at a time.</source>
+          <target>Línurnar tilheyra fleiri en einum áskriftarsamningi viðskiptamanns. Sameinaðu línur eins samnings í einu.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Línurnar tilheyra fleiri en einum áskriftarsamningi viðskiptamanns. Sameinaðu línur eins samnings í einu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType DifferentContractErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 515454943" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter 'lineNo' must be a whole number.</source>
+          <target>Færibreytan 'lineNo' verður að vera heil tala.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Færibreytan 'lineNo' verður að vera heil tala.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType LineNoShapeErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 3085223924" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Customer contract line %1 does not exist on contract %2.</source>
+          <target>Samningslína viðskiptamanns %1 er ekki til á samningi %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Samningslína viðskiptamanns %1 er ekki til á samningi %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType LineNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 3190189800" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Each entry of 'lines' must be a JSON object with lineNo.</source>
+          <target>Hver færsla í 'lines' verður að vera JSON-hlutur með lineNo.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Hver færsla í 'lines' verður að vera JSON-hlutur með lineNo.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType LineShapeErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 804695256" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The request is missing the required parameter '%1'.</source>
+          <target>Beiðnina vantar nauðsynlega færibreytu '%1'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Beiðnina vantar nauðsynlega færibreytu '%1'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType MissingLinesErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 1192315610" size-unit="char" translate="yes" xml:space="preserve">
+          <source>referenceLineNo %1 is not one of the lines to merge.</source>
+          <target>referenceLineNo %1 er ekki meðal línanna sem á að sameina.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number||is-IS=referenceLineNo %1 er ekki meðal línanna sem á að sameina.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType ReferenceNotInSetErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - NamedType 2127484308" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter '%1' is longer than the %2 characters allowed.</source>
+          <target>Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter name, %2 = maximum length||is-IS=Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - NamedType ValueTooLongErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Contract.MergeLines, Subscription, Contract, MergeLines, customer, combine</source>
+          <target>Subscription.Contract.MergeLines, áskrift, samningur, sameina línur, viðskiptamaður</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.MergeLines, áskrift, samningur, sameina línur, viðskiptamaður</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1624405742 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Contract.MergeLines: Merges customer contract lines. The closed lines stay closed.</source>
+          <target>Subscription.Contract.MergeLines: Sameinar samningslínur viðskiptamanns. Lokaðu línurnar standa áfram lokaðar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.MergeLines: Sameinar samningslínur viðskiptamanns. Lokaðu línurnar standa áfram lokaðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2522043920 - NamedType 2874876122" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Billing Lines for exists for at least one of the selected contract lines. Delete the Billing Lines before merging the Contract Lines.</source>
+          <target>Reikningslínur eru til fyrir a.m.k. eina af völdu samningslínunum. Eyddu reikningslínunum áður en samningslínurnar eru sameinaðar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Reikningslínur eru til fyrir a.m.k. eina af völdu samningslínunum. Eyddu reikningslínunum áður en samningslínurnar eru sameinaðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Mgt ori - NamedType BillingLinesForSelectedContractLinesExistsErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2522043920 - NamedType 1718133448" size-unit="char" translate="yes" xml:space="preserve">
+          <source>There are different dimension values for the Contract Lines. Complete the dimensions before merging the Contract Lines.</source>
+          <target>Samningslínurnar hafa ólík víddargildi. Ljúktu við víddirnar áður en samningslínurnar eru sameinaðar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Samningslínurnar hafa ólík víddargildi. Ljúktu við víddirnar áður en samningslínurnar eru sameinaðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Mgt ori - NamedType ContractLinesWithDifferentDimensionSelectedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2522043920 - NamedType 1137730608" size-unit="char" translate="yes" xml:space="preserve">
+          <source>There is a different Next Billing Date for the Contract Lines. The Contract Lines must be billed so that the Next Billing Date is the same before they can be combined.</source>
+          <target>Samningslínurnar hafa ólíkan næsta reikningsdag. Reikningsfæra þarf línurnar þannig að næsti reikningsdagur sé sá sami áður en hægt er að sameina þær.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Samningslínurnar hafa ólíkan næsta reikningsdag. Reikningsfæra þarf línurnar þannig að næsti reikningsdagur sé sá sami áður en hægt er að sameina þær.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Mgt ori - NamedType ContractLinesWithDifferentNextBillingDateSelectedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2522043920 - NamedType 123232512" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Lines from Subscriptions with different Customer References cannot be merged.</source>
+          <target>Ekki er hægt að sameina áskriftarlínur af áskriftum með ólíkar tilvísanir viðskiptamanns.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ekki er hægt að sameina áskriftarlínur af áskriftum með ólíkar tilvísanir viðskiptamanns.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Mgt ori - NamedType ContractLineWithDifferentCustRefCannotBeMergedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2522043920 - NamedType 2063509243" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Contract lines cannot be merged if Serial No. is entered into Subscription.</source>
+          <target>Ekki er hægt að sameina samningslínur ef raðnúmer er skráð á áskriftina.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ekki er hægt að sameina samningslínur ef raðnúmer er skráð á áskriftina.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Mgt ori - NamedType LinesWithSerialNoCannotBeMergedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2522043920 - NamedType 3682254460" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The customer contract lines were not merged.</source>
+          <target>Samningslínur viðskiptamanns voru ekki sameinaðar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Samningslínur viðskiptamanns voru ekki sameinaðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Mgt ori - NamedType MergeDidNotRunErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2522043920 - NamedType 3924873663" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Merging with text lines is not allowed.</source>
+          <target>Ekki er leyfilegt að sameina við textalínur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ekki er leyfilegt að sameina við textalínur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Mgt ori - NamedType NotAllowedMergingTextLinesErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2522043920 - NamedType 3773426080" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please select the lines you want to combine.</source>
+          <target>Veldu línurnar sem á að sameina.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Veldu línurnar sem á að sameina.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Merge Mgt ori - NamedType OneContractLineSelectedErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
@@ -464,6 +692,12 @@
           <target>Subscription.Line.Create: Beitir pakka og stofnar áskriftarlínur.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Line.Create: Beitir pakka og stofnar áskriftarlínur.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Line Create Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2789415177 - Method 3527532202 - NamedType 842664886" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Posting denied: missing '%1' permission set.</source>
+          <target>Bókun hafnað: vantar heimildasettið '%1'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = permission set name||is-IS=Bókun hafnað: vantar heimildasettið '%1'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Posting Gate ori - Method AssertCanPost - NamedType PostingDeniedErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Creates the Contract Price Update Lines of a Price Update Template, as the Contract Price Update page does. Subscription Lines are not changed.</source>
@@ -854,6 +1088,12 @@
           <target>Bifröst - áskriftir</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Bifröst - áskriftir</note>
           <note from="Xliff Generator" annotates="general" priority="3">PermissionSet BIFROST SubBil ori - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="PermissionSet 1707067305 - Property 2879900210" maxwidth="30" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Sub. Billing Posting</source>
+          <target>Bókun áskriftareikninga</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bókun áskriftareikninga</note>
+          <note from="Xliff Generator" annotates="general" priority="3">PermissionSet BIFROST SubPost ori - Property Caption</note>
         </trans-unit>
       </group>
     </body>
