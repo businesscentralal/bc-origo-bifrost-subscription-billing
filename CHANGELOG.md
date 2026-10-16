@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added (2026-10-16) - usage connection processing coverage
+
+- `Sub Usg Connect Tst ori` (codeunit 95713, #38 AC04): seed an imported usage row, verify it cannot be processed before connecting, then connect through the message type and retry all three usage-processing stages through customer usage billing. The fixture removes only its own supplier imports and billing rows before each test.
+
 ### Fixed (2026-10-15) - operations branch integration and test compilation
 
 - Merge current main into the operations branch, retaining the 28.0.0.0 version reset and both changelog histories under one Unreleased heading.

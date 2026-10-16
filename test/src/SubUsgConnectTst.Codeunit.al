@@ -55,6 +55,73 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         Assert.AreEqual(ReferenceEntryNo, SubscriptionLine."Supplier Reference Entry No.", 'The line must carry the supplier reference.');
     end;
 
+    /// <summary>AC04: connecting a supplier subscription lets its imported usage reach customer usage billing.</summary>
+    [Test]
+    procedure Connect_ThenProcess_CreatesUsageBilling()
+    var
+        UsageDataImport: Record "Usage Data Import";
+        UsageDataGenericImport: Record "Usage Data Generic Import";
+        UsageDataBilling: Record "Usage Data Billing";
+        ResponseJson: JsonObject;
+        RequestJson: JsonObject;
+        EntryNos: JsonArray;
+        StepToken: JsonToken;
+        StepsToken: JsonToken;
+        LineEntryNo: Integer;
+        EntryNo: Integer;
+        ReferenceEntryNo: Integer;
+        ImportEntryNo: Integer;
+    begin
+        // [GIVEN] A supplier subscription and a self-created imported usage row, not connected yet
+        Initialize();
+        LineEntryNo := CreateUsageSubscription(true);
+        EntryNo := CreateSupplierSubscription(Enum::"Connect To SO Method"::"Existing Service Commitments", ReferenceEntryNo);
+        ImportEntryNo := CreateImportedUsage();
+
+        // [WHEN] The imported row is processed before the supplier subscription is connected
+        RequestJson.Add('usageDataImportEntryNo', ImportEntryNo);
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.Usage.Process", '', RequestJson, false);
+
+        // [THEN] No usage billing can be created, and the imported row records the missing connection
+        TestLib.AssertSuccess(ResponseJson);
+        UsageDataGenericImport.SetRange("Usage Data Import Entry No.", ImportEntryNo);
+        Assert.IsTrue(UsageDataGenericImport.FindFirst(), 'The owned imported row must remain.');
+        Assert.AreEqual(Enum::"Processing Status"::Error, UsageDataGenericImport."Processing Status", 'Processing an unconnected subscription must fail.');
+        UsageDataBilling.SetRange("Usage Data Import Entry No.", ImportEntryNo);
+        Assert.RecordIsEmpty(UsageDataBilling);
+
+        // [WHEN] The message type connects the subscription, then Usage.Process retries all default stages
+        Clear(RequestJson);
+        EntryNos.Add(EntryNo);
+        RequestJson.Add('entryNos', EntryNos);
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.Usage.ConnectSubscriptions", SupplierNoTok, RequestJson, false);
+        TestLib.AssertSuccess(ResponseJson);
+        Assert.AreEqual(1, TestLib.GetInteger(ResponseJson, 'connected'), 'The supplier subscription must be connected.');
+        Clear(RequestJson);
+        RequestJson.Add('usageDataImportEntryNo', ImportEntryNo);
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.Usage.Process", '', RequestJson, false);
+
+        // [THEN] Every stage succeeds and only the connected customer's subscription receives the usage
+        TestLib.AssertSuccess(ResponseJson);
+        Assert.IsTrue(ResponseJson.Get('steps', StepsToken), 'Every executed stage must be reported.');
+        Assert.AreEqual(3, StepsToken.AsArray().Count(), 'All three default processing stages must run.');
+        foreach StepToken in StepsToken.AsArray() do
+            Assert.AreNotEqual('Error', TestLib.GetText(StepToken.AsObject(), 'status'), 'No processing stage may fail.');
+        Assert.AreEqual(1, TestLib.GetInteger(ResponseJson, 'usageDataBillingCount'), 'Exactly the self-created usage row must be billed.');
+        Assert.AreEqual(0, TestLib.GetInteger(ResponseJson, 'usageDataBillingErrorCount'), 'No usage billing may be in error.');
+        UsageDataImport.Get(ImportEntryNo);
+        Assert.AreNotEqual(Enum::"Processing Status"::Error, UsageDataImport."Processing Status", 'The import must no longer carry the pre-connection error.');
+        UsageDataGenericImport.FindFirst();
+        Assert.AreEqual(Enum::"Processing Status"::Ok, UsageDataGenericImport."Processing Status", 'The imported row must be processed.');
+        Assert.AreEqual(HeaderNoTok, UsageDataGenericImport."Subscription Header No.", 'The imported row must resolve the connected subscription.');
+        Assert.AreEqual(1, UsageDataBilling.Count(), 'No other subscription may receive this usage.');
+        UsageDataBilling.FindFirst();
+        Assert.AreEqual(Enum::"Service Partner"::Customer, UsageDataBilling.Partner, 'The usage must be assigned to the customer.');
+        Assert.AreEqual(ContractNoTok, UsageDataBilling."Subscription Contract No.", 'The usage must be assigned to the owned contract.');
+        Assert.AreEqual(LineEntryNo, UsageDataBilling."Subscription Line Entry No.", 'The usage must name the connected line.');
+        Assert.AreEqual(1, UsageDataBilling.Quantity, 'The imported quantity must reach usage billing.');
+    end;
+
     /// <summary>AC01, edge: a Subscription without usage based lines is skipped with Microsoft's reason, not refused.</summary>
     [Test]
     procedure Connect_NoUsageBasedLine_IsSkippedWithReason()
@@ -201,7 +268,25 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         UsageDataSupplier: Record "Usage Data Supplier";
         UsageDataSupplierReference: Record "Usage Data Supplier Reference";
         UsageDataSubscription: Record "Usage Data Supp. Subscription";
+        UsageDataImport: Record "Usage Data Import";
+        UsageDataGenericImport: Record "Usage Data Generic Import";
+        UsageDataBilling: Record "Usage Data Billing";
+        GenericImportSettings: Record "Generic Import Settings";
+        UsageDataBillingMetadata: Record "Usage Data Billing Metadata";
     begin
+        UsageDataBillingMetadata.SetRange("Subscription No.", HeaderNoTok);
+        UsageDataBillingMetadata.DeleteAll(false);
+        UsageDataImport.SetRange("Supplier No.", SupplierNoTok);
+        if UsageDataImport.FindSet() then
+            repeat
+                UsageDataBilling.SetRange("Usage Data Import Entry No.", UsageDataImport."Entry No.");
+                UsageDataBilling.DeleteAll(false);
+                UsageDataGenericImport.SetRange("Usage Data Import Entry No.", UsageDataImport."Entry No.");
+                UsageDataGenericImport.DeleteAll(false);
+            until UsageDataImport.Next() = 0;
+        UsageDataImport.DeleteAll(false);
+        GenericImportSettings.SetRange("Usage Data Supplier No.", SupplierNoTok);
+        GenericImportSettings.DeleteAll(false);
         UsageDataSubscription.SetRange("Supplier No.", SupplierNoTok);
         UsageDataSubscription.DeleteAll(false);
         UsageDataSupplierReference.SetRange("Supplier No.", SupplierNoTok);
@@ -215,6 +300,35 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         UsageDataSupplier.Type := UsageDataSupplier.Type::Generic;
         UsageDataSupplier.Insert(false);
         Commit();
+    end;
+
+    /// <summary>Seeds an already imported generic usage row; file parsing belongs to Usage.ImportData tests.</summary>
+    local procedure CreateImportedUsage(): Integer
+    var
+        UsageDataSupplier: Record "Usage Data Supplier";
+        GenericImportSettings: Record "Generic Import Settings";
+        UsageDataImport: Record "Usage Data Import";
+        UsageDataGenericImport: Record "Usage Data Generic Import";
+    begin
+        UsageDataSupplier.Get(SupplierNoTok);
+        UsageDataSupplier."Unit Price from Import" := true;
+        UsageDataSupplier.Modify(false);
+        GenericImportSettings.Init();
+        GenericImportSettings."Usage Data Supplier No." := SupplierNoTok;
+        GenericImportSettings.Insert(false);
+        UsageDataImport.Init();
+        UsageDataImport."Supplier No." := SupplierNoTok;
+        UsageDataImport.Insert(false);
+        UsageDataGenericImport.Init();
+        UsageDataGenericImport."Usage Data Import Entry No." := UsageDataImport."Entry No.";
+        UsageDataGenericImport."Supp. Subscription ID" := 'XSBA38REF';
+        UsageDataGenericImport."Supp. Subscription Start Date" := WorkDate();
+        UsageDataGenericImport."Billing Period Start Date" := WorkDate();
+        UsageDataGenericImport."Billing Period End Date" := CalcDate('<CM>', WorkDate());
+        UsageDataGenericImport.Quantity := 1;
+        UsageDataGenericImport.Insert(false);
+        Commit();
+        exit(UsageDataImport."Entry No.");
     end;
 
     /// <summary>Seeds a Subscription of type Item under a customer contract with one line, usage based or not.</summary>
@@ -234,6 +348,8 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         LineEntryNo := TestLib.CreateSubscriptionLine(HeaderNoTok, Enum::"Service Partner"::Customer, ContractNoTok, WorkDate(), 0D, WorkDate());
         SubscriptionLine.Get(LineEntryNo);
         SubscriptionLine."Usage Based Billing" := UsageBased;
+        if UsageBased then
+            SubscriptionLine."Usage Based Pricing" := Enum::"Usage Based Pricing"::"Usage Quantity";
         SubscriptionLine.Modify(false);
         TestLib.CreateCustomerContractLine(ContractNoTok, HeaderNoTok, LineEntryNo);
         Commit();
