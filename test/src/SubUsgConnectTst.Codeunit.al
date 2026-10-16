@@ -60,6 +60,7 @@ codeunit 95713 "Sub Usg Connect Tst ori"
     procedure Connect_ThenProcess_CreatesUsageBilling()
     var
         UsageDataImport: Record "Usage Data Import";
+        UnrelatedImport: Record "Usage Data Import";
         UsageDataGenericImport: Record "Usage Data Generic Import";
         UsageDataBilling: Record "Usage Data Billing";
         ResponseJson: JsonObject;
@@ -78,6 +79,11 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         LineEntryNo := CreateUsageSubscription(true);
         EntryNo := CreateSupplierSubscription(Enum::"Connect To SO Method"::"Existing Service Commitments", ReferenceEntryNo);
         ImportEntryNo := CreateImportedUsage();
+        // A later import must stay untouched, even though Microsoft's billing codeunit can iterate imports.
+        UnrelatedImport.Init();
+        UnrelatedImport."Supplier No." := SupplierNoTok;
+        UnrelatedImport.Insert(false);
+        Commit();
 
         // [WHEN] The imported row is processed before the supplier subscription is connected
         RequestJson.Add('usageDataImportEntryNo', ImportEntryNo);
@@ -123,6 +129,8 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         Assert.AreEqual(ContractNoTok, UsageDataBilling."Subscription Contract No.", 'The usage must be assigned to the owned contract.');
         Assert.AreEqual(LineEntryNo, UsageDataBilling."Subscription Line Entry No.", 'The usage must name the connected line.');
         Assert.AreEqual(1, UsageDataBilling.Quantity, 'The imported quantity must reach usage billing.');
+        UnrelatedImport.Get(UnrelatedImport."Entry No.");
+        Assert.AreEqual(Enum::"Processing Status"::None, UnrelatedImport."Processing Status", 'Another import must not be processed or receive an error.');
     end;
 
     /// <summary>AC01, edge: a Subscription without usage based lines is skipped with Microsoft's reason, not refused.</summary>

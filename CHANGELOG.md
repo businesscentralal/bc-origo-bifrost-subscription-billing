@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-16) - usage processing scope
+
+- `Sub Usg Process Impl ori` (codeunit 10035054): scope every processing stage to the requested Usage Data Import. Microsoft's billing codeunit iterates the incoming view, so an unfiltered record could process other imports and pass the wrong import to the next stage. The #38 AC04 native test also verifies that a later, unrelated import stays untouched.
+
 ### Added (2026-10-16) - usage connection processing coverage
 
 - `Sub Usg Connect Tst ori` (codeunit 95713, #38 AC04): seed an imported usage row, verify it cannot be processed before connecting, then connect through the message type and retry all three usage-processing stages through customer usage billing. The fixture removes only its own supplier imports and billing rows before each test.

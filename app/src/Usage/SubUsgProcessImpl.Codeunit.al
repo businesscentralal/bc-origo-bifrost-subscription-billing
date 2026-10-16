@@ -188,6 +188,10 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
 
         if not UsageDataImport.Get(EntryNo) then
             Error(NotFoundErr, EntryNo);
+        // Microsoft's Create Usage Data Billing copies this record's filters and iterates them.
+        // Get alone leaves the record unfiltered, so another open import could be processed and
+        // returned to the next stage. Keep every stage scoped to the requested entry.
+        UsageDataImport.SetRecFilter();
         if UsageDataImport."Processing Status" = UsageDataImport."Processing Status"::Closed then
             Error(AlreadyClosedErr, EntryNo);
 
