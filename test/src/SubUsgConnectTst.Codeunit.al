@@ -325,6 +325,9 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         UsageDataSupplier.Modify(false);
         GenericImportSettings.Init();
         GenericImportSettings."Usage Data Supplier No." := SupplierNoTok;
+        // The supplier subscription is already seeded; do not ask the generic connector to create customers or subscriptions.
+        GenericImportSettings."Create Customers" := false;
+        GenericImportSettings."Create Supplier Subscriptions" := false;
         GenericImportSettings.Insert(false);
         UsageDataImport.Init();
         UsageDataImport."Supplier No." := SupplierNoTok;
