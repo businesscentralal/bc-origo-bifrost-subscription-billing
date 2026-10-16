@@ -8,19 +8,21 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         UnknownStageErr: Label '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', Comment = '%1 = stage name||is-IS=''%1'' er ekki þekkt innflutningsstig. Notaðu SubscriptionHeaders, CustomerContracts, SubscriptionLines eða ContractLines.';
         MaxErrorsCappedMsg: Label 'Only the first %1 errors are listed; more rows may have failed.', Comment = '%1 = maximum error count||is-IS=Aðeins fyrstu %1 villurnar eru sýndar; fleiri línur gætu hafa mistekist.';
-        LineTypeRequiredErr: Label 'Sub_ContractLineType is required: Subscription Line / Comment', Comment = 'is-IS=Sub_ContractLineType er nauðsynlegt: Áskriftarlína / Athugasemd';
+        LineTypeRequiredErr: Label 'Sub_ContractLineType is required: set it to Item or G/L Account, or to Comment and send allowCommentLines = true.', Comment = 'is-IS=Sub_ContractLineType er nauðsynlegt: veldu Vara eða Fjárhagsreikningur, eða Athugasemd og sendu allowCommentLines = true.';
         LineNotCreatedErr: Label 'Create Subscription Line reported success but Subscription Line Entry No. is still 0.', Comment = 'is-IS=Stofnun áskriftarlínu tilkynnti árangur en númer áskriftarlínu er enn 0.';
         SubscriptionHeadersTok: Label 'SubscriptionHeaders', Locked = true;
         CustomerContractsTok: Label 'CustomerContracts', Locked = true;
         SubscriptionLinesTok: Label 'SubscriptionLines', Locked = true;
         ContractLinesTok: Label 'ContractLines', Locked = true;
         MaxErrorCount: Integer;
-        DescriptionLbl: Label 'Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.', MaxLength = 250, Comment = 'is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptavina, áskriftarlínur og samningslínur áskriftarsamnings viðskiptavinar út frá innfluttum bráðabirgðalínum, eitt skref í einu.';
+        DescriptionLbl: Label 'Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.', MaxLength = 250, Comment = 'is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur áskriftarsamnings viðskiptamanns út frá innfluttum bráðabirgðalínum, eitt skref í einu.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -65,7 +67,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.ImportParameters();
         exit(true);
     end;
 
@@ -110,7 +112,10 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
     begin
         Examples.Add(ContractMgt.Example('Run all stages',
             '{"type":"Subscription.Import.CreateContracts","data":{}}',
-            '{"status":"Success","stages":[{"stage":"SubscriptionHeaders","processed":5,"succeeded":5,"failed":0},{"stage":"CustomerContracts","processed":5,"succeeded":4,"failed":1},{"stage":"SubscriptionLines","processed":5,"succeeded":5,"failed":0},{"stage":"ContractLines","processed":5,"succeeded":4,"failed":1}],"errors":[{"stage":"CustomerContracts","key":"12","error":"..."}]}'));
+            '{"status":"Success","stages":[{"stage":"SubscriptionHeaders","processed":5,"succeeded":5,"failed":0,"skipped":0},{"stage":"CustomerContracts","processed":5,"succeeded":4,"failed":1,"skipped":0},{"stage":"SubscriptionLines","processed":5,"succeeded":5,"failed":0,"skipped":0},{"stage":"ContractLines","processed":5,"succeeded":4,"failed":1,"skipped":0}],"errors":[{"stage":"CustomerContracts","key":"12","error":"..."}]}'));
+        Examples.Add(ContractMgt.Example('Import contract comment lines',
+            '{"type":"Subscription.Import.CreateContracts","data":{"stages":["SubscriptionLines","ContractLines"],"allowCommentLines":true}}',
+            '{"status":"Success","stages":[{"stage":"SubscriptionLines","processed":3,"succeeded":3,"failed":0,"skipped":1},{"stage":"ContractLines","processed":4,"succeeded":4,"failed":0,"skipped":0}],"errors":[]}'));
         exit(true);
     end;
 
@@ -122,7 +127,14 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := 'Sub_ContractLineType is required for a SubscriptionLines row. Comment, the field default, fails the row and does not create a comment line. A row whose Subscription Line Entry No. is still 0 after Create Subscription Line is also failed. A row failure does not fail the call.';
+        Notes := ('Stage the rows first, for example with Data.Records.Set on Imported Subscription Header, Imported Cust. Sub. Contract and Imported Subscription Line. ' +
+            'Every Imported Subscription Line row needs Sub_ContractLineType: Item or G/L Account for a billable line, or Comment for a contract comment line. ' +
+            'Comment is also the value of a row that never had the field set, so a Comment row is only imported when the call sends allowCommentLines = true; ' +
+            'the SubscriptionLines stage then skips it, and the ContractLines stage creates the contract comment line, which needs Subscription Contract No., ' +
+            'Partner and Invoicing via = Contract. Without allowCommentLines a Comment row fails with the line type error and no contract line is created for it. ' +
+            'A row whose Subscription Line Entry No. is still 0 after Create Subscription Line is also failed. When the call runs the SubscriptionLines stage, ' +
+            'the ContractLines stage skips the rows that stage failed, and counts them under skipped. A row failure does not fail the call. ' +
+            ContractParts.BooleanNote()).TrimEnd();
         exit(true);
     end;
 
@@ -136,9 +148,12 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -146,8 +161,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
             PerformWrite(Argument);
             exit;
         end;
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Imp CrContr Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -159,19 +173,23 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         ErrorsArray: JsonArray;
         RequestedStages: List of [Text];
         ErrorCount: Integer;
+        AllowCommentLines: Boolean;
+        SubscriptionLinesRequested: Boolean;
     begin
         RequestJson := Argument.GetRequestJson();
         GetRequestedStages(RequestJson, RequestedStages);
+        AllowCommentLines := Helper.GetBoolean(RequestJson, 'allowCommentLines', false);
+        SubscriptionLinesRequested := RequestedStages.Contains(SubscriptionLinesTok);
         MaxErrorCount := 50;
         ErrorCount := 0;
         if RequestedStages.Contains(SubscriptionHeadersTok) then
             RunSubscriptionHeaders(StagesArray, ErrorsArray, ErrorCount);
         if RequestedStages.Contains(CustomerContractsTok) then
             RunCustomerContracts(StagesArray, ErrorsArray, ErrorCount);
-        if RequestedStages.Contains(SubscriptionLinesTok) then
-            RunSubscriptionLines(StagesArray, ErrorsArray, ErrorCount);
+        if SubscriptionLinesRequested then
+            RunSubscriptionLines(StagesArray, ErrorsArray, ErrorCount, AllowCommentLines);
         if RequestedStages.Contains(ContractLinesTok) then
-            RunContractLines(StagesArray, ErrorsArray, ErrorCount);
+            RunContractLines(StagesArray, ErrorsArray, ErrorCount, AllowCommentLines, SubscriptionLinesRequested);
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('stages', StagesArray);
         ResponseJson.Add('errors', ErrorsArray);
@@ -205,7 +223,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         RequestedStages.Add(ContractLinesTok);
     end;
 
-    local procedure AddStageResult(var StagesArray: JsonArray; StageName: Text; Processed: Integer; Succeeded: Integer; Failed: Integer)
+    local procedure AddStageResult(var StagesArray: JsonArray; StageName: Text; Processed: Integer; Succeeded: Integer; Failed: Integer; Skipped: Integer)
     var
         StageJson: JsonObject;
     begin
@@ -213,6 +231,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         StageJson.Add('processed', Processed);
         StageJson.Add('succeeded', Succeeded);
         StageJson.Add('failed', Failed);
+        StageJson.Add('skipped', Skipped);
         StagesArray.Add(StageJson);
     end;
 
@@ -229,13 +248,14 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         ErrorsArray.Add(ErrorJson);
     end;
 
-    local procedure FailLine(var ImportedSubscriptionLine: Record "Imported Subscription Line"; var ErrorsArray: JsonArray; var ErrorCount: Integer; ErrorMessage: Text)
+    local procedure FailLine(var ImportedSubscriptionLine: Record "Imported Subscription Line"; var ErrorsArray: JsonArray; var ErrorCount: Integer; StageName: Text; ErrorMessage: Text)
     begin
         ImportedSubscriptionLine."Error Text" := CopyStr(ErrorMessage, 1, MaxStrLen(ImportedSubscriptionLine."Error Text"));
-        ImportedSubscriptionLine."Subscription Line created" := false;
+        if StageName = SubscriptionLinesTok then
+            ImportedSubscriptionLine."Subscription Line created" := false;
         ImportedSubscriptionLine.Modify(false);
         Commit();
-        AddError(ErrorsArray, ErrorCount, SubscriptionLinesTok, Format(ImportedSubscriptionLine."Entry No.", 0, 9), ImportedSubscriptionLine."Error Text");
+        AddError(ErrorsArray, ErrorCount, StageName, Format(ImportedSubscriptionLine."Entry No.", 0, 9), ImportedSubscriptionLine."Error Text");
     end;
 
     local procedure RunSubscriptionHeaders(var StagesArray: JsonArray; var ErrorsArray: JsonArray; var ErrorCount: Integer)
@@ -260,7 +280,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
                     AddError(ErrorsArray, ErrorCount, SubscriptionHeadersTok, Format(ImportedSubscriptionHeader."Entry No.", 0, 9), ImportedSubscriptionHeader."Error Text");
                 end;
             until ImportedSubscriptionHeader.Next() = 0;
-        AddStageResult(StagesArray, SubscriptionHeadersTok, Processed, Succeeded, Failed);
+        AddStageResult(StagesArray, SubscriptionHeadersTok, Processed, Succeeded, Failed, 0);
     end;
 
     local procedure RunCustomerContracts(var StagesArray: JsonArray; var ErrorsArray: JsonArray; var ErrorCount: Integer)
@@ -285,63 +305,88 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
                     AddError(ErrorsArray, ErrorCount, CustomerContractsTok, Format(ImportedCustSubContract."Entry No.", 0, 9), ImportedCustSubContract."Error Text");
                 end;
             until ImportedCustSubContract.Next() = 0;
-        AddStageResult(StagesArray, CustomerContractsTok, Processed, Succeeded, Failed);
+        AddStageResult(StagesArray, CustomerContractsTok, Processed, Succeeded, Failed, 0);
     end;
 
-    local procedure RunSubscriptionLines(var StagesArray: JsonArray; var ErrorsArray: JsonArray; var ErrorCount: Integer)
+    local procedure RunSubscriptionLines(var StagesArray: JsonArray; var ErrorsArray: JsonArray; var ErrorCount: Integer; AllowCommentLines: Boolean)
     var
         ImportedSubscriptionLine: Record "Imported Subscription Line";
         Processed: Integer;
         Succeeded: Integer;
         Failed: Integer;
+        Skipped: Integer;
     begin
-        ImportedSubscriptionLine.SetLoadFields("Entry No.", "Sub. Contract Line Type", "Subscription Line Entry No.", "Error Text", "Subscription Line created");
         ImportedSubscriptionLine.SetRange("Subscription Line created", false);
-        ImportedSubscriptionLine.SetLoadFields("Entry No.", "Sub. Contract Line Type", "Subscription Line Entry No.", "Error Text", "Subscription Line created");
         if ImportedSubscriptionLine.FindSet() then
             repeat
-                Processed += 1;
-                if ImportedSubscriptionLine."Sub. Contract Line Type" = ImportedSubscriptionLine."Sub. Contract Line Type"::Comment then begin
-                    Failed += 1;
-                    FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, LineTypeRequiredErr);
+                if ImportedSubscriptionLine.IsContractCommentLine() then begin
+                    if AllowCommentLines then
+                        Skipped += 1
+                    else begin
+                        Processed += 1;
+                        Failed += 1;
+                        FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, SubscriptionLinesTok, LineTypeRequiredErr);
+                    end;
                 end else begin
+                    Processed += 1;
                     ClearLastError();
                     if not Codeunit.Run(Codeunit::"Create Subscription Line", ImportedSubscriptionLine) then begin
                         Failed += 1;
-                        FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, GetLastErrorText());
+                        FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, SubscriptionLinesTok, GetLastErrorText());
                     end else
                         if ImportedSubscriptionLine."Subscription Line Entry No." = 0 then begin
                             Failed += 1;
-                            FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, LineNotCreatedErr);
+                            FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, SubscriptionLinesTok, LineNotCreatedErr);
                         end else
                             Succeeded += 1;
                 end;
             until ImportedSubscriptionLine.Next() = 0;
-        AddStageResult(StagesArray, SubscriptionLinesTok, Processed, Succeeded, Failed);
+        AddStageResult(StagesArray, SubscriptionLinesTok, Processed, Succeeded, Failed, Skipped);
     end;
 
-    local procedure RunContractLines(var StagesArray: JsonArray; var ErrorsArray: JsonArray; var ErrorCount: Integer)
+    local procedure RunContractLines(var StagesArray: JsonArray; var ErrorsArray: JsonArray; var ErrorCount: Integer; AllowCommentLines: Boolean; SubscriptionLinesRequested: Boolean)
     var
         ImportedSubscriptionLine: Record "Imported Subscription Line";
         Processed: Integer;
         Succeeded: Integer;
         Failed: Integer;
+        Skipped: Integer;
     begin
         ImportedSubscriptionLine.SetRange("Sub. Contract Line created", false);
         if ImportedSubscriptionLine.FindSet() then
             repeat
-                Processed += 1;
-                ClearLastError();
-                if Codeunit.Run(Codeunit::"Create Sub. Contract Line", ImportedSubscriptionLine) then
-                    Succeeded += 1
+                if IsReportedBySubscriptionLines(ImportedSubscriptionLine, AllowCommentLines, SubscriptionLinesRequested) then
+                    Skipped += 1
                 else begin
-                    Failed += 1;
-                    ImportedSubscriptionLine."Error Text" := CopyStr(GetLastErrorText(), 1, MaxStrLen(ImportedSubscriptionLine."Error Text"));
-                    ImportedSubscriptionLine.Modify(false);
-                    Commit();
-                    AddError(ErrorsArray, ErrorCount, ContractLinesTok, Format(ImportedSubscriptionLine."Entry No.", 0, 9), ImportedSubscriptionLine."Error Text");
+                    Processed += 1;
+                    if ImportedSubscriptionLine.IsContractCommentLine() and not AllowCommentLines then begin
+                        Failed += 1;
+                        FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, ContractLinesTok, LineTypeRequiredErr);
+                    end else begin
+                        ClearLastError();
+                        if Codeunit.Run(Codeunit::"Create Sub. Contract Line", ImportedSubscriptionLine) then
+                            Succeeded += 1
+                        else begin
+                            Failed += 1;
+                            FailLine(ImportedSubscriptionLine, ErrorsArray, ErrorCount, ContractLinesTok, GetLastErrorText());
+                        end;
+                    end;
                 end;
             until ImportedSubscriptionLine.Next() = 0;
-        AddStageResult(StagesArray, ContractLinesTok, Processed, Succeeded, Failed);
+        AddStageResult(StagesArray, ContractLinesTok, Processed, Succeeded, Failed, Skipped);
+    end;
+
+    /// <summary>
+    /// True for a row the SubscriptionLines stage of the same call has already failed and listed:
+    /// a comment row sent without allowCommentLines, or another row whose Subscription Line was not
+    /// created. The ContractLines stage skips such a row, so no contract line is created for it.
+    /// </summary>
+    local procedure IsReportedBySubscriptionLines(var ImportedSubscriptionLine: Record "Imported Subscription Line"; AllowCommentLines: Boolean; SubscriptionLinesRequested: Boolean): Boolean
+    begin
+        if not SubscriptionLinesRequested then
+            exit(false);
+        if ImportedSubscriptionLine.IsContractCommentLine() then
+            exit(not AllowCommentLines);
+        exit(not ImportedSubscriptionLine."Subscription Line created");
     end;
 }

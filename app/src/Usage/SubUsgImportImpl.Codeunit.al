@@ -2,6 +2,7 @@ namespace Origo.Bifrost.SubscriptionBilling;
 
 using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
+using System.Security.Encryption;
 using System.Text;
 using System.Utilities;
 
@@ -16,6 +17,8 @@ using System.Utilities;
 /// </summary>
 codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -66,7 +69,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.UsageImportParameters();
         exit(true);
     end;
 
@@ -127,7 +130,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
     begin
         Notes := ('The call commits the import and the blob before Microsoft''s step runs, and commits again before Process Imported Lines, so an error after that leaves ' +
             'the import entry in place. A file that parses with row-level problems is still a success: check processingStatus and reason, and the import in the ' +
-            'client for row detail. The blob''s Import Status is left at None, so Microsoft''s processing picks it up. ' +
+            'client for row detail. The blob is stamped Import Status Ok with the hash of its data, as Microsoft''s own file import does, because the Create Imported Lines step reads only Ok blobs. ' +
             ContractParts.BooleanNote()).TrimEnd();
         exit(true);
     end;
@@ -142,9 +145,12 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -154,12 +160,11 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Usg Import Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
-    /// <summary>Imports the usage data file and runs the import processing step. Called directly, or through the isolated write process.</summary>
+    /// <summary>Imports the usage data file and runs the import processing step. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         UsageDataImport: Record "Usage Data Import";
@@ -167,11 +172,14 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         UsageDataGenericImport: Record "Usage Data Generic Import";
         Base64Convert: Codeunit "Base64 Convert";
         TempBlob: Codeunit "Temp Blob";
+        CryptographyManagement: Codeunit "Cryptography Management";
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
         OutStr: OutStream;
         TempOutStr: OutStream;
         TempInStr: InStream;
+        HashInStr: InStream;
+        HashAlgorithmType: Option MD5,SHA1,SHA256,SHA384,SHA512;
         SupplierNo: Code[20];
         FileName: Text;
         Content: Text;
@@ -180,7 +188,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         ReasonText: Text;
     begin
         RequestJson := Argument.GetRequestJson();
-        SupplierNo := Helper.GetSubjectOr(Argument, RequestJson, 'supplierNo', true);
+        SupplierNo := Helper.GetSubjectOr(RequestJson, 'supplierNo', Argument, true);
         FileName := Helper.GetText(RequestJson, 'fileName', false);
         if FileName = '' then
             FileName := DefaultFileNameTok;
@@ -210,9 +218,15 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
             OutStr.WriteText(Content);
         UsageDataBlob.Source := CopyStr(FileName, 1, MaxStrLen(UsageDataBlob.Source));
         UsageDataBlob."Import Date" := Today();
-        // Leave "Import Status" at None. Microsoft's connector picks up blobs that have not been
-        // turned into imported lines yet and stamps Ok on them itself; a blob that already says Ok
-        // is treated as done and silently skipped.
+        // Stamp the blob the way Microsoft's own file import (Usage Data Blob.ImportFromFile, internal)
+        // does: Import Status Ok and the MD5 hash of the data. The generic connector's Create Imported
+        // Lines step reads only blobs whose Import Status is Ok, so a blob left at None is never parsed
+        // and the import ends with "No data found" (#43).
+        UsageDataBlob.Modify(false);
+        UsageDataBlob.CalcFields(Data);
+        UsageDataBlob.Data.CreateInStream(HashInStr);
+        UsageDataBlob."Data Hash Value" := CopyStr(CryptographyManagement.GenerateHash(HashInStr, HashAlgorithmType::MD5), 1, MaxStrLen(UsageDataBlob."Data Hash Value"));
+        UsageDataBlob."Import Status" := Enum::"Processing Status"::Ok;
         UsageDataBlob.Modify(false);
 
         UsageDataImport."Processing Step" := UsageDataImport."Processing Step"::"Create Imported Lines";

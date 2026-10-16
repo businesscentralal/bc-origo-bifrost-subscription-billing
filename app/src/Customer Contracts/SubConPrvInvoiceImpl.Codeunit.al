@@ -15,14 +15,16 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
-        ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar ''%1'' er ekki til.';
+        ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract no.||is-IS=Áskriftarsamningur viðskiptamanns ''%1'' er ekki til.';
         ForeignPendingErr: Label 'Contract ''%1'' has %2 pending billing line(s) with no billing template assigned. Clear or complete that proposal before previewing this contract, because the preview would also build proposal lines for those.', Comment = '%1 = foreign contract no., %2 = row count||is-IS=Samningur ''%1'' er með %2 óafgreiddar reikningslínur án úthlutaðs reikningssniðmáts. Ljúktu við eða hreinsaðu þá tillögu áður en þessi samningur er forskoðaður, því annars myndi forskoðunin einnig búa til tillögulínur fyrir þessar línur.';
         NothingNewMsg: Label 'Nothing new could be proposed for contract %1. Its due Subscription Lines are already covered by pending billing proposal lines - bill or clear those first.', Comment = '%1 = contract number||is-IS=Ekkert nýtt var hægt að leggja til fyrir samning %1. Áskriftarlínur hans eru þegar með reikningstillögulínur - ljúktu við þær eða hreinsaðu þær fyrst.';
         NothingDueMsg: Label 'No Subscription Lines were due for billing on or before %1 for contract %2.', Comment = '%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru komnar á gjalddaga til reikningsfærslu á eða fyrir %1 fyrir samning %2.';
-        DescriptionLbl: Label 'Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Nothing is written and no invoice is ever created.', MaxLength = 250, Comment = 'is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptavinar. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.';
+        DescriptionLbl: Label 'Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Nothing is written and no invoice is ever created.', MaxLength = 250, Comment = 'is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -41,14 +43,14 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.PreviewInvoice, Subscription, Contract, PreviewInvoice, customer, preview', Comment = 'is-IS=Subscription.Contract.PreviewInvoice, áskrift, samningur, forskoða reikning, viðskiptavinur, forskoðun';
+        KeywordsLbl: Label 'Subscription.Contract.PreviewInvoice, Subscription, Contract, PreviewInvoice, customer, preview', Comment = 'is-IS=Subscription.Contract.PreviewInvoice, áskrift, samningur, forskoða reikning, viðskiptamaður, forskoðun';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.PreviewInvoice: Previews a customer invoice without writing. Read-only.', Comment = 'is-IS=Subscription.Contract.PreviewInvoice: Forskoðar viðskiptareikning án þess að skrifa. Lesaðgerð.';
+        SelectionLbl: Label 'Subscription.Contract.PreviewInvoice: Previews a customer invoice without writing. Read-only.', Comment = 'is-IS=Subscription.Contract.PreviewInvoice: Forskoðar reikning viðskiptamanns án þess að skrifa. Lesaðgerð.';
     begin
         exit(SelectionLbl);
     end;
@@ -67,7 +69,7 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.InvoiceParameters('Customer Subscription Contract', false, false);
         exit(true);
     end;
 
@@ -143,10 +145,14 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     var
         BillingLine: Record "Billing Line";
-        WriteProcess: Codeunit "Sub Write Process ori";
         ContractNo: Code[20];
         WatermarkEntryNo: Integer;
     begin
@@ -158,13 +164,12 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
             exit;
         end;
 
-        ContractNo := Helper.GetSubjectOr(Argument, Argument.GetRequestJson(), 'contractNo', false);
+        ContractNo := Helper.GetSubjectOr(Argument.GetRequestJson(), 'contractNo', Argument, false);
         BillingLine.SetLoadFields("Entry No.");
         if BillingLine.FindLast() then
             WatermarkEntryNo := BillingLine."Entry No.";
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then begin
+        if not Codeunit.Run(Codeunit::"Sub Con PrvInvoice Impl ori", Argument) then begin
             // The proposal commits internally, so a rolled-back failure can still leave rows
             // behind. Remove them here, outside the isolation, where the delete itself sticks.
             if ContractNo <> '' then
@@ -173,7 +178,7 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
         end;
     end;
 
-    /// <summary>Builds and reports the preview, then cleans up after itself. Called directly, or through the isolated write process.</summary>
+    /// <summary>Builds and reports the preview, then cleans up after itself. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         ResponseJson: JsonObject;
@@ -181,7 +186,7 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
         BillingDate: Date;
         BillingToDate: Date;
     begin
-        ContractNo := Helper.GetSubjectOr(Argument, Argument.GetRequestJson(), 'contractNo', true);
+        ContractNo := Helper.GetSubjectOr(Argument.GetRequestJson(), 'contractNo', Argument, true);
         BillingDate := Helper.GetDateOrDefault(Argument.GetRequestJson(), 'billingDate', WorkDate());
         BillingToDate := Helper.GetDate(Argument.GetRequestJson(), 'billingToDate', false);
 

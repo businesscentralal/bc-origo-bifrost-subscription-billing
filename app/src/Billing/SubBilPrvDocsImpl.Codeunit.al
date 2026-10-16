@@ -14,14 +14,16 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Billing Template ''%1'' does not exist.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er ekki til.';
         InvalidGroupByErr: Label 'The parameter ''groupBy'' must be either ''Contract'' or ''Customer''.', Comment = 'is-IS=Færibreytan ''groupBy'' verður að vera annaðhvort ''Contract'' eða ''Customer''.';
-        GroupByCustomerOnlyErr: Label '''groupBy'' = ''Customer'' only applies when the pending proposal lines belong to customer contracts.', Comment = 'is-IS=''groupBy'' = ''Customer'' á aðeins við þegar óafgreiddar tillögulínur tilheyra viðskiptavinasamningum.';
+        GroupByCustomerOnlyErr: Label '''groupBy'' = ''Customer'' only applies when the pending proposal lines belong to customer contracts.', Comment = 'is-IS=''groupBy'' = ''Customer'' á aðeins við þegar óafgreiddar tillögulínur tilheyra áskriftarsamningum viðskiptamanna.';
         NothingPendingMsg: Label 'There are no unbilled proposal lines for Billing Template ''%1''. Run Subscription.Billing.CreateProposal first.', Comment = '%1 = billing template code||is-IS=Það eru engar óreikningsfærðar tillögulínur fyrir reikningssniðmátið ''%1''. Keyrðu Subscription.Billing.CreateProposal fyrst.';
-        MixedPartnerMsg: Label 'Billing Template ''%1'' currently has both customer and vendor proposal lines pending. A real run refuses to create documents for a mix of partner types until this is resolved.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er nú með bæði tillögulínur viðskiptavina og birgja í bið. Raunveruleg keyrsla neitar að búa til skjöl fyrir blöndu af tegundum viðskiptaaðila þar til úr því hefur verið leyst.';
+        MixedPartnerMsg: Label 'Billing Template ''%1'' currently has both customer and vendor proposal lines pending. A real run refuses to create documents for a mix of partner types until this is resolved.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er nú með bæði tillögulínur viðskiptamanna og lánardrottna í bið. Raunveruleg keyrsla neitar að búa til skjöl fyrir blöndu af tegundum viðskiptaaðila þar til úr því hefur verið leyst.';
         UpdateRequiredMsg: Label '%1 of the pending proposal line(s) are flagged ''Update Required'' and would need to be refreshed before a real run could process them.', Comment = '%1 = row count||is-IS=%1 af óafgreiddum tillögulínum eru merktar ''Uppfærslu krafist'' og þarf að endurnýja þær áður en raunveruleg keyrsla getur unnið úr þeim.';
         DescriptionLbl: Label 'Previews the documents that Subscription.Billing.CreateDocuments would create for a Billing Template, by reading the existing proposal lines. Reads only; writes nothing.', MaxLength = 250, Comment = 'is-IS=Forskoðar þau skjöl sem Subscription.Billing.CreateDocuments myndi búa til fyrir reikningssniðmát, með því að lesa fyrirliggjandi tillögulínur. Les eingöngu; skrifar ekkert.';
 
@@ -68,7 +70,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.BillingPreviewParameters();
         exit(true);
     end;
 
@@ -143,9 +145,12 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -155,8 +160,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Bil PrvDocs Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -171,7 +175,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
         Take: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        BillingTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'billingTemplateCode', true);
+        BillingTemplateCode := Helper.GetSubjectOr(RequestJson, 'billingTemplateCode', Argument, true);
         GroupBy := Helper.GetText(RequestJson, 'groupBy', false);
         Argument.EvaluateSkipTake(RequestJson, Skip, Take);
 

@@ -53,98 +53,139 @@ codeunit 10035075 "Sub Contract Parts ori"
         Target.Add(ContractMgt.TargetEntry('data.' + DataKey, SubjectForm, 'Read when the subject is empty.'));
     end;
 
-    /// <summary>Builds the request parameters the implementation reads under data.</summary>
+    /// <summary>
+    /// Builds no parameters. The blocked types call it: they answer every call with an error and read no request.
+    /// Every other type calls the parameter procedure of its own domain below, which names its keys literally
+    /// so the ContractParameterKeys guard can compare them with the keys the type reads (#26).
+    /// </summary>
     procedure GetParameters(MessageType: Text) Parameters: JsonArray
     begin
-        case MessageType of
-            'Subscription.Line.Create':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', true, 'The Subscription Header to add lines to. May be supplied as the subject instead.'));
-                    Parameters.Add(ContractMgt.Parameter('subscriptionPackageCode', 'string', true, 'The Subscription Package to apply.'));
-                    Parameters.Add(DateParameter('subscriptionLineStartDate', 'Start date for the new lines. Omit to let the package''s own date formula decide.'));
-                    Parameters.Add(DateParameter('subscriptionLineEndDate', 'End date for the new lines. Omit to leave the lines open-ended.'));
-                    Parameters.Add(BooleanParameter('usageBasedBillingPackageLinesOnly', false, 'When true, only the usage-based lines of the package are created.'));
-                end;
-            'Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The ' + PartnerContractName(MessageType) + ' to attach lines to. May be supplied as the subject instead.'));
-                    Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', false, 'Restricts the candidate lines to one Subscription Header.'));
-                    Parameters.Add(ContractMgt.Parameter('subscriptionLineEntryNos', 'array', false, 'Restricts the candidate lines to these Subscription Line entry numbers, written as whole numbers. A number that is not a candidate is ignored.'));
-                end;
-            'Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The ' + PartnerContractName(MessageType) + ' to bill. May be supplied as the subject instead.'));
-                    Parameters.Add(DateParameter('billingDate', 'Subscription Lines whose Next Billing Date is on or before this date are billed. Defaults to the work date.'));
-                    Parameters.Add(DateParameter('billingToDate', 'Bills complete periods up to this date. Omit to bill each line by its own billing rhythm.'));
-                    if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice'] then begin
-                        Parameters.Add(DateParameter('documentDate', 'Document date of the created document. Defaults to the work date.'));
-                        Parameters.Add(DateParameter('postingDate', 'Posting date of the created document. Defaults to the work date.'));
-                    end;
-                    if MessageType = 'Subscription.VendorContract.CreateInvoice' then
-                        Parameters.Add(ContractMgt.Parameter('vendorInvoiceNo', 'string', false, 'Validated into Vendor Invoice No. on every document this call creates, so the vendor''s duplicate invoice number check applies. Text past 35 characters is cut off.'));
-                end;
-            'Subscription.Billing.CreateProposal':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template to run. May be supplied as the subject instead.'));
-                    Parameters.Add(DateParameter('billingDate', 'Subscription Lines due on or before this date are proposed. Defaults to the work date.'));
-                    Parameters.Add(DateParameter('billingToDate', 'Bills complete periods up to this date. Omit to bill each line by its own billing rhythm.'));
-                    Parameters.Add(BooleanParameter('automatedBilling', true, 'Passed to Microsoft''s billing proposal as its automated billing flag. Leave it at the default for an unattended run.'));
-                end;
-            'Subscription.Billing.CreateDocuments':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template whose unbilled proposal lines are processed. May be supplied as the subject instead.'));
-                    Parameters.Add(DateParameter('documentDate', 'Document date of the created documents. Defaults to the work date.'));
-                    Parameters.Add(DateParameter('postingDate', 'Posting date of the created documents. Defaults to the work date.'));
-                    Parameters.Add(BooleanParameter('postDocuments', false, 'When true, the created sales documents are posted. Purchase documents are never posted.'));
-                    Parameters.Add(GroupByParameter('Contract creates one document per contract; Customer creates one document per Bill-to Customer No. and needs customer proposal lines.'));
-                end;
-            'Subscription.Billing.PreviewDocuments':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template to preview. May be supplied as the subject instead.'));
-                    Parameters.Add(GroupByParameter('Contract groups per Subscription Contract No.; Customer groups per Partner No. and needs every pending line to belong to a customer contract.'));
-                    Parameters.Add(IntegerParameter('skip', 0, 'Number of document groups to skip. Must be zero or greater.'));
-                    Parameters.Add(IntegerParameter('take', 100, 'Maximum number of document groups to return. Zero means the default; a value above 1000 is clamped to 1000. Must be zero or greater.'));
-                end;
-            'Subscription.PriceUpdate.SetTemplateFilter':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('priceUpdateTemplateCode', 'string', true, 'The Price Update Template to change. May be supplied as the subject instead.'));
-                    Parameters.Add(ContractMgt.Parameter('filter', 'string', true, 'A Business Central view, such as WHERE(Subscription Contract No.=FILTER(CC000010)) or a full SORTING(...) WHERE(...) view, of the table the target names. It is normalised before it is stored; a view without filters clears the stored filter.'));
-                    Parameters.Add(AllowedParameter('target', 'string', true, 'Which filter to write, in any casing: contract (Customer or Vendor Subscription Contract, following the template''s Partner), subscription (Subscription Header) or line (Subscription Line).', 'contract,subscription,line'));
-                end;
-            'Subscription.Renewal.Extend':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', true, 'The existing Subscription to extend. May be supplied as the subject instead.'));
-                    Parameters.Add(ContractMgt.Parameter('customerContractNo', 'string', false, 'An existing Customer Subscription Contract to extend onto. At least one of customerContractNo and vendorContractNo is required.'));
-                    Parameters.Add(ContractMgt.Parameter('vendorContractNo', 'string', false, 'An existing Vendor Subscription Contract to extend onto. At least one of customerContractNo and vendorContractNo is required.'));
-                    Parameters.Add(ContractMgt.Parameter('subscriptionPackageCodes', 'array', false, 'Subscription Package codes to apply in addition to the item''s standard packages, which Microsoft always applies.'));
-                    Parameters.Add(BooleanParameter('usageBasedBillingPackageLinesOnly', false, 'When true, only usage-based package lines are added.'));
-                    Parameters.Add(IntegerParameter('supplierReferenceEntryNo', 0, 'Links the extension to a supplier reference entry.'));
-                end;
-            'Subscription.Renewal.CreateQuote':
-                Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The Customer Subscription Contract to renew. May be supplied as the subject instead.'));
-            'Subscription.Usage.ImportData':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('supplierNo', 'string', true, 'The Usage Data Supplier the file came from. May be supplied as the subject instead.'));
-                    Parameters.Add(TextParameter('fileName', 'bifrost-usage.csv', 'File name recorded as Source on the Usage Data Blob.'));
-                    Parameters.Add(ContractMgt.Parameter('content', 'string', false, 'The file content as text, for example a CSV payload. Required unless contentBase64 is given.'));
-                    Parameters.Add(ContractMgt.Parameter('contentBase64', 'string', false, 'The file content, base64 encoded, for payloads that are not plain text. Required unless content is given; when both are given, contentBase64 is used.'));
-                    Parameters.Add(BooleanParameter('runProcessing', false, 'When true, the Process Imported Lines step runs right after the import.'));
-                end;
-            'Subscription.Usage.Process':
-                begin
-                    Parameters.Add(ContractMgt.Parameter('usageDataImportEntryNo', 'integer', true, 'The Usage Data Import entry to process. May be supplied as the subject instead.'));
-                    Parameters.Add(AllowedParameter('steps', 'array', false, 'The processing steps to run, in the order given. Defaults to ProcessImportedLines, CreateUsageDataBilling, ProcessUsageDataBilling. CreateImportedLines parses the stored file again and is never run by default.', 'CreateImportedLines,ProcessImportedLines,CreateUsageDataBilling,ProcessUsageDataBilling'));
-                end;
-            'Subscription.Deferral.Release':
-                begin
-                    Parameters.Add(DateParameter('postingDate', 'The date the caller expects the release to post under. Must equal the work date, the only date Business Central uses. Defaults to the work date.'));
-                    Parameters.Add(DateParameter('postUntilDate', 'The latest deferral posting date the caller accepts to release. The call is refused when the release would go past it. Must not be later than postingDate; defaults to postingDate.'));
-                end;
-            'Subscription.Analysis.Recalculate':
-                Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Narrows the counts in the response to this Subscription Contract. It does not scope the run: the report always analyses every contract.'));
-            'Subscription.Import.CreateContracts':
-                Parameters.Add(AllowedParameter('stages', 'array', false, 'The import stages to run. Defaults to all four. They always run in the fixed order SubscriptionHeaders, CustomerContracts, SubscriptionLines, ContractLines, whatever order is given.', 'SubscriptionHeaders,CustomerContracts,SubscriptionLines,ContractLines'));
+    end;
+
+    /// <summary>The parameters of Subscription.Line.Create.</summary>
+    procedure LineCreateParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', true, 'The Subscription Header to add lines to. May be supplied as the subject instead.'));
+        Parameters.Add(ContractMgt.Parameter('subscriptionPackageCode', 'string', true, 'The Subscription Package to apply.'));
+        Parameters.Add(AsDate(ContractMgt.Parameter('subscriptionLineStartDate', 'string', false, 'Start date for the new lines. Omit to let the package''s own date formula decide.')));
+        Parameters.Add(AsDate(ContractMgt.Parameter('subscriptionLineEndDate', 'string', false, 'End date for the new lines. Omit to leave the lines open-ended.')));
+        Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('usageBasedBillingPackageLinesOnly', 'boolean', false, 'When true, only the usage-based lines of the package are created.'), false));
+    end;
+
+    /// <summary>The parameters of Subscription.Contract.GetLines and Subscription.VendorContract.GetLines.</summary>
+    /// <param name="ContractName">The contract record name, Customer Subscription Contract or Vendor Subscription Contract.</param>
+    procedure GetLinesParameters(ContractName: Text) Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The ' + ContractName + ' to attach lines to. May be supplied as the subject instead.'));
+        Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', false, 'Restricts the candidate lines to one Subscription Header.'));
+        Parameters.Add(ContractMgt.Parameter('subscriptionLineEntryNos', 'array', false, 'Restricts the candidate lines to these Subscription Line entry numbers, written as whole numbers. A number that is not a candidate is ignored.'));
+    end;
+
+    /// <summary>The parameters of the four contract invoice types.</summary>
+    /// <param name="ContractName">The contract record name, Customer Subscription Contract or Vendor Subscription Contract.</param>
+    /// <param name="WithDocumentDates">True for the CreateInvoice types, which read documentDate and postingDate.</param>
+    /// <param name="WithVendorInvoiceNo">True for Subscription.VendorContract.CreateInvoice, which reads vendorInvoiceNo.</param>
+    procedure InvoiceParameters(ContractName: Text; WithDocumentDates: Boolean; WithVendorInvoiceNo: Boolean) Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The ' + ContractName + ' to bill. May be supplied as the subject instead.'));
+        Parameters.Add(AsDate(ContractMgt.Parameter('billingDate', 'string', false, 'Subscription Lines whose Next Billing Date is on or before this date are billed. Defaults to the work date.')));
+        Parameters.Add(AsDate(ContractMgt.Parameter('billingToDate', 'string', false, 'Bills complete periods up to this date. Omit to bill each line by its own billing rhythm.')));
+        if WithDocumentDates then begin
+            Parameters.Add(AsDate(ContractMgt.Parameter('documentDate', 'string', false, 'Document date of the created document. Defaults to the work date.')));
+            Parameters.Add(AsDate(ContractMgt.Parameter('postingDate', 'string', false, 'Posting date of the created document. Defaults to the work date.')));
         end;
+        if WithVendorInvoiceNo then
+            Parameters.Add(ContractMgt.Parameter('vendorInvoiceNo', 'string', false, 'Validated into Vendor Invoice No. on every document this call creates, so the vendor''s duplicate invoice number check applies. Text past 35 characters is cut off.'));
+    end;
+
+    /// <summary>The parameters of Subscription.Billing.CreateProposal.</summary>
+    procedure BillingProposalParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template to run. May be supplied as the subject instead.'));
+        Parameters.Add(AsDate(ContractMgt.Parameter('billingDate', 'string', false, 'Subscription Lines due on or before this date are proposed. Defaults to the work date.')));
+        Parameters.Add(AsDate(ContractMgt.Parameter('billingToDate', 'string', false, 'Bills complete periods up to this date. Omit to bill each line by its own billing rhythm.')));
+        Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('automatedBilling', 'boolean', false, 'Passed to Microsoft''s billing proposal as its automated billing flag. Leave it at the default for an unattended run.'), true));
+    end;
+
+    /// <summary>The parameters of Subscription.Billing.CreateDocuments.</summary>
+    procedure BillingDocumentsParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template whose unbilled proposal lines are processed. May be supplied as the subject instead.'));
+        Parameters.Add(AsDate(ContractMgt.Parameter('documentDate', 'string', false, 'Document date of the created documents. Defaults to the work date.')));
+        Parameters.Add(AsDate(ContractMgt.Parameter('postingDate', 'string', false, 'Posting date of the created documents. Defaults to the work date.')));
+        Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('postDocuments', 'boolean', false, 'When true, the created sales documents are posted. Purchase documents are never posted.'), false));
+        Parameters.Add(AsGroupBy(ContractMgt.Parameter('groupBy', 'string', false, 'Contract creates one document per contract; Customer creates one document per Bill-to Customer No. and needs customer proposal lines. Any casing.')));
+    end;
+
+    /// <summary>The parameters of Subscription.Billing.PreviewDocuments.</summary>
+    procedure BillingPreviewParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template to preview. May be supplied as the subject instead.'));
+        Parameters.Add(AsGroupBy(ContractMgt.Parameter('groupBy', 'string', false, 'Contract groups per Subscription Contract No.; Customer groups per Partner No. and needs every pending line to belong to a customer contract. Any casing.')));
+        Parameters.Add(WithIntegerDefault(ContractMgt.Parameter('skip', 'integer', false, 'Number of document groups to skip. Must be zero or greater.'), 0));
+        Parameters.Add(WithIntegerDefault(ContractMgt.Parameter('take', 'integer', false, 'Maximum number of document groups to return. Zero means the default; a value above 1000 is clamped to 1000. Must be zero or greater.'), 100));
+    end;
+
+    /// <summary>The parameters of Subscription.PriceUpdate.SetTemplateFilter.</summary>
+    procedure SetTemplateFilterParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('priceUpdateTemplateCode', 'string', true, 'The Price Update Template to change. May be supplied as the subject instead.'));
+        Parameters.Add(ContractMgt.Parameter('filter', 'string', true, 'A Business Central view, such as WHERE(Subscription Contract No.=FILTER(CC000010)) or a full SORTING(...) WHERE(...) view, of the table the target names. It is normalised before it is stored; a view without filters clears the stored filter.'));
+        Parameters.Add(WithAllowed(ContractMgt.Parameter('target', 'string', true, 'Which filter to write, in any casing: contract (Customer or Vendor Subscription Contract, following the template''s Partner), subscription (Subscription Header) or line (Subscription Line).'), 'contract,subscription,line'));
+    end;
+
+    /// <summary>The parameters of Subscription.Renewal.Extend.</summary>
+    procedure RenewalExtendParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', true, 'The existing Subscription to extend. May be supplied as the subject instead.'));
+        Parameters.Add(ContractMgt.Parameter('customerContractNo', 'string', false, 'An existing Customer Subscription Contract to extend onto. At least one of customerContractNo and vendorContractNo is required.'));
+        Parameters.Add(ContractMgt.Parameter('vendorContractNo', 'string', false, 'An existing Vendor Subscription Contract to extend onto. At least one of customerContractNo and vendorContractNo is required.'));
+        Parameters.Add(ContractMgt.Parameter('subscriptionPackageCodes', 'array', false, 'Subscription Package codes to apply in addition to the item''s standard packages, which Microsoft always applies.'));
+        Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('usageBasedBillingPackageLinesOnly', 'boolean', false, 'When true, only usage-based package lines are added.'), false));
+        Parameters.Add(WithIntegerDefault(ContractMgt.Parameter('supplierReferenceEntryNo', 'integer', false, 'Links the extension to a supplier reference entry.'), 0));
+    end;
+
+    /// <summary>The parameters of Subscription.Renewal.CreateQuote.</summary>
+    procedure RenewalQuoteParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The Customer Subscription Contract to renew. May be supplied as the subject instead.'));
+    end;
+
+    /// <summary>The parameters of Subscription.Usage.ImportData.</summary>
+    procedure UsageImportParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('supplierNo', 'string', true, 'The Usage Data Supplier the file came from. May be supplied as the subject instead.'));
+        Parameters.Add(WithTextDefault(ContractMgt.Parameter('fileName', 'string', false, 'File name recorded as Source on the Usage Data Blob.'), 'bifrost-usage.csv'));
+        Parameters.Add(ContractMgt.Parameter('content', 'string', false, 'The file content as text, for example a CSV payload. Required unless contentBase64 is given.'));
+        Parameters.Add(ContractMgt.Parameter('contentBase64', 'string', false, 'The file content, base64 encoded, for payloads that are not plain text. Required unless content is given; when both are given, contentBase64 is used.'));
+        Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('runProcessing', 'boolean', false, 'When true, the Process Imported Lines step runs right after the import.'), false));
+    end;
+
+    /// <summary>The parameters of Subscription.Usage.Process.</summary>
+    procedure UsageProcessParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('usageDataImportEntryNo', 'integer', true, 'The Usage Data Import entry to process. May be supplied as the subject instead.'));
+        Parameters.Add(WithAllowed(ContractMgt.Parameter('steps', 'array', false, 'The processing steps to run, in the order given. Defaults to ProcessImportedLines, CreateUsageDataBilling, ProcessUsageDataBilling. CreateImportedLines parses the stored file again and is never run by default.'), 'CreateImportedLines,ProcessImportedLines,CreateUsageDataBilling,ProcessUsageDataBilling'));
+    end;
+
+    /// <summary>The parameters of Subscription.Deferral.Release.</summary>
+    procedure DeferralReleaseParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(AsDate(ContractMgt.Parameter('postingDate', 'string', false, 'The date the caller expects the release to post under. Must equal the work date, the only date Business Central uses. Defaults to the work date.')));
+        Parameters.Add(AsDate(ContractMgt.Parameter('postUntilDate', 'string', false, 'The latest deferral posting date the caller accepts to release. The call is refused when the release would go past it. Must not be later than postingDate; defaults to postingDate.')));
+    end;
+
+    /// <summary>The parameters of Subscription.Analysis.Recalculate.</summary>
+    procedure AnalysisParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Narrows the counts in the response to this Subscription Contract. It does not scope the run: the report always analyses every contract.'));
+    end;
+
+    /// <summary>The parameters of Subscription.Import.CreateContracts.</summary>
+    procedure ImportParameters() Parameters: JsonArray
+    begin
+        Parameters.Add(WithAllowed(ContractMgt.Parameter('stages', 'array', false, 'The import stages to run. Defaults to all four. They always run in the fixed order SubscriptionHeaders, CustomerContracts, SubscriptionLines, ContractLines, whatever order is given.'), 'SubscriptionHeaders,CustomerContracts,SubscriptionLines,ContractLines'));
+        Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('allowCommentLines', 'boolean', false, 'When true, staged lines whose Sub_ContractLineType is Comment become contract comment lines in the ContractLines stage. When false, such a row fails with the line type error, because Comment is also the value of a row whose line type was never set.'), false));
     end;
 
     /// <summary>Builds the fields of the Success answer.</summary>
@@ -320,6 +361,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Children.Add(ContractMgt.ResponseField('processed', 'integer', 'Unprocessed staging rows the stage found.'));
                     Children.Add(ContractMgt.ResponseField('succeeded', 'integer', 'Rows that created their record.'));
                     Children.Add(ContractMgt.ResponseField('failed', 'integer', 'Rows that failed; their error text is stored on the staging row.'));
+                    Children.Add(ContractMgt.ResponseField('skipped', 'integer', 'Rows the stage left alone: in SubscriptionLines the Comment rows of an allowCommentLines call, in ContractLines the rows the SubscriptionLines stage of the same call failed. Always 0 for the other stages.'));
                     Fields.Add(FieldWithChildren('stages', 'array', 'One entry per stage that ran.', Children));
                     MoreChildren.Add(ContractMgt.ResponseField('stage', 'string', 'The stage the row failed in.'));
                     MoreChildren.Add(ContractMgt.ResponseField('key', 'string', 'Entry No. of the staging row.'));
@@ -383,6 +425,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Deferral.Release':
                 Preconditions.Add('postingDate is the session work date, and no unreleased deferral posts after postUntilDate up to the work date.');
         end;
+        AddSetupPreconditions(MessageType, Preconditions);
         Effect.Add('preconditions', Preconditions);
     end;
 
@@ -543,6 +586,36 @@ codeunit 10035075 "Sub Contract Parts ori"
         exit('This message type is blocked. It is registered so that it can be discovered, but every call answers with an error and writes nothing; the request is not read. ');
     end;
 
+    /// <summary>
+    /// Adds the precondition on the Subscription Billing records a type reads but does not create.
+    /// A caller prepares them with Foundation's generic writes, which the Bifrost Setup write guard
+    /// blocks by default.
+    /// </summary>
+    local procedure AddSetupPreconditions(MessageType: Text; var Preconditions: JsonArray)
+    var
+        Records: Text;
+    begin
+        case MessageType of
+            'Subscription.Line.Create':
+                Records := 'The Subscription Header and the Subscription Package exist';
+            'Subscription.Contract.GetLines', 'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.Renewal.CreateQuote':
+                Records := 'The Customer Subscription Contract exists';
+            'Subscription.VendorContract.GetLines', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
+                Records := 'The Vendor Subscription Contract exists';
+            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments':
+                Records := 'The Billing Template exists';
+            'Subscription.Renewal.Extend':
+                Records := 'The Subscription and the customer or vendor contract exist';
+            'Subscription.Usage.ImportData':
+                Records := 'The Usage Data Supplier and its Generic Import Settings exist';
+            'Subscription.Import.CreateContracts':
+                Records := 'The staging rows exist in Imported Subscription Header, Imported Cust. Sub. Contract and Imported Subscription Line';
+            else
+                exit;
+        end;
+        Preconditions.Add(Records + '. This call does not create them. Writing them with Data.Records.Set needs the Bifrost Setup write guard set to Open, or Change Log coverage on those Subscription Billing tables, because the guard is Blocked by default.');
+    end;
+
     local procedure IsBlocked(MessageType: Text): Boolean
     begin
         exit(MessageType in ['Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates', 'Subscription.PriceUpdate.CreateProposal', 'Subscription.PriceUpdate.Perform']);
@@ -585,7 +658,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Analysis.Recalculate':
                 exit('Create Contract Analysis adds analysis entries for Subscription Lines with a contract and skips a line that already has an entry for the current month.');
             'Subscription.Import.CreateContracts':
-                exit('Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from the unprocessed staging rows. A failed row gets its error text on the staging row, committed at once.');
+                exit('Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from the unprocessed staging rows, and contract comment lines when allowCommentLines is true. A failed row gets its error text on the staging row, committed at once.');
         end;
         exit('The operation invokes Microsoft Subscription Billing logic and changes the records described by the request.');
     end;
@@ -619,12 +692,6 @@ codeunit 10035075 "Sub Contract Parts ori"
         SubjectForm := NewSubjectForm;
     end;
 
-    local procedure PartnerContractName(MessageType: Text): Text
-    begin
-        if MessageType.StartsWith('Subscription.VendorContract.') then
-            exit('Vendor Subscription Contract');
-        exit('Customer Subscription Contract');
-    end;
 
     local procedure AddParameterErrors(MessageType: Text; var Errors: JsonArray)
     begin
@@ -739,45 +806,46 @@ codeunit 10035075 "Sub Contract Parts ori"
         Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::BusinessCentralError, ErrorText, When, Fix));
     end;
 
-    local procedure DateParameter(Name: Text; Description: Text) Entry: JsonObject
+    local procedure AsDate(Entry: JsonObject): JsonObject
     begin
-        Entry := ContractMgt.Parameter(Name, 'string', false, Description);
         Entry.Add('format', 'date');
+        exit(Entry);
     end;
 
-    local procedure BooleanParameter(Name: Text; DefaultValue: Boolean; Description: Text) Entry: JsonObject
+    local procedure WithBooleanDefault(Entry: JsonObject; DefaultValue: Boolean): JsonObject
     begin
-        Entry := ContractMgt.Parameter(Name, 'boolean', false, Description);
         Entry.Add('default', DefaultValue);
+        exit(Entry);
     end;
 
-    local procedure IntegerParameter(Name: Text; DefaultValue: Integer; Description: Text) Entry: JsonObject
+    local procedure WithIntegerDefault(Entry: JsonObject; DefaultValue: Integer): JsonObject
     begin
-        Entry := ContractMgt.Parameter(Name, 'integer', false, Description);
         Entry.Add('default', DefaultValue);
+        exit(Entry);
     end;
 
-    local procedure TextParameter(Name: Text; DefaultValue: Text; Description: Text) Entry: JsonObject
+    local procedure WithTextDefault(Entry: JsonObject; DefaultValue: Text): JsonObject
     begin
-        Entry := ContractMgt.Parameter(Name, 'string', false, Description);
         Entry.Add('default', DefaultValue);
+        exit(Entry);
     end;
 
-    local procedure GroupByParameter(Description: Text) Entry: JsonObject
+    local procedure AsGroupBy(Entry: JsonObject): JsonObject
     begin
-        Entry := AllowedParameter('groupBy', 'string', false, Description + ' Any casing.', 'Contract,Customer');
+        Entry := WithAllowed(Entry, 'Contract,Customer');
         Entry.Add('default', 'Contract');
+        exit(Entry);
     end;
 
-    local procedure AllowedParameter(Name: Text; JsonType: Text; Required: Boolean; Description: Text; AllowedValues: Text) Entry: JsonObject
+    local procedure WithAllowed(Entry: JsonObject; AllowedValues: Text): JsonObject
     var
         Allowed: JsonArray;
         AllowedValue: Text;
     begin
         foreach AllowedValue in AllowedValues.Split(',') do
             Allowed.Add(AllowedValue);
-        Entry := ContractMgt.Parameter(Name, JsonType, Required, Description);
         Entry.Add('allowed', Allowed);
+        exit(Entry);
     end;
 
     local procedure FieldWithChildren(Name: Text; JsonType: Text; Description: Text; Children: JsonArray) Entry: JsonObject

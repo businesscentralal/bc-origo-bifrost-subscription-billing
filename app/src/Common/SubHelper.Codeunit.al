@@ -227,8 +227,8 @@ codeunit 10035058 "Sub Helper ori"
         end;
     end;
 
-    /// <summary>Returns the subject when set, otherwise the named request property.</summary>
-    procedure GetSubjectOr(var Argument: Record "Message Argument ori"; RequestJson: JsonObject; PropertyName: Text; Required: Boolean) Value: Code[20]
+    /// <summary>Returns the subject when set, otherwise the named request property. The request and the key come first, as in every other reader, so the key reads as a request key.</summary>
+    procedure GetSubjectOr(RequestJson: JsonObject; PropertyName: Text; var Argument: Record "Message Argument ori"; Required: Boolean) Value: Code[20]
     begin
         if Argument.Subject <> '' then begin
             if StrLen(Argument.Subject) > MaxStrLen(Value) then

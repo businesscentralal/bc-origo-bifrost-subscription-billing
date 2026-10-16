@@ -12,6 +12,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -19,7 +21,7 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
         PostingDateNotSupportedErr: Label 'Business Central posts this release under the work date (%1) and offers no supported way to post it under a different one, so ''postingDate'' (%2) cannot be honoured. Omit ''postingDate'', or set the session work date to %2 before calling.', Comment = '%1 = work date, %2 = requested posting date||is-IS=Business Central bókar þessa losun miðað við vinnudagsetninguna (%1) og býður enga studda leið til að bóka hana miðað við aðra, svo ekki er hægt að virða ''postingDate'' (%2). Slepptu ''postingDate'', eða stilltu vinnudagsetningu setunnar á %2 áður en kallað er.';
         WouldOverReleaseErr: Label 'Refusing to run: Business Central would release %1 deferral(s) posted between ''postUntilDate'' (%2) and the work date (%3). The report cannot be told where to stop from an external app, so it always releases everything eligible up to the work date. Set the session work date to %2 before calling, or raise ''postUntilDate'' to %3 to accept releasing all of them.', Comment = '%1 = number of deferrals, %2 = post until date, %3 = work date||is-IS=Keyrslu hafnað: Business Central myndi losa um %1 frestanir sem voru bókaðar á milli ''postUntilDate'' (%2) og vinnudagsins (%3). Ekki er hægt að segja skýrslunni hvar hún á að stoppa frá utanaðkomandi appi, svo hún losar alltaf allt sem uppfyllir skilyrði fram að vinnudeginum. Stilltu vinnudag setunnar á %2 áður en kallað er, eða hækkaðu ''postUntilDate'' í %3 til að samþykkja að þær losni allar.';
         OvershotWindowMsg: Label 'Business Central released %1 deferral(s) posted after ''postUntilDate'' (%2). The release has already posted to the general ledger and cannot be undone from here - reconcile before releasing again.', Comment = '%1 = number of deferrals released outside the window, %2 = post until date||is-IS=Business Central losaði um %1 frestanir sem voru bókaðar eftir ''postUntilDate'' (%2). Losunin hefur þegar verið bókuð í fjárhagsbókhald og verður ekki afturkölluð héðan - stemmdu af áður en losað er aftur.';
-        DescriptionLbl: Label 'Releases deferred revenue and cost for customer and vendor Subscription Contracts up to a date, posting the release to the general ledger.', MaxLength = 250, Comment = 'is-IS=Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptavina og birgja fram að tilteknum degi og bókfærir losunina í fjárhagsbókhald.';
+        DescriptionLbl: Label 'Releases deferred revenue and cost for customer and vendor Subscription Contracts up to a date, posting the release to the general ledger.', MaxLength = 250, Comment = 'is-IS=Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptamanna og lánardrottna fram að tilteknum degi og bókar losunina í fjárhagsbókhald.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -64,7 +66,7 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.DeferralReleaseParameters();
         exit(true);
     end;
 
@@ -140,9 +142,12 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -152,12 +157,11 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Def Release Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
-    /// <summary>Runs the deferral release report. Called directly, or through the isolated write process.</summary>
+    /// <summary>Runs the deferral release report. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         RequestJson: JsonObject;
