@@ -329,7 +329,7 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         UsageDataImport.Insert(false);
         UsageDataGenericImport.Init();
         UsageDataGenericImport."Usage Data Import Entry No." := UsageDataImport."Entry No.";
-        UsageDataGenericImport."Supp. Subscription ID" := 'XSBA38REF';
+        UsageDataGenericImport.Validate("Supp. Subscription ID", 'XSBA38REF');
         UsageDataGenericImport."Supp. Subscription Start Date" := WorkDate();
         UsageDataGenericImport."Billing Period Start Date" := WorkDate();
         UsageDataGenericImport."Billing Period End Date" := CalcDate('<CM>', WorkDate());
@@ -372,13 +372,13 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         UsageDataSupplierReference.Init();
         UsageDataSupplierReference."Supplier No." := SupplierNoTok;
         UsageDataSupplierReference.Type := UsageDataSupplierReference.Type::Subscription;
-        UsageDataSupplierReference."Supplier Reference" := 'XSBA38REF';
+        UsageDataSupplierReference.Validate("Supplier Reference", 'XSBA38REF');
         UsageDataSupplierReference.Insert(false);
         ReferenceEntryNo := UsageDataSupplierReference."Entry No.";
 
         UsageDataSubscription.Init();
         UsageDataSubscription."Supplier No." := SupplierNoTok;
-        UsageDataSubscription."Supplier Reference" := 'XSBA38REF';
+        UsageDataSubscription.Validate("Supplier Reference", 'XSBA38REF');
         UsageDataSubscription."Supplier Reference Entry No." := ReferenceEntryNo;
         if Method <> Method::None then
             UsageDataSubscription."Connect to Sub. Header No." := HeaderNoTok;
