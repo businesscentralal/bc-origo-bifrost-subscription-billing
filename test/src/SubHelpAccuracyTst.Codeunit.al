@@ -41,6 +41,38 @@ codeunit 95772 "Sub Help Accuracy Tst ori"
     end;
 
     [Test]
+    procedure Scenario_AC02_SetupPrecondition_AgreesInNumber()
+    var
+        CustomerText: Text;
+        SeveralText: Text;
+    begin
+        // Issue #44 story note 15.10 | Time: none | Risk: None
+        // [THEN] One record is "it"; several records are "them"; each sentence has a subject
+        CustomerText := PreconditionsText('Subscription.Contract.GetLines');
+        Assert.IsTrue(CustomerText.Contains('The Customer Subscription Contract must already exist; this call does not create it.'), 'A customer contract precondition needs a singular subject.');
+        Assert.IsFalse(CustomerText.Contains('does not create them.'), 'A single customer contract is not "them".');
+        Assert.IsTrue(PreconditionsText('Subscription.VendorContract.GetLines').Contains('The Vendor Subscription Contract must already exist; this call does not create it.'), 'A vendor contract precondition needs a singular subject.');
+        Assert.IsTrue(PreconditionsText('Subscription.Billing.CreateProposal').Contains('The Billing Template must already exist; this call does not create it.'), 'A billing template precondition needs a singular subject.');
+        SeveralText := PreconditionsText('Subscription.Line.Create');
+        Assert.IsTrue(SeveralText.Contains('The Subscription Header and the Subscription Package must already exist; this call does not create them.'), 'Line.Create prepares two records.');
+        Assert.IsTrue(PreconditionsText('Subscription.Import.CreateContracts').Contains('must already exist; this call does not create them.'), 'Import staging rows are plural.');
+    end;
+
+    [Test]
+    procedure Scenario_AC06_ImportProcessedCount_LeavesSkippedRowsOut()
+    var
+        ContractText: Text;
+    begin
+        // Issue #44 story note 15.10 | Time: none | Risk: None
+        // The note names Usage.Process. That type has no processed field. The field, and the
+        // example that already separates skipped, belong to Subscription.Import.CreateContracts.
+        // [THEN] processed says skipped rows are left out of the count
+        ContractText := GetContractText('Subscription.Import.CreateContracts');
+        Assert.IsTrue(ContractText.Contains('Skipped rows are left out of this count.'), 'processed must say skipped rows are left out.');
+        Assert.IsFalse(ContractText.Contains('Unprocessed staging rows the stage found.'), 'The old processed description must be gone.');
+    end;
+
+    [Test]
     procedure Scenario_AC01_Contracts_MakeNoEndToEndOrVersionClaims()
     var
         ContractText: Text;
