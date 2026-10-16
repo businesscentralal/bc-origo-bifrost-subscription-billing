@@ -466,21 +466,27 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Line Create Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked: Microsoft has not exposed a public API to create price update proposals. Use the "Contract Price Update" page instead.</source>
-          <target>Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að búa til verðuppfærslutillögur. Notaðu síðuna "Contract Price Update" í staðinn.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að búa til verðuppfærslutillögur. Notaðu síðuna "Contract Price Update" í staðinn.</note>
+          <source>Creates the Contract Price Update Lines of a Price Update Template, as the Contract Price Update page does. Subscription Lines are not changed.</source>
+          <target>Stofnar línur verðuppfærslu áskriftarsamnings fyrir sniðmát fyrir verðuppfærslu, eins og síðan Verðuppfærsla áskriftarsamnings gerir. Áskriftarlínum er ekki breytt.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Stofnar línur verðuppfærslu áskriftarsamnings fyrir sniðmát fyrir verðuppfærslu, eins og síðan Verðuppfærsla áskriftarsamnings gerir. Áskriftarlínum er ekki breytt.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 439992956 - NamedType 1724934514" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.PriceUpdate.CreateProposal cannot run: Codeunit "Price Update Management".CreatePriceUpdateProposal is internal in Business Central 28.4 and has not been exposed for external callers. Use the "Contract Price Update" page in the Business Central client to create the proposal, or call Subscription.PriceUpdate.SetTemplateFilter first to prepare the template's filters.</source>
-          <target>Subscription.PriceUpdate.CreateProposal er ekki hægt að keyra: Codeunit "Price Update Management".CreatePriceUpdateProposal er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að útbúa tillöguna, eða kallaðu á Subscription.PriceUpdate.SetTemplateFilter fyrst til að undirbúa síur sniðmátsins.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.CreateProposal er ekki hægt að keyra: Codeunit "Price Update Management".CreatePriceUpdateProposal er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að útbúa tillöguna, eða kallaðu á Subscription.PriceUpdate.SetTemplateFilter fyrst til að undirbúa síur sniðmátsins.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - NamedType NotAccessibleErr</note>
+        <trans-unit id="Codeunit 439992956 - NamedType 1945031727" size-unit="char" translate="yes" xml:space="preserve">
+          <source>No Contract Price Update Line was created for Price Update Template '%1'. No Subscription Line matched the template's partner, filters and dates, or every match already has a price update line.</source>
+          <target>Engin lína verðuppfærslu áskriftarsamnings var stofnuð fyrir sniðmát fyrir verðuppfærslu '%1'. Engin áskriftarlína passaði við viðskiptaaðila, síur og dagsetningar sniðmátsins, eða allar sem pössuðu eru þegar með línu verðuppfærslu.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Engin lína verðuppfærslu áskriftarsamnings var stofnuð fyrir sniðmát fyrir verðuppfærslu '%1'. Engin áskriftarlína passaði við viðskiptaaðila, síur og dagsetningar sniðmátsins, eða allar sem pössuðu eru þegar með línu verðuppfærslu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - NamedType NoLinesCreatedMsg</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 439992956 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Price Update Template '%1' does not exist.</source>
+          <target>Sniðmát fyrir verðuppfærslu '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Sniðmát fyrir verðuppfærslu '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - NamedType TemplateNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal</source>
-          <target>Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga</note>
+          <source>Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal, indexation</source>
+          <target>Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga, vísitölutenging</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga, vísitölutenging</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
@@ -490,21 +496,39 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4155906984 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked: Microsoft has not exposed a public API to perform price updates. Use the "Contract Price Update" page instead.</source>
-          <target>Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að framkvæma verðuppfærslur. Notaðu síðuna "Contract Price Update" í staðinn.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að framkvæma verðuppfærslur. Notaðu síðuna "Contract Price Update" í staðinn.</note>
+          <source>Applies the Contract Price Update Lines: updates Subscription Lines or writes Planned Subscription Lines, and deletes each performed line. Nothing is posted.</source>
+          <target>Beitir línum verðuppfærslu áskriftarsamnings: uppfærir áskriftarlínur eða skrifar áætlaðar áskriftarlínur og eyðir hverri framkvæmdri línu. Ekkert er bókað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Beitir línum verðuppfærslu áskriftarsamnings: uppfærir áskriftarlínur eða skrifar áætlaðar áskriftarlínur og eyðir hverri framkvæmdri línu. Ekkert er bókað.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 4155906984 - NamedType 1724934514" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.PriceUpdate.Perform cannot run: Codeunit "Price Update Management".PerformPriceUpdate is internal in Business Central 28.4 and has not been exposed for external callers. Use the "Contract Price Update" page in the Business Central client to perform the price update.</source>
-          <target>Subscription.PriceUpdate.Perform er ekki hægt að keyra: Codeunit "Price Update Management".PerformPriceUpdate er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að framkvæma verðuppfærsluna.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.Perform er ekki hægt að keyra: Codeunit "Price Update Management".PerformPriceUpdate er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að framkvæma verðuppfærsluna.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType NotAccessibleErr</note>
+        <trans-unit id="Codeunit 4155906984 - NamedType 3362352614" size-unit="char" translate="yes" xml:space="preserve">
+          <source>There are no Contract Price Update Lines to perform. Run Subscription.PriceUpdate.CreateProposal first.</source>
+          <target>Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType NothingToPerformErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4155906984 - NamedType 401302075" size-unit="char" translate="yes" xml:space="preserve">
+          <source>There are no Contract Price Update Lines for Price Update Template '%1' to perform. Run Subscription.PriceUpdate.CreateProposal first.</source>
+          <target>Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma fyrir sniðmát fyrir verðuppfærslu '%1'. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma fyrir sniðmát fyrir verðuppfærslu '%1'. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType NothingToPerformForTemplateErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4155906984 - NamedType 3404472832" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 of %2 Contract Price Update Lines could not be performed and were left in the proposal; see 'results'. The other lines were performed and committed one by one, so they were not rolled back.</source>
+          <target>Ekki tókst að framkvæma %1 af %2 línum verðuppfærslu áskriftarsamnings og þær voru skildar eftir í tillögunni; sjá 'results'. Hinar línurnar voru framkvæmdar og staðfestar ein í einu og voru því ekki afturkallaðar.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = number of failed lines, %2 = number of lines processed||is-IS=Ekki tókst að framkvæma %1 af %2 línum verðuppfærslu áskriftarsamnings og þær voru skildar eftir í tillögunni; sjá 'results'. Hinar línurnar voru framkvæmdar og staðfestar ein í einu og voru því ekki afturkallaðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType PartlyFailedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4155906984 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Price Update Template '%1' does not exist.</source>
+          <target>Sniðmát fyrir verðuppfærslu '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Sniðmát fyrir verðuppfærslu '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType TemplateNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 4155906984 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.PriceUpdate.Perform, Subscription, PriceUpdate, Perform, apply prices, subscription lines</source>
-          <target>Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur</note>
+          <source>Subscription.PriceUpdate.Perform, Subscription, PriceUpdate, Perform, apply prices, subscription lines, indexation</source>
+          <target>Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur, vísitölutenging</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur, vísitölutenging</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4155906984 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
@@ -512,6 +536,24 @@
           <target>Subscription.PriceUpdate.Perform: Beitir tillögu að verðuppfærslu. Óafturkræf aðgerð.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.Perform: Beitir tillögu að verðuppfærslu. Óafturkræf aðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4259066993 - NamedType 2643591503" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please enter the Include Contract Lines up to Date.</source>
+          <target>Færðu inn dagsetninguna sem samningslínur eru teknar með til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Færðu inn dagsetninguna sem samningslínur eru teknar með til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Price Update Mgt ori - NamedType NoIncludeContractLinesUpToDateErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4259066993 - NamedType 936836997" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Price Update Proposals cannot be created without a Price Update Template. Please select a template before.</source>
+          <target>Ekki er hægt að stofna tillögur að verðuppfærslu án sniðmáts fyrir verðuppfærslu. Veldu sniðmát fyrst.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ekki er hægt að stofna tillögur að verðuppfærslu án sniðmáts fyrir verðuppfærslu. Veldu sniðmát fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Price Update Mgt ori - NamedType PriceUpdateProposalCannotBeCreateWithoutTemplateErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4259066993 - NamedType 865776642" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Price Update Method of Price Update Template '%1' is not one this app knows. Update Bifrost Subscription Billing.</source>
+          <target>Aðferð verðuppfærslu á sniðmáti fyrir verðuppfærslu '%1' er ekki þekkt í þessu forriti. Uppfærðu Bifröst Subscription Billing.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Aðferð verðuppfærslu á sniðmáti fyrir verðuppfærslu '%1' er ekki þekkt í þessu forriti. Uppfærðu Bifröst Subscription Billing.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Price Update Mgt ori - NamedType UnknownPriceUpdateMethodErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1208222225 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Writes the contract, subscription or line view filter Blob on a Price Update Template and returns the current value of all three filters.</source>
