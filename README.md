@@ -132,18 +132,23 @@ Subscription Billing permission sets, and the app is ready.
 
 ## Known issues
 
-Four message types are registered and discoverable but return a structured error rather than
+Two message types are registered and discoverable but return a structured error rather than
 performing the operation, because Microsoft has not exposed a public API for them in Business
-Central 28.4: `Subscription.Contract.UpdateLineDates`, `Subscription.Contract.UpdateExchangeRates`,
-`Subscription.PriceUpdate.CreateProposal` and `Subscription.PriceUpdate.Perform`. Each names the
-procedure that would need to become public and points to the client action that does the job today.
+Central 28.4: `Subscription.Contract.UpdateLineDates` and `Subscription.Contract.UpdateExchangeRates`.
 Each error names the exact Microsoft procedure that would have to become public
 (`Customer Subscription Contract.UpdateServicesDates()`, `Subscription Header.UpdateServicesDates()`,
-codeunit 8058 `Update Sub. Lines Term. Dates`, and the price-update equivalents - all `internal` in
-Microsoft's app). They stay registered so the contract is discoverable and so they start working the
-moment Microsoft opens the API. See the [changelog](CHANGELOG.md) and the
+codeunit 8058 `Update Sub. Lines Term. Dates` - all `internal` in Microsoft's app) and points to the
+client action that does the job today. They stay registered so the contract is discoverable and so
+they start working the moment Microsoft opens the API. See the [changelog](CHANGELOG.md) and the
 [message type documentation](https://businesscentralal.github.io/bifrost/en-us/subscription-billing/message-types) for
 detail.
+
+`Subscription.PriceUpdate.CreateProposal` and `Subscription.PriceUpdate.Perform` run referenced copies
+of Microsoft's internal price update logic (#45, under the MIT licence of microsoft/BCApps). Every
+copied procedure, its source and the Microsoft change that would let us delete it are listed in
+[docs/microsoft-dependencies.md](docs/microsoft-dependencies.md). Tests in the test app run Microsoft's
+own Contract Price Update page next to the copy on the same data, so a change in the installed
+Subscription Billing app shows up as a failing test.
 
 The `EULA` link in `app.json` still points at the Cloud Events terms of use; it is a real external
 legal document and is left untouched until legal/marketing publish a Bifröst version.

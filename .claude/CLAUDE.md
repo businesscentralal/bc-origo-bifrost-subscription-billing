@@ -22,7 +22,11 @@ App:
 - 10035075 codeunit `Sub Contract Parts ori` (shared contract chapters, #18)
 - Freed by #19: 10035065-10035074, the ten markdown help codeunits `Sub <Domain> Help ori`
   (Line, Con, Vend, Bil, PU, Ren, Usg, Def, Ana, Imp), deleted with `GetMessageHelpAsMarkdownDocument`
-- Free: 10035061, 10035065-10035074, 10035076-10035084
+- 10035076-10035081 the price update copies of Microsoft's internal logic (#45, see docs/microsoft-dependencies.md):
+  `Sub PU Price Update Mgt ori`, `Sub PU Calc Base By Perc ori`, `Sub PU Price By Percent ori`,
+  `Sub PU Recent Item Price ori`, `Sub PU Process Price Upd ori`, `Sub PU Line Mgt ori` (plus the interface
+  `Sub PU Contract Price Upd ori`, which has no id)
+- Free: 10035061, 10035065-10035074, 10035082-10035084
 
 Tests:
 - 95700 `Sub Test Install ori`, 95701 `Sub Msg Type Tst ori`, 95702 `Sub Helper Tst ori`,
@@ -32,13 +36,15 @@ Tests:
 - 95708 `Sub PU Filter Tst ori` (PR #25 filter validation regression)
 - 95709 `Sub Bil PrvDocs SkipTst ori` (renumbered from 95705 to resolve the same-app
   ID collision, PR #32; fresh allocation verified against the full main tree 4ba0248)
+- 95740 `Sub PU Test Lib ori`, 95741 `Sub PU Oracle Tst ori`, 95742 `Sub PU Proposal Tst ori`,
+  95743 `Sub PU Perform Tst ori` (#45)
 - 95770 `Sub Test Library ori` (shared Subscription Billing seeding for the behaviour tests, #39/#43)
 - 95771 `Sub Perm Full Tst ori` (Full-set-only permission test, #42)
 - 95772 `Sub Help Accuracy Tst ori` (help preconditions and claims, #44)
 - 95773 `Sub Line GetLines Tst ori`, 95774 `Sub Invoice Tst ori`, 95775 `Sub Billing Run Tst ori`,
   95776 `Sub Renewal Tst ori`, 95777 `Sub Usage Tst ori`, 95778 `Sub Deferral Analysis Tst ori`
   (behaviour tests that drive Microsoft Subscription Billing, #43)
-- Free: 95710-95769 (reserved for parallel branches A and B), 95779-95799
+- Free: 95710-95739 (reserved for branch A), 95744-95769, 95779-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
