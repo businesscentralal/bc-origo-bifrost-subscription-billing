@@ -110,19 +110,21 @@ codeunit 95713 "Sub Usg Connect Tst ori"
 
         // [THEN] Every stage succeeds and only the connected customer's subscription receives the usage
         TestLib.AssertSuccess(ResponseJson);
+        ResponseJson.WriteTo(StepText);
+        UsageDataGenericImport.FindFirst();
+        Assert.AreEqual(Enum::"Processing Status"::Ok, UsageDataGenericImport."Processing Status",
+            'The imported row must be processed: ' + UsageDataGenericImport."Reason Preview" + '. Response: ' + StepText);
+        Assert.AreEqual(HeaderNoTok, UsageDataGenericImport."Subscription Header No.", 'The imported row must resolve the connected subscription.');
+        Assert.AreEqual(1, TestLib.GetInteger(ResponseJson, 'usageDataBillingCount'), 'Exactly the self-created usage row must be billed: ' + StepText);
         Assert.IsTrue(ResponseJson.Get('steps', StepsToken), 'Every executed stage must be reported.');
         Assert.AreEqual(3, StepsToken.AsArray().Count(), 'All three default processing stages must run.');
         foreach StepToken in StepsToken.AsArray() do begin
             StepToken.WriteTo(StepText);
             Assert.AreNotEqual('Error', TestLib.GetText(StepToken.AsObject(), 'status'), 'No processing stage may fail: ' + StepText);
         end;
-        Assert.AreEqual(1, TestLib.GetInteger(ResponseJson, 'usageDataBillingCount'), 'Exactly the self-created usage row must be billed.');
         Assert.AreEqual(0, TestLib.GetInteger(ResponseJson, 'usageDataBillingErrorCount'), 'No usage billing may be in error.');
         UsageDataImport.Get(ImportEntryNo);
         Assert.AreNotEqual(Enum::"Processing Status"::Error, UsageDataImport."Processing Status", 'The import must no longer carry the pre-connection error.');
-        UsageDataGenericImport.FindFirst();
-        Assert.AreEqual(Enum::"Processing Status"::Ok, UsageDataGenericImport."Processing Status", 'The imported row must be processed.');
-        Assert.AreEqual(HeaderNoTok, UsageDataGenericImport."Subscription Header No.", 'The imported row must resolve the connected subscription.');
         Assert.AreEqual(1, UsageDataBilling.Count(), 'No other subscription may receive this usage.');
         UsageDataBilling.FindFirst();
         Assert.AreEqual(Enum::"Service Partner"::Customer, UsageDataBilling.Partner, 'The usage must be assigned to the customer.');
