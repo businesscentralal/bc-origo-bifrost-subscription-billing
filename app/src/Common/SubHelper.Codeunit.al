@@ -2,6 +2,7 @@ namespace Origo.Bifrost.SubscriptionBilling;
 
 using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
+using System.Security.User;
 
 /// <summary>
 /// Shared request parsing and response building for the Subscription Billing message types.
@@ -294,6 +295,30 @@ codeunit 10035058 "Sub Helper ori"
                 exit(ClosedTok);
         end;
         exit(Format(Value, 0, 9));
+    end;
+
+    /// <summary>
+    /// Refuses to clear a billing proposal or delete billing documents when a Billing Template bills
+    /// automatically and the user is not set up for automated contract billing. This is the rule of
+    /// Microsoft's internal "Billing Proposal".DisplayErrorIfNotAuthorizedToClearProposalOrDeleteDocuments
+    /// (BCApps src/Apps/W1/Subscription Billing/App/Billing/Codeunits/BillingProposal.Codeunit.al, releases/28.x
+    /// a674a13), rewritten here because the procedure is internal; see docs/microsoft-dependencies.md.
+    /// </summary>
+    procedure AssertMayClearBillingProposal()
+    var
+        BillingTemplate: Record "Billing Template";
+        UserSetup: Record "User Setup";
+        NotAuthorizedErr: Label 'You are not authorized to clear billing proposals or delete billing documents while a Billing Template bills automatically. Set Auto Contract Billing on your user in User Setup.', Comment = 'is-IS=Þú hefur ekki heimild til að hreinsa reikningstillögur eða eyða reikningsskjölum á meðan reikningssniðmát gerir reikninga sjálfvirkt. Merktu við Reikningsregla samnings á notandanum þínum í Uppsetningu notanda.';
+    begin
+        BillingTemplate.ReadIsolation := IsolationLevel::ReadCommitted;
+        BillingTemplate.SetFilter(Automation, '<>%1', BillingTemplate.Automation::None);
+        if BillingTemplate.IsEmpty() then
+            exit;
+        UserSetup.ReadIsolation := IsolationLevel::ReadCommitted;
+        if UserSetup.Get(UserId()) then
+            if UserSetup."Auto Contract Billing" then
+                exit;
+        Error(NotAuthorizedErr);
     end;
 
     /// <summary>Formats a date for a JSON response using the ISO format.</summary>

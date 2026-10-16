@@ -20,6 +20,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
         Helper: Codeunit "Sub Helper ori";
         ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = customer contract no.||is-IS=Viðskiptavinasamningurinn ''%1'' er ekki til.';
         NoRenewableLinesErr: Label 'The Customer Subscription Contract ''%1'' has no Subscription Lines that can be renewed.', Comment = '%1 = customer contract no.||is-IS=Viðskiptavinasamningurinn ''%1'' er ekki með neinar áskriftarlínur sem hægt er að endurnýja.';
+        UnknownContractLineErr: Label 'Line %1 of contractLineNos is not a line of Customer Subscription Contract ''%2''.', Comment = '%1 = contract line number, %2 = customer contract no.||is-IS=Lína %1 í contractLineNos er ekki lína í áskriftarsamningi viðskiptamanns ''%2''.';
         QuoteNotCreatedErr: Label 'Create Sub. Contract Renewal did not produce a sales quote for Customer Subscription Contract ''%1''.', Comment = '%1 = customer contract no.||is-IS=Create Sub. Contract Renewal bjó ekki til sölutilboð fyrir viðskiptavinasamninginn ''%1''.';
         DescriptionLbl: Label 'Builds contract renewal lines from a Customer Subscription Contract''s Subscription Lines and creates a renewal sales quote from them.', MaxLength = 250, Comment = 'is-IS=Býr til endurnýjunarlínur samnings út frá áskriftarlínum viðskiptavinasamnings og útbýr endurnýjunarsölutilboð út frá þeim.';
 
@@ -125,7 +126,9 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('Renewal lines left from an earlier run against the contract are deleted first. A renewal line is then built for every Subscription Line of the ' +
-            'contract that has an end date and that Microsoft accepts for renewal. Nothing is posted. ' +
+            'contract that has an end date and that Microsoft accepts for renewal. contractLineNos limits this to the listed contract lines; without it every ' +
+            'line with an end date is renewed, as before. A listed line without an end date is passed over, and when no listed line can be renewed the call ' +
+            'is refused. Nothing is posted. ' +
             ContractParts.IsolationNote()).TrimEnd();
         exit(true);
     end;
@@ -169,23 +172,32 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
         ResponseJson: JsonObject;
         ContractNo: Code[20];
         SalesQuoteNo: Code[20];
+        SelectedLineNos: Dictionary of [Integer, Boolean];
+        SelectedLineNo: Integer;
         RenewalLinesCreated: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
         ContractNo := Helper.GetSubjectOr(Argument, RequestJson, 'contractNo', true);
+        Helper.GetEntryNoSelection(RequestJson, 'contractLineNos', SelectedLineNos);
 
         if not CustomerSubscriptionContract.Get(ContractNo) then
             Error(ContractNotFoundErr, ContractNo);
+        foreach SelectedLineNo in SelectedLineNos.Keys() do
+            if not CustSubContractLine.Get(ContractNo, SelectedLineNo) then
+                Error(UnknownContractLineErr, SelectedLineNo, ContractNo);
 
         SubContractRenewalLine.SetRange("Linked to Sub. Contract No.", ContractNo);
         if not SubContractRenewalLine.IsEmpty() then
             SubContractRenewalLine.DeleteAll(true);
 
+        CustSubContractLine.Reset();
         CustSubContractLine.SetRange("Subscription Contract No.", ContractNo);
-        CustSubContractLine.SetLoadFields("Subscription Line Entry No.");
+        CustSubContractLine.SetLoadFields("Subscription Contract No.", "Line No.", "Subscription Line Entry No.");
         if CustSubContractLine.FindSet() then
             repeat
-                if CustSubContractLine."Subscription Line Entry No." <> 0 then
+                if (CustSubContractLine."Subscription Line Entry No." <> 0) and
+                   ((SelectedLineNos.Count() = 0) or SelectedLineNos.ContainsKey(CustSubContractLine."Line No."))
+                then
                     if SubscriptionLine.Get(CustSubContractLine."Subscription Line Entry No.") then
                         if SubscriptionLine."Subscription Line End Date" <> 0D then begin
                             Clear(SubContractRenewalLine);

@@ -131,7 +131,8 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
             'data is still a successful call: read status and reason of each entry in steps, and processingStatus. The status and reason an earlier step left are ' +
             'cleared before each step, so every entry reports its own outcome. Steps run in the order given, and a step named twice runs twice. ' +
             'CreateImportedLines parses the stored file again. It is not a default step, because Subscription.Usage.ImportData runs it already; ask for it after a ' +
-            'setup problem, such as a Data Exchange Definition that did not match the file, to retry without sending the file again.';
+            'setup problem, such as a Data Exchange Definition that did not match the file, to retry without sending the file again. ' +
+            'A new supplier subscription must be connected to a Subscription before ProcessImportedLines can use it: run Subscription.Usage.ConnectSubscriptions first.';
         exit(true);
     end;
 
@@ -187,6 +188,10 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
 
         if not UsageDataImport.Get(EntryNo) then
             Error(NotFoundErr, EntryNo);
+        // Microsoft's Create Usage Data Billing copies this record's filters and iterates them.
+        // Get alone leaves the record unfiltered, so another open import could be processed and
+        // returned to the next stage. Keep every stage scoped to the requested entry.
+        UsageDataImport.SetRecFilter();
         if UsageDataImport."Processing Status" = UsageDataImport."Processing Status"::Closed then
             Error(AlreadyClosedErr, EntryNo);
 

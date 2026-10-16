@@ -2,6 +2,19 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-16) - usage processing scope
+
+- `Sub Usg Process Impl ori` (codeunit 10035054): scope every processing stage to the requested Usage Data Import. Microsoft's billing codeunit iterates the incoming view, so an unfiltered record could process other imports and pass the wrong import to the next stage. The #38 AC04 native test also verifies that a later, unrelated import stays untouched.
+
+### Added (2026-10-16) - usage connection processing coverage
+
+- `Sub Usg Connect Tst ori` (codeunit 95713, #38 AC04): seed an imported usage row, verify it cannot be processed before connecting, then connect through the message type and retry all three usage-processing stages through customer usage billing. The fixture removes only its own supplier imports and billing rows before each test.
+
+### Fixed (2026-10-15) - operations branch integration and test compilation
+
+- Merge current main into the operations branch, retaining the 28.0.0.0 version reset and both changelog histories under one Unreleased heading.
+- `Sub Imp CrContr Tst ori` (codeunit 95705): rename the temporary `Message Argument ori` variable to `TempArgument` to satisfy AA0073. Test behavior and assertions are unchanged.
+
 ### Changed (2026-10-14) - Version reset to 28.0.0.0
 
 - Owner decision (Gunnar, 2026-10-14): `app/app.json` and `test/app.json` go from 29.0.0.0 to 28.0.0.0, so the first AppSource version aligns with the other Bifröst apps on Business Central 28. The test app's dependency on Bifrost Subscription Billing moves to 28.0.0.0 as well.
@@ -39,6 +52,47 @@
 ### Changed (2026-10-04) - CI/CD builds only main; every pull request gets a Pull Request Build
 
 - Build policy only, no app change. `CI/CD` runs on pushes to `main` only, and `Pull Request Build` runs for pull requests into any branch. `.github/AL-Go-Settings.json` sets `CICDPushBranches` to `main` and `CICDPullRequestBranches` to `**`, so Update AL-Go System Files keeps the triggers.
+
+
+### Added (2026-10-15) - should-have flows: vendor invoice lines, usage reset, billing filter, removal, partial renewal (#41)
+
+- AC01, new type `Subscription.VendorContract.AddLinesToInvoice`: `Sub Vend AddToInv Impl ori` (codeunit 10035068, enum value 10035068). Adds the due vendor contract lines of the invoice's vendor (or the listed `subscriptionLineEntryNos`, or one `contractNo`) to an existing unposted purchase invoice through Microsoft's public `CreateBillingProposalForPurchaseHeader` and `CreatePurchaseLines`, as Get Vendor Contract Lines does. Refuses a posted invoice, a line of another vendor, a line that is not billable, and pending template-less proposal lines that Microsoft would add as well.
+- AC03, new type `Subscription.Usage.DeleteData`: `Sub Usg DelData Impl ori` (codeunit 10035069, enum value 10035069). `mode` resetLines deletes the imported lines and Usage Data Billing of an import and resets its status, keeping the file so `Usage.Process` can run it again (Microsoft's Delete Usage Data Lines & Billing, rebuilt because it is internal); deleteImport deletes the import. Refuses usage billing on a document or a billing line. `effect` irreversible.
+- AC04, new type `Subscription.Billing.SetTemplateFilter`: `Sub Bil SetFilter Impl ori` (codeunit 10035070, enum value 10035070). Writes the Billing Template's contract filter after Foundation's fail-closed view validation, mirroring `Subscription.PriceUpdate.SetTemplateFilter`; a bad view is refused with a structured code and nothing is written.
+- AC05, new types `Subscription.Contract.RemoveLine` (`Sub Con RemoveLine Impl ori`, codeunit and enum value 10035071) and `Subscription.Package.RemoveItemAssignment` (`Sub Pkg RemoveItem Impl ori`, codeunit and enum value 10035072). RemoveLine deletes a customer or vendor contract line with `Delete(true)`, detaching its Subscription Line, and refuses closed, billed, in-billing and deferred lines. RemoveItemAssignment deletes an Item Subscription Package row.
+- AC06: `Subscription.Renewal.CreateQuote` accepts `contractLineNos`; without it the behaviour is unchanged. A number that is not a line of the contract is refused.
+- AC02 (merge customer contract lines) is not delivered: Microsoft's public `MergeContractLines` opens the Select Cust. Contract Lines page to pick the reference line, and the merge itself relies on internal procedures (`Subscription Header.UpdateServicesDates`, `TestMergingServiceObjects`, `TestMergingServiceCommitments`). It is left for a follow-up.
+- The copies of Microsoft logic are listed in `docs/microsoft-dependencies.md`.
+- Tests: `Sub Should Have Tst ori` (95715) and `Sub Usg DelData Tst ori` (95716).
+
+### Added (2026-10-15) - Subscription.Contract.UpdateExchangeRates recalculates currency data (#40)
+
+- `Sub Con UpdFCY Impl ori` (codeunit 10035041, enum value 10035041) is no longer blocked. It recalculates every Subscription Line of a customer or vendor (`partner`) Subscription Contract in a foreign currency: Currency Code, Currency Factor and Currency Factor Date are written and the Calculation Base Amount is converted again from its local currency amount, as the Update Exchange Rates action does. The factor defaults to the exchange rate of `currencyFactorDate` (default the work date), the value the Exchange Rate Selection page proposes; `currencyFactor` overrides it. Returns `linesRecalculated` and `linesSkipped` (lines whose contract line is closed). `effect` is now write. The blocked error, which named Business Central 28.4, is gone.
+- Investigation (AC01): setting Currency Code on the contract through Data.Records.Set does not reach the same result. Microsoft recalculates only when the code changes, and then with a currency factor of zero because the Exchange Rate Selection page cannot open without a user interface. Microsoft's internal `UpdateAndRecalculateServiceCommitmentCurrencyData` is therefore rebuilt from its source, with references, the change we want from Microsoft and the MIT notice, listed in `docs/microsoft-dependencies.md`.
+- Refusals in en-US and is-IS: unknown contract (per partner), a contract in local currency, and a zero or negative factor or no exchange rate on the key date.
+- Tests: `Sub Con UpdFCY Tst ori` (95714): the key date's rate turns 100 in local currency into 50, a vendor contract with a given factor, a zero factor and a local currency contract are refused, and a line with a closed contract line is skipped. `Sub Contract Batch1 Tst ori` expects effect write.
+
+### Added (2026-10-15) - usage billing: connect and disconnect supplier subscriptions (#38)
+
+- New type `Subscription.Usage.ConnectSubscriptions`: `Sub Usg Connect Impl ori` (codeunit 10035066, enum value 10035066). Calls Microsoft's public `Usage Based Billing Mgmt.ConnectSubscriptionsToServiceObjects` for every eligible supplier subscription of a Usage Data Supplier, or the listed `entryNos`, one entry per call so Microsoft's confirmation for several entries on one Subscription never comes up (such a selection is refused by name instead). Returns `connected`, `skipped` and per entry the Subscription, Subscription Line and Microsoft's reason. Refuses an unknown supplier, and a listed entry that does not exist, has no Connect to Subscription Method or is connected already. `effect` irreversible: with New Subscription Lines Microsoft ends the current lines and extends the contracts, which a disconnect does not undo.
+- New type `Subscription.Usage.DisconnectSubscription`: `Sub Usg Disconnect Impl ori` (codeunit 10035067, enum value 10035067), by `subscriptionLineEntryNo` or `usageDataSubscriptionEntryNo`. Microsoft's public `DisconnectServiceCommitmentFromSubscription` asks through `Confirm Management.GetResponse`, which answers No without a user interface, so its two steps are rebuilt from Microsoft's source (listed in `docs/microsoft-dependencies.md`). Refuses a missing selection, unknown entries and a line that is not connected. `effect` write.
+- `Subscription.Usage.Process` and `Subscription.Usage.ImportData` name ConnectSubscriptions as the step before processing new supplier subscriptions (notes, precondition, related and workflow).
+- Tests: `Sub Usg Connect Tst ori` (95713): connect through Existing Subscription Lines, a Subscription without a usage based line is skipped with a reason, an entry without a method, an entry already connected and an unknown supplier are refused, disconnect removes both sides of the link, and a line that is not connected or a call without an entry number is refused. Running `Usage.Process` through to billing lines after the connect is not covered natively (needs a Data Exchange Definition and an imported file); it is left to the live check on bc28-w1.
+
+### Added (2026-10-15) - undo a billing run: Billing.ClearProposal and Billing.DeleteDocuments (#37)
+
+- New type `Subscription.Billing.ClearProposal`: `Sub Bil ClrProposal Impl ori` (codeunit 10035061, enum value 10035061). Deletes the billing proposal lines of a Billing Template, optionally only those of one contract, newest period first with `Delete(true)`, so the Billing Line delete trigger resets each Subscription Line's Next Billing Date. Without `billingTemplateCode` it clears the template-less lines of `contractNo` (what `Contract.CreateInvoice` and `VendorContract.CreateInvoice` leave). Lines already on a document are refused and point to DeleteDocuments. Returns `billingLinesDeleted`, `subscriptionLinesReset` and `contracts`.
+- New type `Subscription.Billing.DeleteDocuments`: `Sub Bil DelDocs Impl ori` (codeunit 10035065, enum value 10035065). Deletes the unposted sales and purchase invoices and credit memos made from a template's billing lines (optionally one contract or one `documentNo`) with `Delete(true)`; Microsoft's header delete subscribers return the billing lines to the proposal. A posted document number is refused by name and points to Cancel or Correct. Returns `documentsDeleted`, `documents`, `billingLinesReturnedToProposal` and `billingLinesRemoved`.
+- Both have `effect` irreversible and apply Microsoft's rule that only a user with Auto Contract Billing in User Setup may clear proposals or delete billing documents while a Billing Template bills automatically (`Sub Helper ori.AssertMayClearBillingProposal`, rewritten from Microsoft's internal `DisplayErrorIfNotAuthorizedToClearProposalOrDeleteDocuments`; listed in `docs/microsoft-dependencies.md`).
+- The notes and related types of `Billing.CreateProposal`, `Billing.CreateDocuments`, `Contract.CreateInvoice` and `VendorContract.CreateInvoice` now name the undo types and say that a posted document is undone with Cancel or Correct.
+- Tests: `Sub Bil Undo Tst ori` (95712): clearing restores the Next Billing Date, a line on a document is refused, a missing selection and an unknown template are refused, deleting an invoice returns its billing line to the proposal, a posted number is refused, and a template without documents succeeds with zero. `Sub Msg Type Tst ori` counts the Branch A types too.
+
+### Added (2026-10-15) - Subscription.Contract.UpdateLineDates runs through the job queue (#36)
+
+- `Sub Con UpdDates Impl ori` (codeunit 10035040, enum value 10035040) is no longer blocked. It creates a Job Queue Entry for Microsoft's codeunit 8058 "Update Sub. Lines Term. Dates" and runs it at once through the Job Queue Dispatcher (`runMode` foreground, the default, as the Run once (foreground) action does) or hands it to the job queue (`runMode` background). Codeunit 8058 closes every ended, fully invoiced Subscription Line with its customer or vendor contract line and rolls the term dates of the other lines forward, for every Subscription in the company.
+- The caller needs the BIFROST Force ori permission set (write permission on Foundation's Force Access gate table, the check Foundation applies to a forced Job Queue Entry write). Without it the call is refused with `PermissionDenied`, in en-US and is-IS, before anything is read.
+- When an entry for codeunit 8058 is already Ready, Waiting or In Process, nothing is created: the answer has `alreadyQueued` true and names that entry. A foreground answer reports the run result and the Subscription Lines and customer and vendor contract lines it closed. `effect` stays irreversible.
+- Tests: `Sub Test Lib ori` (95710, shared fixtures and dispatch for the Branch A tests) and `Sub Con UpdDates Tst ori` (95711): ended customer and vendor lines and their contract lines close, a running line stays open, a caller without Force is refused, a pending entry is returned instead of a second one, and an unknown `runMode` is refused.
 
 ### Fixed (2026-10-06) - price update filter validation and Icelandic keywords (PR #25)
 
