@@ -21,7 +21,6 @@ codeunit 95720 "Sub Con Merge Tst ori"
         TestLibrary: Codeunit "Sub Test Library ori";
 
     [Test]
-    [HandlerFunctions('MergeMessageHandler')]
     procedure Scenario_AC01_MergeLines_ClosesTheSelectedLines_AndOpensOneMergedLine()
     var
         CustomerContract: Record "Customer Subscription Contract";
@@ -49,7 +48,6 @@ codeunit 95720 "Sub Con Merge Tst ori"
     end;
 
     [Test]
-    [HandlerFunctions('MergeMessageHandler')]
     procedure Scenario_AC02_MergeLines_RefusesASingleLine()
     var
         CustomerContract: Record "Customer Subscription Contract";
@@ -71,7 +69,6 @@ codeunit 95720 "Sub Con Merge Tst ori"
     end;
 
     [Test]
-    [HandlerFunctions('MergeMessageHandler')]
     procedure Scenario_AC02_MergeLines_RefusesACommentLine()
     var
         CustomerContract: Record "Customer Subscription Contract";
@@ -99,7 +96,6 @@ codeunit 95720 "Sub Con Merge Tst ori"
     end;
 
     [Test]
-    [HandlerFunctions('MergeMessageHandler')]
     procedure Scenario_AC02_MergeLines_RefusesLinesFromDifferentContracts()
     var
         CustomerContract: Record "Customer Subscription Contract";
@@ -195,10 +191,5 @@ codeunit 95720 "Sub Con Merge Tst ori"
         ContractLine.SetRange("Subscription Contract No.", ContractNo);
         ContractLine.SetRange(Closed, false);
         Assert.AreEqual(Expected, ContractLine.Count(), 'Open contract lines.');
-    end;
-
-    [MessageHandler]
-    procedure MergeMessageHandler(Message: Text[1024])
-    begin
     end;
 }

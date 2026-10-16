@@ -31,6 +31,8 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         TestLibrary.CreateCustomer(Customer);
         TestLibrary.CreateCustomerContract(CustomerContract, Customer."No.");
         PreviousCurrencyCode := CustomerContract."Currency Code";
+        // asserterror rolls the uncommitted insert back, so commit before the refused write.
+        Commit();
 
         // [WHEN] A generic write changes Currency Code
         asserterror CustomerContract.Validate("Currency Code", 'EUR');
@@ -71,6 +73,8 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         TestLibrary.CreateVendor(Vendor);
         TestLibrary.CreateVendorContract(VendorContract, Vendor."No.");
         PreviousCurrencyCode := VendorContract."Currency Code";
+        // asserterror rolls the uncommitted insert back, so commit before the refused write.
+        Commit();
 
         // [WHEN] A generic write changes Currency Code
         asserterror VendorContract.Validate("Currency Code", 'EUR');
