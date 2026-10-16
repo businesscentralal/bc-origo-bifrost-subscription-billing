@@ -67,6 +67,7 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         EntryNos: JsonArray;
         StepToken: JsonToken;
         StepsToken: JsonToken;
+        StepText: Text;
         LineEntryNo: Integer;
         EntryNo: Integer;
         ReferenceEntryNo: Integer;
@@ -105,8 +106,10 @@ codeunit 95713 "Sub Usg Connect Tst ori"
         TestLib.AssertSuccess(ResponseJson);
         Assert.IsTrue(ResponseJson.Get('steps', StepsToken), 'Every executed stage must be reported.');
         Assert.AreEqual(3, StepsToken.AsArray().Count(), 'All three default processing stages must run.');
-        foreach StepToken in StepsToken.AsArray() do
-            Assert.AreNotEqual('Error', TestLib.GetText(StepToken.AsObject(), 'status'), 'No processing stage may fail.');
+        foreach StepToken in StepsToken.AsArray() do begin
+            StepToken.WriteTo(StepText);
+            Assert.AreNotEqual('Error', TestLib.GetText(StepToken.AsObject(), 'status'), 'No processing stage may fail: ' + StepText);
+        end;
         Assert.AreEqual(1, TestLib.GetInteger(ResponseJson, 'usageDataBillingCount'), 'Exactly the self-created usage row must be billed.');
         Assert.AreEqual(0, TestLib.GetInteger(ResponseJson, 'usageDataBillingErrorCount'), 'No usage billing may be in error.');
         UsageDataImport.Get(ImportEntryNo);
