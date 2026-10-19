@@ -1042,12 +1042,6 @@ codeunit 10035075 "Sub Contract Parts ori"
         exit('The write runs in its own transaction, so an error rolls back everything this call wrote and is answered with status Error. Under Omit Commit it runs inside the caller''s transaction instead. ');
     end;
 
-    /// <summary>The note on the types that are registered for discovery but blocked.</summary>
-    procedure BlockedNote(): Text
-    begin
-        exit('This message type is blocked. It is registered so that it can be discovered, but every call answers with an error and writes nothing; the request is not read. ');
-    end;
-
     /// <summary>
     /// Adds the precondition on the Subscription Billing records a type reads but does not create.
     /// A caller prepares them with Foundation's generic writes, which the Bifrost Setup write guard

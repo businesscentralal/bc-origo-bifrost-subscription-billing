@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-19) - README, registry and dead help code (#44)
+
+- `Sub Contract Parts ori` (10035075): the unused `BlockedNote()` is removed; no type is blocked any more.
+- README: the message types are listed from the enum extension (no hand-typed count); the intro no longer claims there are no delete-style types and names Currency Code being closed to `Data.Records.Set`; Known issues no longer describe blocked types or name a Business Central version, and name the copied Microsoft code (price update, contract line merge); documentation links point at <https://docs.bifrost.origo.is/en-us/subscription-billing/>; the EULA text matches the `app.json` link; the repository layout drops the removed `app/src/Help/` folder and adds `app/src/Posting/`; Setup names `BIFROST SubPost ori` for posting.
+- `.claude/CLAUDE.md`: the enum value count and the "original 22" wording are replaced by "one per type", `BIFROST SubPost ori` is named with the other permission sets, and the 10035085-10035090 range extension records the collision check (no other app.json under E:\Git uses it).
+
 ### Changed (2026-10-19) - vendor CreateInvoice undo note (#37 AC04)
 
 - `Subscription.VendorContract.CreateInvoice` notes now match the customer type: the unposted purchase document can be deleted with `Subscription.Billing.DeleteDocuments` or posted with `Subscription.Billing.PostDocuments`, and a posted purchase invoice or credit memo is cancelled or corrected with the Cancel or Correct action on the posted invoice in Business Central (Bifrost has no message type for that).

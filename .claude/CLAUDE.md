@@ -9,13 +9,14 @@ Origo.Bifrost.SubscriptionBilling (tests: Origo.Bifrost.SubscriptionBilling.Test
 ## Object ID Range
 App:   10035035-10035090 (migrated in place from the legacy Cloud Events range, offset 0 - the app
   was never published, so ids kept their identity). Extended through 10035090 on 2026-10-16 for
-  #51 and #52.
+  #51 and #52. Checked 2026-10-19 against every app.json under E:\Git: no other app uses
+  10035085-10035090 (the next range below is Cloud Events Anthropic, 10034985-10035034).
 Tests: 95700-95799 (offset 0, same reason)
 
 ### Allocated object ids
 App:
 - 10035035 enumextension `Sub Msg Type ori`
-- 10035036-10035057 the original 22 `Sub <Domain><Verb> Impl ori` codeunits
+- 10035036-10035057 the `Sub <Domain><Verb> Impl ori` codeunits of the first message types (one per type; the id is also the enum value)
 - 10035085 codeunit `Sub Bil PostDocs Impl ori` (`Subscription.Billing.PostDocuments`, #52)
 - 10035058 codeunit `Sub Helper ori`
 - Freed by #26: 10035059, codeunit `Sub Write Process ori` (each Impl now runs itself in isolation)
@@ -87,7 +88,8 @@ Default branch: main
 ## Naming Rules
 - Every object carries the `ori` suffix (AppSource mandatory affix), max 30 characters.
 - The brand name "Bifrost" lives in the namespace, the app name ("Bifrost Subscription Billing"),
-  the permission sets (`BIFROST SubBil ori`, `BIFROST SubBFull ori`, `BIFROST SubBRead ori`) and
+  the permission sets (`BIFROST SubBil ori`, `BIFROST SubBFull ori`, `BIFROST SubBRead ori`,
+  `BIFROST SubPost ori`) and
   user-facing captions - never as an object-name prefix.
 - The legacy `CE ` / `CE Sub ` prefix is gone; abbreviations kept: `Sub` (Subscription),
   `Bil` (Billing), `Con` (Contract), `Vend` (Vendor), `PU` (Price Update), `Ren` (Renewal),
@@ -130,8 +132,8 @@ Key rules always in effect:
   here - AL-Go CI is the gate, so check affixes yourself.
 
 ## Message Type Conventions
-- Enum extension `Sub Msg Type ori` (10035035) extends Foundation's `Message Type ori` with 33
-  values, all named `Subscription.<Domain>.<Verb>` (`Help.Bifrost.Get` lists every type) - these
+- Enum extension `Sub Msg Type ori` (10035035) extends Foundation's `Message Type ori` with one
+  value per type, all named `Subscription.<Domain>.<Verb>` (`Help.Bifrost.Get` lists every type) - these
   keys are the published external API contract and must never be renamed or removed.
 - Each type has a `Sub <Domain><Verb> Impl ori` codeunit implementing `Msg Interface ori`,
   `Msg Discovery ori` and `Msg Contract ori`. A type describes itself only through its contract
