@@ -78,7 +78,11 @@ codeunit 95777 "Sub Usage Tst ori"
         Assert.AreEqual(1, TestLibrary.ReadInteger(ResponseJson, 'importedLineCount'), TestLibrary.AsText(ResponseJson));
         ImportEntryNo := TestLibrary.ReadInteger(ResponseJson, 'usageDataImportEntryNo');
         UsageDataImport.Get(ImportEntryNo);
-        Assert.AreEqual(Enum::"Processing Status"::Ok, UsageDataImport."Processing Status", 'Create Imported Lines must succeed.');
+        // BC28 Generic Connector Processing.ImportUsageData parses Ok blobs but leaves the
+        // import header status at None; Blob.Import Status (below) is the file acceptance state.
+        Assert.AreEqual(Enum::"Processing Step"::"Create Imported Lines", UsageDataImport."Processing Step", 'Only the requested parser stage must run.');
+        Assert.AreEqual(Enum::"Processing Status"::None, UsageDataImport."Processing Status", 'Parsing alone does not run Process Imported Lines or mark the import header Ok.');
+        Assert.AreEqual('None', TestLibrary.ReadText(ResponseJson, 'processingStatus'), 'The response must report the actual Microsoft header state.');
         UsageDataBlob.SetRange("Usage Data Import Entry No.", ImportEntryNo);
         Assert.RecordCount(UsageDataBlob, 1);
         UsageDataBlob.FindFirst();

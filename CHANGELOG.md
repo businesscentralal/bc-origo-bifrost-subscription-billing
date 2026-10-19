@@ -4,7 +4,7 @@
 
 ### Fixed (2026-10-19) - native CSV and selected-renewal fixtures
 
-- `Sub Usage Tst ori` (95777) creates the customer and Subscription referenced by its CSV before invoking the real parser. Imported rows and blobs are still produced only by `Usage.ImportData`.
+- `Sub Usage Tst ori` (95777) creates the customer and Subscription referenced by its CSV before invoking the real parser. Imported rows and blobs are still produced only by `Usage.ImportData`. The parser leaves the import header Processing Status at None in Microsoft BC28; the test distinguishes that header from the blob Import Status, requiring the latter to be Ok with a hash and exactly one parsed row with the CSV values.
 - `Sub Renewal Tst ori` (95776) asserts the selected line on the persisted Sales Subscription Line of the renewal quote. Microsoft's `Create Sub. Contract Renewal` consumes its staging rows, so the test no longer mistakes their absence for a missing quote result. It still requires exactly one persisted renewal line, linked to the selected original line and contract.
 
 
