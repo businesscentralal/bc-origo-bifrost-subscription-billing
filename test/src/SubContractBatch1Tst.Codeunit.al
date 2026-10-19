@@ -40,7 +40,7 @@ codeunit 95706 "Sub Contract Batch1 Tst ori"
         AssertEffect('Subscription.Contract.CreateInvoice', 'irreversible');
         AssertEffect('Subscription.Contract.PreviewInvoice', 'read');
         AssertEffect('Subscription.Contract.UpdateLineDates', 'irreversible');
-        AssertEffect('Subscription.Contract.UpdateExchangeRates', 'irreversible');
+        AssertEffect('Subscription.Contract.UpdateExchangeRates', 'write');
         AssertEffect('Subscription.VendorContract.GetLines', 'write');
         AssertEffect('Subscription.VendorContract.CreateInvoice', 'irreversible');
         AssertEffect('Subscription.VendorContract.PreviewInvoice', 'read');

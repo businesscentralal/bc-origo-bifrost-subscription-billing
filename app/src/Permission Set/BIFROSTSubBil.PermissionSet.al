@@ -44,5 +44,14 @@ permissionset 10035062 "BIFROST SubBil ori"
         codeunit "Sub Ana Recalc Impl ori" = X,
         codeunit "Sub Imp CrContr Impl ori" = X,
         codeunit "Sub Contract Parts ori" = X,
-        codeunit "Sub Registration ori" = X;
+        codeunit "Sub Registration ori" = X,
+        codeunit "Sub Bil ClrProposal Impl ori" = X,
+        codeunit "Sub Bil DelDocs Impl ori" = X,
+        codeunit "Sub Usg Connect Impl ori" = X,
+        codeunit "Sub Usg Disconnect Impl ori" = X,
+        codeunit "Sub Vend AddToInv Impl ori" = X,
+        codeunit "Sub Usg DelData Impl ori" = X,
+        codeunit "Sub Bil SetFilter Impl ori" = X,
+        codeunit "Sub Con RemoveLine Impl ori" = X,
+        codeunit "Sub Pkg RemoveItem Impl ori" = X;
 }

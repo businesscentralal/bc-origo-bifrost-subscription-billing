@@ -21,6 +21,42 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Analysis.Recalculate: Endurreiknar greiningarfærslur samninga.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Deletes the billing proposal lines of a Billing Template, or of one contract under it, and resets the Next Billing Date of their Subscription Lines. Refuses lines already on a document.</source>
+          <target>Eyðir línum reikningstillögu í reikningssniðmáti, eða eins samnings undir því, og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Hafnar línum sem eru þegar á skjali.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Eyðir línum reikningstillögu í reikningssniðmáti, eða eins samnings undir því, og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Hafnar línum sem eru þegar á skjali.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - NamedType 1476340306" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 billing line(s) of Billing Template '%2' are already on document %3. Delete the documents first with Subscription.Billing.DeleteDocuments, then clear the proposal.</source>
+          <target>%1 reikningslína/-línur í reikningssniðmátinu '%2' eru þegar á skjali %3. Eyddu skjölunum fyrst með Subscription.Billing.DeleteDocuments og hreinsaðu síðan tillöguna.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line count, %2 = billing template code, %3 = document number||is-IS=%1 reikningslína/-línur í reikningssniðmátinu '%2' eru þegar á skjali %3. Eyddu skjölunum fyrst með Subscription.Billing.DeleteDocuments og hreinsaðu síðan tillöguna.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - NamedType LinesOnDocumentErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Billing Template '%1' does not exist.</source>
+          <target>Reikningssniðmátið '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Reikningssniðmátið '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - NamedType TemplateNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - NamedType 2475205022" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The request must name a Billing Template in 'billingTemplateCode' or the subject, or, for the billing lines without a Billing Template, a contract in 'contractNo'.</source>
+          <target>Beiðnin verður að tilgreina reikningssniðmát í 'billingTemplateCode' eða efninu, eða, fyrir reikningslínur án reikningssniðmáts, samning í 'contractNo'.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Beiðnin verður að tilgreina reikningssniðmát í 'billingTemplateCode' eða efninu, eða, fyrir reikningslínur án reikningssniðmáts, samning í 'contractNo'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - NamedType TemplateOrContractErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.ClearProposal, Subscription, Billing, ClearProposal, clear, undo, proposal</source>
+          <target>Subscription.Billing.ClearProposal, áskrift, reikningagerð, hreinsa tillögu, hreinsa, afturkalla, tillaga</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.ClearProposal, áskrift, reikningagerð, hreinsa tillögu, hreinsa, afturkalla, tillaga</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3267496714 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.ClearProposal: Irreversible. Deletes a billing proposal and resets the Next Billing Date of its Subscription Lines.</source>
+          <target>Subscription.Billing.ClearProposal: Óafturkræft. Eyðir reikningstillögu og færir næstu reikningsdagsetningu áskriftarlína hennar til baka.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.ClearProposal: Óafturkræft. Eyðir reikningstillögu og færir næstu reikningsdagsetningu áskriftarlína hennar til baka.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil ClrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
         <trans-unit id="Codeunit 3224492679 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Turns the unbilled Billing Line rows under a Billing Template into sales or purchase documents. Reports the documents created and how many proposal lines were processed.</source>
           <target>Umbreytir óreikningsfærðum reikningslínum undir reikningssniðmáti í sölu- eða innkaupaskjöl. Skilar þeim skjölum sem urðu til og fjölda tillögulína sem unnið var úr.</target>
@@ -99,6 +135,48 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.CreateProposal: Óafturkræft. Býr til línur í reikningatillögu; Microsoft Subscription Billing vistar þær eftir hverja 50 samninga.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Deletes the unposted invoices and credit memos created from a Billing Template's billing lines and puts the lines back into the proposal. Refuses posted documents.</source>
+          <target>Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 2974946915" size-unit="char" translate="yes" xml:space="preserve">
+          <source>No billing line of Billing Template '%1' is on document %2.</source>
+          <target>Engin reikningslína í reikningssniðmátinu '%1' er á skjali %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code, %2 = document number||is-IS=Engin reikningslína í reikningssniðmátinu '%1' er á skjali %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType DocumentNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 4058942277" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Document %1 is posted and cannot be deleted. Cancel or correct the posted invoice or credit memo instead, for example with Sales.SalesInvoice.Cancel or Sales.SalesInvoice.Correct.</source>
+          <target>Skjal %1 er bókað og ekki er hægt að eyða því. Hættu við eða leiðréttu bókaða reikninginn eða kreditreikninginn í staðinn, til dæmis með Sales.SalesInvoice.Cancel eða Sales.SalesInvoice.Correct.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document number||is-IS=Skjal %1 er bókað og ekki er hægt að eyða því. Hættu við eða leiðréttu bókaða reikninginn eða kreditreikninginn í staðinn, til dæmis með Sales.SalesInvoice.Cancel eða Sales.SalesInvoice.Correct.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType PostedDocumentErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Billing Template '%1' does not exist.</source>
+          <target>Reikningssniðmátið '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Reikningssniðmátið '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType TemplateNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - NamedType 2475205022" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The request must name a Billing Template in 'billingTemplateCode' or the subject, or, for the billing lines without a Billing Template, a contract in 'contractNo' or a document in 'documentNo'.</source>
+          <target>Beiðnin verður að tilgreina reikningssniðmát í 'billingTemplateCode' eða efninu, eða, fyrir reikningslínur án reikningssniðmáts, samning í 'contractNo' eða skjal í 'documentNo'.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Beiðnin verður að tilgreina reikningssniðmát í 'billingTemplateCode' eða efninu, eða, fyrir reikningslínur án reikningssniðmáts, samning í 'contractNo' eða skjal í 'documentNo'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType TemplateOrContractErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.DeleteDocuments, Subscription, Billing, DeleteDocuments, delete, undo, documents</source>
+          <target>Subscription.Billing.DeleteDocuments, áskrift, reikningagerð, eyða skjölum, eyða, afturkalla, skjöl</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.DeleteDocuments, áskrift, reikningagerð, eyða skjölum, eyða, afturkalla, skjöl</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4029027443 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.DeleteDocuments: Irreversible. Deletes unposted billing documents and returns their lines to the billing proposal.</source>
+          <target>Subscription.Billing.DeleteDocuments: Óafturkræft. Eyðir óbókuðum reikningsskjölum og skilar línum þeirra aftur í reikningstillöguna.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.DeleteDocuments: Óafturkræft. Eyðir óbókuðum reikningsskjölum og skilar línum þeirra aftur í reikningstillöguna.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Previews the documents that Subscription.Billing.CreateDocuments would create for a Billing Template, by reading the existing proposal lines. Reads only; writes nothing.</source>
           <target>Forskoðar þau skjöl sem Subscription.Billing.CreateDocuments myndi búa til fyrir reikningssniðmát, með því að lesa fyrirliggjandi tillögulínur. Les eingöngu; skrifar ekkert.</target>
@@ -152,6 +230,36 @@
           <target>Subscription.Billing.PreviewDocuments: Forskoðar magnreikningagerð án þess að skrifa. Lesaðgerð.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.PreviewDocuments: Forskoðar magnreikningagerð án þess að skrifa. Lesaðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PrvDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3451705999 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Writes the contract filter of a Billing Template after validating it as a view of the template's contract table, and returns the stored filter.</source>
+          <target>Skrifar samningssíu reikningssniðmáts eftir að hafa sannreynt hana sem sýn á samningatöflu sniðmátsins og skilar vistuðu síunni.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Skrifar samningssíu reikningssniðmáts eftir að hafa sannreynt hana sem sýn á samningatöflu sniðmátsins og skilar vistuðu síunni.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil SetFilter Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3451705999 - NamedType 880984256" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter 'filter' is not a valid Business Central view of %1. Supply a view in the form 'WHERE(Field=FILTER(Value))'. Nothing was written.</source>
+          <target>Færibreytan 'filter' er ekki gild Business Central sýn á %1. Sendu sýn á forminu 'WHERE(Reitur=FILTER(Gildi))'. Engu var breytt.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = the contract table caption||is-IS=Færibreytan 'filter' er ekki gild Business Central sýn á %1. Sendu sýn á forminu 'WHERE(Reitur=FILTER(Gildi))'. Engu var breytt.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil SetFilter Impl ori - NamedType InvalidFilterErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3451705999 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Billing Template '%1' does not exist.</source>
+          <target>Reikningssniðmátið '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Reikningssniðmátið '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil SetFilter Impl ori - NamedType TemplateNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3451705999 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.SetTemplateFilter, Subscription, Billing, SetTemplateFilter, filter, billing template, contracts</source>
+          <target>Subscription.Billing.SetTemplateFilter, áskrift, reikningagerð, setja sniðmátssíu, sía, reikningssniðmát, samningar</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.SetTemplateFilter, áskrift, reikningagerð, setja sniðmátssíu, sía, reikningssniðmát, samningar</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil SetFilter Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3451705999 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Billing.SetTemplateFilter: Sets the validated contract filter of a Billing Template.</source>
+          <target>Subscription.Billing.SetTemplateFilter: Setur sannreynda samningssíu á reikningssniðmát.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.SetTemplateFilter: Setur sannreynda samningssíu á reikningssniðmát.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil SetFilter Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1511352918 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
@@ -261,52 +369,148 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.PreviewInvoice: Forskoðar reikning viðskiptamanns án þess að skrifa. Lesaðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - NamedType 839325841" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line %1 of contract '%2' has already been billed, so it is part of the contract's invoicing history and is not removed.</source>
+          <target>Lína %1 í samningi '%2' hefur þegar verið reikningsfærð, svo hún er hluti af reikningasögu samningsins og er ekki fjarlægð.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Lína %1 í samningi '%2' hefur þegar verið reikningsfærð, svo hún er hluti af reikningasögu samningsins og er ekki fjarlægð.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - NamedType BilledErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - NamedType 3334636019" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line %1 of contract '%2' is closed. A closed contract line keeps the history of an ended Subscription Line and is not removed by this message type.</source>
+          <target>Lína %1 í samningi '%2' er lokuð. Lokuð samningslína geymir sögu áskriftarlínu sem er lokið og þessi skeytagerð fjarlægir hana ekki.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Lína %1 í samningi '%2' er lokuð. Lokuð samningslína geymir sögu áskriftarlínu sem er lokið og þessi skeytagerð fjarlægir hana ekki.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - NamedType ClosedLineErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - NamedType 4222890416" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line %1 of Customer Subscription Contract '%2' does not exist.</source>
+          <target>Lína %1 í áskriftarsamningi viðskiptamanns '%2' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Lína %1 í áskriftarsamningi viðskiptamanns '%2' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - NamedType CustomerLineNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - NamedType 1036938038" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line %1 of contract '%2' has unreleased deferrals. Release them first, for example with Subscription.Deferral.Release.</source>
+          <target>Lína %1 í samningi '%2' hefur óútleystar frestanir. Leystu þær fyrst út, til dæmis með Subscription.Deferral.Release.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Lína %1 í samningi '%2' hefur óútleystar frestanir. Leystu þær fyrst út, til dæmis með Subscription.Deferral.Release.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - NamedType DeferralErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Removes a line from a customer or vendor Subscription Contract and detaches its Subscription Line. Refuses lines that are billed, in billing, deferred or closed.</source>
+          <target>Fjarlægir línu úr áskriftarsamningi viðskiptamanns eða lánardrottins og losar áskriftarlínu hennar. Hafnar línum sem eru reikningsfærðar, í reikningagerð, frestaðar eða lokaðar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Fjarlægir línu úr áskriftarsamningi viðskiptamanns eða lánardrottins og losar áskriftarlínu hennar. Hafnar línum sem eru reikningsfærðar, í reikningagerð, frestaðar eða lokaðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - NamedType 3733299467" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line %1 of contract '%2' is on a billing line. Clear the billing proposal or delete the billing document first.</source>
+          <target>Lína %1 í samningi '%2' er á reikningslínu. Hreinsaðu reikningstillöguna eða eyddu reikningsskjalinu fyrst.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Lína %1 í samningi '%2' er á reikningslínu. Hreinsaðu reikningstillöguna eða eyddu reikningsskjalinu fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - NamedType PendingBillingErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - NamedType 3856343368" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line %1 of Vendor Subscription Contract '%2' does not exist.</source>
+          <target>Lína %1 í áskriftarsamningi lánardrottins '%2' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Lína %1 í áskriftarsamningi lánardrottins '%2' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - NamedType VendorLineNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Contract.RemoveLine, Subscription, Contract, RemoveLine, remove, contract line, detach</source>
+          <target>Subscription.Contract.RemoveLine, áskrift, samningur, fjarlægja línu, fjarlægja, samningslína, losa</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.RemoveLine, áskrift, samningur, fjarlægja línu, fjarlægja, samningslína, losa</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2970874974 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Contract.RemoveLine: Removes an unbilled contract line; its Subscription Line can be attached again.</source>
+          <target>Subscription.Contract.RemoveLine: Fjarlægir samningslínu sem hefur ekki verið reikningsfærð; hægt er að tengja áskriftarlínu hennar aftur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.RemoveLine: Fjarlægir samningslínu sem hefur ekki verið reikningsfærð; hægt er að tengja áskriftarlínu hennar aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2002185568 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked: Microsoft has not exposed a public API to roll a contract's Subscription Line dates forward. Always returns a structured error naming the internal procedures involved.</source>
-          <target>Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að færa dagsetningar áskriftarlína samnings áfram. Skilar alltaf skipulagðri villu sem nefnir þau innri ferli sem við eiga.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að færa dagsetningar áskriftarlína samnings áfram. Skilar alltaf skipulagðri villu sem nefnir þau innri ferli sem við eiga.</note>
+          <source>Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, by running Microsoft's codeunit 8058 through a Job Queue Entry. Needs BIFROST Force ori.</source>
+          <target>Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með því að keyra kótaeiningu 8058 frá Microsoft í verkraðarfærslu. Krefst BIFROST Force ori.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með því að keyra kótaeiningu 8058 frá Microsoft í verkraðarfærslu. Krefst BIFROST Force ori.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 2002185568 - NamedType 2164942842" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateLineDates has no supported public API in this Business Central version. Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() and codeunit 8058 "Update Sub. Lines Term. Dates" are all internal to Microsoft's Subscription Billing app and cannot be called from this extension. Run the "Update Subscription Line Dates" action on the contract in the Business Central client instead, or schedule Microsoft's own job queue entry for the batch job that does this in bulk.</source>
-          <target>Subscription.Contract.UpdateLineDates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() og codeunit 8058 "Update Sub. Lines Term. Dates" eru öll innri í Subscription Billing-forriti Microsoft og því ekki hægt að kalla þau úr þessu appi. Keyrðu aðgerðina „Uppfæra dagsetningar áskriftarlína“ ("Update Subscription Line Dates") á samningnum í Business Central-biðlaranum í staðinn, eða settu upp vinnsluraðarfærslu Microsoft sjálfs fyrir hópkeyrsluna sem gerir þetta í lotum.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() og codeunit 8058 "Update Sub. Lines Term. Dates" eru öll innri í Subscription Billing-forriti Microsoft og því ekki hægt að kalla þau úr þessu appi. Keyrðu aðgerðina „Uppfæra dagsetningar áskriftarlína“ ("Update Subscription Line Dates") á samningnum í Business Central-biðlaranum í staðinn, eða settu upp vinnsluraðarfærslu Microsoft sjálfs fyrir hópkeyrsluna sem gerir þetta í lotum.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType NotSupportedErr</note>
+        <trans-unit id="Codeunit 2002185568 - NamedType 3314699509" size-unit="char" translate="yes" xml:space="preserve">
+          <source>the BIFROST Force ori permission set</source>
+          <target>heimildasamstæðan BIFROST Force ori</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=heimildasamstæðan BIFROST Force ori</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForceExpectedTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2002185568 - NamedType 775780324" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Ask an administrator to assign the BIFROST Force ori permission set to your user, then call again.</source>
+          <target>Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForceNextStepTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2002185568 - NamedType 1817117493" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Contract.UpdateLineDates schedules a Job Queue Entry, which needs the BIFROST Force ori permission set. Your user does not have it.</source>
+          <target>Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar BIFROST Force ori. Notandinn þinn hefur hana ekki.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar BIFROST Force ori. Notandinn þinn hefur hana ekki.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForcePermissionErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2002185568 - NamedType 46511362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter 'runMode' must be either 'foreground' or 'background', not '%1'.</source>
+          <target>Færibreytan 'runMode' verður að vera annaðhvort 'foreground' eða 'background', ekki '%1'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = the supplied run mode||is-IS=Færibreytan 'runMode' verður að vera annaðhvort 'foreground' eða 'background', ekki '%1'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType InvalidRunModeErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2002185568 - NamedType 2938394307" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bifrost: update Subscription Line term dates</source>
+          <target>Bifröst: uppfæra samningstímadagsetningar áskriftarlína</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bifröst: uppfæra samningstímadagsetningar áskriftarlína</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType JobDescriptionTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateLineDates, Subscription, Contract, UpdateLineDates, customer, dates</source>
-          <target>Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, viðskiptavinur, dagsetningar</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, viðskiptavinur, dagsetningar</note>
+          <source>Subscription.Contract.UpdateLineDates, Subscription, Contract, UpdateLineDates, term dates, close, job queue</source>
+          <target>Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, samningstími, loka, verkröð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, samningstími, loka, verkröð</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateLineDates: Recalculates customer contract line dates. Irreversible.</source>
-          <target>Subscription.Contract.UpdateLineDates: Endurreiknar dagsetningar lína í viðskiptasamningi. Óafturkræf aðgerð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates: Endurreiknar dagsetningar lína í viðskiptasamningi. Óafturkræf aðgerð.</note>
+          <source>Subscription.Contract.UpdateLineDates: Irreversible. Closes ended Subscription Lines in every Subscription through a Job Queue Entry; needs BIFROST Force ori.</source>
+          <target>Subscription.Contract.UpdateLineDates: Óafturkræft. Lokar áskriftarlínum sem er lokið í öllum áskriftum með verkraðarfærslu; krefst BIFROST Force ori.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates: Óafturkræft. Lokar áskriftarlínum sem er lokið í öllum áskriftum með verkraðarfærslu; krefst BIFROST Force ori.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 4134144049 - NamedType 2156165308" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Customer Subscription Contract '%1' does not exist.</source>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType CustomerContractNotFoundErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 4134144049 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked: Microsoft has not exposed a public API to recalculate a contract's exchange rates, and the underlying flow is unsafe unattended. Always returns a structured error.</source>
-          <target>Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að endurreikna gengi samnings og undirliggjandi ferli er óöruggt án eftirlits. Skilar alltaf skipulagðri villu.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að endurreikna gengi samnings og undirliggjandi ferli er óöruggt án eftirlits. Skilar alltaf skipulagðri villu.</note>
+          <source>Recalculates the currency data of a Subscription Contract's Subscription Lines with a new exchange rate, like Update Exchange Rates, for customer or vendor contracts.</source>
+          <target>Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 4134144049 - NamedType 2164942842" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateExchangeRates has no supported public API in this Business Central version. Customer Subscription Contract.UpdateAndRecalculateServiceCommitmentCurrencyData() is internal to Microsoft's Subscription Billing app. It also drives the interactive "Exchange Rate Selection" page, which returns false and lets a zero exchange rate through when GuiAllowed is false, so it would be unsafe to call unattended even if it were public. Use the "Update Exchange Rates" action on the contract in the Business Central client instead.</source>
-          <target>Subscription.Contract.UpdateExchangeRates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateAndRecalculateServiceCommitmentCurrencyData() er innri í Subscription Billing-forriti Microsoft. Hún keyrir einnig gagnvirku síðuna "Exchange Rate Selection", sem skilar false og hleypir í gegn núllgengi þegar GuiAllowed er false, svo það væri óöruggt að kalla hana án eftirlits jafnvel þótt hún væri opinber. Notaðu aðgerðina „Uppfæra gengi“ ("Update Exchange Rates") á samningnum í Business Central-biðlaranum í staðinn.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateAndRecalculateServiceCommitmentCurrencyData() er innri í Subscription Billing-forriti Microsoft. Hún keyrir einnig gagnvirku síðuna "Exchange Rate Selection", sem skilar false og hleypir í gegn núllgengi þegar GuiAllowed er false, svo það væri óöruggt að kalla hana án eftirlits jafnvel þótt hún væri opinber. Notaðu aðgerðina „Uppfæra gengi“ ("Update Exchange Rates") á samningnum í Business Central-biðlaranum í staðinn.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType NotSupportedErr</note>
+        <trans-unit id="Codeunit 4134144049 - NamedType 2919723209" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Contract '%1' uses local currency and has no foreign-currency exchange rate to update.</source>
+          <target>Áskriftarsamningur '%1' notar staðbundinn gjaldmiðil og hefur ekkert erlent gengi til að uppfæra.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur '%1' notar staðbundinn gjaldmiðil og hefur ekkert erlent gengi til að uppfæra.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType LocalCurrencyErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134144049 - NamedType 2173629572" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Vendor Subscription Contract '%1' does not exist.</source>
+          <target>Áskriftarsamningur lánardrottins '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur lánardrottins '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType VendorContractNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4134144049 - NamedType 1679449610" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The exchange rate for currency '%1' on %2 is %3. Send a currencyFactor greater than zero, or set up an exchange rate for that date.</source>
+          <target>Gengi gjaldmiðilsins '%1' þann %2 er %3. Sendu currencyFactor sem er stærri en núll, eða settu upp gengi fyrir þá dagsetningu.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = currency code, %2 = date, %3 = the rate||is-IS=Gengi gjaldmiðilsins '%1' þann %2 er %3. Sendu currencyFactor sem er stærri en núll, eða settu upp gengi fyrir þá dagsetningu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType ZeroExchangeRateErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateExchangeRates, Subscription, Contract, UpdateExchangeRates, customer, currency</source>
-          <target>Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengisupplýsingar, viðskiptavinur, gjaldmiðill</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengisupplýsingar, viðskiptavinur, gjaldmiðill</note>
+          <source>Subscription.Contract.UpdateExchangeRates, Subscription, Contract, UpdateExchangeRates, currency, exchange rate, foreign currency</source>
+          <target>Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengi, gjaldmiðill, gengi, erlendur gjaldmiðill</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengi, gjaldmiðill, gengi, erlendur gjaldmiðill</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateExchangeRates: Refreshes customer contract exchange rates. Irreversible.</source>
-          <target>Subscription.Contract.UpdateExchangeRates: Uppfærir gengisupplýsingar viðskiptasamnings. Óafturkræf aðgerð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates: Uppfærir gengisupplýsingar viðskiptasamnings. Óafturkræf aðgerð.</note>
+          <source>Subscription.Contract.UpdateExchangeRates: Recalculates a foreign-currency contracts Subscription Lines with a new exchange rate.</source>
+          <target>Subscription.Contract.UpdateExchangeRates: Endurreiknar áskriftarlínur samnings í erlendum gjaldmiðli með nýju gengi.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateExchangeRates: Endurreiknar áskriftarlínur samnings í erlendum gjaldmiðli með nýju gengi.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3806649106 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
@@ -393,6 +597,12 @@
           <note from="Developer" annotates="general" priority="2">%1 = parameter name, %2 = maximum length||is-IS=Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType ValueTooLongErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - Method 1815913811 - NamedType 1545003169" size-unit="char" translate="yes" xml:space="preserve">
+          <source>You are not authorized to clear billing proposals or delete billing documents while a Billing Template bills automatically. Set Auto Contract Billing on your user in User Setup.</source>
+          <target>Þú hefur ekki heimild til að hreinsa reikningstillögur eða eyða reikningsskjölum á meðan reikningssniðmát gerir reikninga sjálfvirkt. Merktu við Reikningsregla samnings á notandanum þínum í Uppsetningu notanda.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Þú hefur ekki heimild til að hreinsa reikningstillögur eða eyða reikningsskjölum á meðan reikningssniðmát gerir reikninga sjálfvirkt. Merktu við Reikningsregla samnings á notandanum þínum í Uppsetningu notanda.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method AssertMayClearBillingProposal - NamedType NotAuthorizedErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.</source>
           <target>Býr til áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur áskriftarsamnings viðskiptamanns út frá innfluttum bráðabirgðalínum, eitt skref í einu.</target>
@@ -464,6 +674,30 @@
           <target>Subscription.Line.Create: Beitir pakka og stofnar áskriftarlínur.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Line.Create: Beitir pakka og stofnar áskriftarlínur.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Line Create Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 95334345 - NamedType 2991252663" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Package '%1' is not assigned to item '%2'.</source>
+          <target>Áskriftarpakkanum '%1' er ekki úthlutað á vöruna '%2'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = package code, %2 = item number||is-IS=Áskriftarpakkanum '%1' er ekki úthlutað á vöruna '%2'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Pkg RemoveItem Impl ori - NamedType AssignmentNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 95334345 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Removes the assignment of a Subscription Package to an item, so the item no longer gets the package. Existing Subscriptions keep their lines.</source>
+          <target>Fjarlægir úthlutun áskriftarpakka á vöru, svo varan fær ekki lengur pakkann. Fyrirliggjandi áskriftir halda línum sínum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Fjarlægir úthlutun áskriftarpakka á vöru, svo varan fær ekki lengur pakkann. Fyrirliggjandi áskriftir halda línum sínum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Pkg RemoveItem Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 95334345 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Package.RemoveItemAssignment, Subscription, Package, RemoveItemAssignment, item, subscription package, remove</source>
+          <target>Subscription.Package.RemoveItemAssignment, áskrift, pakki, fjarlægja úthlutun vöru, vara, áskriftarpakki, fjarlægja</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Package.RemoveItemAssignment, áskrift, pakki, fjarlægja úthlutun vöru, vara, áskriftarpakki, fjarlægja</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Pkg RemoveItem Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 95334345 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Package.RemoveItemAssignment: Removes a Subscription Package from an item.</source>
+          <target>Subscription.Package.RemoveItemAssignment: Fjarlægir áskriftarpakka af vöru.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Package.RemoveItemAssignment: Fjarlægir áskriftarpakka af vöru.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Pkg RemoveItem Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Creates the Contract Price Update Lines of a Price Update Template, as the Contract Price Update page does. Subscription Lines are not changed.</source>
@@ -615,6 +849,12 @@
           <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Create Sub. Contract Renewal bjó ekki til sölutilboð fyrir áskriftarsamning viðskiptamanns '%1'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren CrQuote Impl ori - NamedType QuoteNotCreatedErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2514670414 - NamedType 58677651" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Line %1 of contractLineNos is not a line of Customer Subscription Contract '%2'.</source>
+          <target>Lína %1 í contractLineNos er ekki lína í áskriftarsamningi viðskiptamanns '%2'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract line number, %2 = customer contract no.||is-IS=Lína %1 í contractLineNos er ekki lína í áskriftarsamningi viðskiptamanns '%2'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren CrQuote Impl ori - NamedType UnknownContractLineErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2514670414 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Renewal.CreateQuote, Subscription, Renewal, CreateQuote, renewal, quote</source>
           <target>Subscription.Renewal.CreateQuote, áskrift, endurnýjun, stofna tilboð, endurnýjun, tilboð</target>
@@ -675,6 +915,150 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Renewal.Extend: Framlengir gildistíma áskriftarsamnings. Óafturkræf aðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren Extend Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 3271990264" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 is already connected to Subscription Line %2. Disconnect it first with Subscription.Usage.DisconnectSubscription.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna er þegar tengd áskriftarlínu %2. Aftengdu hana fyrst með Subscription.Usage.DisconnectSubscription.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = subscription line entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er þegar tengd áskriftarlínu %2. Aftengdu hana fyrst með Subscription.Usage.DisconnectSubscription.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType AlreadyConnectedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Connects a usage data supplier's subscriptions to Subscriptions through Microsoft's Connect to Subscription, and returns which entries were connected and which were skipped, with the reason.</source>
+          <target>Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 2791289126" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 does not exist for supplier '%2'.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna er ekki til fyrir birgi '%2'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = supplier number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er ekki til fyrir birgi '%2'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType EntryNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 1460884527" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 has no Connect to Subscription Method. Set Connect to Sub. Header No. on the entry first, for example with Data.Records.Set.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna hefur engan tengimáta við áskrift. Settu fyrst Tengjast áskriftarnr. á færsluna, til dæmis með Data.Records.Set.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna hefur engan tengimáta við áskrift. Settu fyrst Tengjast áskriftarnr. á færsluna, til dæmis með Data.Records.Set.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType NoConnectMethodErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 3627855224" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entries %1 and %2 both connect to Subscription '%3'. Connect them in separate calls after checking that this is intended.</source>
+          <target>Færslur %1 og %2 í áskriftum birgis notkunargagna tengjast báðar áskriftinni '%3'. Tengdu þær í aðskildum köllum eftir að hafa gengið úr skugga um að það sé ætlunin.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = first entry number, %2 = second entry number, %3 = subscription number||is-IS=Færslur %1 og %2 í áskriftum birgis notkunargagna tengjast báðar áskriftinni '%3'. Tengdu þær í aðskildum köllum eftir að hafa gengið úr skugga um að það sé ætlunin.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType SameSubscriptionErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - NamedType 1706861390" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Usage Data Supplier '%1' does not exist.</source>
+          <target>Birgir notkunargagna '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = supplier number||is-IS=Birgir notkunargagna '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType SupplierNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.ConnectSubscriptions, Subscription, Usage, ConnectSubscriptions, connect, supplier, usage based billing</source>
+          <target>Subscription.Usage.ConnectSubscriptions, áskrift, notkun, tengja áskriftir, tengja, birgir, notkunartengd reikningagerð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.ConnectSubscriptions, áskrift, notkun, tengja áskriftir, tengja, birgir, notkunartengd reikningagerð</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3818452249 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.ConnectSubscriptions: Irreversible. Connects supplier subscriptions to Subscriptions; with New Subscription Lines it also ends the old lines.</source>
+          <target>Subscription.Usage.ConnectSubscriptions: Óafturkræft. Tengir áskriftir birgis við áskriftir; með nýjum áskriftarlínum lýkur það einnig gömlu línunum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.ConnectSubscriptions: Óafturkræft. Tengir áskriftir birgis við áskriftir; með nýjum áskriftarlínum lýkur það einnig gömlu línunum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310317760 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Deletes the imported lines and usage billing of a usage import so it can be processed again, or deletes the whole import. Refuses imports already on a billing line or document.</source>
+          <target>Eyðir innfluttum línum og notkunarreikningagerð innflutnings svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Eyðir innfluttum línum og notkunarreikningagerð innflutnings svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310317760 - NamedType 2414655595" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Import entry %1 has usage billing on billing line %2. Clear that billing proposal first with Subscription.Billing.ClearProposal.</source>
+          <target>Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = billing line entry number||is-IS=Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType InBillingErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310317760 - NamedType 704693649" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter 'mode' must be either 'resetLines' or 'deleteImport', not '%1'.</source>
+          <target>Færibreytan 'mode' verður að vera annaðhvort 'resetLines' eða 'deleteImport', ekki '%1'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = the supplied mode||is-IS=Færibreytan 'mode' verður að vera annaðhvort 'resetLines' eða 'deleteImport', ekki '%1'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType InvalidModeErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310317760 - NamedType 2257785892" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The subject '%1' is not a Usage Data Import entry number. Send the entry number as a whole number.</source>
+          <target>Efnið '%1' er ekki færslunúmer innflutnings notkunargagna. Sendu færslunúmerið sem heila tölu.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = the subject||is-IS=Efnið '%1' er ekki færslunúmer innflutnings notkunargagna. Sendu færslunúmerið sem heila tölu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType InvalidSubjectErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310317760 - NamedType 1796841580" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Import entry %1 has usage billing on document %2. Delete or cancel that document first; usage that is posted cannot be imported again.</source>
+          <target>Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = document number||is-IS=Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType InvoicedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310317760 - NamedType 3351274" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Usage Data Import entry %1 does not exist.</source>
+          <target>Færsla %1 í innflutningi notkunargagna er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number||is-IS=Færsla %1 í innflutningi notkunargagna er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType NotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310317760 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.DeleteData, Subscription, Usage, DeleteData, delete, re-run, usage import</source>
+          <target>Subscription.Usage.DeleteData, áskrift, notkun, eyða gögnum, eyða, keyra aftur, innflutningur notkunar</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.DeleteData, áskrift, notkun, eyða gögnum, eyða, keyra aftur, innflutningur notkunar</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1310317760 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.DeleteData: Irreversible. Deletes a usage imports processed data, or the whole import, so it can be re-run.</source>
+          <target>Subscription.Usage.DeleteData: Óafturkræft. Eyðir unnum gögnum innflutnings notkunar, eða öllum innflutningnum, svo hægt sé að keyra hann aftur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.DeleteData: Óafturkræft. Eyðir unnum gögnum innflutnings notkunar, eða öllum innflutningnum, svo hægt sé að keyra hann aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Disconnects a Subscription Line from its usage data suppliers subscription, like Disconnect from Subscription, and returns the link that was removed.</source>
+          <target>Aftengir áskriftarlínu frá áskrift birgis notkunargagna, eins og Aftengjast áskrift, og skilar tengingunni sem var fjarlægð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Aftengir áskriftarlínu frá áskrift birgis notkunargagna, eins og Aftengjast áskrift, og skilar tengingunni sem var fjarlægð.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 352622013" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 is not connected to a Subscription Line.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna er ekki tengd áskriftarlínu.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er ekki tengd áskriftarlínu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType EntryNotConnectedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 2791289126" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Usage Data Supp. Subscription entry %1 does not exist.</source>
+          <target>Færsla %1 í áskriftum birgis notkunargagna er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType EntryNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 2439084459" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Line %1 is not connected to a usage data supplier's subscription.</source>
+          <target>Áskriftarlína %1 er ekki tengd áskrift birgis notkunargagna.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = subscription line entry number||is-IS=Áskriftarlína %1 er ekki tengd áskrift birgis notkunargagna.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType LineNotConnectedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 3085223924" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Line %1 does not exist.</source>
+          <target>Áskriftarlína %1 er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = subscription line entry number||is-IS=Áskriftarlína %1 er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType LineNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - NamedType 684409259" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The request must supply 'subscriptionLineEntryNo' or 'usageDataSubscriptionEntryNo'.</source>
+          <target>Beiðnin verður að innihalda 'subscriptionLineEntryNo' eða 'usageDataSubscriptionEntryNo'.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Beiðnin verður að innihalda 'subscriptionLineEntryNo' eða 'usageDataSubscriptionEntryNo'.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - NamedType MissingSelectionErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.DisconnectSubscription, Subscription, Usage, DisconnectSubscription, disconnect, supplier, usage based billing</source>
+          <target>Subscription.Usage.DisconnectSubscription, áskrift, notkun, aftengja áskrift, aftengja, birgir, notkunartengd reikningagerð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.DisconnectSubscription, áskrift, notkun, aftengja áskrift, aftengja, birgir, notkunartengd reikningagerð</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 141567435 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.Usage.DisconnectSubscription: Removes the link between a Subscription Line and a supplier subscription. Lines and contracts stay.</source>
+          <target>Subscription.Usage.DisconnectSubscription: Fjarlægir tenginguna milli áskriftarlínu og áskriftar birgis. Línur og samningar standa óbreyttir.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.DisconnectSubscription: Fjarlægir tenginguna milli áskriftarlínu og áskriftar birgis. Línur og samningar standa óbreyttir.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2570584800 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Imports a usage data file (as raw text or base64) for metered Subscription Lines and creates the imported usage data lines. Optionally also processes those lines into billable quantities.</source>
           <target>Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.</target>
@@ -686,6 +1070,12 @@
           <target>Beiðnin verður að innihalda annaðhvort 'content' (hreinan texta) eða 'contentBase64' (base64-kóðað) fyrir notkunargögnin.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Beiðnin verður að innihalda annaðhvort 'content' (hreinan texta) eða 'contentBase64' (base64-kóðað) fyrir notkunargögnin.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - NamedType NoContentErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2570584800 - NamedType 1706861390" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Usage Data Supplier '%1' does not exist.</source>
+          <target>Birgir notkunargagna '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = supplier number||is-IS=Birgir notkunargagna '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - NamedType SupplierNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2570584800 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Usage.ImportData, Subscription, Usage, ImportData, usage, meter data</source>
@@ -740,6 +1130,60 @@
           <target>Subscription.Usage.Process: Vinnur úr innfluttum notkunargögnum. Óafturkræf aðgerð.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Usage.Process: Vinnur úr innfluttum notkunargögnum. Óafturkræf aðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Process Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Adds the due vendor contract lines of the invoice's vendor to an existing unposted purchase invoice, like Get Vendor Contract Lines, and returns the lines added.</source>
+          <target>Bætir gjaldföllnum samningslínum lánardrottins reikningsins við óbókaðan innkaupareikning, eins og Sækja samningslínur lánardrottins, og skilar línunum sem bættust við.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bætir gjaldföllnum samningslínum lánardrottins reikningsins við óbókaðan innkaupareikning, eins og Sækja samningslínur lánardrottins, og skilar línunum sem bættust við.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - NamedType 1712851524" size-unit="char" translate="yes" xml:space="preserve">
+          <source>There are %1 pending billing proposal line(s) without a Billing Template for contract '%2'. Microsoft would add them to this invoice too. Bill or clear that proposal first.</source>
+          <target>Það eru %1 óafgreiddar línur í reikningstillögu án reikningssniðmáts fyrir samning '%2'. Microsoft myndi bæta þeim við þennan reikning líka. Reikningsfærðu eða hreinsaðu þá tillögu fyrst.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = row count, %2 = contract number||is-IS=Það eru %1 óafgreiddar línur í reikningstillögu án reikningssniðmáts fyrir samning '%2'. Microsoft myndi bæta þeim við þennan reikning líka. Reikningsfærðu eða hreinsaðu þá tillögu fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - NamedType ForeignPendingProposalErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - NamedType 3344327521" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The purchase invoice '%1' does not exist.</source>
+          <target>Innkaupareikningurinn '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = purchase invoice number||is-IS=Innkaupareikningurinn '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - NamedType InvoiceNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - NamedType 1676189551" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The purchase invoice '%1' is posted. Lines can only be added to an unposted purchase invoice.</source>
+          <target>Innkaupareikningurinn '%1' er bókaður. Aðeins er hægt að bæta línum við óbókaðan innkaupareikning.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = purchase invoice number||is-IS=Innkaupareikningurinn '%1' er bókaður. Aðeins er hægt að bæta línum við óbókaðan innkaupareikning.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - NamedType InvoicePostedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - NamedType 3085223924" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Line %1 does not exist.</source>
+          <target>Áskriftarlína %1 er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = subscription line entry number||is-IS=Áskriftarlína %1 er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - NamedType LineNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - NamedType 2709780027" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Line %1 cannot be added: it must be a vendor line invoiced through a contract, open, and without a pending billing line.</source>
+          <target>Ekki er hægt að bæta áskriftarlínu %1 við: hún verður að vera lína lánardrottins sem er reikningsfærð í gegnum samning, opin og án óafgreiddrar reikningslínu.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = subscription line entry number||is-IS=Ekki er hægt að bæta áskriftarlínu %1 við: hún verður að vera lína lánardrottins sem er reikningsfærð í gegnum samning, opin og án óafgreiddrar reikningslínu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - NamedType NotBillableErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - NamedType 923949735" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Line %1 belongs to a vendor contract of another vendor than '%2', the Buy-from Vendor No. of the purchase invoice.</source>
+          <target>Áskriftarlína %1 tilheyrir samningi annars lánardrottins en '%2', sem er lánardrottinn innkaupareikningsins.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = subscription line entry number, %2 = vendor number||is-IS=Áskriftarlína %1 tilheyrir samningi annars lánardrottins en '%2', sem er lánardrottinn innkaupareikningsins.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - NamedType OtherVendorErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.VendorContract.AddLinesToInvoice, Subscription, VendorContract, AddLinesToInvoice, purchase invoice, vendor, contract lines</source>
+          <target>Subscription.VendorContract.AddLinesToInvoice, áskrift, samningur lánardrottins, bæta línum við reikning, innkaupareikningur, lánardrottinn, samningslínur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.AddLinesToInvoice, áskrift, samningur lánardrottins, bæta línum við reikning, innkaupareikningur, lánardrottinn, samningslínur</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription.VendorContract.AddLinesToInvoice: Adds due vendor contract lines to an existing unposted purchase invoice.</source>
+          <target>Subscription.VendorContract.AddLinesToInvoice: Bætir gjaldföllnum samningslínum lánardrottins við óbókaðan innkaupareikning.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.AddLinesToInvoice: Bætir gjaldföllnum samningslínum lánardrottins við óbókaðan innkaupareikning.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 18511243 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Vendor Subscription Contract '%1' does not exist.</source>
