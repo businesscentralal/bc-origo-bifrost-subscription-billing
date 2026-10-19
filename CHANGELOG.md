@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-19) - vendor CreateInvoice undo note (#37 AC04)
+
+- `Subscription.VendorContract.CreateInvoice` notes now match the customer type: the unposted purchase document can be deleted with `Subscription.Billing.DeleteDocuments` or posted with `Subscription.Billing.PostDocuments`, and a posted purchase invoice or credit memo is cancelled or corrected with the Cancel or Correct action on the posted invoice in Business Central (Bifrost has no message type for that).
+
 ### Added (2026-10-19) - usage connected through to the billing line (#38 AC04)
 
 - `Sub Usage Tst ori` (95777) `Scenario_38AC04_ConnectProcessPropose_LinksUsageToBillingLine`: a usage file is imported for a real usage-based contract line, the supplier subscription is connected with `Subscription.Usage.ConnectSubscriptions`, `Subscription.Usage.Process` creates Usage Data Billing, `Subscription.Billing.CreateProposal` for a template covering the contract creates the Billing Line, and after `Subscription.Billing.CreateDocuments` the Usage Data Billing row's Billing Line Entry No. names that line (Microsoft stores it when the document is created, not at proposal time).
