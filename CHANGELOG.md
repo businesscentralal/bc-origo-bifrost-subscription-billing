@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-19) - Foundation minimum 28.0.3.530
+
+- The Bifrost Foundation dependency minimum is 28.0.3.530 (the 28.0.3 release, as for Bifrost Attachments) instead of 28.0.5.590. The app compiles with AppSourceCop against that package, and the UAT tenant (Deploy to Bifrost) runs no newer Foundation, so main's deployment failed with AL1024 at 28.0.5.590.
+- `Sub Con Ccy Tst ori` (95717) dispatches the Icelandic currency refusal through the 12-argument `EnqueueAndProcess`, which 28.0.3.530 provides; the refusal writes nothing, so its commit is harmless.
+
 ### Changed (2026-10-19) - AppSource version floors
 
 - Bifrost Foundation floor **28.0.5.590** (the 28.0.5 release, which removed the per-app HTTP gate this app relies on; the app compiles against that package with AppSourceCop, 0 errors). Microsoft Subscription Billing and application floors **28.3.0.0**, the lowest Business Central the app is compiled and live-tested against (bc28-w1). Same values in `app/app.json` and `test/app.json`.

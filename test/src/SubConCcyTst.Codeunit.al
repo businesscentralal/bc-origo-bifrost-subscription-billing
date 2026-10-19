@@ -89,7 +89,8 @@ codeunit 95717 "Sub Con Ccy Tst ori"
 
         // [WHEN] Data.Records.Set writes Currency Code in a message dispatched with lcid 1039.
         // Dispatcher.Execute switches to the Bifrost Setup default language, so the language is
-        // passed to EnqueueAndProcess the way a queued API message carries it.
+        // passed to EnqueueAndProcess the way a queued API message carries it. The refusal writes
+        // nothing, so the commit EnqueueAndProcess makes is harmless.
         ResponseJson := SetField(Database::"Customer Subscription Contract", CustomerContract."No.", 'CurrencyCode', LibraryERM.CreateCurrencyWithRandomExchRates(), 1039);
         NextStep := TestLib.GetText(ResponseJson, 'nextStep');
         GlobalLanguage(1033);
@@ -148,10 +149,10 @@ codeunit 95717 "Sub Con Ccy Tst ori"
     local procedure SetField(TableNo: Integer; ContractNo: Code[20]; FieldName: Text; FieldValue: Text; LanguageId: Integer): JsonObject
     var
         Dispatcher: Codeunit "Dispatcher ori";
-        ResponseTempBlob: Codeunit System.Utilities."Temp Blob";
         RequestContent: BigText;
-        ResponseInStream: InStream;
+        ResponseContent: BigText;
         RequestText: Text;
+        ResponseText: Text;
         ResponseContentType: Text[100];
         MessageId: Guid;
         EmptyTaskId: Guid;
@@ -175,9 +176,9 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         RequestJson.WriteTo(RequestText);
         RequestContent.AddText(RequestText);
         Dispatcher.EnqueueAndProcess(Enum::"Message Type ori"::"Data.Records.Set", Enum::"Message Version ori"::"1.0", '', 'XSBA', 'application/json',
-            RequestContent, EmptyTaskId, LanguageId, MessageId, ResponseTempBlob, ResponseContentType, ResponseTime, true);
-        ResponseTempBlob.CreateInStream(ResponseInStream, TextEncoding::UTF8);
-        Assert.IsTrue(ResponseJson.ReadFrom(ResponseInStream), 'The dispatcher must return structured JSON.');
+            RequestContent, EmptyTaskId, LanguageId, MessageId, ResponseContent, ResponseContentType, ResponseTime);
+        ResponseContent.GetSubText(ResponseText, 1);
+        Assert.IsTrue(ResponseJson.ReadFrom(ResponseText), 'The dispatcher must return structured JSON.');
         exit(ResponseJson);
     end;
 
