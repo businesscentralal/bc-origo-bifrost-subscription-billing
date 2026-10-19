@@ -19,6 +19,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -26,7 +28,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
         TemplateNotFoundErr: Label 'The Billing Template ''%1'' does not exist.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er ekki til.';
         PostedDocumentErr: Label 'Document %1 is posted and cannot be deleted. Cancel or correct the posted invoice or credit memo instead, for example with Sales.SalesInvoice.Cancel or Sales.SalesInvoice.Correct.', Comment = '%1 = document number||is-IS=Skjal %1 er bókað og ekki er hægt að eyða því. Hættu við eða leiðréttu bókaða reikninginn eða kreditreikninginn í staðinn, til dæmis með Sales.SalesInvoice.Cancel eða Sales.SalesInvoice.Correct.';
         DocumentNotFoundErr: Label 'No billing line of Billing Template ''%1'' is on document %2.', Comment = '%1 = billing template code, %2 = document number||is-IS=Engin reikningslína í reikningssniðmátinu ''%1'' er á skjali %2.';
-        DescriptionLbl: Label 'Deletes the unposted invoices and credit memos created from a Billing Templates billing lines and puts the lines back into the proposal. Refuses posted documents.', MaxLength = 250, Comment = 'is-IS=Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.';
+        DescriptionLbl: Label 'Deletes the unposted invoices and credit memos created from a Billing Template''s billing lines and puts the lines back into the proposal. Refuses posted documents.', MaxLength = 250, Comment = 'is-IS=Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -122,8 +124,8 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Deletes the unposted sales or purchase invoices and credit memos that Subscription.Billing.CreateDocuments made from a Billing Templates billing ' +
-            'lines, optionally only those of one contract or one document. Microsofts delete handling puts the billing lines back into the proposal, so ' +
+        Overview := 'Deletes the unposted sales or purchase invoices and credit memos that Subscription.Billing.CreateDocuments made from a Billing Template''s billing ' +
+            'lines, optionally only those of one contract or one document. Microsoft''s delete handling puts the billing lines back into the proposal, so ' +
             'Subscription.Billing.CreateDocuments can run again, or Subscription.Billing.ClearProposal can clear them.';
         exit(true);
     end;
@@ -151,9 +153,12 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -163,8 +168,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Bil DelDocs Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -189,7 +193,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
         LinesRemoved: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        BillingTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'billingTemplateCode', false);
+        BillingTemplateCode := Helper.GetSubjectOr(RequestJson, 'billingTemplateCode', Argument, false);
         ContractNo := Helper.GetCode20(RequestJson, 'contractNo', false);
         DocumentNo := Helper.GetCode20(RequestJson, 'documentNo', false);
 

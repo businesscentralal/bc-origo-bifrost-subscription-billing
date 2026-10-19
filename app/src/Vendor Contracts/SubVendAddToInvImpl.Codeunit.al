@@ -16,6 +16,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -25,7 +27,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         OtherVendorErr: Label 'Subscription Line %1 belongs to a vendor contract of another vendor than ''%2'', the Buy-from Vendor No. of the purchase invoice.', Comment = '%1 = subscription line entry number, %2 = vendor number||is-IS=Áskriftarlína %1 tilheyrir samningi annars lánardrottins en ''%2'', sem er lánardrottinn innkaupareikningsins.';
         NotBillableErr: Label 'Subscription Line %1 cannot be added: it must be a vendor line invoiced through a contract, open, and without a pending billing line.', Comment = '%1 = subscription line entry number||is-IS=Ekki er hægt að bæta áskriftarlínu %1 við: hún verður að vera lína lánardrottins sem er reikningsfærð í gegnum samning, opin og án óafgreiddrar reikningslínu.';
         ForeignPendingProposalErr: Label 'There are %1 pending billing proposal line(s) without a Billing Template for contract ''%2''. Microsoft would add them to this invoice too. Bill or clear that proposal first.', Comment = '%1 = row count, %2 = contract number||is-IS=Það eru %1 óafgreiddar línur í reikningstillögu án reikningssniðmáts fyrir samning ''%2''. Microsoft myndi bæta þeim við þennan reikning líka. Reikningsfærðu eða hreinsaðu þá tillögu fyrst.';
-        DescriptionLbl: Label 'Adds the due vendor contract lines of the invoices vendor to an existing unposted purchase invoice, like Get Vendor Contract Lines, and returns the lines added.', MaxLength = 250, Comment = 'is-IS=Bætir gjaldföllnum samningslínum lánardrottins reikningsins við óbókaðan innkaupareikning, eins og Sækja samningslínur lánardrottins, og skilar línunum sem bættust við.';
+        DescriptionLbl: Label 'Adds the due vendor contract lines of the invoice''s vendor to an existing unposted purchase invoice, like Get Vendor Contract Lines, and returns the lines added.', MaxLength = 250, Comment = 'is-IS=Bætir gjaldföllnum samningslínum lánardrottins reikningsins við óbókaðan innkaupareikning, eins og Sækja samningslínur lánardrottins, og skilar línunum sem bættust við.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -122,7 +124,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Adds the vendor contract lines that are due to an existing unposted purchase invoice, as Get Vendor Contract Lines does on the invoice. Without ' +
-            'subscriptionLineEntryNos every open Subscription Line of the invoices vendor that is invoiced through a vendor contract and has no pending billing ' +
+            'subscriptionLineEntryNos every open Subscription Line of the invoice''s vendor that is invoiced through a vendor contract and has no pending billing ' +
             'line is added; contractNo narrows that to one vendor contract. Each line is billed up to the billing-to date the page proposes for its next billing ' +
             'period, or up to billingToDate.';
         exit(true);
@@ -148,9 +150,12 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -160,8 +165,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Vend AddToInv Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -183,7 +187,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         LinesBefore: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        InvoiceNo := Helper.GetSubjectOr(Argument, RequestJson, 'purchaseInvoiceNo', true);
+        InvoiceNo := Helper.GetSubjectOr(RequestJson, 'purchaseInvoiceNo', Argument, true);
         ContractNo := Helper.GetCode20(RequestJson, 'contractNo', false);
         BillingToDate := Helper.GetDate(RequestJson, 'billingToDate', false);
         Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos);

@@ -65,8 +65,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 3224492679 - NamedType 1413073243" size-unit="char" translate="yes" xml:space="preserve">
           <source>'groupBy' = 'Customer' only applies when the pending proposal lines belong to customer contracts.</source>
-          <target>'groupBy' = 'Customer' á aðeins við þegar óafgreiddar tillögulínur tilheyra viðskiptavinasamningum.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS='groupBy' = 'Customer' á aðeins við þegar óafgreiddar tillögulínur tilheyra viðskiptavinasamningum.</note>
+          <target>'groupBy' = 'Customer' á aðeins við þegar óafgreiddar tillögulínur tilheyra áskriftarsamningum viðskiptamanna.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS='groupBy' = 'Customer' á aðeins við þegar óafgreiddar tillögulínur tilheyra áskriftarsamningum viðskiptamanna.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrDocs Impl ori - NamedType GroupByCustomerOnlyErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 3224492679 - NamedType 2040476004" size-unit="char" translate="yes" xml:space="preserve">
@@ -77,8 +77,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 3224492679 - NamedType 2440069994" size-unit="char" translate="yes" xml:space="preserve">
           <source>You can create documents only for one type of partner at a time. Billing Template '%1' currently has both customer and vendor proposal lines pending.</source>
-          <target>Aðeins er hægt að búa til skjöl fyrir eina tegund viðskiptaaðila í einu. Reikningssniðmátið '%1' er nú með bæði tillögulínur viðskiptavina og birgja í bið.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Aðeins er hægt að búa til skjöl fyrir eina tegund viðskiptaaðila í einu. Reikningssniðmátið '%1' er nú með bæði tillögulínur viðskiptavina og birgja í bið.</note>
+          <target>Aðeins er hægt að búa til skjöl fyrir eina tegund viðskiptaaðila í einu. Reikningssniðmátið '%1' er nú með bæði tillögulínur viðskiptamanna og lánardrottna í bið.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Aðeins er hægt að búa til skjöl fyrir eina tegund viðskiptaaðila í einu. Reikningssniðmátið '%1' er nú með bæði tillögulínur viðskiptamanna og lánardrottna í bið.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrDocs Impl ori - NamedType MixedPartnerErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 3224492679 - NamedType 3291868349" size-unit="char" translate="yes" xml:space="preserve">
@@ -136,7 +136,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4029027443 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Deletes the unposted invoices and credit memos created from a Billing Templates billing lines and puts the lines back into the proposal. Refuses posted documents.</source>
+          <source>Deletes the unposted invoices and credit memos created from a Billing Template's billing lines and puts the lines back into the proposal. Refuses posted documents.</source>
           <target>Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil DelDocs Impl ori - NamedType DescriptionLbl</note>
@@ -185,8 +185,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 1413073243" size-unit="char" translate="yes" xml:space="preserve">
           <source>'groupBy' = 'Customer' only applies when the pending proposal lines belong to customer contracts.</source>
-          <target>'groupBy' = 'Customer' á aðeins við þegar óafgreiddar tillögulínur tilheyra viðskiptavinasamningum.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS='groupBy' = 'Customer' á aðeins við þegar óafgreiddar tillögulínur tilheyra viðskiptavinasamningum.</note>
+          <target>'groupBy' = 'Customer' á aðeins við þegar óafgreiddar tillögulínur tilheyra áskriftarsamningum viðskiptamanna.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS='groupBy' = 'Customer' á aðeins við þegar óafgreiddar tillögulínur tilheyra áskriftarsamningum viðskiptamanna.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PrvDocs Impl ori - NamedType GroupByCustomerOnlyErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 2040476004" size-unit="char" translate="yes" xml:space="preserve">
@@ -197,8 +197,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 2456840190" size-unit="char" translate="yes" xml:space="preserve">
           <source>Billing Template '%1' currently has both customer and vendor proposal lines pending. A real run refuses to create documents for a mix of partner types until this is resolved.</source>
-          <target>Reikningssniðmátið '%1' er nú með bæði tillögulínur viðskiptavina og birgja í bið. Raunveruleg keyrsla neitar að búa til skjöl fyrir blöndu af tegundum viðskiptaaðila þar til úr því hefur verið leyst.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Reikningssniðmátið '%1' er nú með bæði tillögulínur viðskiptavina og birgja í bið. Raunveruleg keyrsla neitar að búa til skjöl fyrir blöndu af tegundum viðskiptaaðila þar til úr því hefur verið leyst.</note>
+          <target>Reikningssniðmátið '%1' er nú með bæði tillögulínur viðskiptamanna og lánardrottna í bið. Raunveruleg keyrsla neitar að búa til skjöl fyrir blöndu af tegundum viðskiptaaðila þar til úr því hefur verið leyst.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = billing template code||is-IS=Reikningssniðmátið '%1' er nú með bæði tillögulínur viðskiptamanna og lánardrottna í bið. Raunveruleg keyrsla neitar að búa til skjöl fyrir blöndu af tegundum viðskiptaaðila þar til úr því hefur verið leyst.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PrvDocs Impl ori - NamedType MixedPartnerMsg</note>
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 3291868349" size-unit="char" translate="yes" xml:space="preserve">
@@ -232,7 +232,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PrvDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3451705999 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Writes the contract filter of a Billing Template after validating it as a view of the templates contract table, and returns the stored filter.</source>
+          <source>Writes the contract filter of a Billing Template after validating it as a view of the template's contract table, and returns the stored filter.</source>
           <target>Skrifar samningssíu reikningssniðmáts eftir að hafa sannreynt hana sem sýn á samningatöflu sniðmátsins og skilar vistuðu síunni.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Skrifar samningssíu reikningssniðmáts eftir að hafa sannreynt hana sem sýn á samningatöflu sniðmátsins og skilar vistuðu síunni.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil SetFilter Impl ori - NamedType DescriptionLbl</note>
@@ -263,14 +263,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 1511352918 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
-          <target>Áskriftarsamningur viðskiptavinar '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar '%1' er ekki til.</note>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract no.||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con CrInvoice Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1511352918 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Bills one customer Subscription Contract to an unposted sales invoice. Returns the documents created.</source>
-          <target>Reikningsfærir einn áskriftarsamning viðskiptavinar á óbókfærðan sölureikning. Skilar þeim skjölum sem urðu til.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Reikningsfærir einn áskriftarsamning viðskiptavinar á óbókfærðan sölureikning. Skilar þeim skjölum sem urðu til.</note>
+          <target>Reikningsfærir einn áskriftarsamning viðskiptamanns á óbókaðan sölureikning. Skilar þeim skjölum sem urðu til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Reikningsfærir einn áskriftarsamning viðskiptamanns á óbókaðan sölureikning. Skilar þeim skjölum sem urðu til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con CrInvoice Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1511352918 - NamedType 874973696" size-unit="char" translate="yes" xml:space="preserve">
@@ -293,50 +293,50 @@
         </trans-unit>
         <trans-unit id="Codeunit 1511352918 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Contract.CreateInvoice, Subscription, Contract, CreateInvoice, customer, invoice</source>
-          <target>Subscription.Contract.CreateInvoice, áskrift, samningur, stofna reikning, viðskiptavinur, reikningur</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.CreateInvoice, áskrift, samningur, stofna reikning, viðskiptavinur, reikningur</note>
+          <target>Subscription.Contract.CreateInvoice, áskrift, samningur, stofna reikning, viðskiptamaður, reikningur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.CreateInvoice, áskrift, samningur, stofna reikning, viðskiptamaður, reikningur</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con CrInvoice Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1511352918 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Contract.CreateInvoice: Creates an unposted customer invoice. Irreversible.</source>
-          <target>Subscription.Contract.CreateInvoice: Stofnar óbókaðan viðskiptareikning. Óafturkræf aðgerð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.CreateInvoice: Stofnar óbókaðan viðskiptareikning. Óafturkræf aðgerð.</note>
+          <target>Subscription.Contract.CreateInvoice: Stofnar óbókaðan reikning viðskiptamanns. Óafturkræf aðgerð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.CreateInvoice: Stofnar óbókaðan reikning viðskiptamanns. Óafturkræf aðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con CrInvoice Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3758981755 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
-          <target>Áskriftarsamningur viðskiptavinar '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar '%1' er ekki til.</note>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract no.||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con GetLines Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 3758981755 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Attaches unassigned Subscription Lines to a customer Subscription Contract. Returns the lines attached and any skipped.</source>
-          <target>Tengir ótengdar áskriftarlínur við áskriftarsamning viðskiptavinar. Skilar tengdum línum og línum sem var sleppt.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning viðskiptavinar. Skilar tengdum línum og línum sem var sleppt.</note>
+          <target>Tengir ótengdar áskriftarlínur við áskriftarsamning viðskiptamanns. Skilar tengdum línum og línum sem var sleppt.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning viðskiptamanns. Skilar tengdum línum og línum sem var sleppt.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con GetLines Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3758981755 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Contract.GetLines, Subscription, Contract, GetLines, customer, attach lines</source>
-          <target>Subscription.Contract.GetLines, áskrift, samningur, sækja línur, viðskiptavinur, tengja línur</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.GetLines, áskrift, samningur, sækja línur, viðskiptavinur, tengja línur</note>
+          <target>Subscription.Contract.GetLines, áskrift, samningur, sækja línur, viðskiptamaður, tengja línur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.GetLines, áskrift, samningur, sækja línur, viðskiptamaður, tengja línur</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con GetLines Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3758981755 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Contract.GetLines: Attaches eligible lines to a customer contract.</source>
-          <target>Subscription.Contract.GetLines: Tengir hæfar línur við viðskiptasamning.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.GetLines: Tengir hæfar línur við viðskiptasamning.</note>
+          <target>Subscription.Contract.GetLines: Tengir hæfar línur við áskriftarsamning viðskiptamanns.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.GetLines: Tengir hæfar línur við áskriftarsamning viðskiptamanns.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con GetLines Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
-          <target>Áskriftarsamningur viðskiptavinar '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar '%1' er ekki til.</note>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract no.||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Nothing is written and no invoice is ever created.</source>
-          <target>Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptavinar. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptavinar. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.</note>
+          <target>Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 874973696" size-unit="char" translate="yes" xml:space="preserve">
@@ -359,14 +359,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Contract.PreviewInvoice, Subscription, Contract, PreviewInvoice, customer, preview</source>
-          <target>Subscription.Contract.PreviewInvoice, áskrift, samningur, forskoða reikning, viðskiptavinur, forskoðun</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.PreviewInvoice, áskrift, samningur, forskoða reikning, viðskiptavinur, forskoðun</note>
+          <target>Subscription.Contract.PreviewInvoice, áskrift, samningur, forskoða reikning, viðskiptamaður, forskoðun</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.PreviewInvoice, áskrift, samningur, forskoða reikning, viðskiptamaður, forskoðun</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Contract.PreviewInvoice: Previews a customer invoice without writing. Read-only.</source>
-          <target>Subscription.Contract.PreviewInvoice: Forskoðar viðskiptareikning án þess að skrifa. Lesaðgerð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.PreviewInvoice: Forskoðar viðskiptareikning án þess að skrifa. Lesaðgerð.</note>
+          <target>Subscription.Contract.PreviewInvoice: Forskoðar reikning viðskiptamanns án þess að skrifa. Lesaðgerð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.PreviewInvoice: Forskoðar reikning viðskiptamanns án þess að skrifa. Lesaðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2970874974 - NamedType 839325841" size-unit="char" translate="yes" xml:space="preserve">
@@ -478,15 +478,15 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType CustomerContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Recalculates the currency data of a Subscription Contracts Subscription Lines with a new exchange rate, like Update Exchange Rates, for customer or vendor contracts.</source>
+          <source>Recalculates the currency data of a Subscription Contract's Subscription Lines with a new exchange rate, like Update Exchange Rates, for customer or vendor contracts.</source>
           <target>Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - NamedType 2919723209" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription Contract '%1' has no Currency Code, so its Subscription Lines are in local currency and have no exchange rate to update.</source>
-          <target>Áskriftarsamningur '%1' hefur engan gjaldmiðilskóða, svo áskriftarlínur hans eru í staðbundnum gjaldmiðli og hafa ekkert gengi til að uppfæra.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur '%1' hefur engan gjaldmiðilskóða, svo áskriftarlínur hans eru í staðbundnum gjaldmiðli og hafa ekkert gengi til að uppfæra.</note>
+          <source>Subscription Contract '%1' uses local currency and has no foreign-currency exchange rate to update.</source>
+          <target>Áskriftarsamningur '%1' notar staðbundinn gjaldmiðil og hefur ekkert erlent gengi til að uppfæra.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur '%1' notar staðbundinn gjaldmiðil og hefur ekkert erlent gengi til að uppfæra.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - NamedType LocalCurrencyErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - NamedType 2173629572" size-unit="char" translate="yes" xml:space="preserve">
@@ -515,8 +515,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 3806649106 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Releases deferred revenue and cost for customer and vendor Subscription Contracts up to a date, posting the release to the general ledger.</source>
-          <target>Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptavina og birgja fram að tilteknum degi og bókfærir losunina í fjárhagsbókhald.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptavina og birgja fram að tilteknum degi og bókfærir losunina í fjárhagsbókhald.</note>
+          <target>Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptamanna og lánardrottna fram að tilteknum degi og bókar losunina í fjárhagsbókhald.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptamanna og lánardrottna fram að tilteknum degi og bókar losunina í fjárhagsbókhald.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Def Release Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3806649106 - NamedType 1528260597" size-unit="char" translate="yes" xml:space="preserve">
@@ -605,8 +605,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.</source>
-          <target>Býr til áskriftarhausa, áskriftarsamninga viðskiptavina, áskriftarlínur og samningslínur áskriftarsamnings viðskiptavinar út frá innfluttum bráðabirgðalínum, eitt skref í einu.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptavina, áskriftarlínur og samningslínur áskriftarsamnings viðskiptavinar út frá innfluttum bráðabirgðalínum, eitt skref í einu.</note>
+          <target>Býr til áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur áskriftarsamnings viðskiptamanns út frá innfluttum bráðabirgðalínum, eitt skref í einu.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur áskriftarsamnings viðskiptamanns út frá innfluttum bráðabirgðalínum, eitt skref í einu.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 3794037818" size-unit="char" translate="yes" xml:space="preserve">
@@ -616,9 +616,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType LineNotCreatedErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 1529208534" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Sub_ContractLineType is required: Subscription Line / Comment</source>
-          <target>Sub_ContractLineType er nauðsynlegt: Áskriftarlína / Athugasemd</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Sub_ContractLineType er nauðsynlegt: Áskriftarlína / Athugasemd</note>
+          <source>Sub_ContractLineType is required: set it to Item or G/L Account, or to Comment and send allowCommentLines = true.</source>
+          <target>Sub_ContractLineType er nauðsynlegt: veldu Vara eða Fjárhagsreikningur, eða Athugasemd og sendu allowCommentLines = true.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sub_ContractLineType er nauðsynlegt: veldu Vara eða Fjárhagsreikningur, eða Athugasemd og sendu allowCommentLines = true.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Imp CrContr Impl ori - NamedType LineTypeRequiredErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 274557919" size-unit="char" translate="yes" xml:space="preserve">
@@ -700,21 +700,27 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Pkg RemoveItem Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked: Microsoft has not exposed a public API to create price update proposals. Use the "Contract Price Update" page instead.</source>
-          <target>Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að búa til verðuppfærslutillögur. Notaðu síðuna "Contract Price Update" í staðinn.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að búa til verðuppfærslutillögur. Notaðu síðuna "Contract Price Update" í staðinn.</note>
+          <source>Creates the Contract Price Update Lines of a Price Update Template, as the Contract Price Update page does. Subscription Lines are not changed.</source>
+          <target>Stofnar línur verðuppfærslu áskriftarsamnings fyrir sniðmát fyrir verðuppfærslu, eins og síðan Verðuppfærsla áskriftarsamnings gerir. Áskriftarlínum er ekki breytt.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Stofnar línur verðuppfærslu áskriftarsamnings fyrir sniðmát fyrir verðuppfærslu, eins og síðan Verðuppfærsla áskriftarsamnings gerir. Áskriftarlínum er ekki breytt.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 439992956 - NamedType 1724934514" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.PriceUpdate.CreateProposal cannot run: Codeunit "Price Update Management".CreatePriceUpdateProposal is internal in Business Central 28.4 and has not been exposed for external callers. Use the "Contract Price Update" page in the Business Central client to create the proposal, or call Subscription.PriceUpdate.SetTemplateFilter first to prepare the template's filters.</source>
-          <target>Subscription.PriceUpdate.CreateProposal er ekki hægt að keyra: Codeunit "Price Update Management".CreatePriceUpdateProposal er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að útbúa tillöguna, eða kallaðu á Subscription.PriceUpdate.SetTemplateFilter fyrst til að undirbúa síur sniðmátsins.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.CreateProposal er ekki hægt að keyra: Codeunit "Price Update Management".CreatePriceUpdateProposal er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að útbúa tillöguna, eða kallaðu á Subscription.PriceUpdate.SetTemplateFilter fyrst til að undirbúa síur sniðmátsins.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - NamedType NotAccessibleErr</note>
+        <trans-unit id="Codeunit 439992956 - NamedType 1945031727" size-unit="char" translate="yes" xml:space="preserve">
+          <source>No Contract Price Update Line was created for Price Update Template '%1'. No Subscription Line matched the template's partner, filters and dates, or every match already has a price update line.</source>
+          <target>Engin lína verðuppfærslu áskriftarsamnings var stofnuð fyrir sniðmát fyrir verðuppfærslu '%1'. Engin áskriftarlína passaði við viðskiptaaðila, síur og dagsetningar sniðmátsins, eða allar sem pössuðu eru þegar með línu verðuppfærslu.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Engin lína verðuppfærslu áskriftarsamnings var stofnuð fyrir sniðmát fyrir verðuppfærslu '%1'. Engin áskriftarlína passaði við viðskiptaaðila, síur og dagsetningar sniðmátsins, eða allar sem pössuðu eru þegar með línu verðuppfærslu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - NamedType NoLinesCreatedMsg</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 439992956 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Price Update Template '%1' does not exist.</source>
+          <target>Sniðmát fyrir verðuppfærslu '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Sniðmát fyrir verðuppfærslu '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - NamedType TemplateNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal</source>
-          <target>Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga</note>
+          <source>Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal, indexation</source>
+          <target>Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga, vísitölutenging</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga, vísitölutenging</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 439992956 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
@@ -724,21 +730,39 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4155906984 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Blocked: Microsoft has not exposed a public API to perform price updates. Use the "Contract Price Update" page instead.</source>
-          <target>Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að framkvæma verðuppfærslur. Notaðu síðuna "Contract Price Update" í staðinn.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokað: Microsoft hefur ekki gert opinbert forritsskil aðgengilegt til að framkvæma verðuppfærslur. Notaðu síðuna "Contract Price Update" í staðinn.</note>
+          <source>Applies the Contract Price Update Lines: updates Subscription Lines or writes Planned Subscription Lines, and deletes each performed line. Nothing is posted.</source>
+          <target>Beitir línum verðuppfærslu áskriftarsamnings: uppfærir áskriftarlínur eða skrifar áætlaðar áskriftarlínur og eyðir hverri framkvæmdri línu. Ekkert er bókað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Beitir línum verðuppfærslu áskriftarsamnings: uppfærir áskriftarlínur eða skrifar áætlaðar áskriftarlínur og eyðir hverri framkvæmdri línu. Ekkert er bókað.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 4155906984 - NamedType 1724934514" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.PriceUpdate.Perform cannot run: Codeunit "Price Update Management".PerformPriceUpdate is internal in Business Central 28.4 and has not been exposed for external callers. Use the "Contract Price Update" page in the Business Central client to perform the price update.</source>
-          <target>Subscription.PriceUpdate.Perform er ekki hægt að keyra: Codeunit "Price Update Management".PerformPriceUpdate er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að framkvæma verðuppfærsluna.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.Perform er ekki hægt að keyra: Codeunit "Price Update Management".PerformPriceUpdate er innri í Business Central 28.4 og hefur ekki verið gert aðgengilegt utanaðkomandi köllum. Notaðu síðuna "Contract Price Update" í Business Central-biðlaranum til að framkvæma verðuppfærsluna.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType NotAccessibleErr</note>
+        <trans-unit id="Codeunit 4155906984 - NamedType 3362352614" size-unit="char" translate="yes" xml:space="preserve">
+          <source>There are no Contract Price Update Lines to perform. Run Subscription.PriceUpdate.CreateProposal first.</source>
+          <target>Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType NothingToPerformErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4155906984 - NamedType 401302075" size-unit="char" translate="yes" xml:space="preserve">
+          <source>There are no Contract Price Update Lines for Price Update Template '%1' to perform. Run Subscription.PriceUpdate.CreateProposal first.</source>
+          <target>Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma fyrir sniðmát fyrir verðuppfærslu '%1'. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Engar línur verðuppfærslu áskriftarsamnings eru til að framkvæma fyrir sniðmát fyrir verðuppfærslu '%1'. Keyrðu Subscription.PriceUpdate.CreateProposal fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType NothingToPerformForTemplateErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4155906984 - NamedType 3404472832" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 of %2 Contract Price Update Lines could not be performed and were left in the proposal; see 'results'. The other lines were performed and committed one by one, so they were not rolled back.</source>
+          <target>Ekki tókst að framkvæma %1 af %2 línum verðuppfærslu áskriftarsamnings og þær voru skildar eftir í tillögunni; sjá 'results'. Hinar línurnar voru framkvæmdar og staðfestar ein í einu og voru því ekki afturkallaðar.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = number of failed lines, %2 = number of lines processed||is-IS=Ekki tókst að framkvæma %1 af %2 línum verðuppfærslu áskriftarsamnings og þær voru skildar eftir í tillögunni; sjá 'results'. Hinar línurnar voru framkvæmdar og staðfestar ein í einu og voru því ekki afturkallaðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType PartlyFailedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4155906984 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Price Update Template '%1' does not exist.</source>
+          <target>Sniðmát fyrir verðuppfærslu '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Sniðmát fyrir verðuppfærslu '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - NamedType TemplateNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 4155906984 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.PriceUpdate.Perform, Subscription, PriceUpdate, Perform, apply prices, subscription lines</source>
-          <target>Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur</note>
+          <source>Subscription.PriceUpdate.Perform, Subscription, PriceUpdate, Perform, apply prices, subscription lines, indexation</source>
+          <target>Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur, vísitölutenging</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur, vísitölutenging</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4155906984 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
@@ -746,6 +770,24 @@
           <target>Subscription.PriceUpdate.Perform: Beitir tillögu að verðuppfærslu. Óafturkræf aðgerð.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.PriceUpdate.Perform: Beitir tillögu að verðuppfærslu. Óafturkræf aðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4259066993 - NamedType 2643591503" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Please enter the Include Contract Lines up to Date.</source>
+          <target>Færðu inn dagsetninguna sem samningslínur eru teknar með til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Færðu inn dagsetninguna sem samningslínur eru teknar með til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Price Update Mgt ori - NamedType NoIncludeContractLinesUpToDateErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4259066993 - NamedType 936836997" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Price Update Proposals cannot be created without a Price Update Template. Please select a template before.</source>
+          <target>Ekki er hægt að stofna tillögur að verðuppfærslu án sniðmáts fyrir verðuppfærslu. Veldu sniðmát fyrst.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ekki er hægt að stofna tillögur að verðuppfærslu án sniðmáts fyrir verðuppfærslu. Veldu sniðmát fyrst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Price Update Mgt ori - NamedType PriceUpdateProposalCannotBeCreateWithoutTemplateErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 4259066993 - NamedType 865776642" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Price Update Method of Price Update Template '%1' is not one this app knows. Update Bifrost Subscription Billing.</source>
+          <target>Aðferð verðuppfærslu á sniðmáti fyrir verðuppfærslu '%1' er ekki þekkt í þessu forriti. Uppfærðu Bifröst Subscription Billing.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=Aðferð verðuppfærslu á sniðmáti fyrir verðuppfærslu '%1' er ekki þekkt í þessu forriti. Uppfærðu Bifröst Subscription Billing.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Price Update Mgt ori - NamedType UnknownPriceUpdateMethodErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1208222225 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Writes the contract, subscription or line view filter Blob on a Price Update Template and returns the current value of all three filters.</source>
@@ -785,26 +827,26 @@
         </trans-unit>
         <trans-unit id="Codeunit 2514670414 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
-          <target>Viðskiptavinasamningurinn '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Viðskiptavinasamningurinn '%1' er ekki til.</note>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren CrQuote Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2514670414 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Builds contract renewal lines from a Customer Subscription Contract's Subscription Lines and creates a renewal sales quote from them.</source>
-          <target>Býr til endurnýjunarlínur samnings út frá áskriftarlínum viðskiptavinasamnings og útbýr endurnýjunarsölutilboð út frá þeim.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Býr til endurnýjunarlínur samnings út frá áskriftarlínum viðskiptavinasamnings og útbýr endurnýjunarsölutilboð út frá þeim.</note>
+          <target>Býr til endurnýjunarlínur samnings út frá áskriftarlínum áskriftarsamnings viðskiptamanns og útbýr endurnýjunarsölutilboð út frá þeim.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Býr til endurnýjunarlínur samnings út frá áskriftarlínum áskriftarsamnings viðskiptamanns og útbýr endurnýjunarsölutilboð út frá þeim.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren CrQuote Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2514670414 - NamedType 2405329740" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' has no Subscription Lines that can be renewed.</source>
-          <target>Viðskiptavinasamningurinn '%1' er ekki með neinar áskriftarlínur sem hægt er að endurnýja.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Viðskiptavinasamningurinn '%1' er ekki með neinar áskriftarlínur sem hægt er að endurnýja.</note>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki með neinar áskriftarlínur sem hægt er að endurnýja.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki með neinar áskriftarlínur sem hægt er að endurnýja.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren CrQuote Impl ori - NamedType NoRenewableLinesErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2514670414 - NamedType 3473582798" size-unit="char" translate="yes" xml:space="preserve">
           <source>Create Sub. Contract Renewal did not produce a sales quote for Customer Subscription Contract '%1'.</source>
-          <target>Create Sub. Contract Renewal bjó ekki til sölutilboð fyrir viðskiptavinasamninginn '%1'.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Create Sub. Contract Renewal bjó ekki til sölutilboð fyrir viðskiptavinasamninginn '%1'.</note>
+          <target>Create Sub. Contract Renewal bjó ekki til sölutilboð fyrir áskriftarsamning viðskiptamanns '%1'.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Create Sub. Contract Renewal bjó ekki til sölutilboð fyrir áskriftarsamning viðskiptamanns '%1'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren CrQuote Impl ori - NamedType QuoteNotCreatedErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2514670414 - NamedType 58677651" size-unit="char" translate="yes" xml:space="preserve">
@@ -827,14 +869,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 1644343825 - NamedType 2156165308" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>
-          <target>Viðskiptavinasamningurinn '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Viðskiptavinasamningurinn '%1' er ekki til.</note>
+          <target>Áskriftarsamningur viðskiptamanns '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = customer contract no.||is-IS=Áskriftarsamningur viðskiptamanns '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren Extend Impl ori - NamedType CustomerContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1644343825 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Extends a Subscription with a new customer and/or vendor contract, applying the item's standard packages plus any extra packages supplied. Returns the contract line counts created.</source>
-          <target>Framlengir áskrift með nýjum viðskiptavina- og/eða birgjasamningi og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Framlengir áskrift með nýjum viðskiptavina- og/eða birgjasamningi og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.</note>
+          <target>Framlengir áskrift með nýjum áskriftarsamningi viðskiptamanns og/eða lánardrottins og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Framlengir áskrift með nýjum áskriftarsamningi viðskiptamanns og/eða lánardrottins og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren Extend Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1644343825 - NamedType 334754418" size-unit="char" translate="yes" xml:space="preserve">
@@ -857,8 +899,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1644343825 - NamedType 2173629572" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Vendor Subscription Contract '%1' does not exist.</source>
-          <target>Birgjasamningurinn '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = vendor contract no.||is-IS=Birgjasamningurinn '%1' er ekki til.</note>
+          <target>Áskriftarsamningur lánardrottins '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = vendor contract no.||is-IS=Áskriftarsamningur lánardrottins '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ren Extend Impl ori - NamedType VendorContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1644343825 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
@@ -880,7 +922,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType AlreadyConnectedErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 3818452249 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Connects a usage data suppliers subscriptions to Subscriptions through Microsofts Connect to Subscription, and returns which entries were connected and which were skipped, with the reason.</source>
+          <source>Connects a usage data supplier's subscriptions to Subscriptions through Microsoft's Connect to Subscription, and returns which entries were connected and which were skipped, with the reason.</source>
           <target>Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Connect Impl ori - NamedType DescriptionLbl</note>
@@ -1029,6 +1071,12 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Beiðnin verður að innihalda annaðhvort 'content' (hreinan texta) eða 'contentBase64' (base64-kóðað) fyrir notkunargögnin.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - NamedType NoContentErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2570584800 - NamedType 1706861390" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Usage Data Supplier '%1' does not exist.</source>
+          <target>Birgir notkunargagna '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = supplier number||is-IS=Birgir notkunargagna '%1' er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - NamedType SupplierNotFoundErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2570584800 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Usage.ImportData, Subscription, Usage, ImportData, usage, meter data</source>
           <target>Subscription.Usage.ImportData, áskrift, notkun, flytja inn gögn, notkun, mæligögn</target>
@@ -1084,7 +1132,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Process Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1703725318 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Adds the due vendor contract lines of the invoices vendor to an existing unposted purchase invoice, like Get Vendor Contract Lines, and returns the lines added.</source>
+          <source>Adds the due vendor contract lines of the invoice's vendor to an existing unposted purchase invoice, like Get Vendor Contract Lines, and returns the lines added.</source>
           <target>Bætir gjaldföllnum samningslínum lánardrottins reikningsins við óbókaðan innkaupareikning, eins og Sækja samningslínur lánardrottins, og skilar línunum sem bættust við.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Bætir gjaldföllnum samningslínum lánardrottins reikningsins við óbókaðan innkaupareikning, eins og Sækja samningslínur lánardrottins, og skilar línunum sem bættust við.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - NamedType DescriptionLbl</note>
@@ -1139,14 +1187,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 18511243 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Vendor Subscription Contract '%1' does not exist.</source>
-          <target>Birgjaáskriftarsamningurinn '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Birgjaáskriftarsamningurinn '%1' er ekki til.</note>
+          <target>Áskriftarsamningur lánardrottins '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur lánardrottins '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend CrInvoice Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 18511243 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Creates an unposted purchase invoice or credit memo for the due Subscription Lines of a vendor subscription contract. Never posts the document.</source>
-          <target>Býr til óbókfærðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur birgjaáskriftarsamnings. Skjalið er aldrei bókfært.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Býr til óbókfærðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur birgjaáskriftarsamnings. Skjalið er aldrei bókfært.</note>
+          <target>Býr til óbókaðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur áskriftarsamnings lánardrottins. Skjalið er aldrei bókað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Býr til óbókaðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur áskriftarsamnings lánardrottins. Skjalið er aldrei bókað.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend CrInvoice Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 18511243 - NamedType 1712851524" size-unit="char" translate="yes" xml:space="preserve">
@@ -1169,50 +1217,50 @@
         </trans-unit>
         <trans-unit id="Codeunit 18511243 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.VendorContract.CreateInvoice, Subscription, VendorContract, CreateInvoice, vendor, invoice</source>
-          <target>Subscription.VendorContract.CreateInvoice, áskrift, birgjasamningur, stofna reikning, birgir, reikningur</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.CreateInvoice, áskrift, birgjasamningur, stofna reikning, birgir, reikningur</note>
+          <target>Subscription.VendorContract.CreateInvoice, áskrift, áskriftarsamningur lánardrottins, stofna reikning, lánardrottinn, reikningur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.CreateInvoice, áskrift, áskriftarsamningur lánardrottins, stofna reikning, lánardrottinn, reikningur</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend CrInvoice Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 18511243 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.VendorContract.CreateInvoice: Creates an unposted vendor invoice. Irreversible.</source>
-          <target>Subscription.VendorContract.CreateInvoice: Stofnar óbókaðan birgjareikning. Óafturkræf aðgerð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.CreateInvoice: Stofnar óbókaðan birgjareikning. Óafturkræf aðgerð.</note>
+          <target>Subscription.VendorContract.CreateInvoice: Stofnar óbókaðan reikning lánardrottins. Óafturkræf aðgerð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.CreateInvoice: Stofnar óbókaðan reikning lánardrottins. Óafturkræf aðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend CrInvoice Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2246287102 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Vendor Subscription Contract '%1' does not exist.</source>
-          <target>Birgjaáskriftarsamningurinn '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Birgjaáskriftarsamningurinn '%1' er ekki til.</note>
+          <target>Áskriftarsamningur lánardrottins '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur lánardrottins '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend GetLines Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2246287102 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Attaches unassigned Subscription Lines to a vendor subscription contract, creating a Vend. Sub. Contract Line for each one. Returns how many lines were attached.</source>
-          <target>Tengir ótengdar áskriftarlínur við birgjaáskriftarsamning og býr til samningslínu fyrir áskrift birgis fyrir hverja línu. Skilar fjölda tengdra lína.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Tengir ótengdar áskriftarlínur við birgjaáskriftarsamning og býr til samningslínu fyrir áskrift birgis fyrir hverja línu. Skilar fjölda tengdra lína.</note>
+          <target>Tengir ótengdar áskriftarlínur við áskriftarsamning lánardrottins og býr til samningslínu lánardrottins fyrir hverja línu. Skilar fjölda tengdra lína.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning lánardrottins og býr til samningslínu lánardrottins fyrir hverja línu. Skilar fjölda tengdra lína.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend GetLines Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2246287102 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.VendorContract.GetLines, Subscription, VendorContract, GetLines, vendor, attach lines</source>
-          <target>Subscription.VendorContract.GetLines, áskrift, birgjasamningur, sækja línur, birgir, tengja línur</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.GetLines, áskrift, birgjasamningur, sækja línur, birgir, tengja línur</note>
+          <target>Subscription.VendorContract.GetLines, áskrift, áskriftarsamningur lánardrottins, sækja línur, lánardrottinn, tengja línur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.GetLines, áskrift, áskriftarsamningur lánardrottins, sækja línur, lánardrottinn, tengja línur</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend GetLines Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2246287102 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.VendorContract.GetLines: Attaches eligible lines to a vendor contract.</source>
-          <target>Subscription.VendorContract.GetLines: Tengir hæfar línur við birgjasamning.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.GetLines: Tengir hæfar línur við birgjasamning.</note>
+          <target>Subscription.VendorContract.GetLines: Tengir hæfar línur við áskriftarsamning lánardrottins.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.GetLines: Tengir hæfar línur við áskriftarsamning lánardrottins.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend GetLines Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Vendor Subscription Contract '%1' does not exist.</source>
-          <target>Birgjaáskriftarsamningurinn '%1' er ekki til.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Birgjaáskriftarsamningurinn '%1' er ekki til.</note>
+          <target>Áskriftarsamningur lánardrottins '%1' er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur lánardrottins '%1' er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Previews the billing proposal lines that Subscription.VendorContract.CreateInvoice would build for a vendor subscription contract. Nothing is written and no document is ever created.</source>
-          <target>Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir birgjaáskriftarsamning. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir birgjaáskriftarsamning. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.</note>
+          <target>Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 1712851524" size-unit="char" translate="yes" xml:space="preserve">
@@ -1235,14 +1283,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.VendorContract.PreviewInvoice, Subscription, VendorContract, PreviewInvoice, vendor, preview</source>
-          <target>Subscription.VendorContract.PreviewInvoice, áskrift, birgjasamningur, forskoða reikning, birgir, forskoðun</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.PreviewInvoice, áskrift, birgjasamningur, forskoða reikning, birgir, forskoðun</note>
+          <target>Subscription.VendorContract.PreviewInvoice, áskrift, áskriftarsamningur lánardrottins, forskoða reikning, lánardrottinn, forskoðun</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.PreviewInvoice, áskrift, áskriftarsamningur lánardrottins, forskoða reikning, lánardrottinn, forskoðun</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.VendorContract.PreviewInvoice: Previews a vendor invoice without writing. Read-only.</source>
-          <target>Subscription.VendorContract.PreviewInvoice: Forskoðar birgjareikning án þess að skrifa. Lesaðgerð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.PreviewInvoice: Forskoðar birgjareikning án þess að skrifa. Lesaðgerð.</note>
+          <target>Subscription.VendorContract.PreviewInvoice: Forskoðar reikning lánardrottins án þess að skrifa. Lesaðgerð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.VendorContract.PreviewInvoice: Forskoðar reikning lánardrottins án þess að skrifa. Lesaðgerð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="PermissionSet 142777260 - Property 2879900210" maxwidth="30" size-unit="char" translate="yes" xml:space="preserve">

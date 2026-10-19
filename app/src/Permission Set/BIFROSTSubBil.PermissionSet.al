@@ -15,7 +15,6 @@ permissionset 10035062 "BIFROST SubBil ori"
 
     Permissions =
         codeunit "Sub Helper ori" = X,
-        codeunit "Sub Write Process ori" = X,
         codeunit "Sub Line Create Impl ori" = X,
         codeunit "Sub Con GetLines Impl ori" = X,
         codeunit "Sub Con CrInvoice Impl ori" = X,
@@ -31,6 +30,12 @@ permissionset 10035062 "BIFROST SubBil ori"
         codeunit "Sub PU SetFilter Impl ori" = X,
         codeunit "Sub PU CrProposal Impl ori" = X,
         codeunit "Sub PU Perform Impl ori" = X,
+        codeunit "Sub PU Price Update Mgt ori" = X,
+        codeunit "Sub PU Calc Base By Perc ori" = X,
+        codeunit "Sub PU Price By Percent ori" = X,
+        codeunit "Sub PU Recent Item Price ori" = X,
+        codeunit "Sub PU Process Price Upd ori" = X,
+        codeunit "Sub PU Line Mgt ori" = X,
         codeunit "Sub Ren Extend Impl ori" = X,
         codeunit "Sub Ren CrQuote Impl ori" = X,
         codeunit "Sub Usg Import Impl ori" = X,
@@ -39,6 +44,7 @@ permissionset 10035062 "BIFROST SubBil ori"
         codeunit "Sub Ana Recalc Impl ori" = X,
         codeunit "Sub Imp CrContr Impl ori" = X,
         codeunit "Sub Contract Parts ori" = X,
+        codeunit "Sub Registration ori" = X,
         codeunit "Sub Bil ClrProposal Impl ori" = X,
         codeunit "Sub Bil DelDocs Impl ori" = X,
         codeunit "Sub Usg Connect Impl ori" = X,

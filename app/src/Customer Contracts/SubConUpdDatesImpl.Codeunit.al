@@ -17,6 +17,8 @@ using System.Threading;
 /// </summary>
 codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -154,9 +156,12 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -171,8 +176,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Con UpdDates Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 

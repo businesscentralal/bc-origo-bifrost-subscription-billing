@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-19) - operations amendment integration (#36, #38, #41, #44)
+
+- Merge the accepted #47/#48/#55 fixes into operations, retaining real CSV blob hashing/status, typed help parameter chapters, public test fixtures and localized contract terminology. New operations use their own isolated OnRun transaction, matching main's retirement of `Sub Write Process ori` (10035059).
+- Correct possessive apostrophes in nine public help implementations; replace the misleading missing-Currency-Code refusal with a local-currency explanation in `Sub Con UpdFCY Impl ori` (10035041), and use an explicit bilingual missing-supplier refusal in `Sub Usg Import Impl ori` (10035053).
+- Native regressions in `Sub Usage Tst ori` (95777) parse both text and base64 CSV files and assert persisted blob status/hash and imported values. `Sub Should Have Tst ori` (95715) exercises actual vendor invoice billing, and `Sub Renewal Tst ori` (95776) verifies only selected contract lines renew. Existing #36 expired customer/vendor lines and Force refusal and #38 connect-through-billing assertions are retained.
+
+
 ### Fixed (2026-10-16) - usage processing scope
 
 - `Sub Usg Process Impl ori` (codeunit 10035054): scope every processing stage to the requested Usage Data Import. Microsoft's billing codeunit iterates the incoming view, so an unfiltered record could process other imports and pass the wrong import to the next stage. The #38 AC04 native test also verifies that a later, unrelated import stays untouched.
@@ -14,6 +21,13 @@
 
 - Merge current main into the operations branch, retaining the 28.0.0.0 version reset and both changelog histories under one Unreleased heading.
 - `Sub Imp CrContr Tst ori` (codeunit 95705): rename the temporary `Message Argument ori` variable to `TempArgument` to satisfy AA0073. Test behavior and assertions are unchanged.
+
+### Fixed (2026-10-16) - help subject and import processed count (#44)
+
+- `Sub Contract Parts ori` (10035075) states each setup precondition with a subject that agrees in number: one record "must already exist; this call does not create it", and several records use "them". The write-guard sentence is unchanged.
+- `Subscription.Import.CreateContracts` describes `processed` as the rows the stage acted on, and says skipped rows are left out of that count. The 15.10 story note named `Usage.Process`; that type has no `processed` field. The field and the example that already separates `skipped` are on Import.CreateContracts.
+- Left to their open owners: the blocked-type errors, effects and `viðskiptavinur` keywords of `Contract.UpdateLineDates` and `Contract.UpdateExchangeRates` (PR #49) and of the PriceUpdate types (PR #48). The `app.json` description stays release-manager scope.
+- Test: `Sub Help Accuracy Tst ori` (95772) asserts the singular and plural subjects and the processed wording. No label changed, so the is-IS xlf is unchanged.
 
 ### Changed (2026-10-14) - Version reset to 28.0.0.0
 
@@ -93,6 +107,72 @@
 - The caller needs the BIFROST Force ori permission set (write permission on Foundation's Force Access gate table, the check Foundation applies to a forced Job Queue Entry write). Without it the call is refused with `PermissionDenied`, in en-US and is-IS, before anything is read.
 - When an entry for codeunit 8058 is already Ready, Waiting or In Process, nothing is created: the answer has `alreadyQueued` true and names that entry. A foreground answer reports the run result and the Subscription Lines and customer and vendor contract lines it closed. `effect` stays irreversible.
 - Tests: `Sub Test Lib ori` (95710, shared fixtures and dispatch for the Branch A tests) and `Sub Con UpdDates Tst ori` (95711): ended customer and vendor lines and their contract lines close, a running line stays open, a caller without Force is refused, a pending entry is returned instead of a second one, and an unknown `runMode` is refused.
+
+### Added (2026-10-15) - price update and indexation run without the client (#45)
+
+- `Subscription.PriceUpdate.CreateProposal` (`Sub PU CrProposal Impl ori`, 10035049) and `Subscription.PriceUpdate.Perform` (`Sub PU Perform Impl ori`, 10035050) are no longer blocked. CreateProposal creates the Contract Price Update Lines of a Price Update Template as the Contract Price Update page does (same default dates, filters, three price update methods, rounding and Next Price Update), and answers with the lines it created. Perform applies them: it updates the Subscription Lines and archives the old prices, or writes Planned Subscription Lines, deletes each performed line, commits per line and posts nothing. It can be limited to one template, refuses an empty proposal, and answers status Error with per-line results when a line fails.
+- Microsoft's logic is internal in Business Central 28, so it is copied from microsoft/BCApps releases/28.x commit a674a13 (MIT) into `app/src/Price Update/Microsoft Copy/`: `Sub PU Price Update Mgt ori` (10035076), `Sub PU Calc Base By Perc ori` (10035077), `Sub PU Price By Percent ori` (10035078), `Sub PU Recent Item Price ori` (10035079), `Sub PU Process Price Upd ori` (10035080), `Sub PU Line Mgt ori` (10035081) and the interface `Sub PU Contract Price Upd ori`. Each copied procedure names its Microsoft source and the change that would let us delete it; `docs/microsoft-dependencies.md` lists them all with the known differences. The six codeunits are granted by `BIFROST SubBil ori` (10035062) and `BIFROST SubBFull ori` (10035063).
+- The contract chapters (parameters, response, errors, effect, preconditions, workflow) of both types are written out in `Sub Contract Parts ori` (10035075); each Impl runs its write in isolation through its own `OnRun` (the #26 pattern). New labels carry is-IS translations.
+- Tests: `Sub PU Test Lib ori` (95740), `Sub PU Oracle Tst ori` (95741, runs Microsoft's own Contract Price Update page next to the copy on the same data and compares every field), `Sub PU Proposal Tst ori` (95742) and `Sub PU Perform Tst ori` (95743), ported from Microsoft's Contract Price Proposal Test (139690) plus refusals and edge cases.
+
+### Added (2026-10-15) - behaviour tests that drive Microsoft Subscription Billing (#43)
+
+- Six test codeunits seed their own customers, vendors, items, packages, Subscriptions, contracts and templates through `Sub Test Library ori` (95770) and run the types' writes, asserting on the records Microsoft's logic writes, not only on the response:
+  - `Sub Line GetLines Tst ori` (95773): Line.Create applies a package with the requested start, end and next billing dates; an unknown package is refused; usageBasedBillingPackageLinesOnly skips the other lines. Contract.GetLines and VendorContract.GetLines attach all candidate lines or only the selected entry numbers, and a line of another customer is skipped.
+  - `Sub Invoice Tst ori` (95774): Contract.CreateInvoice and VendorContract.CreateInvoice create an unposted sales and purchase invoice with the billed amount, linked from the billing lines (vendorInvoiceNo lands on the purchase invoice); nothing due bills nothing; an unknown contract is refused. Both PreviewInvoice types leave the counts of billing lines and sales or purchase headers unchanged.
+  - `Sub Billing Run Tst ori` (95775): Billing.CreateProposal adds a proposal line for the template's contract; Billing.CreateDocuments with postDocuments = true posts the sales invoice and leaves the purchase invoice unposted; a template without proposal lines answers nothing pending; an unknown template is refused.
+  - `Sub Renewal Tst ori` (95776): Renewal.Extend adds the standard and the extra package's lines, starting on the Provision Start Date, onto the contract; without a contract it is refused. Renewal.CreateQuote builds a renewal sales quote with lines for a contract whose line has an end date, and refuses open-ended lines.
+  - `Sub Usage Tst ori` (95777): a one-row generic CSV runs through Usage.ImportData (runProcessing) and Usage.Process to Usage Data Billing rows for the usage-based contract line, with the imported quantity; missing content and an unknown step are refused.
+  - `Sub Deferral Analysis Tst ori` (95778): Deferral.Release releases the deferral of a posted contract invoice on the work date and posts a G/L entry with the release source code; another posting date or a postUntilDate after it is refused. Analysis.Recalculate adds one entry for the contract and nothing the second time in the same month.
+- Fixed, found by the usage test: `Subscription.Usage.ImportData` (`Sub Usg Import Impl ori`, 10035053) left the Usage Data Blob's Import Status at None, but Microsoft's generic connector parses only blobs whose Import Status is Ok. So no file was ever turned into imported lines, and the import ended with "No data found for processing step". The blob is now stamped Ok with the MD5 hash of its data, as Microsoft's own (internal) `ImportFromFile` does, and the type's notes say so.
+- Microsoft's Create Billing Documents shows a "Creation of documents completed" message when the session allows UI (`GuiAllowed`). An API call never shows it, and the setter that hides it is internal. The tests handle it with a message handler.
+- `Sub PU Filter Tst ori` (95708) keeps its normal dispatcher assertions without enabling HTTP for installed apps. The temporary `Sub Test Library ori.EnableHttpForBifrostApps` workaround was removed per Architect 1792069256.899869; Foundation core#1008 provides the shared dispatcher fix. Green runtime verification depends on that corrected Foundation build.
+- `Renewal.Extend` does not move contract terms or Subscription Line end dates: Microsoft's Extend Sub. Contract Mgt. adds new Subscription Lines from the item's packages and attaches them to the contracts. The test asserts that behaviour, which is what the type's help already says.
+
+### Fixed (2026-10-15) - help links follow the documentation rules (#27)
+
+- `app/app.json` links move to the public site, as DOCUMENTATION-RULES (bifrost-support, Addresses) requires: `help` is `https://docs.bifrost.origo.is/en-us/subscription-billing/` (the app page that bifrost#104 publishes), and `privacyStatement` and `EULA` are `https://docs.bifrost.origo.is/en-us/licensing/privacy/` and `.../licensing/eula/`, as for Foundation and Attachments. The version is unchanged.
+- The app has no Business Central pages, so the site has no help instance for it. `contextSensitiveHelpUrl` cannot be removed, because AppSourceCop requires it (AS0051 is an error), so it now points at the app's own page, `https://docs.bifrost.origo.is/{0}/subscription-billing/`, instead of the help instance `.../{0}/help/subscription-billing/` that does not exist and never will.
+- `tools/Test-HelpLinks.ps1` checks the app.json links too: `help`, `privacyStatement` and `EULA` must be on `https://docs.bifrost.origo.is/`, and `contextSensitiveHelpUrl` must be the help instance when the app has pages and the app page when it has none. For an app without pages it no longer needs `-DocsPath`, because there is no help page to look up; with pages it checks every slug in both locales as before. It passes for the repo.
+
+### Fixed (2026-10-15) - ContractParameterKeys guard passes for the repo (#26)
+
+- `tools/Test-ContractParameterKeys.ps1` reported 388 problems on main. Two code structures hid each type's own keys from it; the contracts and the code otherwise agreed. The guard itself is unchanged and now passes with no allow-list (`Every contract parameter is a key the code reads, and every key the code reads is declared (0 allow-listed).`); its self-tests pass.
+- Reads: every Impl ran its write through `Sub Write Process ori` (10035059), whose dispatcher called the `PerformWrite` of all 18 types, so each type appeared to read every other type's keys. Each Impl now has `TableNo = "Message Argument ori"` and an `OnRun` that calls its own `PerformWrite`, and `ExecuteBifrostTask` runs `Codeunit.Run(Codeunit::"<the Impl>", Argument)`. The isolation is the same (a failed write rolls back on its own and is answered with `RespondWithLastError`; `Omit Commit` still runs inline). `Sub Write Process ori` is deleted and its id 10035059 is free.
+- Declarations: `Sub Contract Parts ori` (10035075) built every type's parameters in one `GetParameters` case over type names, through helpers that took the key as a variable. Each domain now has its own procedure (`LineCreateParameters`, `GetLinesParameters`, `InvoiceParameters`, `BillingProposalParameters`, `BillingDocumentsParameters`, `BillingPreviewParameters`, `SetTemplateFilterParameters`, `RenewalExtendParameters`, `RenewalQuoteParameters`, `UsageImportParameters`, `UsageProcessParameters`, `DeferralReleaseParameters`, `AnalysisParameters`, `ImportParameters`) that names its keys literally in `ContractMgt.Parameter`, and each Impl's `GetParameters` calls its own. The parameter texts, types, defaults and allowed values are unchanged. `GetParameters(MessageType)` stays for the four blocked types and returns no parameters.
+- `Sub Helper ori` (10035058) `GetSubjectOr` takes the request and the key first (`GetSubjectOr(RequestJson, 'contractNo', Argument, true)`), like every other reader, so a key read from the subject or the request counts as a read (Renewal.CreateQuote reads nothing else).
+- `BIFROST SubBil ori` no longer lists the deleted codeunit.
+- The codeunits that now run themselves are `Sub Line Create Impl ori` (10035036), `Sub Con GetLines Impl ori` (10035037), `Sub Con CrInvoice Impl ori` (10035038), `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend GetLines Impl ori` (10035042), `Sub Vend CrInvoice Impl ori` (10035043), `Sub Vend PrvInv Impl ori` (10035044), `Sub Bil CrProposal Impl ori` (10035045), `Sub Bil CrDocs Impl ori` (10035046), `Sub Bil PrvDocs Impl ori` (10035047), `Sub Ren Extend Impl ori` (10035051), `Sub Ren CrQuote Impl ori` (10035052), `Sub Usg Process Impl ori` (10035054), `Sub Def Release Impl ori` (10035055), `Sub Ana Recalc Impl ori` (10035056) and `Sub Helper ori` (10035058).
+
+### Changed (2026-10-15) - help states the setup preconditions per type (#44, part)
+
+- `Sub Contract Parts ori` (10035075) adds a precondition to the effect chapter of the 14 types that read Subscription Billing records they do not create (Line.Create, the six customer and vendor contract types, the three Billing types, Renewal.Extend and Renewal.CreateQuote, Usage.ImportData and Import.CreateContracts): the record must exist, and writing it with `Data.Records.Set` needs the Bifrost Setup write guard Open or Change Log coverage, because the guard is Blocked by default. Usage.Process, Deferral.Release and Analysis.Recalculate need no prepared record and say nothing more.
+- Checked: no running type's contract claims end-to-end operation, indexation or a Business Central version. None of these types suggests the job queue route, so none needs BIFROST Force ori.
+- Left to the branches that rewrite them: the help, errors and effect of `Contract.UpdateLineDates`, `Contract.UpdateExchangeRates` and the three PriceUpdate types (the "Business Central 28.4" wording and the irreversible effect of the blocked types), and the README's Known issues section. The `app.json` description is release-manager territory.
+- Tests: `Sub Help Accuracy Tst ori` (95772) asserts the precondition on the 14 types, its absence on the three others, and the absence of end-to-end, indexation and version claims.
+
+### Changed (2026-10-15) - Icelandic glossary for customers, vendors, contracts and posting (Gunnar 14.10, core#702)
+
+- 37 `is-IS=` comments in 12 implementation codeunits follow the Bifröst glossary: the BC Customer is `viðskiptamaður` (was `viðskiptavinur`), the BC Vendor is `lánardrottinn` (was `birgir`), and posting is `bóka` throughout (`bókar`, `óbókaður`, `bókað`; was `bókfæra`).
+- The contract records have one name each: `áskriftarsamningur viðskiptamanns` (Customer Subscription Contract; was also `viðskiptavinasamningur`, `viðskiptasamningur` and `áskriftarsamningur viðskiptavinar`) and `áskriftarsamningur lánardrottins` (Vendor Subscription Contract, as in Microsoft's caption; was `birgjasamningur` and `birgjaáskriftarsamningur`). Microsoft's own Subscription Billing caption for the customer contract says `viðskiptavinar`; the Bifröst glossary's BC Customer word wins here so one word names the customer everywhere.
+- The labels of `Contract.UpdateLineDates`, `Contract.UpdateExchangeRates` and the three PriceUpdate types are left to the branches that rewrite those types.
+- The is-IS xlf is regenerated.
+
+### Fixed (2026-10-15) - BIFROST SubBFull ori grants what the message types call (#42)
+
+- `BIFROST SubBFull ori` (permissionsetextension 10035063 on `BIFROST Full ori`) listed 23 codeunits and missed `Sub Contract Parts ori` (10035075), which `Sub Ana Recalc Impl ori` (10035056), `Sub Bil CrDocs Impl ori` (10035046), `Sub Bil CrProposal Impl ori` (10035045) and `Sub Bil PrvDocs Impl ori` (10035047) call. It now has `IncludedPermissionSets = "BIFROST SubBil ori"` instead of its own list, so the full set grants exactly what `BIFROST SubBil ori` grants and the two cannot drift again. New objects go into `BIFROST SubBil ori` only.
+- `BIFROST SubBil ori` (10035062) also grants `Sub Registration ori` (10035060), the subscriber that registers the app with Foundation's App Registry.
+- Tests: `Sub Perm Full Tst ori` (95771, TestPermissions Restrictive) builds the contracts of the four types and the chapters of `Sub Bil CrProposal Impl ori` (10035045) with only `BIFROST Full ori` in the session. The test app depends on Microsoft's Permissions Mock for `Library - Lower Permissions`.
+
+### Fixed (2026-10-15) - Import.CreateContracts imports explicit comment lines again (#39, closes #6)
+
+- `Subscription.Import.CreateContracts` (`Sub Imp CrContr Impl ori`, 10035057) reads a new optional request flag `allowCommentLines` (boolean, default false). With it, staged `Imported Subscription Line` rows whose `Sub_ContractLineType` is Comment are skipped by the SubscriptionLines stage and turned into contract comment lines by the ContractLines stage, through Microsoft's `Create Sub. Contract Line`. Comment is also the value of a row whose line type was never set, so the opt-in is how the caller says the Comment rows are meant.
+- Without the flag the #6 guard is unchanged: a Comment row fails the SubscriptionLines stage with `LineTypeRequiredErr`, whose text now names the real line types (Item, G/L Account, or Comment with `allowCommentLines`). A call that runs ContractLines without SubscriptionLines refuses such a row in ContractLines too, so an omitted line type never becomes a comment line.
+- When the call also runs SubscriptionLines, the ContractLines stage skips the rows that stage failed (a Comment row without the opt-in, or a row whose Subscription Line was not created). The default four-stage call therefore no longer leaves a comment contract line behind for a failed row (#6 decision d, AC-8).
+- Every stage entry in the response carries a new `skipped` count. The contract chapters (parameters, response, effect, notes and a comment-line example) document the flag and the line type rules.
+- `RunSubscriptionLines` no longer calls `SetLoadFields` twice on a record it then modifies and passes to Microsoft's codeunit.
+- Tests: `Sub Imp CrContr Tst ori` (95705) covers an omitted type refused, the default call creating no contract line, ContractLines alone refusing a Comment row, an opted-in Comment row creating the comment line, an explicit Item row creating its Subscription Line, and the documented parameter. New shared seeding codeunit `Sub Test Library ori` (95770).
+- The is-IS xlf is regenerated, which also adds the two units main was missing.
 
 ### Fixed (2026-10-06) - price update filter validation and Icelandic keywords (PR #25)
 
@@ -295,8 +375,8 @@
 - `Subscription.VendorContract.GetLines` read every unassigned Subscription Line and sorted out the
   caller's selection in memory. The selection is pushed into the database filter instead.
 - `SetLoadFields` added to nine watermark and scan reads that use one or two fields
-  (`Sub Ana Recalc`, `Sub Line Create`, `Sub Con CrInvoice`, `Sub Con PrvInvoice`,
-  `Sub Vend CrInvoice`, `Sub Vend PrvInv`, `Sub Ren CrQuote`, `Sub Bil PrvDocs`).
+  (`Sub Ana Recalc` (10035056), `Sub Line Create`, `Sub Con CrInvoice`, `Sub Con PrvInvoice`,
+  `Sub Vend CrInvoice`, `Sub Vend PrvInv`, `Sub Ren CrQuote`, `Sub Bil PrvDocs` (10035047)).
 
 ### Fixed (2026-09-07)
 
@@ -367,9 +447,9 @@ a side-by-side install.
   | `CE Sub Vend GetLines Impl ori` | `Sub Vend GetLines Impl ori` |
   | `CE Sub Vend CrInvoice Impl ori` | `Sub Vend CrInvoice Impl ori` |
   | `CE Sub Vend PrvInv Impl ori` | `Sub Vend PrvInv Impl ori` |
-  | `CE Sub Bil CrProposal Impl ori` | `Sub Bil CrProposal Impl ori` |
-  | `CE Sub Bil CrDocs Impl ori` | `Sub Bil CrDocs Impl ori` |
-  | `CE Sub Bil PrvDocs Impl ori` | `Sub Bil PrvDocs Impl ori` |
+  | `CE Sub Bil CrProposal Impl ori` | `Sub Bil CrProposal Impl ori` (10035045) |
+  | `CE Sub Bil CrDocs Impl ori` | `Sub Bil CrDocs Impl ori` (10035046) |
+  | `CE Sub Bil PrvDocs Impl ori` | `Sub Bil PrvDocs Impl ori` (10035047) |
   | `CE Sub PU SetFilter Impl ori` | `Sub PU SetFilter Impl ori` |
   | `CE Sub PU CrProposal Impl ori` | `Sub PU CrProposal Impl ori` |
   | `CE Sub PU Perform Impl ori` | `Sub PU Perform Impl ori` |
@@ -378,9 +458,9 @@ a side-by-side install.
   | `CE Sub Usg Import Impl ori` | `Sub Usg Import Impl ori` |
   | `CE Sub Usg Process Impl ori` | `Sub Usg Process Impl ori` |
   | `CE Sub Def Release Impl ori` | `Sub Def Release Impl ori` |
-  | `CE Sub Ana Recalc Impl ori` | `Sub Ana Recalc Impl ori` |
+  | `CE Sub Ana Recalc Impl ori` | `Sub Ana Recalc Impl ori` (10035056) |
   | `CE Sub Imp CrContr Impl ori` | `Sub Imp CrContr Impl ori` |
-  | `CE Sub Helper ori` | `Sub Helper ori` |
+  | `CE Sub Helper ori` | `Sub Helper ori` (10035058) |
   | `CE Sub Write Process ori` | `Sub Write Process ori` |
   | `CE Sub Msg Type ori` (enum extension) | `Sub Msg Type ori` |
   | `CE Sub Bil Obj ori` (permission set) | `BIFROST SubBil ori` |

@@ -29,6 +29,49 @@ codeunit 95715 "Sub Should Have Tst ori"
         PostedNoTok: Label 'XSBA41PST', Locked = true;
         PackageTok: Label 'XSBA41PKG', Locked = true;
 
+    /// <summary>AC01: real vendor contract billing adds persisted lines only to the requested existing invoice.</summary>
+    [Test]
+    procedure AddLinesToInvoice_DueVendorLine_PersistsBilling()
+    var
+        VendorContract: Record "Vendor Subscription Contract";
+        SubscriptionHeader: Record "Subscription Header";
+        SubscriptionLine: Record "Subscription Line";
+        PurchaseHeader: Record "Purchase Header";
+        PurchaseLine: Record "Purchase Line";
+        BillingLine: Record "Billing Line";
+        TestLibrary: Codeunit "Sub Test Library ori";
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+        EntryNos: JsonArray;
+    begin
+        // [GIVEN] A validated billable vendor contract and an existing unposted invoice for its vendor.
+        TestLibrary.CreateBillableVendorContract(VendorContract, SubscriptionHeader);
+        PurchaseHeader.Init();
+        PurchaseHeader."Document Type" := PurchaseHeader."Document Type"::Invoice;
+        PurchaseHeader.Insert(true);
+        PurchaseHeader.Validate("Buy-from Vendor No.", VendorContract."Buy-from Vendor No.");
+        PurchaseHeader.Modify(true);
+        SubscriptionLine.SetRange("Subscription Header No.", SubscriptionHeader."No.");
+        SubscriptionLine.SetRange(Partner, Enum::"Service Partner"::Vendor);
+        SubscriptionLine.FindFirst();
+        EntryNos.Add(SubscriptionLine."Entry No.");
+        RequestJson.Add('subscriptionLineEntryNos', EntryNos);
+        // [WHEN] Only the selected vendor subscription line is billed onto this invoice.
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.VendorContract.AddLinesToInvoice", PurchaseHeader."No.", RequestJson, false);
+        // [THEN] Response, physical purchase lines and linked billing lines agree.
+        TestLib.AssertSuccess(ResponseJson);
+        Assert.IsTrue(TestLib.GetInteger(ResponseJson, 'linesAdded') > 0, 'The invoice must gain purchase lines.');
+        PurchaseLine.SetRange("Document Type", PurchaseHeader."Document Type");
+        PurchaseLine.SetRange("Document No.", PurchaseHeader."No.");
+        Assert.AreEqual(PurchaseLine.Count(), TestLib.GetInteger(ResponseJson, 'linesAdded'), 'The response must count persisted lines.');
+        PurchaseLine.CalcSums("Line Amount");
+        Assert.AreNotEqual(0, PurchaseLine."Line Amount", 'The invoice must carry a billed amount.');
+        BillingLine.SetRange("Subscription Contract No.", VendorContract."No.");
+        BillingLine.SetRange("Subscription Line Entry No.", SubscriptionLine."Entry No.");
+        BillingLine.SetRange("Document No.", PurchaseHeader."No.");
+        Assert.RecordIsNotEmpty(BillingLine);
+    end;
+
     /// <summary>AC01, edge: an invoice of a vendor without due contract lines gains nothing and the call succeeds.</summary>
     [Test]
     procedure AddLinesToInvoice_NoDueLines_SucceedsWithZero()

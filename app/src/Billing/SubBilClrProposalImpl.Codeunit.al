@@ -14,6 +14,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -121,7 +123,7 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
     begin
         Overview := 'Deletes the billing proposal lines (Billing Line) of a Billing Template that are not on a document yet, optionally only those of one contract. Each ' +
             'Subscription Line gets back the Next Billing Date it had before the proposal. This undoes Subscription.Billing.CreateProposal, also the part a failed ' +
-            'run left behind after one of Microsofts commits.';
+            'run left behind after one of Microsoft''s commits.';
         exit(true);
     end;
 
@@ -147,9 +149,12 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -159,8 +164,7 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Bil ClrProposal Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -179,7 +183,7 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
         LinesDeleted: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        BillingTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'billingTemplateCode', false);
+        BillingTemplateCode := Helper.GetSubjectOr(RequestJson, 'billingTemplateCode', Argument, false);
         ContractNo := Helper.GetCode20(RequestJson, 'contractNo', false);
 
         if BillingTemplateCode = '' then begin

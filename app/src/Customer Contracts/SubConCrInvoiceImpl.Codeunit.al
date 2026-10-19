@@ -13,14 +13,16 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
-        ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract no.||is-IS=Áskriftarsamningur viðskiptavinar ''%1'' er ekki til.';
+        ContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract no.||is-IS=Áskriftarsamningur viðskiptamanns ''%1'' er ekki til.';
         ForeignPendingErr: Label 'Contract ''%1'' has %2 pending billing line(s) with no billing template assigned. Clear or complete that proposal before billing this contract, because creating this invoice would also convert those lines.', Comment = '%1 = foreign contract no., %2 = row count||is-IS=Samningur ''%1'' er með %2 óafgreiddar reikningslínur án úthlutaðs reikningssniðmáts. Ljúktu við eða hreinsaðu þá tillögu áður en þessi samningur er reikningsfærður, því annars myndi þessi aðgerð einnig umbreyta þessum línum.';
         NothingDueMsg: Label 'No Subscription Lines were due for billing on or before %1 for contract %2.', Comment = '%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru komnar á gjalddaga til reikningsfærslu á eða fyrir %1 fyrir samning %2.';
         NothingNewMsg: Label 'Nothing new could be billed for contract %1. Its due Subscription Lines already sit on a billing proposal or on an unposted document - post or clear those first.', Comment = '%1 = contract number||is-IS=Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Gjaldfallnar áskriftarlínur hans eru þegar á reikningstillögu eða óbókuðu skjali - bókaðu þær eða hreinsaðu þær fyrst.';
-        DescriptionLbl: Label 'Bills one customer Subscription Contract to an unposted sales invoice. Returns the documents created.', MaxLength = 250, Comment = 'is-IS=Reikningsfærir einn áskriftarsamning viðskiptavinar á óbókfærðan sölureikning. Skilar þeim skjölum sem urðu til.';
+        DescriptionLbl: Label 'Bills one customer Subscription Contract to an unposted sales invoice. Returns the documents created.', MaxLength = 250, Comment = 'is-IS=Reikningsfærir einn áskriftarsamning viðskiptamanns á óbókaðan sölureikning. Skilar þeim skjölum sem urðu til.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -39,14 +41,14 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.CreateInvoice, Subscription, Contract, CreateInvoice, customer, invoice', Comment = 'is-IS=Subscription.Contract.CreateInvoice, áskrift, samningur, stofna reikning, viðskiptavinur, reikningur';
+        KeywordsLbl: Label 'Subscription.Contract.CreateInvoice, Subscription, Contract, CreateInvoice, customer, invoice', Comment = 'is-IS=Subscription.Contract.CreateInvoice, áskrift, samningur, stofna reikning, viðskiptamaður, reikningur';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.CreateInvoice: Creates an unposted customer invoice. Irreversible.', Comment = 'is-IS=Subscription.Contract.CreateInvoice: Stofnar óbókaðan viðskiptareikning. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Subscription.Contract.CreateInvoice: Creates an unposted customer invoice. Irreversible.', Comment = 'is-IS=Subscription.Contract.CreateInvoice: Stofnar óbókaðan reikning viðskiptamanns. Óafturkræf aðgerð.';
     begin
         exit(SelectionLbl);
     end;
@@ -65,7 +67,7 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.InvoiceParameters('Customer Subscription Contract', true, false);
         exit(true);
     end;
 
@@ -142,9 +144,12 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -154,12 +159,11 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Con CrInvoice Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
-    /// <summary>Bills the contract and reports the documents created. Called directly, or through the isolated write process.</summary>
+    /// <summary>Bills the contract and reports the documents created. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         ResponseJson: JsonObject;
@@ -169,7 +173,7 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
         DocumentDate: Date;
         PostingDate: Date;
     begin
-        ContractNo := Helper.GetSubjectOr(Argument, Argument.GetRequestJson(), 'contractNo', true);
+        ContractNo := Helper.GetSubjectOr(Argument.GetRequestJson(), 'contractNo', Argument, true);
         BillingDate := Helper.GetDateOrDefault(Argument.GetRequestJson(), 'billingDate', WorkDate());
         BillingToDate := Helper.GetDate(Argument.GetRequestJson(), 'billingToDate', false);
         DocumentDate := Helper.GetDateOrDefault(Argument.GetRequestJson(), 'documentDate', WorkDate());

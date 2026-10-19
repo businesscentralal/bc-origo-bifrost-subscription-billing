@@ -13,6 +13,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -118,7 +120,7 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Deletes one contract line from a customer (partner Customer, the default) or vendor Subscription Contract. Microsofts delete trigger detaches the ' +
+        Overview := 'Deletes one contract line from a customer (partner Customer, the default) or vendor Subscription Contract. Microsoft''s delete trigger detaches the ' +
             'Subscription Line from the contract, so it is unassigned again and Subscription.Contract.GetLines or Subscription.VendorContract.GetLines can attach ' +
             'it to this or another contract. The Subscription Line itself is not deleted.';
         exit(true);
@@ -142,9 +144,12 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -154,8 +159,7 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Con RemoveLine Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -172,7 +176,7 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
         SubscriptionLineEntryNo: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        ContractNo := Helper.GetSubjectOr(Argument, RequestJson, 'contractNo', true);
+        ContractNo := Helper.GetSubjectOr(RequestJson, 'contractNo', Argument, true);
         LineNo := Helper.GetInteger(RequestJson, 'lineNo', true);
         Partner := Helper.GetServicePartner(RequestJson, 'partner', Enum::"Service Partner"::Customer);
 

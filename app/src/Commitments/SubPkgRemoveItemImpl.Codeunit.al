@@ -11,6 +11,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -134,9 +136,12 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -146,8 +151,7 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Pkg RemoveItem Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -162,7 +166,7 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
         WasStandard: Boolean;
     begin
         RequestJson := Argument.GetRequestJson();
-        ItemNo := Helper.GetSubjectOr(Argument, RequestJson, 'itemNo', true);
+        ItemNo := Helper.GetSubjectOr(RequestJson, 'itemNo', Argument, true);
         PackageCode := Helper.GetCode20(RequestJson, 'subscriptionPackageCode', true);
 
         if not ItemSubscriptionPackage.Get(ItemNo, PackageCode) then

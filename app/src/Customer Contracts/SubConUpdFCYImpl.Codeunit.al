@@ -29,14 +29,16 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         CustomerContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur viðskiptamanns ''%1'' er ekki til.';
         VendorContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur lánardrottins ''%1'' er ekki til.';
-        LocalCurrencyErr: Label 'Subscription Contract ''%1'' has no Currency Code, so its Subscription Lines are in local currency and have no exchange rate to update.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur ''%1'' hefur engan gjaldmiðilskóða, svo áskriftarlínur hans eru í staðbundnum gjaldmiðli og hafa ekkert gengi til að uppfæra.';
+        LocalCurrencyErr: Label 'Subscription Contract ''%1'' uses local currency and has no foreign-currency exchange rate to update.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur ''%1'' notar staðbundinn gjaldmiðil og hefur ekkert erlent gengi til að uppfæra.';
         ZeroExchangeRateErr: Label 'The exchange rate for currency ''%1'' on %2 is %3. Send a currencyFactor greater than zero, or set up an exchange rate for that date.', Comment = '%1 = currency code, %2 = date, %3 = the rate||is-IS=Gengi gjaldmiðilsins ''%1'' þann %2 er %3. Sendu currencyFactor sem er stærri en núll, eða settu upp gengi fyrir þá dagsetningu.';
-        DescriptionLbl: Label 'Recalculates the currency data of a Subscription Contracts Subscription Lines with a new exchange rate, like Update Exchange Rates, for customer or vendor contracts.', MaxLength = 250, Comment = 'is-IS=Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.';
+        DescriptionLbl: Label 'Recalculates the currency data of a Subscription Contract''s Subscription Lines with a new exchange rate, like Update Exchange Rates, for customer or vendor contracts.', MaxLength = 250, Comment = 'is-IS=Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -136,7 +138,7 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Recalculates the Subscription Lines of a customer or vendor Subscription Contract in a foreign currency, as the Update Exchange Rates action does: ' +
-            'each line gets the contracts Currency Code, the currency factor and its date, and its Calculation Base Amount is converted again from the Calculation ' +
+            'each line gets the contract''s Currency Code, the currency factor and its date, and its Calculation Base Amount is converted again from the Calculation ' +
             'Base Amount (LCY), which recalculates price and amount. The factor defaults to the exchange rate on currencyFactorDate, which is what the Exchange ' +
             'Rate Selection page proposes.';
         exit(true);
@@ -144,8 +146,8 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('Microsofts procedure is internal, and setting Currency Code on the contract through Data.Records.Set does not do the same: it recalculates only when ' +
-            'the code changes, and then with a currency factor of zero because the exchange rate page cannot open. This type rebuilds Microsofts steps instead (see ' +
+        Notes := ('Microsoft''s procedure is internal, and setting Currency Code on the contract through Data.Records.Set does not do the same: it recalculates only when ' +
+            'the code changes, and then with a currency factor of zero because the exchange rate page cannot open. This type rebuilds Microsoft''s steps instead (see ' +
             'docs/microsoft-dependencies.md). Each line is saved with its modify trigger, which flags its billing lines Update Required and archives the old ' +
             'amounts, as Microsoft does. A line whose contract line is closed is skipped and counted under linesSkipped, because Business Central does not allow ' +
             'such a line to be changed. currencyFactor is the factor Business Central stores: foreign currency per unit of local currency. Running the type again ' +
@@ -164,9 +166,12 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -176,8 +181,7 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Con UpdFCY Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -196,7 +200,7 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
         LinesSkipped: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        ContractNo := Helper.GetSubjectOr(Argument, RequestJson, 'contractNo', true);
+        ContractNo := Helper.GetSubjectOr(RequestJson, 'contractNo', Argument, true);
         Partner := Helper.GetServicePartner(RequestJson, 'partner', Enum::"Service Partner"::Customer);
         CurrencyFactorDate := Helper.GetDateOrDefault(RequestJson, 'currencyFactorDate', WorkDate());
 

@@ -58,6 +58,12 @@
       "publisher": "Microsoft",
       "name": "Library Variable Storage",
       "version": "1.0.0.0"
+    },
+    {
+      "id": "40860557-a18d-42ad-aecb-22b7dd80dc80",
+      "publisher": "Microsoft",
+      "name": "Permissions Mock",
+      "version": "1.0.0.0"
     }
   ],
   "screenshots": [],

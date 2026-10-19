@@ -19,6 +19,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -133,7 +135,7 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('This is Microsofts Delete Usage Data Lines and Billing action and the delete of the import, rebuilt because the actions procedure is internal. The ' +
+        Notes := ('This is Microsoft''s Delete Usage Data Lines and Billing action and the delete of the import, rebuilt because the actions procedure is internal. The ' +
             'call is refused while a Usage Data Billing row of the import is on a billing line (clear the proposal with Subscription.Billing.ClearProposal) or on a ' +
             'document, posted or not. Deleting a Usage Data Billing row reverts the Next Billing Date Microsoft moved for a rebilling. ' +
             ContractParts.IsolationNote()).TrimEnd();
@@ -150,9 +152,12 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -162,8 +167,7 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Usg DelData Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 

@@ -15,6 +15,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -23,7 +25,7 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
         NoConnectMethodErr: Label 'Usage Data Supp. Subscription entry %1 has no Connect to Subscription Method. Set Connect to Sub. Header No. on the entry first, for example with Data.Records.Set.', Comment = '%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna hefur engan tengimáta við áskrift. Settu fyrst Tengjast áskriftarnr. á færsluna, til dæmis með Data.Records.Set.';
         AlreadyConnectedErr: Label 'Usage Data Supp. Subscription entry %1 is already connected to Subscription Line %2. Disconnect it first with Subscription.Usage.DisconnectSubscription.', Comment = '%1 = entry number, %2 = subscription line entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er þegar tengd áskriftarlínu %2. Aftengdu hana fyrst með Subscription.Usage.DisconnectSubscription.';
         SameSubscriptionErr: Label 'Usage Data Supp. Subscription entries %1 and %2 both connect to Subscription ''%3''. Connect them in separate calls after checking that this is intended.', Comment = '%1 = first entry number, %2 = second entry number, %3 = subscription number||is-IS=Færslur %1 og %2 í áskriftum birgis notkunargagna tengjast báðar áskriftinni ''%3''. Tengdu þær í aðskildum köllum eftir að hafa gengið úr skugga um að það sé ætlunin.';
-        DescriptionLbl: Label 'Connects a usage data suppliers subscriptions to Subscriptions through Microsofts Connect to Subscription, and returns which entries were connected and which were skipped, with the reason.', MaxLength = 250, Comment = 'is-IS=Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.';
+        DescriptionLbl: Label 'Connects a usage data supplier''s subscriptions to Subscriptions through Microsoft''s Connect to Subscription, and returns which entries were connected and which were skipped, with the reason.', MaxLength = 250, Comment = 'is-IS=Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -130,7 +132,7 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
     begin
         Notes := ('Set Connect to Sub. Header No. on each entry first, for example with Data.Records.Set; that sets the method and, for new lines, the date. An entry ' +
             'Microsoft cannot connect, for example because the Subscription has no usage based line or its item is blocked, is not an error: it is counted under ' +
-            'skipped with Microsofts reason, and its Processing Status is Error. A listed entry that does not exist, has no method or is already connected is ' +
+            'skipped with Microsoft''s reason, and its Processing Status is Error. A listed entry that does not exist, has no method or is already connected is ' +
             'refused, and so are two selected entries for the same Subscription. ' +
             ContractParts.IsolationNote()).TrimEnd();
         exit(true);
@@ -146,9 +148,12 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -158,8 +163,7 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Usg Connect Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -180,7 +184,7 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
         SkippedCount: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        SupplierNo := Helper.GetSubjectOr(Argument, RequestJson, 'supplierNo', true);
+        SupplierNo := Helper.GetSubjectOr(RequestJson, 'supplierNo', Argument, true);
         Helper.GetEntryNoSelection(RequestJson, 'entryNos', SelectedEntryNos);
 
         if not UsageDataSupplier.Get(SupplierNo) then

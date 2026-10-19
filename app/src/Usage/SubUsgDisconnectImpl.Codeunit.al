@@ -20,6 +20,8 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
@@ -132,7 +134,7 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('Microsofts own disconnect procedure asks for confirmation and answers No when no user interface is present, so this type performs its two steps ' +
+        Notes := ('Microsoft''s own disconnect procedure asks for confirmation and answers No when no user interface is present, so this type performs its two steps ' +
             'itself, unchanged. Every line of the same Subscription with the same Supplier Reference Entry No. is disconnected, as in the client; linesDisconnected ' +
             'counts them. Lines created by a New Subscription Lines connect are not removed, and the lines it ended are not reopened. When both parameters are ' +
             'sent, subscriptionLineEntryNo is used. ' +
@@ -150,9 +152,12 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -162,8 +167,7 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Usg Disconnect Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 

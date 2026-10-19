@@ -13,15 +13,17 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         SubscriptionHeaderNotFoundErr: Label 'The Subscription ''%1'' does not exist.', Comment = '%1 = subscription header no.||is-IS=Áskriftin ''%1'' er ekki til.';
-        CustomerContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = customer contract no.||is-IS=Viðskiptavinasamningurinn ''%1'' er ekki til.';
-        VendorContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = vendor contract no.||is-IS=Birgjasamningurinn ''%1'' er ekki til.';
+        CustomerContractNotFoundErr: Label 'The Customer Subscription Contract ''%1'' does not exist.', Comment = '%1 = customer contract no.||is-IS=Áskriftarsamningur viðskiptamanns ''%1'' er ekki til.';
+        VendorContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = vendor contract no.||is-IS=Áskriftarsamningur lánardrottins ''%1'' er ekki til.';
         PackageNotFoundErr: Label 'The Subscription Package ''%1'' does not exist.', Comment = '%1 = subscription package code||is-IS=Áskriftarpakkinn ''%1'' er ekki til.';
         NeitherContractErr: Label 'The request must supply at least one of ''customerContractNo'' or ''vendorContractNo''.', Comment = 'is-IS=Beiðnin verður að innihalda a.m.k. annað af ''customerContractNo'' eða ''vendorContractNo''.';
-        DescriptionLbl: Label 'Extends a Subscription with a new customer and/or vendor contract, applying the item''s standard packages plus any extra packages supplied. Returns the contract line counts created.', MaxLength = 250, Comment = 'is-IS=Framlengir áskrift með nýjum viðskiptavina- og/eða birgjasamningi og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.';
+        DescriptionLbl: Label 'Extends a Subscription with a new customer and/or vendor contract, applying the item''s standard packages plus any extra packages supplied. Returns the contract line counts created.', MaxLength = 250, Comment = 'is-IS=Framlengir áskrift með nýjum áskriftarsamningi viðskiptamanns og/eða lánardrottins og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -66,7 +68,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.RenewalExtendParameters();
         exit(true);
     end;
 
@@ -141,9 +143,12 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -153,8 +158,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Ren Extend Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -191,7 +195,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         NewLineCount: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
-        SubscriptionHeaderNo := Helper.GetSubjectOr(Argument, RequestJson, 'subscriptionHeaderNo', true);
+        SubscriptionHeaderNo := Helper.GetSubjectOr(RequestJson, 'subscriptionHeaderNo', Argument, true);
         CustomerContractNo := Helper.GetCode20(RequestJson, 'customerContractNo', false);
         VendorContractNo := Helper.GetCode20(RequestJson, 'vendorContractNo', false);
         UsageBasedBillingPackageLinesOnly := Helper.GetBoolean(RequestJson, 'usageBasedBillingPackageLinesOnly', false);

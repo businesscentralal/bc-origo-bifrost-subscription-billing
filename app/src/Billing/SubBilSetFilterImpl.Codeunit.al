@@ -18,12 +18,14 @@ using Origo.Bifrost;
 /// </summary>
 codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         TemplateNotFoundErr: Label 'The Billing Template ''%1'' does not exist.', Comment = '%1 = billing template code||is-IS=Reikningssniðmátið ''%1'' er ekki til.';
         InvalidFilterErr: Label 'The parameter ''filter'' is not a valid Business Central view of %1. Supply a view in the form ''WHERE(Field=FILTER(Value))''. Nothing was written.', Comment = '%1 = the contract table caption||is-IS=Færibreytan ''filter'' er ekki gild Business Central sýn á %1. Sendu sýn á forminu ''WHERE(Reitur=FILTER(Gildi))''. Engu var breytt.';
-        DescriptionLbl: Label 'Writes the contract filter of a Billing Template after validating it as a view of the templates contract table, and returns the stored filter.', MaxLength = 250, Comment = 'is-IS=Skrifar samningssíu reikningssniðmáts eftir að hafa sannreynt hana sem sýn á samningatöflu sniðmátsins og skilar vistuðu síunni.';
+        DescriptionLbl: Label 'Writes the contract filter of a Billing Template after validating it as a view of the template''s contract table, and returns the stored filter.', MaxLength = 250, Comment = 'is-IS=Skrifar samningssíu reikningssniðmáts eftir að hafa sannreynt hana sem sýn á samningatöflu sniðmátsins og skilar vistuðu síunni.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -143,9 +145,12 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
-    var
-        WriteProcess: Codeunit "Sub Write Process ori";
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
@@ -155,8 +160,7 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
             exit;
         end;
 
-        Clear(WriteProcess);
-        if not WriteProcess.Run(Argument) then
+        if not Codeunit.Run(Codeunit::"Sub Bil SetFilter Impl ori", Argument) then
             Argument.RespondWithLastError();
     end;
 
@@ -178,7 +182,7 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
         ViewApplied: Boolean;
     begin
         RequestJson := Argument.GetRequestJson();
-        BillingTemplateCode := Helper.GetSubjectOr(Argument, RequestJson, 'billingTemplateCode', true);
+        BillingTemplateCode := Helper.GetSubjectOr(RequestJson, 'billingTemplateCode', Argument, true);
         SuppliedFilter := Helper.GetText(RequestJson, 'filter', true);
 
         if not BillingTemplate.Get(BillingTemplateCode) then
