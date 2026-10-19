@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added (2026-10-19) - usage connected through to the billing line (#38 AC04)
+
+- `Sub Usage Tst ori` (95777) `Scenario_38AC04_ConnectProcessPropose_LinksUsageToBillingLine`: a usage file is imported for a real usage-based contract line, the supplier subscription is connected with `Subscription.Usage.ConnectSubscriptions`, `Subscription.Usage.Process` creates Usage Data Billing, `Subscription.Billing.CreateProposal` for a template covering the contract creates the Billing Line, and after `Subscription.Billing.CreateDocuments` the Usage Data Billing row's Billing Line Entry No. names that line (Microsoft stores it when the document is created, not at proposal time).
+
 ### Added (2026-10-19) - Microsoft merge tests as the MergeLines oracle (#50)
 
 - `Sub Con Merge Tst ori` (95720) ports the scenarios of Microsoft's merge checks (table 8062 MergeContractLines and codeunit 8059, BCApps releases/28.x a674a13): refusals for a different Next Billing Date, different dimensions, an existing billing line, a serial number and a different Customer Reference, each leaving every line open; and a result check that the new Subscription Line copies the reference price and Calculation Base Amount, starts on the reference Next Billing Date, carries price times the summed quantity, and that the old lines and Subscription Lines are closed at their former Next Billing Date.
