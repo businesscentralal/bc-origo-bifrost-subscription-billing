@@ -40,7 +40,7 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         PreviousCurrencyCode := CustomerContract."Currency Code";
 
         // [WHEN] Data.Records.Set writes Currency Code
-        ResponseJson := SetField(Database::"Customer Subscription Contract", CustomerContract."No.", 'Currency Code', LibraryERM.CreateCurrencyWithRandomExchRates());
+        ResponseJson := SetField(Database::"Customer Subscription Contract", CustomerContract."No.", 'CurrencyCode', LibraryERM.CreateCurrencyWithRandomExchRates());
 
         // [THEN] The write is refused, names the field, points to the supported path, and nothing changed
         TestLib.AssertRefused(ResponseJson, 'Currency Code');
@@ -65,7 +65,7 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         PreviousCurrencyCode := VendorContract."Currency Code";
 
         // [WHEN] Data.Records.Set writes Currency Code
-        ResponseJson := SetField(Database::"Vendor Subscription Contract", VendorContract."No.", 'Currency Code', LibraryERM.CreateCurrencyWithRandomExchRates());
+        ResponseJson := SetField(Database::"Vendor Subscription Contract", VendorContract."No.", 'CurrencyCode', LibraryERM.CreateCurrencyWithRandomExchRates());
 
         // [THEN] The write is refused, names the field, points to the supported path, and nothing changed
         TestLib.AssertRefused(ResponseJson, 'Currency Code');
@@ -89,7 +89,7 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         GlobalLanguage(1039);
 
         // [WHEN] Data.Records.Set writes Currency Code
-        ResponseJson := SetField(Database::"Customer Subscription Contract", CustomerContract."No.", 'Currency Code', LibraryERM.CreateCurrencyWithRandomExchRates());
+        ResponseJson := SetField(Database::"Customer Subscription Contract", CustomerContract."No.", 'CurrencyCode', LibraryERM.CreateCurrencyWithRandomExchRates());
         NextStep := TestLib.GetText(ResponseJson, 'nextStep');
         GlobalLanguage(1033);
 
@@ -147,7 +147,7 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         PrimaryKey: JsonObject;
         Fields: JsonObject;
     begin
-        PrimaryKey.Add('No.', ContractNo);
+        PrimaryKey.Add('No_', ContractNo);
         Fields.Add(FieldName, FieldValue);
         Entry.Add('primaryKey', PrimaryKey);
         Entry.Add('fields', Fields);

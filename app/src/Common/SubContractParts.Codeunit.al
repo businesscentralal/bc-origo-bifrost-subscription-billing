@@ -101,7 +101,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template whose unbilled proposal lines are processed. May be supplied as the subject instead.'));
                     Parameters.Add(DateParameter('documentDate', 'Document date of the created documents. Defaults to the work date.'));
                     Parameters.Add(DateParameter('postingDate', 'Posting date of the created documents. Defaults to the work date.'));
-                    Parameters.Add(BooleanParameter('postDocuments', false, 'When true, the created sales documents are posted. Purchase documents are never posted.'));
+                    Parameters.Add(BooleanParameter('postDocuments', false, 'When true, the created sales documents are posted. Purchase documents are never posted; post them with Subscription.Billing.PostDocuments.'));
                     Parameters.Add(GroupByParameter('Contract creates one document per contract; Customer creates one document per Bill-to Customer No. and needs customer proposal lines.'));
                 end;
             'Subscription.Billing.PreviewDocuments':
