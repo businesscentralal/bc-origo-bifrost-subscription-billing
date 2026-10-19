@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-19) - native CSV and selected-renewal fixtures
+
+- `Sub Usage Tst ori` (95777) creates the customer and Subscription referenced by its CSV before invoking the real parser. Imported rows and blobs are still produced only by `Usage.ImportData`.
+- `Sub Renewal Tst ori` (95776) asserts the selected line on the persisted Sales Subscription Line of the renewal quote. Microsoft's `Create Sub. Contract Renewal` consumes its staging rows, so the test no longer mistakes their absence for a missing quote result. It still requires exactly one persisted renewal line, linked to the selected original line and contract.
+
+
 ### Fixed (2026-10-19) - operations amendment integration (#36, #38, #41, #44)
 
 - Merge the accepted #47/#48/#55 fixes into operations, retaining real CSV blob hashing/status, typed help parameter chapters, public test fixtures and localized contract terminology. New operations use their own isolated OnRun transaction, matching main's retirement of `Sub Write Process ori` (10035059).

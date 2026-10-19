@@ -48,6 +48,9 @@ codeunit 95777 "Sub Usage Tst ori"
     local procedure AssertParsedImport(UseBase64: Boolean)
     var
         UsageDataSupplier: Record "Usage Data Supplier";
+        SubscriptionHeader: Record "Subscription Header";
+        CustomerContract: Record "Customer Subscription Contract";
+        UnusedSubscriptionLine: Record "Subscription Line";
         UsageDataImport: Record "Usage Data Import";
         UsageDataBlob: Record "Usage Data Blob";
         UsageDataGenericImport: Record "Usage Data Generic Import";
@@ -60,8 +63,9 @@ codeunit 95777 "Sub Usage Tst ori"
         ImportEntryNo: Integer;
     begin
         // [GIVEN] Only supplier/settings/CSV mapping exist, no imported rows or blobs.
+        CreateUsageBasedContract(CustomerContract, SubscriptionHeader, UnusedSubscriptionLine);
         CreateGenericSupplier(UsageDataSupplier);
-        Content := UsageFile('XSB49SUB', 'XSB49CUSTOMER', 'xsb49subscription', 7);
+        Content := UsageFile(SubscriptionHeader."No.", CustomerContract."Sell-to Customer No.", 'xsb49subscription', 7);
         RequestJson.Add('supplierNo', UsageDataSupplier."No.");
         RequestJson.Add('fileName', 'xsb49-parser.csv');
         if UseBase64 then

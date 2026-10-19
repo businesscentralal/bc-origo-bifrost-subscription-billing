@@ -27,7 +27,7 @@ codeunit 95776 "Sub Renewal Tst ori"
         SubscriptionHeader: Record "Subscription Header";
         ExtraPackage: Record "Subscription Package";
         ContractLine: Record "Cust. Sub. Contract Line";
-        RenewalLine: Record "Sub. Contract Renewal Line";
+        SalesSubscriptionLine: Record "Sales Subscription Line";
         SalesHeader: Record "Sales Header";
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
@@ -53,10 +53,14 @@ codeunit 95776 "Sub Renewal Tst ori"
         Assert.AreEqual(1, TestLibrary.ReadInteger(ResponseJson, 'renewalLinesCreated'), 'Only one selected line may renew.');
         QuoteNo := CopyStr(TestLibrary.ReadText(ResponseJson, 'salesQuoteNo'), 1, MaxStrLen(QuoteNo));
         Assert.IsTrue(SalesHeader.Get(SalesHeader."Document Type"::Quote, QuoteNo), 'The renewal quote must exist.');
-        RenewalLine.SetRange("Linked to Sub. Contract No.", CustomerContract."No.");
-        Assert.RecordCount(RenewalLine, 1);
-        RenewalLine.FindFirst();
-        Assert.AreEqual(SelectedEntryNo, RenewalLine."Subscription Line Entry No.", 'The renewal must refer to the selected original line.');
+        // Microsoft consumes the renewal staging row and persists the selection on the quote's subscription lines.
+        SalesSubscriptionLine.SetRange("Document Type", SalesHeader."Document Type");
+        SalesSubscriptionLine.SetRange("Document No.", QuoteNo);
+        SalesSubscriptionLine.SetRange(Process, Enum::Process::"Contract Renewal");
+        SalesSubscriptionLine.SetRange("Linked to No.", CustomerContract."No.");
+        Assert.RecordCount(SalesSubscriptionLine, 1);
+        SalesSubscriptionLine.FindFirst();
+        Assert.AreEqual(SelectedEntryNo, SalesSubscriptionLine."Subscription Line Entry No.", 'The persisted quote subscription line must refer only to the selected original line.');
     end;
 
     [Test]
