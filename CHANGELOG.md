@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-19) - AppSource version floors
+
+- Bifrost Foundation floor **28.0.5.590** (the 28.0.5 release, which removed the per-app HTTP gate this app relies on; the app compiles against that package with AppSourceCop, 0 errors). Microsoft Subscription Billing and application floors **28.3.0.0**, the lowest Business Central the app is compiled and live-tested against (bc28-w1). Same values in `app/app.json` and `test/app.json`.
+- The Partner Center listing (description, 216 px logo, product sheet) is under `app/docs/appsource/listing/`, corrected to today's app: it runs Microsoft's logic and carries Microsoft's code where a step is only behind a page, it posts and undoes billing runs, merges lines, updates exchange rates and closes ended lines, and requires BC 28.3. Screenshots are still to be recorded.
+
 ### Fixed (2026-10-19) - two red native tests on main CI (e1687e7)
 
 - `Sub Renewal Tst ori` (95776) `CreateQuote_SelectedLines_ExcludesOtherRenewableLines`: the test counted Sub. Contract Renewal Line rows after the quote was built, but Microsoft's Create Sub. Contract Renewal moves every renewal line onto the quote as a Sales Subscription Line (Process Contract Renewal) and deletes it. The test now asserts exactly one renewal Sales Subscription Line on the quote, for the selected Subscription Line and linked to the contract, and that no renewal line is left. The product is unchanged.

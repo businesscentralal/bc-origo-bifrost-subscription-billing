@@ -81,9 +81,9 @@ Repository: bc-origo-bifrost-subscription-billing
 Default branch: main
 
 ## Dependencies
-- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.1.0 minimum; includes the public
+- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.5.590 minimum (the 28.0.5 release; raised 19.10.2026 for AppSource after compiling against that package); includes the public
   `Message Argument ori.ApplyTableView` validation used by price update template filters)
-- Subscription Billing (Microsoft, 28.0.0.0)
+- Subscription Billing (Microsoft, 28.3.0.0; application floor 28.3.0.0)
 
 ## Naming Rules
 - Every object carries the `ori` suffix (AppSource mandatory affix), max 30 characters.
