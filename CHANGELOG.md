@@ -2,6 +2,60 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-19) - AppSource version floors
+
+- Bifrost Foundation floor **28.0.5.590** (the 28.0.5 release, which removed the per-app HTTP gate this app relies on; the app compiles against that package with AppSourceCop, 0 errors). Microsoft Subscription Billing and application floors **28.3.0.0**, the lowest Business Central the app is compiled and live-tested against (bc28-w1). Same values in `app/app.json` and `test/app.json`.
+- The Partner Center listing (description, 216 px logo, product sheet) is under `app/docs/appsource/listing/`, corrected to today's app: it runs Microsoft's logic and carries Microsoft's code where a step is only behind a page, it posts and undoes billing runs, merges lines, updates exchange rates and closes ended lines, and requires BC 28.3. Screenshots are still to be recorded.
+
+### Fixed (2026-10-19) - two red native tests on main CI (e1687e7)
+
+- `Sub Renewal Tst ori` (95776) `CreateQuote_SelectedLines_ExcludesOtherRenewableLines`: the test counted Sub. Contract Renewal Line rows after the quote was built, but Microsoft's Create Sub. Contract Renewal moves every renewal line onto the quote as a Sales Subscription Line (Process Contract Renewal) and deletes it. The test now asserts exactly one renewal Sales Subscription Line on the quote, for the selected Subscription Line and linked to the contract, and that no renewal line is left. The product is unchanged.
+- `Sub Usage Tst ori` (95777) `ImportData_TextAndBase64_PersistParsedRows`: the CSV row named Subscription `XSB49SUB`, which does not exist; Microsoft's data exchange mapping validates Subscription Header No. against Subscription Header while parsing. The fixture now creates the Subscription the row names, and the test also asserts that column is parsed. The product, which hands the file to Microsoft's Create Imported Lines step, is unchanged.
+
+### Changed (2026-10-19) - README, registry and dead help code (#44)
+
+- `Sub Contract Parts ori` (10035075): the unused `BlockedNote()` is removed; no type is blocked any more.
+- README: the message types are listed from the enum extension (no hand-typed count); the intro no longer claims there are no delete-style types and names Currency Code being closed to `Data.Records.Set`; Known issues no longer describe blocked types or name a Business Central version, and name the copied Microsoft code (price update, contract line merge); documentation links point at <https://docs.bifrost.origo.is/en-us/subscription-billing/>; the EULA text matches the `app.json` link; the repository layout drops the removed `app/src/Help/` folder and adds `app/src/Posting/`; Setup names `BIFROST SubPost ori` for posting.
+- `.claude/CLAUDE.md`: the enum value count and the "original 22" wording are replaced by "one per type", `BIFROST SubPost ori` is named with the other permission sets, and the 10035085-10035090 range extension records the collision check (no other app.json under E:\Git uses it).
+
+### Changed (2026-10-19) - vendor CreateInvoice undo note (#37 AC04)
+
+- `Subscription.VendorContract.CreateInvoice` notes now match the customer type: the unposted purchase document can be deleted with `Subscription.Billing.DeleteDocuments` or posted with `Subscription.Billing.PostDocuments`, and a posted purchase invoice or credit memo is cancelled or corrected with the Cancel or Correct action on the posted invoice in Business Central (Bifrost has no message type for that).
+
+### Added (2026-10-19) - usage connected through to the billing line (#38 AC04)
+
+- `Sub Usage Tst ori` (95777) `Scenario_38AC04_ConnectProcessPropose_LinksUsageToBillingLine`: a usage file is imported for a real usage-based contract line, the supplier subscription is connected with `Subscription.Usage.ConnectSubscriptions`, `Subscription.Usage.Process` creates Usage Data Billing, `Subscription.Billing.CreateProposal` for a template covering the contract creates the Billing Line, and after `Subscription.Billing.CreateDocuments` the Usage Data Billing row's Billing Line Entry No. names that line (Microsoft stores it when the document is created, not at proposal time).
+
+### Added (2026-10-19) - Microsoft merge tests as the MergeLines oracle (#50)
+
+- `Sub Con Merge Tst ori` (95720) ports the scenarios of Microsoft's merge checks (table 8062 MergeContractLines and codeunit 8059, BCApps releases/28.x a674a13): refusals for a different Next Billing Date, different dimensions, an existing billing line, a serial number and a different Customer Reference, each leaving every line open; and a result check that the new Subscription Line copies the reference price and Calculation Base Amount, starts on the reference Next Billing Date, carries price times the summed quantity, and that the old lines and Subscription Lines are closed at their former Next Billing Date.
+
+### Changed (2026-10-19) - PostDocuments takes the vendor's document number (#52)
+
+- `Subscription.Billing.PostDocuments` (`Sub Bil PostDocs Impl ori`, 10035085) no longer copies the document number into a blank Vendor Invoice No. It reads `vendorInvoiceNo` on each Vendor entry of `documents`, or once at the top level when only one purchase document needs it, and validates it into Vendor Invoice No. (Vendor Cr. Memo No. on a credit memo), so the vendor's duplicate-number check runs. A purchase document that has no vendor document number and gets none is refused before anything is posted, with code MissingParameter, parameter `vendorInvoiceNo` and a nextStep, in lcid 1033 and 1039. A top-level value that would apply to more than one purchase document, and `vendorInvoiceNo` on a Customer entry, are refused as well.
+- The open-header and posted-header lookups read only the fields they need (`SetLoadFields`).
+- Help: parameters, errors, effect text, notes and a vendor example describe `vendorInvoiceNo`.
+- Tests in `Sub PostDocs Tst ori` (95718): vendor invoice posted with the entry value and with the top-level value, refusal without a value (no number invented, document stays open) in English and Icelandic, and refusal of `vendorInvoiceNo` on a sales entry.
+
+### Changed (2026-10-19) - contract currency is a Foundation field restriction, not a validation guard (#51)
+
+- The `Sub Con Ccy Guard ori` subscriber on OnBeforeValidate of Currency Code is gone. It refused every Currency Code change, so the contract card, `Subscription.Import.CreateContracts` (Microsoft's contract creation validates Currency Code) and contracts for foreign-currency bill-to customers failed.
+- Codeunit `Sub Con Ccy Restrict ori` (10035082) subscribes to Foundation's public `Message Argument ori` events instead: `OnAfterIsFieldWriteRestrictedForDataRecords` closes field 32 Currency Code of Customer Subscription Contract and Vendor Subscription Contract to `Data.Records.Set` (also with force), and `OnGetDedicatedMessageTypeHintForField` returns the nextStep: change the currency on the contract card, and use `Subscription.Contract.UpdateExchangeRates` to recalculate the lines. Every other path still validates Currency Code as before.
+- The `Subscription.Contract.UpdateExchangeRates` notes say Data.Records.Set refuses Currency Code.
+- Tests: `Sub Con Ccy Tst ori` (95717) now dispatches `Data.Records.Set` through the public `Dispatcher ori` for both contract tables (refused, nextStep names the type, value unchanged), checks the Icelandic hint in lcid 1039, checks through `Help.Fields.Get` that only Currency Code is restricted, and shows that a direct Validate on a contract without lines still sets the currency.
+
+### Added (2026-10-16) - Post billing documents, guard contract currency, merge contract lines (#52, #51, #50)
+
+- `Subscription.Billing.PostDocuments` (codeunit `Sub Bil PostDocs Impl ori`, 10035085) posts unposted sales and purchase documents that a Subscription Billing run created, through Sales-Post and Purch.-Post. It refuses a document the billing run did not create and names Sales.Document.Post or Purch.Document.Post, and it refuses a document that is already posted. The call always commits, including when Omit Commit is set. A purchase document needs the vendor's document number (see the 2026-10-19 entry above). The posting gate is table `Sub Posting ori` (10035083) and codeunit `Sub Posting Gate ori` (10035084). Permission set `BIFROST SubPost ori` (10035086) is assigned on its own and is not included in `BIFROST SubBil ori`, `BIFROST SubBFull ori` or `BIFROST SubBRead ori`.
+- Currency Code on Customer Subscription Contract and Vendor Subscription Contract is closed to Foundation's generic `Data.Records.Set` (#51); see the 2026-10-19 entry above.
+- `Subscription.Contract.MergeLines` (codeunit `Sub Con Merge Impl ori`, 10035073) merges customer contract lines with Microsoft's eligibility rules and resulting line. The reference line replaces page 8091. Codeunit `Sub Con Merge Mgt ori` (10035074) holds the copied local and internal procedures. Vendor contract merge is out of scope. The call does not commit.
+- The app id range now runs through 10035090.
+- Tests: `Sub Con Ccy Tst ori` (95717), `Sub PostDocs Tst ori` (95718), `Sub Post Gate Tst ori` (95719), `Sub Con Merge Tst ori` (95720).
+
+### Fixed (2026-10-16) - merge test assertions (#50)
+
+- `Sub Con Merge Tst ori` (95720) no longer registers a message handler. Merge raises `Error`, and the unused handler failed the test after the assertions had passed.
+
 ### Fixed (2026-10-19) - operations amendment integration (#36, #38, #41, #44)
 
 - Merge the accepted #47/#48/#55 fixes into operations, retaining real CSV blob hashing/status, typed help parameter chapters, public test fixtures and localized contract terminology. New operations use their own isolated OnRun transaction, matching main's retirement of `Sub Write Process ori` (10035059).

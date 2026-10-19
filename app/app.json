@@ -22,13 +22,13 @@
       "id": "7505e808-6e52-4b96-a328-82573391297a",
       "name": "Bifrost Foundation",
       "publisher": "Origo",
-      "version": "28.0.1.0"
+      "version": "28.0.5.590"
     },
     {
       "id": "3099ffc7-4cf7-4df6-9b96-7e4bc2bb587c",
       "name": "Subscription Billing",
       "publisher": "Microsoft",
-      "version": "28.0.0.0"
+      "version": "28.3.0.0"
     }
   ],
   "internalsVisibleTo": [
@@ -40,11 +40,11 @@
   ],
   "screenshots": [],
   "platform": "28.0.0.0",
-  "application": "28.0.0.0",
+  "application": "28.3.0.0",
   "idRanges": [
     {
       "from": 10035035,
-      "to": 10035084
+      "to": 10035090
     }
   ],
   "resourceExposurePolicy": {

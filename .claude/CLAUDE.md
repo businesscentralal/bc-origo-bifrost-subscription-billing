@@ -7,18 +7,22 @@
 Origo.Bifrost.SubscriptionBilling (tests: Origo.Bifrost.SubscriptionBilling.Test)
 
 ## Object ID Range
-App:   10035035-10035084 (migrated in place from the legacy Cloud Events range, offset 0 - the app
-  was never published, so ids kept their identity)
+App:   10035035-10035090 (migrated in place from the legacy Cloud Events range, offset 0 - the app
+  was never published, so ids kept their identity). Extended through 10035090 on 2026-10-16 for
+  #51 and #52. Checked 2026-10-19 against every app.json under E:\Git: no other app uses
+  10035085-10035090 (the next range below is Cloud Events Anthropic, 10034985-10035034).
 Tests: 95700-95799 (offset 0, same reason)
 
 ### Allocated object ids
 App:
 - 10035035 enumextension `Sub Msg Type ori`
-- 10035036-10035057 the 22 `Sub <Domain><Verb> Impl ori` codeunits
+- 10035036-10035057 the `Sub <Domain><Verb> Impl ori` codeunits of the first message types (one per type; the id is also the enum value)
+- 10035085 codeunit `Sub Bil PostDocs Impl ori` (`Subscription.Billing.PostDocuments`, #52)
 - 10035058 codeunit `Sub Helper ori`
 - Freed by #26: 10035059, codeunit `Sub Write Process ori` (each Impl now runs itself in isolation)
 - 10035060 codeunit `Sub Registration ori` (registers the app with Foundation's `App Registry ori`)
-- 10035062-10035064 the three permission sets
+- 10035062-10035064 the three permission sets `BIFROST SubBil ori`, `BIFROST SubBFull ori`, `BIFROST SubBRead ori`
+- 10035086 permission set `BIFROST SubPost ori` (#52; not included in the three sets above)
 - 10035075 codeunit `Sub Contract Parts ori` (shared contract chapters, #18)
 - Freed by #19: 10035065-10035074, the ten markdown help codeunits `Sub <Domain> Help ori`
   (Line, Con, Vend, Bil, PU, Ren, Usg, Def, Ana, Imp), deleted with `GetMessageHelpAsMarkdownDocument`
@@ -30,7 +34,11 @@ App:
   `Sub PU Price Update Mgt ori`, `Sub PU Calc Base By Perc ori`, `Sub PU Price By Percent ori`,
   `Sub PU Recent Item Price ori`, `Sub PU Process Price Upd ori`, `Sub PU Line Mgt ori` (plus the interface
   `Sub PU Contract Price Upd ori`, which has no id)
-- Free: 10035073-10035074, 10035082-10035084
+- 10035082 codeunit `Sub Con Ccy Restrict ori` (#51; Foundation field-restriction subscriber for contract Currency Code)
+- 10035083 table `Sub Posting ori`, 10035084 codeunit `Sub Posting Gate ori` (#52)
+- 10035073 codeunit `Sub Con Merge Impl ori` and enum value `Subscription.Contract.MergeLines` (#50)
+- 10035074 codeunit `Sub Con Merge Mgt ori` (Microsoft merge copy, #50)
+- Free: 10035087-10035090
 
 Tests:
 - 95700 `Sub Test Install ori`, 95701 `Sub Msg Type Tst ori`, 95702 `Sub Helper Tst ori`,
@@ -51,7 +59,9 @@ Tests:
 - 95773 `Sub Line GetLines Tst ori`, 95774 `Sub Invoice Tst ori`, 95775 `Sub Billing Run Tst ori`,
   95776 `Sub Renewal Tst ori`, 95777 `Sub Usage Tst ori`, 95778 `Sub Deferral Analysis Tst ori`
   (behaviour tests that drive Microsoft Subscription Billing, #43)
-- Free: 95717-95739 (Branch A), 95744-95769, 95779-95799
+- 95717 `Sub Con Ccy Tst ori` (#51), 95718 `Sub PostDocs Tst ori`, 95719 `Sub Post Gate Tst ori` (#52)
+- 95720 `Sub Con Merge Tst ori` (#50)
+- Free: 95721-95739, 95744-95769, 95779-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**
@@ -71,14 +81,15 @@ Repository: bc-origo-bifrost-subscription-billing
 Default branch: main
 
 ## Dependencies
-- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.1.0 minimum; includes the public
+- Bifrost Foundation (`7505e808-6e52-4b96-a328-82573391297a`, 28.0.5.590 minimum (the 28.0.5 release; raised 19.10.2026 for AppSource after compiling against that package); includes the public
   `Message Argument ori.ApplyTableView` validation used by price update template filters)
-- Subscription Billing (Microsoft, 28.0.0.0)
+- Subscription Billing (Microsoft, 28.3.0.0; application floor 28.3.0.0)
 
 ## Naming Rules
 - Every object carries the `ori` suffix (AppSource mandatory affix), max 30 characters.
 - The brand name "Bifrost" lives in the namespace, the app name ("Bifrost Subscription Billing"),
-  the permission sets (`BIFROST SubBil ori`, `BIFROST SubBFull ori`, `BIFROST SubBRead ori`) and
+  the permission sets (`BIFROST SubBil ori`, `BIFROST SubBFull ori`, `BIFROST SubBRead ori`,
+  `BIFROST SubPost ori`) and
   user-facing captions - never as an object-name prefix.
 - The legacy `CE ` / `CE Sub ` prefix is gone; abbreviations kept: `Sub` (Subscription),
   `Bil` (Billing), `Con` (Contract), `Vend` (Vendor), `PU` (Price Update), `Ren` (Renewal),
@@ -121,8 +132,8 @@ Key rules always in effect:
   here - AL-Go CI is the gate, so check affixes yourself.
 
 ## Message Type Conventions
-- Enum extension `Sub Msg Type ori` (10035035) extends Foundation's `Message Type ori` with 31
-  values, all named `Subscription.<Domain>.<Verb>` (`Help.Bifrost.Get` lists every type) - these
+- Enum extension `Sub Msg Type ori` (10035035) extends Foundation's `Message Type ori` with one
+  value per type, all named `Subscription.<Domain>.<Verb>` (`Help.Bifrost.Get` lists every type) - these
   keys are the published external API contract and must never be renamed or removed.
 - Each type has a `Sub <Domain><Verb> Impl ori` codeunit implementing `Msg Interface ori`,
   `Msg Discovery ori` and `Msg Contract ori`. A type describes itself only through its contract

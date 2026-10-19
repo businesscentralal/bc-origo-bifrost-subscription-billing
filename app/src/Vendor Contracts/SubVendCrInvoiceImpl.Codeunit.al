@@ -131,8 +131,9 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
             'lines are billed, and Microsoft''s purchase document creation never posts. vendorInvoiceNo is validated, not written directly, so the vendor''s ' +
             'duplicate invoice number check applies to every created document. When nothing is due, or nothing new could be billed, the call succeeds with an ' +
             'empty documents list and a message. Microsoft commits each document it creates, so a failure after that point does not roll the document back. ' +
-            'Subscription.Billing.DeleteDocuments without billingTemplateCode, with this contractNo, deletes the unposted document again. A posted purchase ' +
-            'invoice or credit memo cannot be undone by these types.';
+            'Subscription.Billing.DeleteDocuments without billingTemplateCode, with this contractNo, deletes the unposted document again, and Subscription.Billing.PostDocuments posts it. A posted purchase ' +
+            'invoice or credit memo cannot be undone by these types: cancel or correct it instead with the Cancel or Correct action on the posted purchase ' +
+            'invoice in Business Central, because Bifrost has no message type for that.';
         exit(true);
     end;
 

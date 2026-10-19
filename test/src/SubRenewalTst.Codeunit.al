@@ -29,6 +29,7 @@ codeunit 95776 "Sub Renewal Tst ori"
         ContractLine: Record "Cust. Sub. Contract Line";
         RenewalLine: Record "Sub. Contract Renewal Line";
         SalesHeader: Record "Sales Header";
+        SalesSubscriptionLine: Record "Sales Subscription Line";
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
         Selected: JsonArray;
@@ -49,14 +50,21 @@ codeunit 95776 "Sub Renewal Tst ori"
         RequestJson.Add('contractLineNos', Selected);
         // [WHEN] A renewal quote is requested for only the first line.
         ResponseJson := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Renewal.CreateQuote", RequestJson);
-        // [THEN] Exactly the selected line is in the persisted renewal and the quote exists.
+        // [THEN] Exactly the selected line is renewed on the quote.
         Assert.AreEqual(1, TestLibrary.ReadInteger(ResponseJson, 'renewalLinesCreated'), 'Only one selected line may renew.');
         QuoteNo := CopyStr(TestLibrary.ReadText(ResponseJson, 'salesQuoteNo'), 1, MaxStrLen(QuoteNo));
         Assert.IsTrue(SalesHeader.Get(SalesHeader."Document Type"::Quote, QuoteNo), 'The renewal quote must exist.');
-        RenewalLine.SetRange("Linked to Sub. Contract No.", CustomerContract."No.");
-        Assert.RecordCount(RenewalLine, 1);
-        RenewalLine.FindFirst();
-        Assert.AreEqual(SelectedEntryNo, RenewalLine."Subscription Line Entry No.", 'The renewal must refer to the selected original line.');
+        // Microsoft's Create Sub. Contract Renewal moves each renewal line onto the quote as a Sales
+        // Subscription Line and deletes the renewal line, so the quote is where the selection shows.
+        SalesSubscriptionLine.SetRange("Document Type", SalesSubscriptionLine."Document Type"::Quote);
+        SalesSubscriptionLine.SetRange("Document No.", QuoteNo);
+        SalesSubscriptionLine.SetRange(Process, Enum::Process::"Contract Renewal");
+        Assert.RecordCount(SalesSubscriptionLine, 1);
+        SalesSubscriptionLine.FindFirst();
+        Assert.AreEqual(SelectedEntryNo, SalesSubscriptionLine."Subscription Line Entry No.", 'The quote must renew the selected original line.');
+        Assert.AreEqual(CustomerContract."No.", SalesSubscriptionLine."Linked to No.", 'The renewal must stay linked to the contract.');
+        RenewalLine.SetRange("Subscription Contract No.", CustomerContract."No.");
+        Assert.RecordIsEmpty(RenewalLine);
     end;
 
     [Test]
