@@ -86,10 +86,11 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         // [GIVEN] A customer subscription contract, and Icelandic as the session language
         TestLibrary.CreateCustomer(Customer);
         TestLibrary.CreateCustomerContract(CustomerContract, Customer."No.");
-        GlobalLanguage(1039);
 
-        // [WHEN] Data.Records.Set writes Currency Code
-        ResponseJson := SetField(Database::"Customer Subscription Contract", CustomerContract."No.", 'CurrencyCode', LibraryERM.CreateCurrencyWithRandomExchRates());
+        // [WHEN] Data.Records.Set writes Currency Code in a message dispatched with lcid 1039.
+        // Dispatcher.Execute switches to the Bifrost Setup default language, so the language is
+        // passed to EnqueueAndProcess the way a queued API message carries it.
+        ResponseJson := SetField(Database::"Customer Subscription Contract", CustomerContract."No.", 'CurrencyCode', LibraryERM.CreateCurrencyWithRandomExchRates(), 1039);
         NextStep := TestLib.GetText(ResponseJson, 'nextStep');
         GlobalLanguage(1033);
 
@@ -140,7 +141,22 @@ codeunit 95717 "Sub Con Ccy Tst ori"
     end;
 
     local procedure SetField(TableNo: Integer; ContractNo: Code[20]; FieldName: Text; FieldValue: Text): JsonObject
+    begin
+        exit(SetField(TableNo, ContractNo, FieldName, FieldValue, 0));
+    end;
+
+    local procedure SetField(TableNo: Integer; ContractNo: Code[20]; FieldName: Text; FieldValue: Text; LanguageId: Integer): JsonObject
     var
+        Dispatcher: Codeunit "Dispatcher ori";
+        ResponseTempBlob: Codeunit System.Utilities."Temp Blob";
+        RequestContent: BigText;
+        ResponseInStream: InStream;
+        RequestText: Text;
+        ResponseContentType: Text[100];
+        MessageId: Guid;
+        EmptyTaskId: Guid;
+        ResponseTime: Duration;
+        ResponseJson: JsonObject;
         RequestJson: JsonObject;
         Data: JsonArray;
         Entry: JsonObject;
@@ -154,7 +170,15 @@ codeunit 95717 "Sub Con Ccy Tst ori"
         Data.Add(Entry);
         RequestJson.Add('tableName', Format(TableNo, 0, 9));
         RequestJson.Add('data', Data);
-        exit(TestLib.Invoke(Enum::"Message Type ori"::"Data.Records.Set", '', RequestJson, true));
+        if LanguageId = 0 then
+            exit(TestLib.Invoke(Enum::"Message Type ori"::"Data.Records.Set", '', RequestJson, true));
+        RequestJson.WriteTo(RequestText);
+        RequestContent.AddText(RequestText);
+        Dispatcher.EnqueueAndProcess(Enum::"Message Type ori"::"Data.Records.Set", Enum::"Message Version ori"::"1.0", '', 'XSBA', 'application/json',
+            RequestContent, EmptyTaskId, LanguageId, MessageId, ResponseTempBlob, ResponseContentType, ResponseTime, true);
+        ResponseTempBlob.CreateInStream(ResponseInStream, TextEncoding::UTF8);
+        Assert.IsTrue(ResponseJson.ReadFrom(ResponseInStream), 'The dispatcher must return structured JSON.');
+        exit(ResponseJson);
     end;
 
     local procedure IsWriteRestricted(TableNo: Integer; FieldNo: Integer): Boolean
