@@ -15,6 +15,13 @@
 - `Sub Con Ccy Tst ori` (95717) commits the customer and vendor contract before the refused currency write. `asserterror` rolls back the uncommitted insert, so the following Get could not see the stored currency.
 - `Sub Con Merge Tst ori` (95720) no longer registers a message handler. Merge raises `Error`, and the unused handler failed the test after the assertions had passed.
 
+### Fixed (2026-10-16) - help subject and import processed count (#44)
+
+- `Sub Contract Parts ori` (10035075) states each setup precondition with a subject that agrees in number: one record "must already exist; this call does not create it", and several records use "them". The write-guard sentence is unchanged.
+- `Subscription.Import.CreateContracts` describes `processed` as the rows the stage acted on, and says skipped rows are left out of that count. The 15.10 story note named `Usage.Process`; that type has no `processed` field. The field and the example that already separates `skipped` are on Import.CreateContracts.
+- Left to their open owners: the blocked-type errors, effects and `viðskiptavinur` keywords of `Contract.UpdateLineDates` and `Contract.UpdateExchangeRates` (PR #49) and of the PriceUpdate types (PR #48). The `app.json` description stays release-manager scope.
+- Test: `Sub Help Accuracy Tst ori` (95772) asserts the singular and plural subjects and the processed wording. No label changed, so the is-IS xlf is unchanged.
+
 ### Changed (2026-10-14) - Version reset to 28.0.0.0
 
 - Owner decision (Gunnar, 2026-10-14): `app/app.json` and `test/app.json` go from 29.0.0.0 to 28.0.0.0, so the first AppSource version aligns with the other Bifröst apps on Business Central 28. The test app's dependency on Bifrost Subscription Billing moves to 28.0.0.0 as well.

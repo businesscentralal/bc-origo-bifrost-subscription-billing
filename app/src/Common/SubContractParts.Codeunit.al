@@ -453,7 +453,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Import.CreateContracts':
                 begin
                     Children.Add(ContractMgt.ResponseField('stage', 'string', 'The stage name.'));
-                    Children.Add(ContractMgt.ResponseField('processed', 'integer', 'Unprocessed staging rows the stage found.'));
+                    Children.Add(ContractMgt.ResponseField('processed', 'integer', 'Staging rows the stage acted on. Skipped rows are left out of this count.'));
                     Children.Add(ContractMgt.ResponseField('succeeded', 'integer', 'Rows that created their record.'));
                     Children.Add(ContractMgt.ResponseField('failed', 'integer', 'Rows that failed; their error text is stored on the staging row.'));
                     Children.Add(ContractMgt.ResponseField('skipped', 'integer', 'Rows the stage left alone: in SubscriptionLines the Comment rows of an allowCommentLines call, in ContractLines the rows the SubscriptionLines stage of the same call failed. Always 0 for the other stages.'));
@@ -718,31 +718,53 @@ codeunit 10035075 "Sub Contract Parts ori"
     /// <summary>
     /// Adds the precondition on the Subscription Billing records a type reads but does not create.
     /// A caller prepares them with Foundation's generic writes, which the Bifrost Setup write guard
-    /// blocks by default.
+    /// blocks by default. The subject and pronoun agree: one record is "it", several are "them".
     /// </summary>
     local procedure AddSetupPreconditions(MessageType: Text; var Preconditions: JsonArray)
     var
-        Records: Text;
+        Subject: Text;
+        Pronoun: Text;
     begin
         case MessageType of
             'Subscription.Line.Create':
-                Records := 'The Subscription Header and the Subscription Package exist';
+                begin
+                    Subject := 'The Subscription Header and the Subscription Package';
+                    Pronoun := 'them';
+                end;
             'Subscription.Contract.GetLines', 'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.Contract.MergeLines', 'Subscription.Renewal.CreateQuote':
-                Records := 'The Customer Subscription Contract exists';
+                begin
+                    Subject := 'The Customer Subscription Contract';
+                    Pronoun := 'it';
+                end;
             'Subscription.VendorContract.GetLines', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
-                Records := 'The Vendor Subscription Contract exists';
+                begin
+                    Subject := 'The Vendor Subscription Contract';
+                    Pronoun := 'it';
+                end;
             'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments':
-                Records := 'The Billing Template exists';
+                begin
+                    Subject := 'The Billing Template';
+                    Pronoun := 'it';
+                end;
             'Subscription.Renewal.Extend':
-                Records := 'The Subscription and the customer or vendor contract exist';
+                begin
+                    Subject := 'The Subscription and the customer or vendor contract';
+                    Pronoun := 'them';
+                end;
             'Subscription.Usage.ImportData':
-                Records := 'The Usage Data Supplier and its Generic Import Settings exist';
+                begin
+                    Subject := 'The Usage Data Supplier and its Generic Import Settings';
+                    Pronoun := 'them';
+                end;
             'Subscription.Import.CreateContracts':
-                Records := 'The staging rows exist in Imported Subscription Header, Imported Cust. Sub. Contract and Imported Subscription Line';
+                begin
+                    Subject := 'The staging rows in Imported Subscription Header, Imported Cust. Sub. Contract and Imported Subscription Line';
+                    Pronoun := 'them';
+                end;
             else
                 exit;
         end;
-        Preconditions.Add(Records + '. This call does not create them. Writing them with Data.Records.Set needs the Bifrost Setup write guard set to Open, or Change Log coverage on those Subscription Billing tables, because the guard is Blocked by default.');
+        Preconditions.Add(Subject + ' must already exist; this call does not create ' + Pronoun + '. Writing ' + Pronoun + ' with Data.Records.Set needs the Bifrost Setup write guard set to Open, or Change Log coverage on those Subscription Billing tables, because the guard is Blocked by default.');
     end;
 
     local procedure IsBlocked(MessageType: Text): Boolean
