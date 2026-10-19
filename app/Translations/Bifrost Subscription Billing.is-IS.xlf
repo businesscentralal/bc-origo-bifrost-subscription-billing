@@ -369,11 +369,11 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Billing.SetTemplateFilter: Setur sannreynda samningssíu á reikningssniðmát.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil SetFilter Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
-        <trans-unit id="Codeunit 3682994850 - NamedType 3405044673" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Currency Code on subscription contract %1 cannot be changed by a generic write. Use Subscription.Contract.UpdateExchangeRates.</source>
-          <target>Ekki er hægt að breyta gjaldmiðilskóða á áskriftarsamningi %1 með almennri skrifun. Notaðu Subscription.Contract.UpdateExchangeRates.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Ekki er hægt að breyta gjaldmiðilskóða á áskriftarsamningi %1 með almennri skrifun. Notaðu Subscription.Contract.UpdateExchangeRates.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Ccy Guard ori - NamedType CurrencyWriteErr</note>
+        <trans-unit id="Codeunit 1123923673 - NamedType 1766126403" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Change Currency Code on the subscription contract card, which asks for the exchange rate. Subscription.Contract.UpdateExchangeRates recalculates the lines of a contract in the currency it already has.</source>
+          <target>Breyttu gjaldmiðilskóðanum á spjaldi áskriftarsamningsins, sem biður um gengið. Subscription.Contract.UpdateExchangeRates endurreiknar línur samnings í þeim gjaldmiðli sem hann hefur þegar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Breyttu gjaldmiðilskóðanum á spjaldi áskriftarsamningsins, sem biður um gengið. Subscription.Contract.UpdateExchangeRates endurreiknar línur samnings í þeim gjaldmiðli sem hann hefur þegar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con Ccy Restrict ori - NamedType CurrencyCodeHintTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 1511352918 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Customer Subscription Contract '%1' does not exist.</source>

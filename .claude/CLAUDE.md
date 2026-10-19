@@ -33,7 +33,7 @@ App:
   `Sub PU Price Update Mgt ori`, `Sub PU Calc Base By Perc ori`, `Sub PU Price By Percent ori`,
   `Sub PU Recent Item Price ori`, `Sub PU Process Price Upd ori`, `Sub PU Line Mgt ori` (plus the interface
   `Sub PU Contract Price Upd ori`, which has no id)
-- 10035082 codeunit `Sub Con Ccy Guard ori` (#51)
+- 10035082 codeunit `Sub Con Ccy Restrict ori` (#51; Foundation field-restriction subscriber for contract Currency Code)
 - 10035083 table `Sub Posting ori`, 10035084 codeunit `Sub Posting Gate ori` (#52)
 - 10035073 codeunit `Sub Con Merge Impl ori` and enum value `Subscription.Contract.MergeLines` (#50)
 - 10035074 codeunit `Sub Con Merge Mgt ori` (Microsoft merge copy, #50)

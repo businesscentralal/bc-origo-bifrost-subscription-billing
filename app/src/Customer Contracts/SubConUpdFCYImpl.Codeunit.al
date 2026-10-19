@@ -146,8 +146,8 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('Microsoft''s procedure is internal, and setting Currency Code on the contract through Data.Records.Set does not do the same: it recalculates only when ' +
-            'the code changes, and then with a currency factor of zero because the exchange rate page cannot open. This type rebuilds Microsoft''s steps instead (see ' +
+        Notes := ('Microsoft''s procedure is internal. Data.Records.Set refuses Currency Code on a subscription contract, because Microsoft''s validation would ' +
+            'recalculate the lines with a currency factor of zero when the exchange rate page cannot open. This type rebuilds Microsoft''s steps instead (see ' +
             'docs/microsoft-dependencies.md). Each line is saved with its modify trigger, which flags its billing lines Update Required and archives the old ' +
             'amounts, as Microsoft does. A line whose contract line is closed is skipped and counted under linesSkipped, because Business Central does not allow ' +
             'such a line to be changed. currencyFactor is the factor Business Central stores: foreign currency per unit of local currency. Running the type again ' +

@@ -28,7 +28,7 @@ permissionset 10035062 "BIFROST SubBil ori"
         codeunit "Sub Bil CrDocs Impl ori" = X,
         codeunit "Sub Bil PrvDocs Impl ori" = X,
         codeunit "Sub Bil PostDocs Impl ori" = X,
-        codeunit "Sub Con Ccy Guard ori" = X,
+        codeunit "Sub Con Ccy Restrict ori" = X,
         codeunit "Sub Con Merge Impl ori" = X,
         codeunit "Sub Con Merge Mgt ori" = X,
         codeunit "Sub Posting Gate ori" = X,
