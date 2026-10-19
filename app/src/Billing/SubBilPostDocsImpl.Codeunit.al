@@ -37,6 +37,11 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         AlreadyPostedErr: Label 'Document %1 %2 is already posted.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 er þegar bókað.';
         NotOpenErr: Label 'Billing document %1 %2 is not an open sales or purchase document.', Comment = '%1 = document type, %2 = document number||is-IS=Reikningsskjalið %1 %2 er ekki opið sölu- eða innkaupaskjal.';
         PostFailedErr: Label 'Posting document %1 failed. Documents this call already posted stay posted. %2', Comment = '%1 = document number, %2 = the underlying error||is-IS=Bókun skjals %1 mistókst. Skjöl sem þetta kall hefur þegar bókað standa áfram bókuð. %2';
+        MissingVendorInvoiceNoErr: Label 'Purchase %1 %2 has no vendor document number. Nothing was posted.', Comment = '%1 = document type, %2 = document number||is-IS=Innkaupaskjalið %1 %2 hefur ekkert skjalanúmer lánardrottins. Ekkert var bókað.';
+        MissingVendorInvoiceNoExpectedTxt: Label 'The vendor''s own invoice or credit memo number, at most 35 characters.', Comment = 'is-IS=Eigið reiknings- eða kreditnótunúmer lánardrottins, í mesta lagi 35 stafir.';
+        MissingVendorInvoiceNoNextStepTxt: Label 'Send vendorInvoiceNo on the document entry with the number on the vendor''s invoice or credit memo, then call again.', Comment = 'is-IS=Sendu vendorInvoiceNo á færslu skjalsins með númerinu á reikningi eða kreditnótu lánardrottins og kallaðu svo aftur.';
+        SharedVendorInvoiceNoErr: Label 'The top-level vendorInvoiceNo can be used for one purchase document only, and %1 purchase documents need it. Send vendorInvoiceNo on each document entry instead.', Comment = '%1 = number of purchase documents||is-IS=vendorInvoiceNo á efsta stigi má aðeins nota fyrir eitt innkaupaskjal en %1 innkaupaskjöl þurfa það. Sendu vendorInvoiceNo á hverja skjalafærslu í staðinn.';
+        VendorInvoiceNoForCustomerErr: Label 'vendorInvoiceNo is read for purchase documents only, and document %1 is a sales document.', Comment = '%1 = document number||is-IS=vendorInvoiceNo er aðeins lesið fyrir innkaupaskjöl og skjal %1 er söluskjal.';
         PostedNoMissingErr: Label 'Posting document %1 reported success but no posted document was found.', Comment = '%1 = document number||is-IS=Bókun skjals %1 tilkynnti árangur en ekkert bókað skjal fannst.';
         CustomerTok: Label 'Customer', Locked = true;
         VendorTok: Label 'Vendor', Locked = true;
@@ -132,6 +137,9 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         Examples.Add(ContractMgt.Example('Post one unposted billing invoice',
             '{"type":"Subscription.Billing.PostDocuments","data":{"documents":[{"partner":"Customer","documentType":"Invoice","documentNo":"INV-000123"}]}}',
             '{"status":"Success","postedCount":1,"documents":[{"partner":"Customer","documentType":"Invoice","documentNo":"INV-000123","postedDocumentNo":"INV-000123","posted":true}]}'));
+        Examples.Add(ContractMgt.Example('Post a billing purchase invoice with the vendor''s invoice number',
+            '{"type":"Subscription.Billing.PostDocuments","data":{"documents":[{"partner":"Vendor","documentType":"Invoice","documentNo":"PI-000045","vendorInvoiceNo":"V-2026-0912"}]}}',
+            '{"status":"Success","postedCount":1,"documents":[{"partner":"Vendor","documentType":"Invoice","documentNo":"PI-000045","postedDocumentNo":"PPI-000045","posted":true,"vendorInvoiceNo":"V-2026-0912"}]}'));
         exit(true);
     end;
 
@@ -146,7 +154,8 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         Notes := 'This call always commits, including when Omit Commit is set, because a posted ledger document cannot be rolled back. ' +
             'Every document is checked before the first one is posted. A document Subscription Billing did not create is refused and the caller is sent to Sales.Document.Post or Purch.Document.Post. ' +
-            'An already posted document is refused. A blank Vendor Invoice No. on a purchase document is set to the document number before posting. ' +
+            'An already posted document is refused. A purchase document needs the vendor''s own document number: send vendorInvoiceNo on its entry (or once at the top level when only one purchase document needs it); ' +
+            'it is validated into Vendor Invoice No. on an invoice and Vendor Cr. Memo No. on a credit memo. A purchase document that has no such number and gets none is refused before anything is posted. ' +
             'Sales.Document.Post cannot post these documents: it refuses a subscription item before posting.';
         exit(true);
     end;
@@ -191,6 +200,9 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         PostedDocuments: JsonArray;
         PendingJson: JsonObject;
         Pending: List of [JsonObject];
+        SharedVendorInvoiceNo: Text;
+        MissingDocumentType: Text;
+        MissingDocumentNo: Code[20];
     begin
         if not PostingGate.AssertCanPost(Argument) then
             exit;
@@ -200,8 +212,16 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             Error(MissingDocumentsErr, 'documents');
         if Documents.Count() = 0 then
             Error(EmptyDocumentsErr);
+        SharedVendorInvoiceNo := ReadVendorInvoiceNo(RequestJson);
 
-        Pending := ValidateDocuments(Documents);
+        Pending := ValidateDocuments(Documents, SharedVendorInvoiceNo);
+        // A purchase document without a vendor document number is answered before anything is posted.
+        // The number is the vendor's own; this call never invents one from the document number.
+        if FindMissingVendorInvoiceNo(Pending, MissingDocumentType, MissingDocumentNo) then begin
+            Argument.RespondWithError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingVendorInvoiceNoErr, MissingDocumentType, MissingDocumentNo),
+                'vendorInvoiceNo', '', MissingVendorInvoiceNoExpectedTxt, MissingVendorInvoiceNoNextStepTxt);
+            exit;
+        end;
         foreach PendingJson in Pending do
             PostedDocuments.Add(PostOne(PendingJson));
 
@@ -214,8 +234,10 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         Commit();
     end;
 
-    local procedure ValidateDocuments(Documents: JsonArray) Pending: List of [JsonObject]
+    local procedure ValidateDocuments(Documents: JsonArray; SharedVendorInvoiceNo: Text) Pending: List of [JsonObject]
     var
+        VendorInvoiceNo: Text;
+        SharedUseCount: Integer;
         Seen: Dictionary of [Text, Boolean];
         DocumentToken: JsonToken;
         DocumentJson: JsonObject;
@@ -248,8 +270,63 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             Partner := PartnerFromText(PartnerText);
             BillingDocumentType := BillingDocumentTypeFromText(DocumentTypeText);
             AssertCanPostDocument(Partner, BillingDocumentType, DocumentTypeText, DocumentNo);
-            Pending.Add(PendingDocument(PartnerText, DocumentTypeText, DocumentNo));
+
+            VendorInvoiceNo := ReadVendorInvoiceNo(DocumentJson);
+            if (VendorInvoiceNo <> '') and (Partner = Enum::"Service Partner"::Customer) then
+                Error(VendorInvoiceNoForCustomerErr, DocumentNo);
+            if Partner = Enum::"Service Partner"::Vendor then
+                if VendorInvoiceNo = '' then
+                    if StoredVendorDocumentNo(DocumentTypeText, DocumentNo) = '' then
+                        if SharedVendorInvoiceNo <> '' then begin
+                            VendorInvoiceNo := SharedVendorInvoiceNo;
+                            SharedUseCount += 1;
+                        end;
+            Pending.Add(PendingDocument(PartnerText, DocumentTypeText, DocumentNo, VendorInvoiceNo));
         end;
+        if SharedUseCount > 1 then
+            Error(SharedVendorInvoiceNoErr, SharedUseCount);
+    end;
+
+    local procedure ReadVendorInvoiceNo(Json: JsonObject) VendorInvoiceNo: Text
+    var
+        PurchaseHeader: Record "Purchase Header";
+    begin
+        VendorInvoiceNo := Helper.GetText(Json, 'vendorInvoiceNo', false).Trim();
+        if StrLen(VendorInvoiceNo) > MaxStrLen(PurchaseHeader."Vendor Invoice No.") then
+            Error(ValueTooLongErr, 'vendorInvoiceNo', MaxStrLen(PurchaseHeader."Vendor Invoice No."));
+    end;
+
+    /// <summary>The vendor document number already on the open purchase document: Vendor Invoice No. on an invoice, Vendor Cr. Memo No. on a credit memo.</summary>
+    local procedure StoredVendorDocumentNo(DocumentTypeText: Text; DocumentNo: Code[20]): Code[35]
+    var
+        PurchaseHeader: Record "Purchase Header";
+    begin
+        PurchaseHeader.SetLoadFields("Vendor Invoice No.", "Vendor Cr. Memo No.");
+        if not PurchaseHeader.Get(PurchaseDocumentTypeFromText(DocumentTypeText), DocumentNo) then
+            exit('');
+        if PurchaseHeader."Document Type" = PurchaseHeader."Document Type"::"Credit Memo" then
+            exit(PurchaseHeader."Vendor Cr. Memo No.");
+        exit(PurchaseHeader."Vendor Invoice No.");
+    end;
+
+    local procedure FindMissingVendorInvoiceNo(Pending: List of [JsonObject]; var MissingDocumentType: Text; var MissingDocumentNo: Code[20]): Boolean
+    var
+        PendingJson: JsonObject;
+        DocumentTypeText: Text;
+        DocumentNo: Code[20];
+    begin
+        foreach PendingJson in Pending do
+            if Helper.GetText(PendingJson, 'partner', true) = VendorTok then
+                if Helper.GetText(PendingJson, 'vendorInvoiceNo', false) = '' then begin
+                    DocumentTypeText := Helper.GetText(PendingJson, 'documentType', true);
+                    DocumentNo := CopyStr(Helper.GetText(PendingJson, 'documentNo', true), 1, MaxStrLen(DocumentNo));
+                    if StoredVendorDocumentNo(DocumentTypeText, DocumentNo) = '' then begin
+                        MissingDocumentType := DocumentTypeText;
+                        MissingDocumentNo := DocumentNo;
+                        exit(true);
+                    end;
+                end;
+        exit(false);
     end;
 
     local procedure AssertCanPostDocument(Partner: Enum "Service Partner"; BillingDocumentType: Enum "Rec. Billing Document Type"; DocumentTypeText: Text; DocumentNo: Code[20])
@@ -301,6 +378,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         PartnerText := Helper.GetText(PendingJson, 'partner', true);
         DocumentTypeText := Helper.GetText(PendingJson, 'documentType', true);
         DocumentNo := CopyStr(Helper.GetText(PendingJson, 'documentNo', true), 1, MaxStrLen(DocumentNo));
+        VendorInvoiceNo := CopyStr(Helper.GetText(PendingJson, 'vendorInvoiceNo', false), 1, MaxStrLen(VendorInvoiceNo));
         if PartnerText = CustomerTok then
             PostedNo := PostSalesDocument(DocumentTypeText, DocumentNo)
         else
@@ -347,13 +425,20 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         PurchaseDocumentType := PurchaseDocumentTypeFromText(DocumentTypeText);
         PurchaseHeader.Get(PurchaseDocumentType, DocumentNo);
-        if PurchaseHeader."Vendor Invoice No." = '' then
-            PurchaseHeader.Validate("Vendor Invoice No.", DocumentNo);
+        // Validate, not a direct assignment: OnValidate runs the vendor's duplicate document number check.
+        if VendorInvoiceNo <> '' then
+            if PurchaseDocumentType = PurchaseDocumentType::"Credit Memo" then
+                PurchaseHeader.Validate("Vendor Cr. Memo No.", VendorInvoiceNo)
+            else
+                PurchaseHeader.Validate("Vendor Invoice No.", VendorInvoiceNo);
         PurchaseHeader.Receive := false;
         PurchaseHeader.Invoice := true;
         PurchaseHeader."Print Posted Documents" := false;
         PurchaseHeader.Modify(true);
-        VendorInvoiceNo := PurchaseHeader."Vendor Invoice No.";
+        if PurchaseDocumentType = PurchaseDocumentType::"Credit Memo" then
+            VendorInvoiceNo := PurchaseHeader."Vendor Cr. Memo No."
+        else
+            VendorInvoiceNo := PurchaseHeader."Vendor Invoice No.";
         PurchaseHeader.SetHideValidationDialog(true);
         Commit();
         ClearLastError();
@@ -391,8 +476,11 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         SalesHeader: Record "Sales Header";
         PurchaseHeader: Record "Purchase Header";
     begin
-        if Partner = Enum::"Service Partner"::Customer then
+        if Partner = Enum::"Service Partner"::Customer then begin
+            SalesHeader.SetLoadFields("No.");
             exit(SalesHeader.Get(SalesDocumentTypeFromText(Helper.FormatDocumentType(BillingDocumentType)), DocumentNo));
+        end;
+        PurchaseHeader.SetLoadFields("No.");
         exit(PurchaseHeader.Get(PurchaseDocumentTypeFromText(Helper.FormatDocumentType(BillingDocumentType)), DocumentNo));
     end;
 
@@ -403,6 +491,8 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         if LastPostingNo <> '' then
             exit(LastPostingNo);
+        SalesInvoiceHeader.SetLoadFields("No.");
+        SalesCrMemoHeader.SetLoadFields("No.");
         if DocumentType = DocumentType::Invoice then begin
             if SalesInvoiceHeader.Get(DocumentNo) then
                 exit(SalesInvoiceHeader."No.");
@@ -425,6 +515,8 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         if LastPostingNo <> '' then
             exit(LastPostingNo);
+        PurchInvHeader.SetLoadFields("No.");
+        PurchCrMemoHeader.SetLoadFields("No.");
         if DocumentType = DocumentType::Invoice then begin
             if PurchInvHeader.Get(DocumentNo) then
                 exit(PurchInvHeader."No.");
@@ -440,11 +532,12 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         end;
     end;
 
-    local procedure PendingDocument(PartnerText: Text; DocumentTypeText: Text; DocumentNo: Code[20]) PendingJson: JsonObject
+    local procedure PendingDocument(PartnerText: Text; DocumentTypeText: Text; DocumentNo: Code[20]; VendorInvoiceNo: Text) PendingJson: JsonObject
     begin
         PendingJson.Add('partner', PartnerText);
         PendingJson.Add('documentType', DocumentTypeText);
         PendingJson.Add('documentNo', DocumentNo);
+        PendingJson.Add('vendorInvoiceNo', VendorInvoiceNo);
     end;
 
     local procedure NormalizePartner(PartnerText: Text): Text

@@ -249,6 +249,24 @@
           <note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Beiðnina vantar nauðsynlega færibreytu '%1'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType MissingDocumentsErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 428694759" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Purchase %1 %2 has no vendor document number. Nothing was posted.</source>
+          <target>Innkaupaskjalið %1 %2 hefur ekkert skjalanúmer lánardrottins. Ekkert var bókað.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Innkaupaskjalið %1 %2 hefur ekkert skjalanúmer lánardrottins. Ekkert var bókað.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType MissingVendorInvoiceNoErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 1528551706" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The vendor's own invoice or credit memo number, at most 35 characters.</source>
+          <target>Eigið reiknings- eða kreditnótunúmer lánardrottins, í mesta lagi 35 stafir.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Eigið reiknings- eða kreditnótunúmer lánardrottins, í mesta lagi 35 stafir.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType MissingVendorInvoiceNoExpectedTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 1116626727" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Send vendorInvoiceNo on the document entry with the number on the vendor's invoice or credit memo, then call again.</source>
+          <target>Sendu vendorInvoiceNo á færslu skjalsins með númerinu á reikningi eða kreditnótu lánardrottins og kallaðu svo aftur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sendu vendorInvoiceNo á færslu skjalsins með númerinu á reikningi eða kreditnótu lánardrottins og kallaðu svo aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType MissingVendorInvoiceNoNextStepTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 1425329136" size-unit="char" translate="yes" xml:space="preserve">
           <source>Billing document %1 %2 is not an open sales or purchase document.</source>
           <target>Reikningsskjalið %1 %2 er ekki opið sölu- eða innkaupaskjal.</target>
@@ -267,11 +285,23 @@
           <note from="Developer" annotates="general" priority="2">%1 = document number, %2 = the underlying error||is-IS=Bókun skjals %1 mistókst. Skjöl sem þetta kall hefur þegar bókað standa áfram bókuð. %2</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType PostFailedErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 25603420" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The top-level vendorInvoiceNo can be used for one purchase document only, and %1 purchase documents need it. Send vendorInvoiceNo on each document entry instead.</source>
+          <target>vendorInvoiceNo á efsta stigi má aðeins nota fyrir eitt innkaupaskjal en %1 innkaupaskjöl þurfa það. Sendu vendorInvoiceNo á hverja skjalafærslu í staðinn.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = number of purchase documents||is-IS=vendorInvoiceNo á efsta stigi má aðeins nota fyrir eitt innkaupaskjal en %1 innkaupaskjöl þurfa það. Sendu vendorInvoiceNo á hverja skjalafærslu í staðinn.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType SharedVendorInvoiceNoErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 2127484308" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter '%1' is longer than the %2 characters allowed.</source>
           <target>Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</target>
           <note from="Developer" annotates="general" priority="2">%1 = parameter name, %2 = maximum length||is-IS=Færibreytan '%1' er lengri en leyfilegur hámarksfjöldi stafa, %2.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ValueTooLongErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - NamedType 4030865146" size-unit="char" translate="yes" xml:space="preserve">
+          <source>vendorInvoiceNo is read for purchase documents only, and document %1 is a sales document.</source>
+          <target>vendorInvoiceNo er aðeins lesið fyrir innkaupaskjöl og skjal %1 er söluskjal.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document number||is-IS=vendorInvoiceNo er aðeins lesið fyrir innkaupaskjöl og skjal %1 er söluskjal.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType VendorInvoiceNoForCustomerErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>Subscription.Billing.PostDocuments, Subscription, Billing, PostDocuments, invoice, post</source>

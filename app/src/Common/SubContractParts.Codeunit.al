@@ -290,7 +290,8 @@ codeunit 10035075 "Sub Contract Parts ori"
     /// <summary>The parameters of Subscription.Billing.PostDocuments.</summary>
     procedure PostDocumentsParameters() Parameters: JsonArray
     begin
-        Parameters.Add(ContractMgt.Parameter('documents', 'array', true, 'The documents to post. Each entry is an object with partner (Customer or Vendor), documentType (Invoice or Credit Memo) and documentNo. Every entry is checked before the first document is posted.'));
+        Parameters.Add(ContractMgt.Parameter('documents', 'array', true, 'The documents to post. Each entry is an object with partner (Customer or Vendor), documentType (Invoice or Credit Memo), documentNo and, for a Vendor document, vendorInvoiceNo: the vendor''s own invoice or credit memo number, at most 35 characters, validated into Vendor Invoice No. or Vendor Cr. Memo No. Every entry is checked before the first document is posted.'));
+        Parameters.Add(ContractMgt.Parameter('vendorInvoiceNo', 'string', false, 'The vendor''s document number for the one purchase document in the request that has none and no vendorInvoiceNo on its entry. More than one such document is refused; send vendorInvoiceNo on each entry instead.'));
     end;
 
     /// <summary>The parameters of Subscription.Billing.PreviewDocuments.</summary>
@@ -472,7 +473,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Children.Add(ContractMgt.ResponseField('documentNo', 'string', 'No. of the document that was posted.'));
                     Children.Add(ContractMgt.ResponseField('postedDocumentNo', 'string', 'No. of the posted sales or purchase document.'));
                     Children.Add(ContractMgt.ResponseField('posted', 'boolean', 'True.'));
-                    Children.Add(ContractMgt.ResponseField('vendorInvoiceNo', 'string', 'Present for a vendor document: the Vendor Invoice No. used, filled from the document number when it was blank.'));
+                    Children.Add(ContractMgt.ResponseField('vendorInvoiceNo', 'string', 'Present for a vendor document: the vendor document number it was posted with (Vendor Invoice No., or Vendor Cr. Memo No. on a credit memo).'));
                     Fields.Add(FieldWithChildren('documents', 'array', 'One entry per document this call posted.', Children));
                 end;
             'Subscription.Billing.PreviewDocuments':
@@ -1121,7 +1122,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Billing.CreateDocuments':
                 exit('Turns the template''s unbilled proposal lines into sales or purchase documents, and posts the sales documents when postDocuments is true. Purchase documents are left unposted. Microsoft commits each document as it creates it, so a failure part way leaves the earlier documents in place. Post what stays unposted with Subscription.Billing.PostDocuments.');
             'Subscription.Billing.PostDocuments':
-                exit('Posts the named unposted sales or purchase documents through Sales-Post or Purch.-Post and always commits, including when Omit Commit is set. A blank Vendor Invoice No. is set to the document number before a purchase document is posted. Nothing is posted when a document is foreign or already posted.');
+                exit('Posts the named unposted sales or purchase documents through Sales-Post or Purch.-Post and always commits, including when Omit Commit is set. A vendorInvoiceNo sent for a purchase document is validated onto it before posting; a purchase document without a vendor document number is refused. Nothing is posted when a document is foreign or already posted.');
             'Subscription.Billing.PreviewDocuments':
                 exit('Reads the template''s unbilled proposal lines. Nothing is written.');
             'Subscription.Billing.ClearProposal':
@@ -1299,6 +1300,9 @@ codeunit 10035075 "Sub Contract Parts ori"
                     AddBusinessCentralError(Errors, 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', 'The customer document is on neither Billing Line nor Billing Line Archive.', 'Post an ordinary sales document with Sales.Document.Post.');
                     AddBusinessCentralError(Errors, 'Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.', 'The vendor document is on neither Billing Line nor Billing Line Archive.', 'Post an ordinary purchase document with Purch.Document.Post.');
                     AddBusinessCentralError(Errors, 'Document %1 %2 is already posted.', 'The billing document has already been posted.', 'Do not post it again.');
+                    Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::MissingParameter, 'Purchase %1 %2 has no vendor document number. Nothing was posted.', 'A Vendor document has neither Vendor Invoice No. (Vendor Cr. Memo No. on a credit memo) nor a vendorInvoiceNo in the request. The answer names parameter vendorInvoiceNo.', 'Send vendorInvoiceNo on the document entry with the number on the vendor''s invoice or credit memo, then call again.'));
+                    AddBusinessCentralError(Errors, 'The top-level vendorInvoiceNo can be used for one purchase document only, and %1 purchase documents need it. Send vendorInvoiceNo on each document entry instead.', 'The top-level vendorInvoiceNo would be used for more than one purchase document. Nothing is posted.', 'Send vendorInvoiceNo on each document entry.');
+                    AddBusinessCentralError(Errors, 'vendorInvoiceNo is read for purchase documents only, and document %1 is a sales document.', 'A Customer entry carries vendorInvoiceNo. Nothing is posted.', 'Leave vendorInvoiceNo out of Customer entries.');
                     AddBusinessCentralError(Errors, 'Billing document %1 %2 is not an open sales or purchase document.', 'The billing document is not open and is not a posted document.', 'Check the document number.');
                     AddBusinessCentralError(Errors, 'Posting document %1 failed. Documents this call already posted stay posted. %2', 'Business Central failed while posting one document. Earlier documents in this call stay posted.', 'Fix the cause named in the error and call again for the documents that are still open.');
                     Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'Posting denied: missing ''BIFROST SubPost ori'' permission set.', 'The caller cannot write the subscription billing posting token. Nothing is posted.', 'Assign BIFROST SubPost ori. Sales.Document.Post and Purch.Document.Post do not cover this type.'));

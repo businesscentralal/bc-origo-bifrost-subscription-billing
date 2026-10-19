@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-19) - PostDocuments takes the vendor's document number (#52)
+
+- `Subscription.Billing.PostDocuments` (`Sub Bil PostDocs Impl ori`, 10035085) no longer copies the document number into a blank Vendor Invoice No. It reads `vendorInvoiceNo` on each Vendor entry of `documents`, or once at the top level when only one purchase document needs it, and validates it into Vendor Invoice No. (Vendor Cr. Memo No. on a credit memo), so the vendor's duplicate-number check runs. A purchase document that has no vendor document number and gets none is refused before anything is posted, with code MissingParameter, parameter `vendorInvoiceNo` and a nextStep, in lcid 1033 and 1039. A top-level value that would apply to more than one purchase document, and `vendorInvoiceNo` on a Customer entry, are refused as well.
+- The open-header and posted-header lookups read only the fields they need (`SetLoadFields`).
+- Help: parameters, errors, effect text, notes and a vendor example describe `vendorInvoiceNo`.
+- Tests in `Sub PostDocs Tst ori` (95718): vendor invoice posted with the entry value and with the top-level value, refusal without a value (no number invented, document stays open) in English and Icelandic, and refusal of `vendorInvoiceNo` on a sales entry.
+
 ### Changed (2026-10-19) - contract currency is a Foundation field restriction, not a validation guard (#51)
 
 - The `Sub Con Ccy Guard ori` subscriber on OnBeforeValidate of Currency Code is gone. It refused every Currency Code change, so the contract card, `Subscription.Import.CreateContracts` (Microsoft's contract creation validates Currency Code) and contracts for foreign-currency bill-to customers failed.
@@ -11,7 +18,7 @@
 
 ### Added (2026-10-16) - Post billing documents, guard contract currency, merge contract lines (#52, #51, #50)
 
-- `Subscription.Billing.PostDocuments` (codeunit `Sub Bil PostDocs Impl ori`, 10035085) posts unposted sales and purchase documents that a Subscription Billing run created, through Sales-Post and Purch.-Post. It refuses a document the billing run did not create and names Sales.Document.Post or Purch.Document.Post, and it refuses a document that is already posted. The call always commits, including when Omit Commit is set. A blank Vendor Invoice No. is set to the document number before a purchase document is posted. The posting gate is table `Sub Posting ori` (10035083) and codeunit `Sub Posting Gate ori` (10035084). Permission set `BIFROST SubPost ori` (10035086) is assigned on its own and is not included in `BIFROST SubBil ori`, `BIFROST SubBFull ori` or `BIFROST SubBRead ori`.
+- `Subscription.Billing.PostDocuments` (codeunit `Sub Bil PostDocs Impl ori`, 10035085) posts unposted sales and purchase documents that a Subscription Billing run created, through Sales-Post and Purch.-Post. It refuses a document the billing run did not create and names Sales.Document.Post or Purch.Document.Post, and it refuses a document that is already posted. The call always commits, including when Omit Commit is set. A purchase document needs the vendor's document number (see the 2026-10-19 entry above). The posting gate is table `Sub Posting ori` (10035083) and codeunit `Sub Posting Gate ori` (10035084). Permission set `BIFROST SubPost ori` (10035086) is assigned on its own and is not included in `BIFROST SubBil ori`, `BIFROST SubBFull ori` or `BIFROST SubBRead ori`.
 - Currency Code on Customer Subscription Contract and Vendor Subscription Contract is closed to Foundation's generic `Data.Records.Set` (#51); see the 2026-10-19 entry above.
 - `Subscription.Contract.MergeLines` (codeunit `Sub Con Merge Impl ori`, 10035073) merges customer contract lines with Microsoft's eligibility rules and resulting line. The reference line replaces page 8091. Codeunit `Sub Con Merge Mgt ori` (10035074) holds the copied local and internal procedures. Vendor contract merge is out of scope. The call does not commit.
 - The app id range now runs through 10035090.
