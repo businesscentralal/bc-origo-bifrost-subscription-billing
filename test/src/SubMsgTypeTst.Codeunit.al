@@ -24,7 +24,7 @@ codeunit 95701 "Sub Msg Type Tst ori"
     trigger OnRun()
     begin
         FirstTypeOrdinal := 10035036;
-        LastTypeOrdinal := 10035057;
+        LastTypeOrdinal := 10035090;
     end;
 
     [Test]
@@ -45,8 +45,8 @@ codeunit 95701 "Sub Msg Type Tst ori"
                 FoundCount += 1;
             end;
 
-        // [THEN] All 31 message types are registered
-        Assert.AreEqual(31, FoundCount, 'All Subscription Billing message types should be registered on the Bifrost enum.');
+        // [THEN] All 33 message types are registered
+        Assert.AreEqual(33, FoundCount, 'All Subscription Billing message types should be registered on the Bifrost enum.');
     end;
 
     [Test]
@@ -203,15 +203,13 @@ codeunit 95701 "Sub Msg Type Tst ori"
     local procedure Initialize()
     begin
         FirstTypeOrdinal := 10035036;
-        LastTypeOrdinal := 10035057;
+        LastTypeOrdinal := 10035090;
     end;
 
     local procedure IsSubscriptionBillingType(Ordinal: Integer): Boolean
     begin
-        if (Ordinal >= FirstTypeOrdinal) and (Ordinal <= LastTypeOrdinal) then
-            exit(true);
-        // Branch A operation types (#36-#41): 10035061 and 10035065-10035074.
-        exit((Ordinal = 10035061) or ((Ordinal >= 10035065) and (Ordinal <= 10035074)));
+        // The app id range 10035035-10035090; the enum extension itself is 10035035.
+        exit((Ordinal >= FirstTypeOrdinal) and (Ordinal <= LastTypeOrdinal));
     end;
 
     local procedure ReadChapterText(Contract: JsonObject; ChapterKey: Text): Text

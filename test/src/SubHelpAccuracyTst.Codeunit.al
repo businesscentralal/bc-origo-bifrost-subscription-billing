@@ -94,6 +94,7 @@ codeunit 95772 "Sub Help Accuracy Tst ori"
     begin
         Types.Add('Subscription.Line.Create');
         Types.Add('Subscription.Contract.GetLines');
+        Types.Add('Subscription.Contract.MergeLines');
         Types.Add('Subscription.Contract.CreateInvoice');
         Types.Add('Subscription.Contract.PreviewInvoice');
         Types.Add('Subscription.VendorContract.GetLines');
@@ -114,6 +115,7 @@ codeunit 95772 "Sub Help Accuracy Tst ori"
         Types.Add('Subscription.Usage.Process');
         Types.Add('Subscription.Deferral.Release');
         Types.Add('Subscription.Analysis.Recalculate');
+        Types.Add('Subscription.Billing.PostDocuments');
     end;
 
     local procedure PreconditionsText(TypeName: Text) Result: Text

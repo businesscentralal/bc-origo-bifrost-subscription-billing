@@ -394,6 +394,8 @@ codeunit 95770 "Sub Test Library ori"
         VendPrvInvImpl: Codeunit "Sub Vend PrvInv Impl ori";
         BilCrProposalImpl: Codeunit "Sub Bil CrProposal Impl ori";
         BilCrDocsImpl: Codeunit "Sub Bil CrDocs Impl ori";
+        BilPostDocsImpl: Codeunit "Sub Bil PostDocs Impl ori";
+        ConMergeImpl: Codeunit "Sub Con Merge Impl ori";
         RenExtendImpl: Codeunit "Sub Ren Extend Impl ori";
         RenCrQuoteImpl: Codeunit "Sub Ren CrQuote Impl ori";
         UsgImportImpl: Codeunit "Sub Usg Import Impl ori";
@@ -420,6 +422,10 @@ codeunit 95770 "Sub Test Library ori"
                 BilCrProposalImpl.PerformWrite(TempArgument);
             TempArgument."Type"::"Subscription.Billing.CreateDocuments":
                 BilCrDocsImpl.PerformWrite(TempArgument);
+            TempArgument."Type"::"Subscription.Billing.PostDocuments":
+                BilPostDocsImpl.PerformWrite(TempArgument);
+            TempArgument."Type"::"Subscription.Contract.MergeLines":
+                ConMergeImpl.PerformWrite(TempArgument);
             TempArgument."Type"::"Subscription.Renewal.Extend":
                 RenExtendImpl.PerformWrite(TempArgument);
             TempArgument."Type"::"Subscription.Renewal.CreateQuote":
