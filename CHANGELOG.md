@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-19) - two red native tests on main CI (e1687e7)
+
+- `Sub Renewal Tst ori` (95776) `CreateQuote_SelectedLines_ExcludesOtherRenewableLines`: the test counted Sub. Contract Renewal Line rows after the quote was built, but Microsoft's Create Sub. Contract Renewal moves every renewal line onto the quote as a Sales Subscription Line (Process Contract Renewal) and deletes it. The test now asserts exactly one renewal Sales Subscription Line on the quote, for the selected Subscription Line and linked to the contract, and that no renewal line is left. The product is unchanged.
+- `Sub Usage Tst ori` (95777) `ImportData_TextAndBase64_PersistParsedRows`: the CSV row named Subscription `XSB49SUB`, which does not exist; Microsoft's data exchange mapping validates Subscription Header No. against Subscription Header while parsing. The fixture now creates the Subscription the row names, and the test also asserts that column is parsed. The product, which hands the file to Microsoft's Create Imported Lines step, is unchanged.
+
 ### Changed (2026-10-19) - README, registry and dead help code (#44)
 
 - `Sub Contract Parts ori` (10035075): the unused `BlockedNote()` is removed; no type is blocked any more.

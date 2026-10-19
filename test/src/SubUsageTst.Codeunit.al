@@ -52,6 +52,8 @@ codeunit 95777 "Sub Usage Tst ori"
         UsageDataImport: Record "Usage Data Import";
         UsageDataBlob: Record "Usage Data Blob";
         UsageDataGenericImport: Record "Usage Data Generic Import";
+        SubscriptionHeader: Record "Subscription Header";
+        Item: Record Microsoft.Inventory.Item.Item;
         Base64Convert: Codeunit "Base64 Convert";
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
@@ -60,9 +62,13 @@ codeunit 95777 "Sub Usage Tst ori"
         InStr: InStream;
         ImportEntryNo: Integer;
     begin
-        // [GIVEN] Only supplier/settings/CSV mapping exist, no imported rows or blobs.
+        // [GIVEN] Only supplier/settings/CSV mapping exist, no imported rows or blobs. The row names a
+        // Subscription that exists: Microsoft's data exchange mapping validates Subscription Header No.
+        // against table Subscription Header while it parses the file.
         CreateGenericSupplier(UsageDataSupplier);
-        Content := UsageFile('XSB49SUB', 'XSB49CUSTOMER', 'xsb49subscription', 7);
+        TestLibrary.CreateSubscriptionItem(Item);
+        TestLibrary.CreateSubscription(SubscriptionHeader, Item."No.", '');
+        Content := UsageFile(SubscriptionHeader."No.", 'XSB49CUSTOMER', 'xsb49subscription', 7);
         RequestJson.Add('supplierNo', UsageDataSupplier."No.");
         RequestJson.Add('fileName', 'xsb49-parser.csv');
         if UseBase64 then
@@ -91,6 +97,7 @@ codeunit 95777 "Sub Usage Tst ori"
         Assert.AreEqual(7, UsageDataGenericImport.Quantity, 'Quantity must be parsed from CSV.');
         Assert.AreEqual(70, UsageDataGenericImport.Amount, 'Amount must be parsed from CSV.');
         Assert.AreEqual('xsb49subscription', UsageDataGenericImport."Supp. Subscription ID", 'The source subscription ID must survive parsing.');
+        Assert.AreEqual(SubscriptionHeader."No.", UsageDataGenericImport."Subscription Header No.", 'The Subscription column must be parsed.');
     end;
 
     [Test]
