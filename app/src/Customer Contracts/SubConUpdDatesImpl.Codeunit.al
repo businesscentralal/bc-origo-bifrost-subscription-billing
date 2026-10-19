@@ -2,24 +2,34 @@ namespace Origo.Bifrost.SubscriptionBilling;
 
 using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
+using System.Threading;
 
 /// <summary>
-/// Registers the <c>Subscription.Contract.UpdateLineDates</c> Bifrost message type, and
-/// always responds with a structured error. Rolling a contract's Subscription Line dates
-/// forward - the action labelled "Update Subscription Line Dates" in the client - is performed
-/// by <c>Customer Subscription Contract.UpdateServicesDates()</c> and
-/// <c>Subscription Header.UpdateServicesDates()</c>, both <c>internal</c> in Microsoft's app, and
-/// by codeunit 8058 "Update Sub. Lines Term. Dates", which is <c>Access = Internal</c>. None of
-/// these can be called from this app, and re-implementing the date rollover and term-date
-/// business logic here would risk silently diverging from Microsoft's own rules and corrupting
-/// customer contracts, so this message type intentionally never writes.
+/// Implements the <c>Subscription.Contract.UpdateLineDates</c> Bifrost message type (#36).
+/// Rolling Subscription Line term dates forward and closing the lines that have ended is done by
+/// <c>Subscription Header.UpdateServicesDates()</c>, which is internal in Microsoft's app. Microsoft
+/// runs it over every Subscription through codeunit 8058 "Update Sub. Lines Term. Dates", whose
+/// TableNo is "Job Queue Entry". That codeunit is internal too, but a Job Queue Entry may name it, so
+/// this type creates a Job Queue Entry for codeunit 8058 and either runs it at once through the
+/// Job Queue Dispatcher, the way the "Run once (foreground)" action of the Job Queue Entries page
+/// does, or hands it to the job queue. Scheduling work through the job queue is reserved for holders
+/// of BIFROST Force ori, as it is for a forced Job Queue Entry write through Data.Records.Set.
 /// </summary>
 codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
+    TableNo = "Message Argument ori";
+
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
-        NotSupportedErr: Label 'Subscription.Contract.UpdateLineDates has no supported public API in this Business Central version. Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() and codeunit 8058 "Update Sub. Lines Term. Dates" are all internal to Microsoft''s Subscription Billing app and cannot be called from this extension. Run the "Update Subscription Line Dates" action on the contract in the Business Central client instead, or schedule Microsoft''s own job queue entry for the batch job that does this in bulk.', Comment = 'is-IS=Subscription.Contract.UpdateLineDates hefur ekkert stutt opinbert API í þessari útgáfu af Business Central. Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() og codeunit 8058 "Update Sub. Lines Term. Dates" eru öll innri í Subscription Billing-forriti Microsoft og því ekki hægt að kalla þau úr þessu appi. Keyrðu aðgerðina „Uppfæra dagsetningar áskriftarlína“ ("Update Subscription Line Dates") á samningnum í Business Central-biðlaranum í staðinn, eða settu upp vinnsluraðarfærslu Microsoft sjálfs fyrir hópkeyrsluna sem gerir þetta í lotum.';
-        DescriptionLbl: Label 'Blocked: Microsoft has not exposed a public API to roll a contract''s Subscription Line dates forward. Always returns a structured error naming the internal procedures involved.', MaxLength = 250, Comment = 'is-IS=Lokað: Microsoft hefur ekki gert opinbert API aðgengilegt til að færa dagsetningar áskriftarlína samnings áfram. Skilar alltaf skipulagðri villu sem nefnir þau innri ferli sem við eiga.';
+        Helper: Codeunit "Sub Helper ori";
+        ForcePermissionErr: Label 'Subscription.Contract.UpdateLineDates schedules a Job Queue Entry, which needs the BIFROST Force ori permission set. Your user does not have it.', Comment = 'is-IS=Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar BIFROST Force ori. Notandinn þinn hefur hana ekki.';
+        ForceExpectedTxt: Label 'the BIFROST Force ori permission set', Comment = 'is-IS=heimildasamstæðan BIFROST Force ori';
+        ForceNextStepTxt: Label 'Ask an administrator to assign the BIFROST Force ori permission set to your user, then call again.', Comment = 'is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.';
+        InvalidRunModeErr: Label 'The parameter ''runMode'' must be either ''foreground'' or ''background'', not ''%1''.', Comment = '%1 = the supplied run mode||is-IS=Færibreytan ''runMode'' verður að vera annaðhvort ''foreground'' eða ''background'', ekki ''%1''.';
+        JobDescriptionTxt: Label 'Bifrost: update Subscription Line term dates', Comment = 'is-IS=Bifröst: uppfæra samningstímadagsetningar áskriftarlína';
+        DescriptionLbl: Label 'Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, by running Microsoft''s codeunit 8058 through a Job Queue Entry. Needs BIFROST Force ori.', MaxLength = 250, Comment = 'is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með því að keyra kótaeiningu 8058 frá Microsoft í verkraðarfærslu. Krefst BIFROST Force ori.';
+        ForegroundTok: Label 'foreground', Locked = true;
+        BackgroundTok: Label 'background', Locked = true;
 
     procedure IsEnabled(): Boolean
     begin
@@ -28,7 +38,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetFilterTableNo() FilterTableId: Integer
     begin
-        exit(Database::"Customer Subscription Contract");
+        exit(Database::"Subscription Header");
     end;
 
     procedure GetDescription() Description: Text[250]
@@ -38,14 +48,14 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.UpdateLineDates, Subscription, Contract, UpdateLineDates, customer, dates', Comment = 'is-IS=Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, viðskiptavinur, dagsetningar';
+        KeywordsLbl: Label 'Subscription.Contract.UpdateLineDates, Subscription, Contract, UpdateLineDates, term dates, close, job queue', Comment = 'is-IS=Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, samningstími, loka, verkröð';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.UpdateLineDates: Recalculates customer contract line dates. Irreversible.', Comment = 'is-IS=Subscription.Contract.UpdateLineDates: Endurreiknar dagsetningar lína í viðskiptasamningi. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Subscription.Contract.UpdateLineDates: Irreversible. Closes ended Subscription Lines in every Subscription through a Job Queue Entry; needs BIFROST Force ori.', Comment = 'is-IS=Subscription.Contract.UpdateLineDates: Óafturkræft. Lokar áskriftarlínum sem er lokið í öllum áskriftum með verkraðarfærslu; krefst BIFROST Force ori.';
     begin
         exit(SelectionLbl);
     end;
@@ -104,24 +114,35 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
     end;
 
     procedure GetExamples(var Examples: JsonArray): Boolean
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
     begin
-        // A blocked type has no successful call to show.
-        exit(false);
+        Examples.Add(ContractMgt.Example('Run the line date update now',
+            '{"type":"Subscription.Contract.UpdateLineDates","data":{}}',
+            '{"status":"Success","runMode":"foreground","alreadyQueued":false,"jobQueueEntryId":"<guid>","jobQueueStatus":"Finished","result":"Success","error":"","subscriptionLinesClosed":3,"customerContractLinesClosed":2,"vendorContractLinesClosed":1}'));
+        Examples.Add(ContractMgt.Example('Hand the update to the job queue',
+            '{"type":"Subscription.Contract.UpdateLineDates","data":{"runMode":"background"}}',
+            '{"status":"Success","runMode":"background","alreadyQueued":false,"jobQueueEntryId":"<guid>","jobQueueStatus":"Ready"}'));
+        exit(true);
     end;
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Blocked. In the client, Update Subscription Line Dates on a Customer Subscription Contract rolls the term dates of its Subscription Lines forward. ' +
-            'That action uses Customer Subscription Contract.UpdateServicesDates(), Subscription Header.UpdateServicesDates() and codeunit 8058 Update Sub. Lines ' +
-            'Term. Dates, all internal to Microsoft''s app.';
+        Overview := 'Runs Microsoft''s codeunit 8058 Update Sub. Lines Term. Dates through a Job Queue Entry. For every Subscription in the company it closes each ' +
+            'Subscription Line whose end date has passed and that is fully invoiced, closes its customer or vendor contract line, and rolls the Term Until and ' +
+            'Cancellation Possible Until dates of the other lines forward. runMode foreground (the default) runs the entry at once and reports what it closed; ' +
+            'background hands it to the job queue and returns the entry.';
         exit(true);
     end;
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ContractParts.BlockedNote() +
-            'Re-implementing the date rollover was rejected: term dates, billing rhythms and renewal interact in ways that are easy to get wrong, and a diverging ' +
-            'copy could corrupt contracts unnoticed.';
+        Notes := 'The run is not limited to one contract: Microsoft''s codeunit updates every Subscription and commits after each, also under Omit Commit, so a ' +
+            'failure part way leaves the Subscriptions already updated in place. Customer and vendor contract lines are both covered. A line counts as ended when ' +
+            'its end date is before today (the system date, not the work date) and its Next Billing Date is the day after the end date with no billing line ' +
+            'pending. When a Job Queue Entry for codeunit 8058 is already Ready, Waiting or In Process, nothing new is created: the answer has alreadyQueued true and ' +
+            'names that entry. In foreground mode the Job Queue Entry is deleted after the run, as the Run once (foreground) action does; its Job Queue Log Entry stays. ' +
+            'The counts compare closed lines before and after the run, so a line another session closed meanwhile is counted too.';
         exit(true);
     end;
 
@@ -135,11 +156,238 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
         exit(Enum::"Msg Direction ori"::Inbound);
     end;
 
-    /// <summary>Always responds with a structured error - see the class summary for why this message type cannot write.</summary>
+    trigger OnRun()
+    begin
+        PerformWrite(Rec);
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-        Argument.RespondWithError(NotSupportedErr);
+
+        if not HasForcePermission() then begin
+            Argument.RespondWithError("Bifrost Error Code ori"::PermissionDenied, ForcePermissionErr, '', '', ForceExpectedTxt, ForceNextStepTxt);
+            exit;
+        end;
+
+        if Argument."Omit Commit" then begin
+            PerformWrite(Argument);
+            exit;
+        end;
+
+        if not Codeunit.Run(Codeunit::"Sub Con UpdDates Impl ori", Argument) then
+            Argument.RespondWithLastError();
+    end;
+
+    /// <summary>Creates the Job Queue Entry for codeunit 8058 and runs or enqueues it. Called directly, or through the isolated write process.</summary>
+    procedure PerformWrite(var Argument: Record "Message Argument ori")
+    var
+        JobQueueEntry: Record "Job Queue Entry";
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+        RunMode: Text;
+        ClosedLinesBefore: Integer;
+        ClosedCustomerLinesBefore: Integer;
+        ClosedVendorLinesBefore: Integer;
+    begin
+        RequestJson := Argument.GetRequestJson();
+        RunMode := LowerCase(Helper.GetText(RequestJson, 'runMode', false));
+        if RunMode = '' then
+            RunMode := ForegroundTok;
+        if not (RunMode in [ForegroundTok, BackgroundTok]) then
+            Error(InvalidRunModeErr, RunMode);
+
+        ResponseJson.Add('status', 'Success');
+        ResponseJson.Add('runMode', RunMode);
+
+        if FindPendingEntry(JobQueueEntry) then begin
+            ResponseJson.Add('alreadyQueued', true);
+            ResponseJson.Add('jobQueueEntryId', Format(JobQueueEntry.ID, 0, 4));
+            ResponseJson.Add('jobQueueStatus', FormatJobQueueStatus(JobQueueEntry.Status));
+            Helper.RespondWithSuccess(Argument, ResponseJson);
+            exit;
+        end;
+        ResponseJson.Add('alreadyQueued', false);
+
+        if RunMode = BackgroundTok then begin
+            EnqueueEntry(JobQueueEntry);
+            ResponseJson.Add('jobQueueEntryId', Format(JobQueueEntry.ID, 0, 4));
+            ResponseJson.Add('jobQueueStatus', FormatJobQueueStatus(JobQueueEntry.Status));
+            Helper.RespondWithSuccess(Argument, ResponseJson);
+            exit;
+        end;
+
+        CountClosedLines(ClosedLinesBefore, ClosedCustomerLinesBefore, ClosedVendorLinesBefore);
+        RunEntryInForeground(ResponseJson);
+        AddClosedLineCounts(ResponseJson, ClosedLinesBefore, ClosedCustomerLinesBefore, ClosedVendorLinesBefore);
+        Helper.RespondWithSuccess(Argument, ResponseJson);
+    end;
+
+    /// <summary>
+    /// The force check Foundation applies to a forced Job Queue Entry write: write permission on its
+    /// "Force Access ori" gate table, which only BIFROST Force ori grants. The table is internal to
+    /// Foundation, so it is opened by number.
+    /// </summary>
+    local procedure HasForcePermission(): Boolean
+    var
+        ForceAccessRecRef: RecordRef;
+        ForceAccessTableNo: Integer;
+    begin
+        // Table 10077900 "Force Access ori" in Bifrost Foundation (Setup/ForceAccess.Table.al).
+        ForceAccessTableNo := 10077900;
+        ForceAccessRecRef.Open(ForceAccessTableNo);
+        exit(ForceAccessRecRef.WritePermission());
+    end;
+
+    local procedure FindPendingEntry(var JobQueueEntry: Record "Job Queue Entry"): Boolean
+    begin
+        JobQueueEntry.ReadIsolation := IsolationLevel::ReadCommitted;
+        JobQueueEntry.SetRange("Object Type to Run", JobQueueEntry."Object Type to Run"::Codeunit);
+        JobQueueEntry.SetRange("Object ID to Run", UpdateTermDatesCodeunitId());
+        JobQueueEntry.SetFilter(Status, '%1|%2|%3', JobQueueEntry.Status::Ready, JobQueueEntry.Status::Waiting, JobQueueEntry.Status::"In Process");
+        exit(JobQueueEntry.FindFirst());
+    end;
+
+    local procedure InitEntry(var JobQueueEntry: Record "Job Queue Entry")
+    begin
+        JobQueueEntry.Init();
+        JobQueueEntry."Object Type to Run" := JobQueueEntry."Object Type to Run"::Codeunit;
+        JobQueueEntry."Object ID to Run" := UpdateTermDatesCodeunitId();
+        JobQueueEntry.Description := CopyStr(JobDescriptionTxt, 1, MaxStrLen(JobQueueEntry.Description));
+        JobQueueEntry."Recurring Job" := false;
+        JobQueueEntry."Earliest Start Date/Time" := CurrentDateTime();
+    end;
+
+    local procedure EnqueueEntry(var JobQueueEntry: Record "Job Queue Entry")
+    begin
+        InitEntry(JobQueueEntry);
+        JobQueueEntry.CheckRequiredPermissions();
+        Codeunit.Run(Codeunit::"Job Queue - Enqueue", JobQueueEntry);
+    end;
+
+    /// <summary>
+    /// Runs a fresh Job Queue Entry for codeunit 8058 in this session, the way Job Queue Management.RunJobQueueEntryOnce
+    /// does for the Run once (foreground) action, without its confirmation and progress dialog.
+    /// </summary>
+    local procedure RunEntryInForeground(var ResponseJson: JsonObject)
+    var
+        JobQueueEntry: Record "Job Queue Entry";
+        JobQueueLogEntry: Record "Job Queue Log Entry";
+        EntryId: Guid;
+        Succeeded: Boolean;
+        RunError: Text;
+    begin
+        InitEntry(JobQueueEntry);
+        JobQueueEntry.CheckRequiredPermissions();
+        JobQueueEntry.ID := CreateGuid();
+        JobQueueEntry."User ID" := CopyStr(UserId(), 1, MaxStrLen(JobQueueEntry."User ID"));
+        JobQueueEntry.Status := JobQueueEntry.Status::Ready;
+        JobQueueEntry.Insert(true);
+        EntryId := JobQueueEntry.ID;
+        // Codeunit.Run with a return value is not allowed inside an open write transaction.
+        Commit();
+
+        Succeeded := Codeunit.Run(Codeunit::"Job Queue Dispatcher", JobQueueEntry);
+        if not Succeeded then begin
+            RunError := GetLastErrorText();
+            if Codeunit.Run(Codeunit::"Job Queue Error Handler", JobQueueEntry) then;
+        end;
+
+        ResponseJson.Add('jobQueueEntryId', Format(EntryId, 0, 4));
+        JobQueueEntry.ReadIsolation := IsolationLevel::ReadCommitted;
+        if JobQueueEntry.Get(EntryId) then begin
+            ResponseJson.Add('jobQueueStatus', FormatJobQueueStatus(JobQueueEntry.Status));
+            if JobQueueEntry.Delete(true) then;
+        end else
+            ResponseJson.Add('jobQueueStatus', 'Finished');
+
+        JobQueueLogEntry.ReadIsolation := IsolationLevel::ReadCommitted;
+        JobQueueLogEntry.SetLoadFields(ID, Status, "Error Message");
+        JobQueueLogEntry.SetRange(ID, EntryId);
+        if JobQueueLogEntry.FindLast() then begin
+            ResponseJson.Add('result', FormatLogStatus(JobQueueLogEntry.Status));
+            if RunError = '' then
+                RunError := JobQueueLogEntry."Error Message";
+        end else
+            if Succeeded then
+                ResponseJson.Add('result', 'Success')
+            else
+                ResponseJson.Add('result', 'Error');
+        ResponseJson.Add('error', RunError);
+    end;
+
+    local procedure CountClosedLines(var ClosedLines: Integer; var ClosedCustomerLines: Integer; var ClosedVendorLines: Integer)
+    var
+        SubscriptionLine: Record "Subscription Line";
+        CustSubContractLine: Record "Cust. Sub. Contract Line";
+        VendSubContractLine: Record "Vend. Sub. Contract Line";
+    begin
+        SubscriptionLine.ReadIsolation := IsolationLevel::ReadCommitted;
+        SubscriptionLine.SetRange(Closed, true);
+        ClosedLines := SubscriptionLine.Count();
+        CustSubContractLine.ReadIsolation := IsolationLevel::ReadCommitted;
+        CustSubContractLine.SetRange(Closed, true);
+        ClosedCustomerLines := CustSubContractLine.Count();
+        VendSubContractLine.ReadIsolation := IsolationLevel::ReadCommitted;
+        VendSubContractLine.SetRange(Closed, true);
+        ClosedVendorLines := VendSubContractLine.Count();
+    end;
+
+    local procedure AddClosedLineCounts(var ResponseJson: JsonObject; ClosedLinesBefore: Integer; ClosedCustomerLinesBefore: Integer; ClosedVendorLinesBefore: Integer)
+    var
+        ClosedLinesAfter: Integer;
+        ClosedCustomerLinesAfter: Integer;
+        ClosedVendorLinesAfter: Integer;
+    begin
+        CountClosedLines(ClosedLinesAfter, ClosedCustomerLinesAfter, ClosedVendorLinesAfter);
+        ResponseJson.Add('subscriptionLinesClosed', ClosedLinesAfter - ClosedLinesBefore);
+        ResponseJson.Add('customerContractLinesClosed', ClosedCustomerLinesAfter - ClosedCustomerLinesBefore);
+        ResponseJson.Add('vendorContractLinesClosed', ClosedVendorLinesAfter - ClosedVendorLinesBefore);
+    end;
+
+    local procedure UpdateTermDatesCodeunitId(): Integer
+    begin
+        // Codeunit 8058 "Update Sub. Lines Term. Dates" in Microsoft Subscription Billing; internal, so referenced by number.
+        exit(8058);
+    end;
+
+    /// <summary>Names a Job Queue Entry status with a stable token; Format() would return the caption in the caller's language.</summary>
+    local procedure FormatJobQueueStatus(Status: Integer): Text
+    var
+        JobQueueEntry: Record "Job Queue Entry";
+    begin
+        case Status of
+            JobQueueEntry.Status::Ready:
+                exit('Ready');
+            JobQueueEntry.Status::"In Process":
+                exit('In Process');
+            JobQueueEntry.Status::Error:
+                exit('Error');
+            JobQueueEntry.Status::"On Hold":
+                exit('On Hold');
+            JobQueueEntry.Status::Finished:
+                exit('Finished');
+            JobQueueEntry.Status::"On Hold with Inactivity Timeout":
+                exit('On Hold with Inactivity Timeout');
+            JobQueueEntry.Status::Waiting:
+                exit('Waiting');
+        end;
+        exit(Format(Status, 0, 9));
+    end;
+
+    local procedure FormatLogStatus(Status: Integer): Text
+    var
+        JobQueueLogEntry: Record "Job Queue Log Entry";
+    begin
+        case Status of
+            JobQueueLogEntry.Status::Success:
+                exit('Success');
+            JobQueueLogEntry.Status::"In Process":
+                exit('In Process');
+            JobQueueLogEntry.Status::Error:
+                exit('Error');
+        end;
+        exit(Format(Status, 0, 9));
     end;
 }

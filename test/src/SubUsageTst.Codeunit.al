@@ -3,6 +3,7 @@ namespace Origo.Bifrost.SubscriptionBilling.Test;
 using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
 using System.IO;
+using System.Text;
 using System.TestLibraries.Utilities;
 
 /// <summary>
@@ -20,6 +21,76 @@ codeunit 95777 "Sub Usage Tst ori"
         Assert: Codeunit "Library Assert";
         TestLibrary: Codeunit "Sub Test Library ori";
         LibraryUtility: Codeunit "Library - Utility";
+
+    /// <summary>PR49 F1: both payload encodings persist a readable, Ok, hashed blob and real parsed rows without preseeded imports.</summary>
+    [Test]
+    procedure ImportData_TextAndBase64_PersistParsedRows()
+    begin
+        AssertParsedImport(false);
+        AssertParsedImport(true);
+    end;
+
+    /// <summary>PR49 O2: an unknown supplier has an explicit localized error and creates no import.</summary>
+    [Test]
+    procedure ImportData_UnknownSupplier_IsRefused()
+    var
+        UsageDataImport: Record "Usage Data Import";
+        RequestJson: JsonObject;
+    begin
+        RequestJson.Add('supplierNo', 'XSB49NOSUPPLIER');
+        RequestJson.Add('content', 'Quantity;Price');
+        asserterror TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Usage.ImportData", RequestJson);
+        Assert.ExpectedError('The Usage Data Supplier');
+        UsageDataImport.SetRange("Supplier No.", 'XSB49NOSUPPLIER');
+        Assert.RecordIsEmpty(UsageDataImport);
+    end;
+
+    local procedure AssertParsedImport(UseBase64: Boolean)
+    var
+        UsageDataSupplier: Record "Usage Data Supplier";
+        UsageDataImport: Record "Usage Data Import";
+        UsageDataBlob: Record "Usage Data Blob";
+        UsageDataGenericImport: Record "Usage Data Generic Import";
+        Base64Convert: Codeunit "Base64 Convert";
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+        Content: Text;
+        StoredContent: Text;
+        InStr: InStream;
+        ImportEntryNo: Integer;
+    begin
+        // [GIVEN] Only supplier/settings/CSV mapping exist, no imported rows or blobs.
+        CreateGenericSupplier(UsageDataSupplier);
+        Content := UsageFile('XSB49SUB', 'XSB49CUSTOMER', 'xsb49subscription', 7);
+        RequestJson.Add('supplierNo', UsageDataSupplier."No.");
+        RequestJson.Add('fileName', 'xsb49-parser.csv');
+        if UseBase64 then
+            RequestJson.Add('contentBase64', Base64Convert.ToBase64(Content))
+        else
+            RequestJson.Add('content', Content);
+        // [WHEN] ImportData parses the actual file, with runProcessing left false.
+        ResponseJson := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Usage.ImportData", RequestJson);
+        // [THEN] Persisted blob state, hash and parsed quantities match the file.
+        Assert.AreEqual(1, TestLibrary.ReadInteger(ResponseJson, 'importedLineCount'), TestLibrary.AsText(ResponseJson));
+        ImportEntryNo := TestLibrary.ReadInteger(ResponseJson, 'usageDataImportEntryNo');
+        UsageDataImport.Get(ImportEntryNo);
+        Assert.AreEqual(Enum::"Processing Status"::Ok, UsageDataImport."Processing Status", 'Create Imported Lines must succeed.');
+        UsageDataBlob.SetRange("Usage Data Import Entry No.", ImportEntryNo);
+        Assert.RecordCount(UsageDataBlob, 1);
+        UsageDataBlob.FindFirst();
+        Assert.AreEqual(Enum::"Processing Status"::Ok, UsageDataBlob."Import Status", 'The parser must receive an Ok blob.');
+        Assert.AreNotEqual('', UsageDataBlob."Data Hash Value", 'The blob must retain its data hash.');
+        UsageDataBlob.CalcFields(Data);
+        UsageDataBlob.Data.CreateInStream(InStr);
+        InStr.ReadText(StoredContent);
+        Assert.IsTrue(StrPos(StoredContent, 'SubscriptionHeaderNo;CustomerId') = 1, 'The original file header must be persisted.');
+        UsageDataGenericImport.SetRange("Usage Data Import Entry No.", ImportEntryNo);
+        Assert.RecordCount(UsageDataGenericImport, 1);
+        UsageDataGenericImport.FindFirst();
+        Assert.AreEqual(7, UsageDataGenericImport.Quantity, 'Quantity must be parsed from CSV.');
+        Assert.AreEqual(70, UsageDataGenericImport.Amount, 'Amount must be parsed from CSV.');
+        Assert.AreEqual('xsb49subscription', UsageDataGenericImport."Supp. Subscription ID", 'The source subscription ID must survive parsing.');
+    end;
 
     [Test]
     procedure Scenario_AC08_ImportAndProcess_CreatesUsageDataBilling()

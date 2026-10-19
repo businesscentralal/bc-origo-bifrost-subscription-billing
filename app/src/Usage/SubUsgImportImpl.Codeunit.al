@@ -22,6 +22,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
+        SupplierNotFoundErr: Label 'The Usage Data Supplier ''%1'' does not exist.', Comment = '%1 = supplier number||is-IS=Birgir notkunargagna ''%1'' er ekki til.';
         NoContentErr: Label 'The request must supply either ''content'' (raw text) or ''contentBase64'' (base64 encoded) for the usage data file.', Comment = 'is-IS=Beiðnin verður að innihalda annaðhvort ''content'' (hreinan texta) eða ''contentBase64'' (base64-kóðað) fyrir notkunargögnin.';
         DefaultFileNameTok: Label 'bifrost-usage.csv', Locked = true;
         DescriptionLbl: Label 'Imports a usage data file (as raw text or base64) for metered Subscription Lines and creates the imported usage data lines. Optionally also processes those lines into billable quantities.', MaxLength = 250, Comment = 'is-IS=Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.';
@@ -168,6 +169,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         UsageDataImport: Record "Usage Data Import";
+        UsageDataSupplier: Record "Usage Data Supplier";
         UsageDataBlob: Record "Usage Data Blob";
         UsageDataGenericImport: Record "Usage Data Generic Import";
         Base64Convert: Codeunit "Base64 Convert";
@@ -198,6 +200,9 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
 
         if (Content = '') and (ContentBase64 = '') then
             Error(NoContentErr);
+
+        if not UsageDataSupplier.Get(SupplierNo) then
+            Error(SupplierNotFoundErr, SupplierNo);
 
         UsageDataImport.Init();
         UsageDataImport."Entry No." := 0;

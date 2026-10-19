@@ -39,14 +39,14 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
         Implementation = "Msg Interface ori" = "Sub Con PrvInvoice Impl ori", "Msg Discovery ori" = "Sub Con PrvInvoice Impl ori", "Msg Contract ori" = "Sub Con PrvInvoice Impl ori";
     }
 
-    /// <summary>Recalculates next billing and term dates across a Subscription Contract.</summary>
+    /// <summary>Closes ended Subscription Lines and rolls term dates forward for every Subscription through a Job Queue Entry for codeunit 8058.</summary>
     value(10035040; "Subscription.Contract.UpdateLineDates")
     {
         Caption = 'Subscription.Contract.UpdateLineDates', Locked = true;
         Implementation = "Msg Interface ori" = "Sub Con UpdDates Impl ori", "Msg Discovery ori" = "Sub Con UpdDates Impl ori", "Msg Contract ori" = "Sub Con UpdDates Impl ori";
     }
 
-    /// <summary>Refreshes foreign currency exchange rates on a Subscription Contract.</summary>
+    /// <summary>Recalculates the Subscription Lines of a foreign-currency customer or vendor Subscription Contract with a new exchange rate.</summary>
     value(10035041; "Subscription.Contract.UpdateExchangeRates")
     {
         Caption = 'Subscription.Contract.UpdateExchangeRates', Locked = true;
@@ -163,6 +163,69 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
     {
         Caption = 'Subscription.Import.CreateContracts', Locked = true;
         Implementation = "Msg Interface ori" = "Sub Imp CrContr Impl ori", "Msg Discovery ori" = "Sub Imp CrContr Impl ori", "Msg Contract ori" = "Sub Imp CrContr Impl ori";
+    }
+
+    /// <summary>Deletes a Billing Template's billing proposal lines and resets the Next Billing Date of their Subscription Lines.</summary>
+    value(10035061; "Subscription.Billing.ClearProposal")
+    {
+        Caption = 'Subscription.Billing.ClearProposal', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Bil ClrProposal Impl ori", "Msg Discovery ori" = "Sub Bil ClrProposal Impl ori", "Msg Contract ori" = "Sub Bil ClrProposal Impl ori";
+    }
+
+    /// <summary>Deletes the unposted documents created from billing lines and returns the lines to the billing proposal.</summary>
+    value(10035065; "Subscription.Billing.DeleteDocuments")
+    {
+        Caption = 'Subscription.Billing.DeleteDocuments', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Bil DelDocs Impl ori", "Msg Discovery ori" = "Sub Bil DelDocs Impl ori", "Msg Contract ori" = "Sub Bil DelDocs Impl ori";
+    }
+
+    /// <summary>Connects a usage data supplier's subscriptions to Subscriptions through Microsoft's Connect to Subscription.</summary>
+    value(10035066; "Subscription.Usage.ConnectSubscriptions")
+    {
+        Caption = 'Subscription.Usage.ConnectSubscriptions', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Usg Connect Impl ori", "Msg Discovery ori" = "Sub Usg Connect Impl ori", "Msg Contract ori" = "Sub Usg Connect Impl ori";
+    }
+
+    /// <summary>Disconnects a Subscription Line from its usage data supplier's subscription.</summary>
+    value(10035067; "Subscription.Usage.DisconnectSubscription")
+    {
+        Caption = 'Subscription.Usage.DisconnectSubscription', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Usg Disconnect Impl ori", "Msg Discovery ori" = "Sub Usg Disconnect Impl ori", "Msg Contract ori" = "Sub Usg Disconnect Impl ori";
+    }
+
+    /// <summary>Adds due vendor contract lines to an existing unposted purchase invoice.</summary>
+    value(10035068; "Subscription.VendorContract.AddLinesToInvoice")
+    {
+        Caption = 'Subscription.VendorContract.AddLinesToInvoice', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Vend AddToInv Impl ori", "Msg Discovery ori" = "Sub Vend AddToInv Impl ori", "Msg Contract ori" = "Sub Vend AddToInv Impl ori";
+    }
+
+    /// <summary>Deletes a usage import's processed data, or the whole import, so it can be re-run.</summary>
+    value(10035069; "Subscription.Usage.DeleteData")
+    {
+        Caption = 'Subscription.Usage.DeleteData', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Usg DelData Impl ori", "Msg Discovery ori" = "Sub Usg DelData Impl ori", "Msg Contract ori" = "Sub Usg DelData Impl ori";
+    }
+
+    /// <summary>Writes the validated contract filter of a Billing Template.</summary>
+    value(10035070; "Subscription.Billing.SetTemplateFilter")
+    {
+        Caption = 'Subscription.Billing.SetTemplateFilter', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Bil SetFilter Impl ori", "Msg Discovery ori" = "Sub Bil SetFilter Impl ori", "Msg Contract ori" = "Sub Bil SetFilter Impl ori";
+    }
+
+    /// <summary>Removes an unbilled line from a customer or vendor Subscription Contract.</summary>
+    value(10035071; "Subscription.Contract.RemoveLine")
+    {
+        Caption = 'Subscription.Contract.RemoveLine', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Con RemoveLine Impl ori", "Msg Discovery ori" = "Sub Con RemoveLine Impl ori", "Msg Contract ori" = "Sub Con RemoveLine Impl ori";
+    }
+
+    /// <summary>Removes the assignment of a Subscription Package to an item.</summary>
+    value(10035072; "Subscription.Package.RemoveItemAssignment")
+    {
+        Caption = 'Subscription.Package.RemoveItemAssignment', Locked = true;
+        Implementation = "Msg Interface ori" = "Sub Pkg RemoveItem Impl ori", "Msg Discovery ori" = "Sub Pkg RemoveItem Impl ori", "Msg Contract ori" = "Sub Pkg RemoveItem Impl ori";
     }
 
     /// <summary>Merges customer contract lines without opening the selection page.</summary>

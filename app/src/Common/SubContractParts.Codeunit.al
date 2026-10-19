@@ -27,7 +27,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             Subject.Add('use', 'optional');
             Forms.Add('string');
             Subject.Add('forms', Forms);
-            if MessageType = 'Subscription.Usage.Process' then
+            if MessageType in ['Subscription.Usage.Process', 'Subscription.Usage.DeleteData'] then
                 Subject.Add('description', 'The Usage Data Import entry number, written as a whole number. When set it is used instead of data.usageDataImportEntryNo; a subject that is not a whole number is refused.')
             else
                 Subject.Add('description', 'The ' + SubjectForm + '. When set it is used instead of data.' + DataKey + ', and it may be at most 20 characters long.');
@@ -36,7 +36,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             Subject.Add('description', 'The subject is not read by this message type.');
         end;
         Envelope.Add('subject', Subject);
-        Envelope.Add('dataRequired', MessageType in ['Subscription.Line.Create', 'Subscription.PriceUpdate.SetTemplateFilter', 'Subscription.Renewal.Extend', 'Subscription.Usage.ImportData', 'Subscription.Billing.PostDocuments', 'Subscription.Contract.MergeLines']);
+        Envelope.Add('dataRequired', MessageType in ['Subscription.Line.Create', 'Subscription.PriceUpdate.SetTemplateFilter', 'Subscription.Renewal.Extend', 'Subscription.Usage.ImportData', 'Subscription.Billing.SetTemplateFilter', 'Subscription.Contract.RemoveLine', 'Subscription.Package.RemoveItemAssignment', 'Subscription.Billing.PostDocuments', 'Subscription.Contract.MergeLines']);
         Envelope.Add('version', '1.0');
         Envelope.Add('contentType', 'text/json');
     end;
@@ -54,12 +54,174 @@ codeunit 10035075 "Sub Contract Parts ori"
     end;
 
     /// <summary>
-    /// Builds no parameters. The blocked types call it: they answer every call with an error and read no request.
-    /// Every other type calls the parameter procedure of its own domain below, which names its keys literally
+    /// Builds parameters for the operations types that use shared dispatch.
+    /// The existing types call the parameter procedure of their own domain below, which names keys literally
     /// so the ContractParameterKeys guard can compare them with the keys the type reads (#26).
     /// </summary>
     procedure GetParameters(MessageType: Text) Parameters: JsonArray
+    var
+        Entry: JsonObject;
     begin
+        case MessageType of
+            'Subscription.Line.Create':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', true, 'The Subscription Header to add lines to. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('subscriptionPackageCode', 'string', true, 'The Subscription Package to apply.'));
+                    Parameters.Add(DateParameter('subscriptionLineStartDate', 'Start date for the new lines. Omit to let the package''s own date formula decide.'));
+                    Parameters.Add(DateParameter('subscriptionLineEndDate', 'End date for the new lines. Omit to leave the lines open-ended.'));
+                    Parameters.Add(BooleanParameter('usageBasedBillingPackageLinesOnly', false, 'When true, only the usage-based lines of the package are created.'));
+                end;
+            'Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The ' + PartnerContractName(MessageType) + ' to attach lines to. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', false, 'Restricts the candidate lines to one Subscription Header.'));
+                    Parameters.Add(ContractMgt.Parameter('subscriptionLineEntryNos', 'array', false, 'Restricts the candidate lines to these Subscription Line entry numbers, written as whole numbers. A number that is not a candidate is ignored.'));
+                end;
+            'Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The ' + PartnerContractName(MessageType) + ' to bill. May be supplied as the subject instead.'));
+                    Parameters.Add(DateParameter('billingDate', 'Subscription Lines whose Next Billing Date is on or before this date are billed. Defaults to the work date.'));
+                    Parameters.Add(DateParameter('billingToDate', 'Bills complete periods up to this date. Omit to bill each line by its own billing rhythm.'));
+                    if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice'] then begin
+                        Parameters.Add(DateParameter('documentDate', 'Document date of the created document. Defaults to the work date.'));
+                        Parameters.Add(DateParameter('postingDate', 'Posting date of the created document. Defaults to the work date.'));
+                    end;
+                    if MessageType = 'Subscription.VendorContract.CreateInvoice' then
+                        Parameters.Add(ContractMgt.Parameter('vendorInvoiceNo', 'string', false, 'Validated into Vendor Invoice No. on every document this call creates, so the vendor''s duplicate invoice number check applies. Text past 35 characters is cut off.'));
+                end;
+            'Subscription.Billing.CreateProposal':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template to run. May be supplied as the subject instead.'));
+                    Parameters.Add(DateParameter('billingDate', 'Subscription Lines due on or before this date are proposed. Defaults to the work date.'));
+                    Parameters.Add(DateParameter('billingToDate', 'Bills complete periods up to this date. Omit to bill each line by its own billing rhythm.'));
+                    Parameters.Add(BooleanParameter('automatedBilling', true, 'Passed to Microsoft''s billing proposal as its automated billing flag. Leave it at the default for an unattended run.'));
+                end;
+            'Subscription.Billing.CreateDocuments':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template whose unbilled proposal lines are processed. May be supplied as the subject instead.'));
+                    Parameters.Add(DateParameter('documentDate', 'Document date of the created documents. Defaults to the work date.'));
+                    Parameters.Add(DateParameter('postingDate', 'Posting date of the created documents. Defaults to the work date.'));
+                    Parameters.Add(BooleanParameter('postDocuments', false, 'When true, the created sales documents are posted. Purchase documents are never posted.'));
+                    Parameters.Add(GroupByParameter('Contract creates one document per contract; Customer creates one document per Bill-to Customer No. and needs customer proposal lines.'));
+                end;
+            'Subscription.Billing.PreviewDocuments':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template to preview. May be supplied as the subject instead.'));
+                    Parameters.Add(GroupByParameter('Contract groups per Subscription Contract No.; Customer groups per Partner No. and needs every pending line to belong to a customer contract.'));
+                    Parameters.Add(IntegerParameter('skip', 0, 'Number of document groups to skip. Must be zero or greater.'));
+                    Parameters.Add(IntegerParameter('take', 100, 'Maximum number of document groups to return. Zero means the default; a value above 1000 is clamped to 1000. Must be zero or greater.'));
+                end;
+            'Subscription.Billing.ClearProposal':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', false, 'The Billing Template whose proposal is cleared. May be supplied as the subject instead. Omit it to clear the billing lines without a Billing Template, which contractNo then has to narrow.'));
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Clears only the proposal lines of this Customer or Vendor Subscription Contract. Required when billingTemplateCode is omitted.'));
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', false, 'The Billing Template whose billing documents are deleted. May be supplied as the subject instead. Omit it for the documents made from billing lines without a Billing Template, which contractNo or documentNo then has to narrow.'));
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Deletes only the documents of this Customer or Vendor Subscription Contract.'));
+                    Parameters.Add(ContractMgt.Parameter('documentNo', 'string', false, 'Deletes only this unposted invoice or credit memo. A posted document number is refused by name.'));
+                end;
+            'Subscription.PriceUpdate.SetTemplateFilter':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('priceUpdateTemplateCode', 'string', true, 'The Price Update Template to change. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('filter', 'string', true, 'A Business Central view, such as WHERE(Subscription Contract No.=FILTER(CC000010)) or a full SORTING(...) WHERE(...) view, of the table the target names. It is normalised before it is stored; a view without filters clears the stored filter.'));
+                    Parameters.Add(AllowedParameter('target', 'string', true, 'Which filter to write, in any casing: contract (Customer or Vendor Subscription Contract, following the template''s Partner), subscription (Subscription Header) or line (Subscription Line).', 'contract,subscription,line'));
+                end;
+            'Subscription.Renewal.Extend':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('subscriptionHeaderNo', 'string', true, 'The existing Subscription to extend. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('customerContractNo', 'string', false, 'An existing Customer Subscription Contract to extend onto. At least one of customerContractNo and vendorContractNo is required.'));
+                    Parameters.Add(ContractMgt.Parameter('vendorContractNo', 'string', false, 'An existing Vendor Subscription Contract to extend onto. At least one of customerContractNo and vendorContractNo is required.'));
+                    Parameters.Add(ContractMgt.Parameter('subscriptionPackageCodes', 'array', false, 'Subscription Package codes to apply in addition to the item''s standard packages, which Microsoft always applies.'));
+                    Parameters.Add(BooleanParameter('usageBasedBillingPackageLinesOnly', false, 'When true, only usage-based package lines are added.'));
+                    Parameters.Add(IntegerParameter('supplierReferenceEntryNo', 0, 'Links the extension to a supplier reference entry.'));
+                end;
+            'Subscription.Renewal.CreateQuote':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The Customer Subscription Contract to renew. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('contractLineNos', 'array', false, 'Renews only these contract lines, by their Line No., written as whole numbers. Every number must be a line of the contract. Omit it to renew every line with an end date.'));
+                end;
+            'Subscription.VendorContract.AddLinesToInvoice':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('purchaseInvoiceNo', 'string', true, 'The unposted purchase invoice to add lines to. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('subscriptionLineEntryNos', 'array', false, 'Adds only these Subscription Lines, written as whole numbers. Each must be an open vendor line of the invoice''s vendor, invoiced through a contract and without a pending billing line. Omit it to add every such line.'));
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Without subscriptionLineEntryNos: adds only the lines of this Vendor Subscription Contract.'));
+                    Parameters.Add(DateParameter('billingToDate', 'Bills each line up to this date. Omit it to bill each line up to the end of its next billing period, as the Get Vendor Contract Lines page proposes.'));
+                end;
+            'Subscription.Usage.DeleteData':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('usageDataImportEntryNo', 'integer', true, 'The Usage Data Import entry to undo. May be supplied as the subject instead.'));
+                    Entry := AllowedParameter('mode', 'string', false, 'resetLines deletes the imported lines and usage billing and keeps the file, so the import can be processed again; deleteImport deletes the import with its file. Any casing.', 'resetLines,deleteImport');
+                    Entry.Add('default', 'resetLines');
+                    Parameters.Add(Entry);
+                end;
+            'Subscription.Billing.SetTemplateFilter':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', true, 'The Billing Template to change. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('filter', 'string', true, 'A Business Central view, such as WHERE(Contract Type=FILTER(MONTHLY)), of Customer Subscription Contract (Partner Customer) or Vendor Subscription Contract (Partner Vendor). It is validated and normalised before it is stored; a view without filters clears the stored filter.'));
+                end;
+            'Subscription.Contract.RemoveLine':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The contract the line belongs to. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('lineNo', 'integer', true, 'Line No. of the contract line to remove.'));
+                    Entry := AllowedParameter('partner', 'string', false, 'Customer for a Customer Subscription Contract, Vendor for a Vendor Subscription Contract. Any casing.', 'Customer,Vendor');
+                    Entry.Add('default', 'Customer');
+                    Parameters.Add(Entry);
+                end;
+            'Subscription.Package.RemoveItemAssignment':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('itemNo', 'string', true, 'The item. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('subscriptionPackageCode', 'string', true, 'The Subscription Package to remove from the item.'));
+                end;
+            'Subscription.Contract.UpdateExchangeRates':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The Subscription Contract to recalculate. May be supplied as the subject instead.'));
+                    Entry := AllowedParameter('partner', 'string', false, 'Customer for a Customer Subscription Contract, Vendor for a Vendor Subscription Contract. Any casing.', 'Customer,Vendor');
+                    Entry.Add('default', 'Customer');
+                    Parameters.Add(Entry);
+                    Parameters.Add(DateParameter('currencyFactorDate', 'The key date of the exchange rate, stored as Currency Factor Date on the lines. Defaults to the work date.'));
+                    Parameters.Add(ContractMgt.Parameter('currencyFactor', 'number', false, 'The currency factor to store: foreign currency per unit of local currency. Omit it to use the exchange rate of currencyFactorDate, as the Exchange Rate Selection page proposes. Must be greater than zero.'));
+                end;
+            'Subscription.Contract.UpdateLineDates':
+                begin
+                    Entry := AllowedParameter('runMode', 'string', false, 'foreground runs the Job Queue Entry in this call and reports what it closed; background hands it to the job queue and returns at once. Any casing.', 'foreground,background');
+                    Entry.Add('default', 'foreground');
+                    Parameters.Add(Entry);
+                end;
+            'Subscription.Usage.ImportData':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('supplierNo', 'string', true, 'The Usage Data Supplier the file came from. May be supplied as the subject instead.'));
+                    Parameters.Add(TextParameter('fileName', 'bifrost-usage.csv', 'File name recorded as Source on the Usage Data Blob.'));
+                    Parameters.Add(ContractMgt.Parameter('content', 'string', false, 'The file content as text, for example a CSV payload. Required unless contentBase64 is given.'));
+                    Parameters.Add(ContractMgt.Parameter('contentBase64', 'string', false, 'The file content, base64 encoded, for payloads that are not plain text. Required unless content is given; when both are given, contentBase64 is used.'));
+                    Parameters.Add(BooleanParameter('runProcessing', false, 'When true, the Process Imported Lines step runs right after the import.'));
+                end;
+            'Subscription.Usage.Process':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('usageDataImportEntryNo', 'integer', true, 'The Usage Data Import entry to process. May be supplied as the subject instead.'));
+                    Parameters.Add(AllowedParameter('steps', 'array', false, 'The processing steps to run, in the order given. Defaults to ProcessImportedLines, CreateUsageDataBilling, ProcessUsageDataBilling. CreateImportedLines parses the stored file again and is never run by default.', 'CreateImportedLines,ProcessImportedLines,CreateUsageDataBilling,ProcessUsageDataBilling'));
+                end;
+            'Subscription.Usage.ConnectSubscriptions':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('supplierNo', 'string', true, 'The Usage Data Supplier whose subscriptions are connected. May be supplied as the subject instead.'));
+                    Parameters.Add(ContractMgt.Parameter('entryNos', 'array', false, 'Connects only these Usage Data Supp. Subscription entries, written as whole numbers. Each must belong to the supplier, have a Connect to Subscription Method and not be connected yet. Omit it to connect every such entry of the supplier.'));
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                begin
+                    Parameters.Add(ContractMgt.Parameter('subscriptionLineEntryNo', 'integer', false, 'Entry No. of the connected Subscription Line. One of subscriptionLineEntryNo and usageDataSubscriptionEntryNo is required; when both are sent this one is used.'));
+                    Parameters.Add(ContractMgt.Parameter('usageDataSubscriptionEntryNo', 'integer', false, 'Entry No. of the connected Usage Data Supp. Subscription, as an alternative to subscriptionLineEntryNo.'));
+                end;
+            'Subscription.Deferral.Release':
+                begin
+                    Parameters.Add(DateParameter('postingDate', 'The date the caller expects the release to post under. Must equal the work date, the only date Business Central uses. Defaults to the work date.'));
+                    Parameters.Add(DateParameter('postUntilDate', 'The latest deferral posting date the caller accepts to release. The call is refused when the release would go past it. Must not be later than postingDate; defaults to postingDate.'));
+                end;
+            'Subscription.Analysis.Recalculate':
+                Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Narrows the counts in the response to this Subscription Contract. It does not scope the run: the report always analyses every contract.'));
+            'Subscription.Import.CreateContracts':
+                Parameters.Add(AllowedParameter('stages', 'array', false, 'The import stages to run. Defaults to all four. They always run in the fixed order SubscriptionHeaders, CustomerContracts, SubscriptionLines, ContractLines, whatever order is given.', 'SubscriptionHeaders,CustomerContracts,SubscriptionLines,ContractLines'));
+        end;
     end;
 
     /// <summary>The parameters of Subscription.Line.Create.</summary>
@@ -177,6 +339,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     procedure RenewalQuoteParameters() Parameters: JsonArray
     begin
         Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The Customer Subscription Contract to renew. May be supplied as the subject instead.'));
+        Parameters.Add(ContractMgt.Parameter('contractLineNos', 'array', false, 'Renews only these contract lines, by their Line No., written as whole numbers. Every number must be a line of the contract. Omit it to renew every line with an end date.'));
     end;
 
     /// <summary>The parameters of Subscription.Usage.ImportData.</summary>
@@ -224,11 +387,6 @@ codeunit 10035075 "Sub Contract Parts ori"
         MoreChildren: JsonArray;
     begin
         Response.Add('contentType', 'text/json');
-        if IsBlocked(MessageType) then begin
-            Fields.Add(ContractMgt.ResponseField('status', 'string', 'Never Success: this message type always answers with the error listed under errors.'));
-            Response.Add('fields', Fields);
-            exit;
-        end;
         Fields.Add(ContractMgt.ResponseField('status', 'string', 'Success when the operation completed.'));
         case MessageType of
             'Subscription.Line.Create':
@@ -340,6 +498,25 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Fields.Add(ContractMgt.ResponseField('preview', 'boolean', 'Always true.'));
                     Fields.Add(ContractMgt.ResponseField('rollback', 'boolean', 'Always true; nothing was written.'));
                 end;
+            'Subscription.Billing.ClearProposal':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('billingTemplateCode', 'string', 'The cleared Billing Template; empty for the billing lines without a template.'));
+                    Fields.Add(ContractMgt.ResponseField('contractNo', 'string', 'The contract the call was narrowed to; empty when it was not.'));
+                    Fields.Add(ContractMgt.ResponseField('billingLinesDeleted', 'integer', 'Number of billing proposal lines deleted. Zero is still a success.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionLinesReset', 'integer', 'Number of distinct Subscription Lines whose Next Billing Date was reset.'));
+                    Fields.Add(ContractMgt.ResponseField('contracts', 'array', 'Contract numbers of the deleted lines.'));
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('billingTemplateCode', 'string', 'The Billing Template; empty for the billing lines without a template.'));
+                    Fields.Add(ContractMgt.ResponseField('documentsDeleted', 'integer', 'Number of unposted documents deleted. Zero is still a success.'));
+                    Children.Add(ContractMgt.ResponseField('partner', 'string', 'Customer or Vendor.'));
+                    Children.Add(ContractMgt.ResponseField('documentType', 'string', 'Invoice or Credit Memo.'));
+                    Children.Add(ContractMgt.ResponseField('documentNo', 'string', 'No. of the deleted document.'));
+                    Fields.Add(FieldWithChildren('documents', 'array', 'One entry per deleted document.', Children));
+                    Fields.Add(ContractMgt.ResponseField('billingLinesReturnedToProposal', 'integer', 'Billing lines of the deleted documents that are back in the proposal, without a document.'));
+                    Fields.Add(ContractMgt.ResponseField('billingLinesRemoved', 'integer', 'Billing lines of the deleted documents that Microsoft deleted, with their Subscription Line reset.'));
+                end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 begin
                     Fields.Add(ContractMgt.ResponseField('priceUpdateTemplateCode', 'string', 'The changed Price Update Template.'));
@@ -410,6 +587,62 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Fields.Add(ContractMgt.ResponseField('newSubscriptionLineEntryNos', 'array', 'Entry No. of every Subscription Line the call added to the Subscription, whichever contract it went to.'));
                     Fields.Add(ContractMgt.ResponseField('newSubscriptionLineCount', 'integer', 'Number of entries in newSubscriptionLineEntryNos.'));
                 end;
+            'Subscription.VendorContract.AddLinesToInvoice':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('purchaseInvoiceNo', 'string', 'The purchase invoice.'));
+                    Fields.Add(ContractMgt.ResponseField('vendorNo', 'string', 'Its Buy-from Vendor No.'));
+                    Fields.Add(ContractMgt.ResponseField('linesAdded', 'integer', 'Purchase lines the invoice gained. Zero is still a success.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionLineEntryNos', 'array', 'Entry No. of every Subscription Line that was proposed onto the invoice.'));
+                end;
+            'Subscription.Usage.DeleteData':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('usageDataImportEntryNo', 'integer', 'The Usage Data Import entry.'));
+                    Fields.Add(ContractMgt.ResponseField('mode', 'string', 'resetLines or deleteImport, as run.'));
+                    Fields.Add(ContractMgt.ResponseField('usageDataBillingDeleted', 'integer', 'Usage Data Billing rows deleted.'));
+                    Fields.Add(ContractMgt.ResponseField('importDeleted', 'boolean', 'True when the Usage Data Import itself was deleted.'));
+                    Fields.Add(ContractMgt.ResponseField('processingStatus', 'string', 'resetLines only: the Processing Status after the reset, None.'));
+                end;
+            'Subscription.Billing.SetTemplateFilter':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('billingTemplateCode', 'string', 'The changed Billing Template.'));
+                    Fields.Add(ContractMgt.ResponseField('partner', 'string', 'Customer or Vendor: the contract table the filter applies to.'));
+                    Fields.Add(ContractMgt.ResponseField('filter', 'string', 'The stored, normalised view; empty when the filter was cleared.'));
+                end;
+            'Subscription.Contract.RemoveLine':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('contractNo', 'string', 'The contract.'));
+                    Fields.Add(ContractMgt.ResponseField('partner', 'string', 'Customer or Vendor.'));
+                    Fields.Add(ContractMgt.ResponseField('lineNo', 'integer', 'Line No. of the removed contract line.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionLineEntryNo', 'integer', 'The Subscription Line that is now unassigned; 0 for a comment line.'));
+                end;
+            'Subscription.Package.RemoveItemAssignment':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('itemNo', 'string', 'The item.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionPackageCode', 'string', 'The package removed from the item.'));
+                    Fields.Add(ContractMgt.ResponseField('wasStandard', 'boolean', 'True when it was a standard package of the item.'));
+                end;
+            'Subscription.Contract.UpdateExchangeRates':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('contractNo', 'string', 'The recalculated contract.'));
+                    Fields.Add(ContractMgt.ResponseField('partner', 'string', 'Customer or Vendor.'));
+                    Fields.Add(ContractMgt.ResponseField('currencyCode', 'string', 'The contract''s Currency Code, now on every recalculated line.'));
+                    Fields.Add(ContractMgt.ResponseField('currencyFactor', 'string', 'The currency factor used, as a culture-invariant decimal string.'));
+                    Fields.Add(ContractMgt.ResponseField('currencyFactorDate', 'string', 'The key date used, as YYYY-MM-DD.'));
+                    Fields.Add(ContractMgt.ResponseField('linesRecalculated', 'integer', 'Subscription Lines recalculated. Zero is still a success.'));
+                    Fields.Add(ContractMgt.ResponseField('linesSkipped', 'integer', 'Subscription Lines left unchanged because their contract line is closed.'));
+                end;
+            'Subscription.Contract.UpdateLineDates':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('runMode', 'string', 'foreground or background, as run.'));
+                    Fields.Add(ContractMgt.ResponseField('alreadyQueued', 'boolean', 'True when a Job Queue Entry for codeunit 8058 was already Ready, Waiting or In Process; nothing new was created or run, and jobQueueEntryId and jobQueueStatus describe that entry.'));
+                    Fields.Add(ContractMgt.ResponseField('jobQueueEntryId', 'string', 'ID of the Job Queue Entry, a GUID without braces.'));
+                    Fields.Add(ContractMgt.ResponseField('jobQueueStatus', 'string', 'Status of the entry: Ready, Waiting, In Process, On Hold, Error or Finished. Finished means the entry was removed after its run.'));
+                    Fields.Add(ContractMgt.ResponseField('result', 'string', 'Foreground only: Success or Error, from the Job Queue Log Entry of the run.'));
+                    Fields.Add(ContractMgt.ResponseField('error', 'string', 'Foreground only: the error the run stopped on; empty when it succeeded.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionLinesClosed', 'integer', 'Foreground only: Subscription Lines closed during the call.'));
+                    Fields.Add(ContractMgt.ResponseField('customerContractLinesClosed', 'integer', 'Foreground only: Cust. Sub. Contract Lines closed during the call.'));
+                    Fields.Add(ContractMgt.ResponseField('vendorContractLinesClosed', 'integer', 'Foreground only: Vend. Sub. Contract Lines closed during the call.'));
+                end;
             'Subscription.Renewal.CreateQuote':
                 begin
                     Fields.Add(ContractMgt.ResponseField('contractNo', 'string', 'The renewed contract.'));
@@ -433,6 +666,26 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Fields.Add(ContractMgt.ResponseField('processingStatus', 'string', 'Processing Status of the entry after the last step.'));
                     Fields.Add(ContractMgt.ResponseField('usageDataBillingCount', 'integer', 'Usage Data Billing rows of the entry.'));
                     Fields.Add(ContractMgt.ResponseField('usageDataBillingErrorCount', 'integer', 'Usage Data Billing rows of the entry whose Processing Status is Error.'));
+                end;
+            'Subscription.Usage.ConnectSubscriptions':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('supplierNo', 'string', 'The Usage Data Supplier.'));
+                    Fields.Add(ContractMgt.ResponseField('connected', 'integer', 'Entries now connected to a Subscription Line. Zero is still a success.'));
+                    Fields.Add(ContractMgt.ResponseField('skipped', 'integer', 'Entries Microsoft could not connect; see reason.'));
+                    Children.Add(ContractMgt.ResponseField('entryNo', 'integer', 'Entry No. of the Usage Data Supp. Subscription.'));
+                    Children.Add(ContractMgt.ResponseField('connected', 'boolean', 'True when the entry is now connected.'));
+                    Children.Add(ContractMgt.ResponseField('subscriptionHeaderNo', 'string', 'The Subscription it is connected to; empty when skipped.'));
+                    Children.Add(ContractMgt.ResponseField('subscriptionLineEntryNo', 'integer', 'The Subscription Line it is connected to; 0 when skipped.'));
+                    Children.Add(ContractMgt.ResponseField('reason', 'string', 'Why Microsoft skipped the entry; empty when it was connected.'));
+                    Fields.Add(FieldWithChildren('entries', 'array', 'One entry per supplier subscription the call tried to connect.', Children));
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                begin
+                    Fields.Add(ContractMgt.ResponseField('subscriptionLineEntryNo', 'integer', 'The Subscription Line that was disconnected.'));
+                    Fields.Add(ContractMgt.ResponseField('subscriptionHeaderNo', 'string', 'Its Subscription.'));
+                    Fields.Add(ContractMgt.ResponseField('usageDataSubscriptionEntryNo', 'integer', 'The Usage Data Supp. Subscription that was disconnected.'));
+                    Fields.Add(ContractMgt.ResponseField('supplierReferenceEntryNo', 'integer', 'The Supplier Reference Entry No. the link used.'));
+                    Fields.Add(ContractMgt.ResponseField('linesDisconnected', 'integer', 'Lines of the Subscription whose Supplier Reference Entry No. was cleared.'));
                 end;
             'Subscription.Deferral.Release':
                 begin
@@ -473,12 +726,8 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         case MessageType of
             'Subscription.Contract.UpdateLineDates':
-                Errors.Add(ContractMgt.TextErrorEntry('Subscription.Contract.UpdateLineDates has no supported public API in this Business Central version. ...', 'Always: the Microsoft procedures that roll Subscription Line dates forward are internal.', 'Run the Update Subscription Line Dates action on the contract in the Business Central client, or schedule Microsoft''s own job queue entry for the batch job.'));
-            'Subscription.Contract.UpdateExchangeRates':
-                Errors.Add(ContractMgt.TextErrorEntry('Subscription.Contract.UpdateExchangeRates has no supported public API in this Business Central version. ...', 'Always: the Microsoft procedure is internal, and its flow is unsafe unattended.', 'Use the Update Exchange Rates action on the contract in the Business Central client.'));
+                Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'The caller does not hold the BIFROST Force ori permission set. Nothing is created or run.', 'Have BIFROST Force ori assigned, then call again.'));
         end;
-        if IsBlocked(MessageType) then
-            exit;
 
         Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::BusinessCentralError, 'A Business Central or Subscription Billing validation error prevented completion.', 'Correct the data or setup named by the error and retry.'));
         AddParameterErrors(MessageType, Errors);
@@ -494,7 +743,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         if MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments'] then
             Effect.Add('effect', 'read')
         else
-            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PostDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates'] then
+            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Usage.DeleteData', 'Subscription.Billing.PostDocuments'] then
                 Effect.Add('effect', 'irreversible')
             else
                 Effect.Add('effect', 'write');
@@ -520,7 +769,40 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Renewal.CreateQuote':
                 Preconditions.Add('The contract has Subscription Lines with an end date.');
             'Subscription.Usage.Process':
-                Preconditions.Add('The Usage Data Import entry exists and is not Closed.');
+                begin
+                    Preconditions.Add('The Usage Data Import entry exists and is not Closed.');
+                    Preconditions.Add('The supplier subscriptions in the file are connected to Subscriptions (Subscription.Usage.ConnectSubscriptions); Process Imported Lines fails on an unconnected one.');
+                end;
+            'Subscription.Usage.ConnectSubscriptions':
+                Preconditions.Add('Each entry to connect has Connect to Sub. Header No. set, which sets its Connect to Subscription Method; the Subscription has usage based lines (Existing Subscription Lines) or its item has a usage based package (New Subscription Lines).');
+            'Subscription.Usage.DisconnectSubscription':
+                Preconditions.Add('The Subscription Line is connected: it has a Supplier Reference Entry No. that a supplier subscription carries.');
+            'Subscription.Billing.ClearProposal':
+                begin
+                    Preconditions.Add('The selected proposal lines are not on a document yet.');
+                    Preconditions.Add('When any Billing Template bills automatically, the user has Auto Contract Billing in User Setup.');
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    Preconditions.Add('The documents are not posted.');
+                    Preconditions.Add('When any Billing Template bills automatically, the user has Auto Contract Billing in User Setup.');
+                end;
+            'Subscription.VendorContract.AddLinesToInvoice':
+                begin
+                    Preconditions.Add('The purchase invoice is unposted.');
+                    Preconditions.Add('No contract has billing proposal lines without a Billing Template that are not on a document.');
+                end;
+            'Subscription.Usage.DeleteData':
+                Preconditions.Add('No Usage Data Billing row of the import is on a billing line or a document.');
+            'Subscription.Contract.RemoveLine':
+                Preconditions.Add('The contract line is open, on no billing line, never billed, and without unreleased deferrals.');
+            'Subscription.Contract.UpdateExchangeRates':
+                Preconditions.Add('The contract has a Currency Code, and an exchange rate exists for that currency on currencyFactorDate unless currencyFactor is sent.');
+            'Subscription.Contract.UpdateLineDates':
+                begin
+                    Preconditions.Add('The caller holds the BIFROST Force ori permission set, checked before anything is read: scheduling work through the job queue is reserved for it.');
+                    Preconditions.Add('The caller may create and run Job Queue Entries: write permission on Job Queue Entry, Job Queue Log Entry, Error Message Register and Error Message.');
+                end;
             'Subscription.Deferral.Release':
                 Preconditions.Add('postingDate is the session work date, and no unreleased deferral posts after postUntilDate up to the work date.');
             'Subscription.PriceUpdate.CreateProposal':
@@ -553,6 +835,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Contract.CreateInvoice':
                 begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Undo: delete the unposted document (no billingTemplateCode, with contractNo or documentNo).'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.PreviewInvoice', 'See what would be billed without creating a document.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.GetLines', 'Attach eligible lines before billing.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Bill many contracts at once through a Billing Template.'));
@@ -564,13 +847,13 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Contract.UpdateLineDates':
                 begin
-                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.UpdateExchangeRates', 'Also blocked in this version, for a different reason.'));
-                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.CreateInvoice', 'Create an invoice once line dates are current.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Renewal.CreateQuote', 'Renew lines before their end date instead of letting them close.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.CreateInvoice', 'Bill the last period first: a line closes only once it is fully invoiced.'));
                 end;
             'Subscription.Contract.UpdateExchangeRates':
                 begin
-                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.UpdateLineDates', 'Also blocked in this version, for a different reason.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.CreateInvoice', 'Create an invoice once exchange rates are current.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.CreateInvoice', 'Create a vendor invoice once exchange rates are current.'));
                 end;
             'Subscription.VendorContract.GetLines':
                 begin
@@ -579,6 +862,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.VendorContract.CreateInvoice':
                 begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Undo: delete the unposted document (no billingTemplateCode, with contractNo or documentNo).'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.PreviewInvoice', 'See what would be billed without creating a document.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.GetLines', 'Attach eligible lines before billing.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateDocuments', 'Bill many contracts at once from a Billing Template''s proposal.'));
@@ -590,12 +874,14 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Billing.CreateProposal':
                 begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.ClearProposal', 'Undo: delete the proposal and reset the Next Billing Dates.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateDocuments', 'Create documents from the generated proposal.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.PreviewDocuments', 'See the documents the proposal would become.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.CreateInvoice', 'Bill one customer contract without a Billing Template.'));
                 end;
             'Subscription.Billing.CreateDocuments':
                 begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Undo: delete the unposted documents and return their lines to the proposal.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.PreviewDocuments', 'Preview the bulk run before writing documents.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Create the proposal lines this call consumes.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.PostDocuments', 'Post documents this call left unposted, including every purchase document.'));
@@ -609,6 +895,38 @@ codeunit 10035075 "Sub Contract Parts ori"
                 begin
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateDocuments', 'Create documents after reviewing the preview.'));
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Create the proposal lines this call reads.'));
+                end;
+            'Subscription.VendorContract.AddLinesToInvoice':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.CreateInvoice', 'Create a new purchase invoice for a vendor contract instead.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Undo: delete the purchase invoice and reset the lines.'));
+                end;
+            'Subscription.Usage.DeleteData':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.Process', 'Process the import again after resetLines.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.ClearProposal', 'Clear the billing proposal first when usage billing is on a billing line.'));
+                end;
+            'Subscription.Billing.SetTemplateFilter':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Create a proposal for the filtered contracts.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.PriceUpdate.SetTemplateFilter', 'The same validated write for Price Update Templates.'));
+                end;
+            'Subscription.Contract.RemoveLine':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.GetLines', 'Attach the detached Subscription Line to a customer contract again.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.VendorContract.GetLines', 'Attach the detached Subscription Line to a vendor contract again.'));
+                end;
+            'Subscription.Package.RemoveItemAssignment':
+                Related.Add(ContractMgt.RelatedEntry('Subscription.Line.Create', 'Apply a package to a Subscription directly.'));
+            'Subscription.Billing.ClearProposal':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.DeleteDocuments', 'Delete the documents first when proposal lines are already on one.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateProposal', 'Create the proposal again.'));
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.ClearProposal', 'Clear the proposal the documents were made from.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Billing.CreateDocuments', 'Create the documents again.'));
                 end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 Related.Add(ContractMgt.RelatedEntry('Subscription.PriceUpdate.CreateProposal', 'Create a proposal after setting filters.'));
@@ -636,9 +954,22 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Related.Add(ContractMgt.RelatedEntry('Subscription.Contract.GetLines', 'Attach lines to a customer contract after import.'));
                 end;
             'Subscription.Usage.ImportData':
-                Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.Process', 'Process the imported usage entry.'));
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.Process', 'Process the imported usage entry.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ConnectSubscriptions', 'Connect new supplier subscriptions before processing.'));
+                end;
             'Subscription.Usage.Process':
-                Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ImportData', 'Import usage data when no entry exists.'));
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ConnectSubscriptions', 'Run first for new supplier subscriptions: processing fails on an unconnected one.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ImportData', 'Import usage data when no entry exists.'));
+                end;
+            'Subscription.Usage.ConnectSubscriptions':
+                begin
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.Process', 'Process the imported usage once the subscriptions are connected.'));
+                    Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.DisconnectSubscription', 'Remove a link again.'));
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                Related.Add(ContractMgt.RelatedEntry('Subscription.Usage.ConnectSubscriptions', 'Connect the supplier subscription again, for example to another Subscription.'));
         end;
     end;
 
@@ -670,7 +1001,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.VendorContract.CreateInvoice', 'Create the unposted purchase document.'));
                     Workflow.Add('text', 'Bill one vendor contract. The purchase document is never posted here; post it separately after review.');
                 end;
-            'Subscription.Billing.CreateProposal', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PostDocuments':
+            'Subscription.Billing.CreateProposal', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments':
                 begin
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Billing.CreateProposal', 'Create the billing proposal lines for a Billing Template.'));
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Billing.PreviewDocuments', 'Review the documents the proposal would become, and any warnings.'));
@@ -685,9 +1016,10 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.PriceUpdate.Perform', 'Apply the proposal to the Subscription Lines.'));
                     Workflow.Add('text', 'Raise or index contract prices through a Price Update Template. Nothing is posted.');
                 end;
-            'Subscription.Usage.ImportData', 'Subscription.Usage.Process':
+            'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Usage.DisconnectSubscription':
                 begin
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Usage.ImportData', 'Store the supplier''s usage file and parse it into imported lines.'));
+                    Steps.Add(ContractMgt.WorkflowStep('Subscription.Usage.ConnectSubscriptions', 'Connect new supplier subscriptions to Subscriptions; needed once per new subscription.'));
                     Steps.Add(ContractMgt.WorkflowStep('Subscription.Usage.Process', 'Process the imported lines into usage data billing and billing lines.'));
                     Workflow.Add('text', 'Bill usage-based Subscription Lines from a supplier''s usage file.');
                 end;
@@ -767,10 +1099,6 @@ codeunit 10035075 "Sub Contract Parts ori"
         Preconditions.Add(Subject + ' must already exist; this call does not create ' + Pronoun + '. Writing ' + Pronoun + ' with Data.Records.Set needs the Bifrost Setup write guard set to Open, or Change Log coverage on those Subscription Billing tables, because the guard is Blocked by default.');
     end;
 
-    local procedure IsBlocked(MessageType: Text): Boolean
-    begin
-        exit(MessageType in ['Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates']);
-    end;
 
     local procedure GetChanges(MessageType: Text): Text
     begin
@@ -796,6 +1124,10 @@ codeunit 10035075 "Sub Contract Parts ori"
                 exit('Posts the named unposted sales or purchase documents through Sales-Post or Purch.-Post and always commits, including when Omit Commit is set. A blank Vendor Invoice No. is set to the document number before a purchase document is posted. Nothing is posted when a document is foreign or already posted.');
             'Subscription.Billing.PreviewDocuments':
                 exit('Reads the template''s unbilled proposal lines. Nothing is written.');
+            'Subscription.Billing.ClearProposal':
+                exit('Deletes the selected billing proposal lines with their delete trigger, which resets the Next Billing Date of each Subscription Line, recalculates the harmonized billing fields of the customer contract and unlinks Usage Data Billing rows. No document is touched.');
+            'Subscription.Billing.DeleteDocuments':
+                exit('Deletes the selected unposted sales or purchase invoices and credit memos with their delete trigger. Microsoft then returns their billing lines to the proposal, or deletes billing lines without a Billing Template and resets their Subscription Lines. Posted documents are never touched.');
             'Subscription.PriceUpdate.SetTemplateFilter':
                 exit('Writes one of the three view filters on the Price Update Template. Contracts, Subscriptions and Subscription Lines are not touched.');
             'Subscription.PriceUpdate.CreateProposal':
@@ -803,16 +1135,32 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.PriceUpdate.Perform':
                 exit('Writes Subscription Lines: changes their prices, Next Price Update and Price Binding Period and archives the old values in the Subscription Line Archive, or inserts Planned Subscription Lines. ' +
                     'Deletes each performed Contract Price Update Line and commits after each line. Nothing is posted.');
-            'Subscription.Contract.UpdateLineDates', 'Subscription.Contract.UpdateExchangeRates':
-                exit('Nothing: the call is answered with an error before anything is written.');
+            'Subscription.Contract.UpdateExchangeRates':
+                exit('Writes Currency Code, Currency Factor and Currency Factor Date on every Subscription Line of the contract whose contract line is open, converts its Calculation Base Amount again from the local currency amount, which recalculates price and amount, flags its billing lines Update Required and archives the previous amounts. The contract itself is not changed.');
+            'Subscription.Contract.UpdateLineDates':
+                exit('Creates a Job Queue Entry for Microsoft''s codeunit 8058. In foreground mode the entry runs at once: every Subscription in the company gets its ended, fully invoiced Subscription Lines and their customer and vendor contract lines closed and the term dates of its other lines rolled forward, with a commit after each Subscription; the entry is then deleted and its Job Queue Log Entry kept. In background mode the entry is handed to the job queue, which does the same later. Nothing is created when such an entry is already pending.');
             'Subscription.Renewal.Extend':
                 exit('Runs Microsoft''s Extend Sub. Contract Mgt. without its dialog: inserts Subscription Lines on the Subscription and contract lines on the named customer and vendor contracts.');
             'Subscription.Renewal.CreateQuote':
-                exit('Deletes the contract''s Sub. Contract Renewal Lines, builds new ones from its Subscription Lines that have an end date, and creates a renewal sales quote from them. Nothing is posted.');
+                exit('Deletes the contract''s Sub. Contract Renewal Lines, builds new ones from its Subscription Lines that have an end date (only the contractLineNos lines when given), and creates a renewal sales quote from them. Nothing is posted.');
             'Subscription.Usage.ImportData':
                 exit('Creates a Usage Data Import with a Usage Data Blob holding the file and commits them, then runs the Create Imported Lines step, and Process Imported Lines when runProcessing is true, each after a commit. Nothing is posted.');
             'Subscription.Usage.Process':
                 exit('Runs the requested processing steps on the Usage Data Import, committing before each, so a later failure does not undo an earlier step. Creates and processes Usage Data Billing rows; nothing is posted by this call.');
+            'Subscription.VendorContract.AddLinesToInvoice':
+                exit('Creates a template-less billing line for each selected Subscription Line, moves its Next Billing Date past the billed period, and turns the billing lines into lines of the existing purchase invoice through Microsoft''s billing document creation. Nothing is posted.');
+            'Subscription.Usage.DeleteData':
+                exit('resetLines: deletes the imported lines and the Usage Data Billing rows of the import and resets its Processing Status, Processing Step and reason; the stored file stays. deleteImport: deletes the Usage Data Import with Delete(true), which also deletes its file. Deleting a Usage Data Billing row reverts a rebilling Next Billing Date.');
+            'Subscription.Billing.SetTemplateFilter':
+                exit('Writes the Filter Blob of the Billing Template. Contracts, Subscriptions and billing lines are not touched; the next billing proposal from the template uses the new filter.');
+            'Subscription.Contract.RemoveLine':
+                exit('Deletes the contract line with its delete trigger, which detaches its Subscription Line from the contract (Subscription Contract No. cleared) and recalculates the harmonized billing fields of a customer contract. The Subscription Line is not deleted.');
+            'Subscription.Package.RemoveItemAssignment':
+                exit('Deletes the Item Subscription Package row. The Subscription Package and existing Subscription Lines are not touched.');
+            'Subscription.Usage.ConnectSubscriptions':
+                exit('Runs Microsoft''s Connect to Subscription for each selected supplier subscription. Existing Subscription Lines: the Subscription''s usage based lines get the Supplier Reference Entry No. and the supplier subscription gets the Subscription and line. New Subscription Lines: the current lines end the day before the connect date and the contracts are extended with new usage based lines. Disconnect does not undo the new lines. Imported usage rows of the supplier get the Subscription No.');
+            'Subscription.Usage.DisconnectSubscription':
+                exit('Clears the Supplier Reference Entry No. of the Subscription''s lines that carry it, and the Subscription No. and Subscription Line Entry No. of the supplier subscription. No line, contract or usage data is deleted.');
             'Subscription.Deferral.Release':
                 exit('Runs Microsoft''s Contract Deferrals Release report, which releases every eligible customer and vendor deferral of every contract up to the work date and posts the release to the general ledger.');
             'Subscription.Analysis.Recalculate':
@@ -832,14 +1180,24 @@ codeunit 10035075 "Sub Contract Parts ori"
                 SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Customer Subscription Contract No.');
             'Subscription.VendorContract.GetLines', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
                 SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Vendor Subscription Contract No.');
-            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments':
+            'Subscription.Contract.UpdateExchangeRates':
+                SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Customer or Vendor Subscription Contract No., following partner');
+            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments':
                 SetSubjectKey(DataKey, SubjectForm, 'billingTemplateCode', 'Billing Template Code');
             'Subscription.PriceUpdate.SetTemplateFilter', 'Subscription.PriceUpdate.CreateProposal', 'Subscription.PriceUpdate.Perform':
                 SetSubjectKey(DataKey, SubjectForm, 'priceUpdateTemplateCode', 'Price Update Template Code');
-            'Subscription.Usage.ImportData':
+            'Subscription.Usage.ImportData', 'Subscription.Usage.ConnectSubscriptions':
                 SetSubjectKey(DataKey, SubjectForm, 'supplierNo', 'Usage Data Supplier No.');
-            'Subscription.Usage.Process':
+            'Subscription.Usage.Process', 'Subscription.Usage.DeleteData':
                 SetSubjectKey(DataKey, SubjectForm, 'usageDataImportEntryNo', 'Usage Data Import Entry No.');
+            'Subscription.VendorContract.AddLinesToInvoice':
+                SetSubjectKey(DataKey, SubjectForm, 'purchaseInvoiceNo', 'Purchase Invoice No.');
+            'Subscription.Billing.SetTemplateFilter':
+                SetSubjectKey(DataKey, SubjectForm, 'billingTemplateCode', 'Billing Template Code');
+            'Subscription.Contract.RemoveLine':
+                SetSubjectKey(DataKey, SubjectForm, 'contractNo', 'Customer or Vendor Subscription Contract No., following partner');
+            'Subscription.Package.RemoveItemAssignment':
+                SetSubjectKey(DataKey, SubjectForm, 'itemNo', 'Item No.');
             else
                 exit(false);
         end;
@@ -855,17 +1213,17 @@ codeunit 10035075 "Sub Contract Parts ori"
 
     local procedure AddParameterErrors(MessageType: Text; var Errors: JsonArray)
     begin
-        if not (MessageType in ['Subscription.Deferral.Release', 'Subscription.Analysis.Recalculate', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform']) then
+        if not (MessageType in ['Subscription.Deferral.Release', 'Subscription.Analysis.Recalculate', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.DisconnectSubscription', 'Subscription.PriceUpdate.Perform']) then
             AddBusinessCentralError(Errors, 'The request is missing the required parameter ''%1''.', 'A required parameter is missing, and the subject does not carry it either.', 'Send the parameter named in the error.');
-        if not (MessageType in ['Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts']) then
+        if not (MessageType in ['Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.Contract.UpdateLineDates', 'Subscription.Usage.DisconnectSubscription', 'Subscription.Usage.DeleteData']) then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' is longer than the %2 characters allowed.', 'A record number or code, or the subject, is longer than 20 characters.', 'Send the number as it is stored in Business Central.');
-        if MessageType in ['Subscription.Line.Create', 'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Deferral.Release', 'Subscription.PriceUpdate.CreateProposal'] then
+        if MessageType in ['Subscription.Line.Create', 'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Deferral.Release', 'Subscription.VendorContract.AddLinesToInvoice', 'Subscription.PriceUpdate.CreateProposal'] then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' is not a valid date. Use the ISO format YYYY-MM-DD.', 'A date parameter is not a date in the ISO format.', 'Send the date as YYYY-MM-DD.');
-        if MessageType in ['Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Contract.MergeLines'] then
+        if MessageType in ['Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Usage.DisconnectSubscription', 'Subscription.Usage.DeleteData', 'Subscription.Contract.RemoveLine', 'Subscription.Contract.MergeLines'] then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', 'An integer parameter is not a number.', 'Send a whole number.');
-        if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines', 'Subscription.Contract.MergeLines', 'Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Import.CreateContracts', 'Subscription.Billing.PostDocuments'] then
+        if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines', 'Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Import.CreateContracts', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Renewal.CreateQuote', 'Subscription.VendorContract.AddLinesToInvoice', 'Subscription.Contract.MergeLines', 'Subscription.Billing.PostDocuments'] then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' must be a JSON array.', 'An array parameter has a value that is not an array.', 'Send a JSON array, or leave the parameter out.');
-        if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines'] then
+        if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Renewal.CreateQuote', 'Subscription.VendorContract.AddLinesToInvoice'] then
             AddBusinessCentralError(Errors, 'The parameter ''%1'' must be a JSON array of entry numbers, written as whole numbers.', 'An entry of subscriptionLineEntryNos is not a whole number.', 'Send whole numbers only.');
     end;
 
@@ -881,10 +1239,12 @@ codeunit 10035075 "Sub Contract Parts ori"
                 AddNotFoundError(Errors, 'The Customer Subscription Contract ''%1'' does not exist.', 'contractNo or the subject names no Customer Subscription Contract.');
             'Subscription.VendorContract.GetLines', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice':
                 AddNotFoundError(Errors, 'The Vendor Subscription Contract ''%1'' does not exist.', 'contractNo or the subject names no Vendor Subscription Contract.');
-            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments':
+            'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PreviewDocuments', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments':
                 AddNotFoundError(Errors, 'The Billing Template ''%1'' does not exist.', 'billingTemplateCode or the subject names no Billing Template.');
             'Subscription.PriceUpdate.SetTemplateFilter', 'Subscription.PriceUpdate.CreateProposal', 'Subscription.PriceUpdate.Perform':
                 AddNotFoundError(Errors, 'The Price Update Template ''%1'' does not exist.', 'priceUpdateTemplateCode or the subject names no Price Update Template.');
+            'Subscription.Billing.SetTemplateFilter':
+                AddNotFoundError(Errors, 'The Billing Template ''%1'' does not exist.', 'billingTemplateCode or the subject names no Billing Template.');
             'Subscription.Renewal.Extend':
                 begin
                     AddNotFoundError(Errors, 'The Subscription ''%1'' does not exist.', 'subscriptionHeaderNo or the subject names no Subscription.');
@@ -948,11 +1308,68 @@ codeunit 10035075 "Sub Contract Parts ori"
                     AddGroupByErrors(Errors);
                     Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::InvalidParameter, 'skip or take is negative or not a whole number.', 'Send zero or a positive whole number.'));
                 end;
+            'Subscription.Billing.ClearProposal':
+                begin
+                    AddBusinessCentralError(Errors, 'The request must name a Billing Template in ''billingTemplateCode'' or the subject, or, for the billing lines without a Billing Template, a contract in ''contractNo''.', 'Neither a Billing Template nor a contract was given.', 'Send billingTemplateCode, or contractNo for the lines without a template.');
+                    AddBusinessCentralError(Errors, '%1 billing line(s) of Billing Template ''%2'' are already on document %3. ...', 'A selected proposal line is already on an unposted document. Nothing is deleted.', 'Delete the documents first with Subscription.Billing.DeleteDocuments.');
+                    AddAutomationError(Errors);
+                    AddBusinessCentralError(Errors, 'Only last Billing Line for Subscription Line can be deleted or all Billing Lines. ...', 'A later billing line of the same Subscription Line sits under another Billing Template or contract. Nothing is deleted.', 'Clear that proposal first, or clear without contractNo.');
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                begin
+                    AddBusinessCentralError(Errors, 'The request must name a Billing Template in ''billingTemplateCode'' or the subject, or, for the billing lines without a Billing Template, a contract in ''contractNo'' or a document in ''documentNo''.', 'No Billing Template, contract or document was given.', 'Send billingTemplateCode, or contractNo or documentNo for the documents without a template.');
+                    AddBusinessCentralError(Errors, 'Document %1 is posted and cannot be deleted. ...', 'documentNo names a posted invoice or credit memo.', 'Cancel or correct the posted document, for example with Sales.SalesInvoice.Cancel or Sales.SalesInvoice.Correct.');
+                    AddBusinessCentralError(Errors, 'No billing line of Billing Template ''%1'' is on document %2.', 'documentNo names no unposted document of the selected billing lines.', 'Use a document number the template''s billing lines carry.');
+                    AddAutomationError(Errors);
+                end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 begin
                     AddBusinessCentralError(Errors, 'The parameter ''target'' must be one of ''contract'', ''subscription'' or ''line'', not ''%1''.', 'target is none of the three names.', 'Send contract, subscription or line.');
                     AddBusinessCentralError(Errors, 'The parameter ''filter'' is not a valid Business Central view for target ''%1''. ...', 'Business Central cannot parse filter as a view of the target''s table.', 'Send a view such as WHERE(Field=FILTER(Value)) with field names of that table.');
                 end;
+            'Subscription.VendorContract.AddLinesToInvoice':
+                begin
+                    AddNotFoundError(Errors, 'The purchase invoice ''%1'' does not exist.', 'purchaseInvoiceNo or the subject names no unposted purchase invoice.');
+                    AddBusinessCentralError(Errors, 'The purchase invoice ''%1'' is posted. ...', 'The number belongs to a posted purchase invoice.', 'Use an unposted purchase invoice of the vendor.');
+                    AddNotFoundError(Errors, 'Subscription Line %1 does not exist.', 'An entry of subscriptionLineEntryNos names no Subscription Line.');
+                    AddBusinessCentralError(Errors, 'Subscription Line %1 belongs to a vendor contract of another vendor than ''%2'', ...', 'A listed line is on a contract of another vendor.', 'List only lines of the invoice''s vendor.');
+                    AddBusinessCentralError(Errors, 'Subscription Line %1 cannot be added: ...', 'A listed line is not a vendor contract line, is closed, or is already on a billing line.', 'List only open vendor contract lines without a pending billing line.');
+                    AddBusinessCentralError(Errors, 'There are %1 pending billing proposal line(s) without a Billing Template for contract ''%2''. ...', 'Template-less proposal lines are pending; Microsoft would add them to this invoice too.', 'Bill or clear that proposal first, for example with Subscription.Billing.ClearProposal and contractNo.');
+                end;
+            'Subscription.Usage.DeleteData':
+                begin
+                    AddBusinessCentralError(Errors, 'The subject ''%1'' is not a Usage Data Import entry number. ...', 'The subject is set but is not a whole number.', 'Send the entry number as the subject, or as usageDataImportEntryNo.');
+                    AddNotFoundError(Errors, 'The Usage Data Import entry %1 does not exist.', 'No Usage Data Import has that entry number.');
+                    AddBusinessCentralError(Errors, 'The parameter ''mode'' must be either ''resetLines'' or ''deleteImport'', not ''%1''.', 'mode is neither resetLines nor deleteImport.', 'Send resetLines or deleteImport, or leave mode out.');
+                    AddBusinessCentralError(Errors, 'Usage Data Import entry %1 has usage billing on document %2. ...', 'Usage billing of the import is on a document, posted or not.', 'Delete or cancel that document first; posted usage cannot be imported again.');
+                    AddBusinessCentralError(Errors, 'Usage Data Import entry %1 has usage billing on billing line %2. ...', 'Usage billing of the import is on a billing proposal line.', 'Clear the proposal first with Subscription.Billing.ClearProposal.');
+                end;
+            'Subscription.Billing.SetTemplateFilter':
+                Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::InvalidFilterField, 'Foundation''s view validation refused filter: a field the contract table does not have, a field the caller may not read, or a view that does not parse. Nothing is written.', 'Send a view such as WHERE(Field=FILTER(Value)) with field names of the template''s contract table.'));
+            'Subscription.Contract.RemoveLine':
+                begin
+                    AddNotFoundError(Errors, 'Line %1 of Customer Subscription Contract ''%2'' does not exist.', 'partner is Customer (the default) and the contract has no such line.');
+                    AddNotFoundError(Errors, 'Line %1 of Vendor Subscription Contract ''%2'' does not exist.', 'partner is Vendor and the contract has no such line.');
+                    AddBusinessCentralError(Errors, 'The parameter ''%1'' must be either ''Customer'' or ''Vendor''.', 'partner is neither Customer nor Vendor.', 'Send Customer or Vendor, or leave partner out.');
+                    AddBusinessCentralError(Errors, 'Line %1 of contract ''%2'' is closed. ...', 'The contract line is closed.', 'Leave closed lines in place; they keep the history of ended Subscription Lines.');
+                    AddBusinessCentralError(Errors, 'Line %1 of contract ''%2'' is on a billing line. ...', 'The line is on a billing proposal line or unposted document.', 'Clear the proposal or delete the document first (Subscription.Billing.ClearProposal, Subscription.Billing.DeleteDocuments).');
+                    AddBusinessCentralError(Errors, 'Line %1 of contract ''%2'' has already been billed, ...', 'The line has archived billing lines.', 'Close the Subscription Line instead, for example by giving it an end date.');
+                    AddBusinessCentralError(Errors, 'Line %1 of contract ''%2'' has unreleased deferrals. ...', 'The line has deferrals that are not released.', 'Release the deferrals first.');
+                end;
+            'Subscription.Package.RemoveItemAssignment':
+                AddNotFoundError(Errors, 'Subscription Package ''%1'' is not assigned to item ''%2''.', 'The item has no Item Subscription Package row for that package.');
+            'Subscription.Contract.UpdateExchangeRates':
+                begin
+                    AddNotFoundError(Errors, 'The Customer Subscription Contract ''%1'' does not exist.', 'partner is Customer (the default) and contractNo or the subject names no Customer Subscription Contract.');
+                    AddNotFoundError(Errors, 'The Vendor Subscription Contract ''%1'' does not exist.', 'partner is Vendor and contractNo or the subject names no Vendor Subscription Contract.');
+                    AddBusinessCentralError(Errors, 'The parameter ''%1'' must be either ''Customer'' or ''Vendor''.', 'partner is neither Customer nor Vendor.', 'Send Customer or Vendor, or leave partner out.');
+                    AddBusinessCentralError(Errors, 'Subscription Contract ''%1'' has no Currency Code, so its Subscription Lines are in local currency ...', 'The contract is in local currency.', 'Set the Currency Code on the contract first; nothing needs recalculating in local currency.');
+                    AddBusinessCentralError(Errors, 'The exchange rate for currency ''%1'' on %2 is %3. ...', 'currencyFactor is zero or negative, or no exchange rate exists for currencyFactorDate.', 'Send a currencyFactor greater than zero, or set up the exchange rate.');
+                    AddBusinessCentralError(Errors, 'The parameter ''%1'' is not a valid date. Use the ISO format YYYY-MM-DD.', 'currencyFactorDate is not a date in the ISO format.', 'Send the date as YYYY-MM-DD.');
+                    AddBusinessCentralError(Errors, 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', 'currencyFactor is not a number.', 'Send a number with a decimal point.');
+                end;
+            'Subscription.Contract.UpdateLineDates':
+                AddBusinessCentralError(Errors, 'The parameter ''runMode'' must be either ''foreground'' or ''background'', not ''%1''.', 'runMode is neither foreground nor background.', 'Send foreground or background, or leave runMode out.');
             'Subscription.PriceUpdate.CreateProposal':
                 AddBusinessCentralError(Errors, 'Please enter the Include Contract Lines up to Date.', 'includeLinesUpToDate is not given and the template has no Include Subscription Contract Lines up to Date Formula. This is Microsoft''s own message.', 'Send includeLinesUpToDate, or set the formula on the template.');
             'Subscription.PriceUpdate.Perform':
@@ -966,6 +1383,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Renewal.CreateQuote':
                 begin
                     AddBusinessCentralError(Errors, 'The Customer Subscription Contract ''%1'' has no Subscription Lines that can be renewed.', 'No Subscription Line of the contract has an end date that Microsoft accepts for renewal.', 'Check the end dates of the contract''s Subscription Lines.');
+                    AddBusinessCentralError(Errors, 'Line %1 of contractLineNos is not a line of Customer Subscription Contract ''%2''.', 'A listed contract line number does not exist on the contract.', 'Send Line No. values of the contract''s lines.');
                     AddBusinessCentralError(Errors, 'Create Sub. Contract Renewal did not produce a sales quote for Customer Subscription Contract ''%1''.', 'Microsoft''s renewal codeunit finished without creating a quote.', 'Check the renewal setup and the contract''s lines in the Business Central client.');
                 end;
             'Subscription.Usage.ImportData':
@@ -976,6 +1394,22 @@ codeunit 10035075 "Sub Contract Parts ori"
                     AddBusinessCentralError(Errors, 'Usage Data Import entry %1 is already Closed and cannot be processed again.', 'The entry''s Processing Status is Closed.', 'Import the data again with Subscription.Usage.ImportData.');
                     AddBusinessCentralError(Errors, '''%1'' is not a known processing step. ...', 'An entry of steps is not one of the four step names. The steps before it have already run and committed.', 'Use CreateImportedLines, ProcessImportedLines, CreateUsageDataBilling or ProcessUsageDataBilling.');
                 end;
+            'Subscription.Usage.ConnectSubscriptions':
+                begin
+                    AddNotFoundError(Errors, 'The Usage Data Supplier ''%1'' does not exist.', 'supplierNo or the subject names no Usage Data Supplier.');
+                    AddNotFoundError(Errors, 'Usage Data Supp. Subscription entry %1 does not exist for supplier ''%2''.', 'An entry of entryNos does not exist or belongs to another supplier.');
+                    AddBusinessCentralError(Errors, 'Usage Data Supp. Subscription entry %1 has no Connect to Subscription Method. ...', 'A listed entry has no method, because Connect to Sub. Header No. is not set.', 'Set Connect to Sub. Header No. on the entry first, for example with Data.Records.Set.');
+                    AddBusinessCentralError(Errors, 'Usage Data Supp. Subscription entry %1 is already connected to Subscription Line %2. ...', 'A listed entry is connected already.', 'Disconnect it first with Subscription.Usage.DisconnectSubscription, or leave it out.');
+                    AddBusinessCentralError(Errors, 'Usage Data Supp. Subscription entries %1 and %2 both connect to Subscription ''%3''. ...', 'Two selected entries name the same Subscription; Microsoft would ask for confirmation, which an unattended call cannot give.', 'Connect them in separate calls, after checking that this is intended.');
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                begin
+                    AddBusinessCentralError(Errors, 'The request must supply ''subscriptionLineEntryNo'' or ''usageDataSubscriptionEntryNo''.', 'Neither parameter was sent.', 'Send one of the two entry numbers.');
+                    AddNotFoundError(Errors, 'Subscription Line %1 does not exist.', 'subscriptionLineEntryNo names no Subscription Line.');
+                    AddNotFoundError(Errors, 'Usage Data Supp. Subscription entry %1 does not exist.', 'usageDataSubscriptionEntryNo names no entry.');
+                    AddBusinessCentralError(Errors, 'Usage Data Supp. Subscription entry %1 is not connected to a Subscription Line.', 'The supplier subscription has no Subscription Line.', 'Nothing to disconnect.');
+                    AddBusinessCentralError(Errors, 'Subscription Line %1 is not connected to a usage data supplier''s subscription.', 'The line has no Supplier Reference Entry No., or no supplier subscription carries it.', 'Nothing to disconnect.');
+                end;
             'Subscription.Deferral.Release':
                 begin
                     AddBusinessCentralError(Errors, 'The parameter ''postUntilDate'' (%1) must not be later than ''postingDate'' (%2).', 'postUntilDate is after postingDate.', 'Send a postUntilDate on or before postingDate.');
@@ -985,6 +1419,11 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Import.CreateContracts':
                 AddBusinessCentralError(Errors, '''%1'' is not a known import stage. Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.', 'An entry of stages is not a stage name. Nothing has run yet.', 'Use SubscriptionHeaders, CustomerContracts, SubscriptionLines or ContractLines.');
         end;
+    end;
+
+    local procedure AddAutomationError(var Errors: JsonArray)
+    begin
+        AddBusinessCentralError(Errors, 'You are not authorized to clear billing proposals or delete billing documents while a Billing Template bills automatically. ...', 'A Billing Template has Automation set and the user lacks Auto Contract Billing in User Setup.', 'Set Auto Contract Billing on the user in User Setup, as the client requires.');
     end;
 
     local procedure AddGroupByErrors(var Errors: JsonArray)
@@ -1050,4 +1489,64 @@ codeunit 10035075 "Sub Contract Parts ori"
         Entry := ContractMgt.ResponseField(Name, JsonType, Description);
         Entry.Add('children', Children);
     end;
+    /// <summary>Shared operations contract helper.</summary>
+
+    /// <summary>Shared operations contract helper.</summary>
+
+    /// <summary>Shared operations contract helper.</summary>
+
+    /// <summary>Shared operations contract helper.</summary>
+
+    /// <summary>Shared operations contract helper.</summary>
+
+    /// <summary>Shared operations contract helper.</summary>
+
+    local procedure PartnerContractName(MessageType: Text): Text
+    begin
+        if MessageType.StartsWith('Subscription.VendorContract.') then
+            exit('Vendor Subscription Contract');
+        exit('Customer Subscription Contract');
+    end;
+
+    local procedure DateParameter(Name: Text; Description: Text) Entry: JsonObject
+    begin
+        Entry := ContractMgt.Parameter(Name, 'string', false, Description);
+        Entry.Add('format', 'date');
+    end;
+
+    local procedure BooleanParameter(Name: Text; DefaultValue: Boolean; Description: Text) Entry: JsonObject
+    begin
+        Entry := ContractMgt.Parameter(Name, 'boolean', false, Description);
+        Entry.Add('default', DefaultValue);
+    end;
+
+    local procedure IntegerParameter(Name: Text; DefaultValue: Integer; Description: Text) Entry: JsonObject
+    begin
+        Entry := ContractMgt.Parameter(Name, 'integer', false, Description);
+        Entry.Add('default', DefaultValue);
+    end;
+
+    local procedure TextParameter(Name: Text; DefaultValue: Text; Description: Text) Entry: JsonObject
+    begin
+        Entry := ContractMgt.Parameter(Name, 'string', false, Description);
+        Entry.Add('default', DefaultValue);
+    end;
+
+    local procedure GroupByParameter(Description: Text) Entry: JsonObject
+    begin
+        Entry := AllowedParameter('groupBy', 'string', false, Description + ' Any casing.', 'Contract,Customer');
+        Entry.Add('default', 'Contract');
+    end;
+
+    local procedure AllowedParameter(Name: Text; JsonType: Text; Required: Boolean; Description: Text; AllowedValues: Text) Entry: JsonObject
+    var
+        Allowed: JsonArray;
+        AllowedValue: Text;
+    begin
+        foreach AllowedValue in AllowedValues.Split(',') do
+            Allowed.Add(AllowedValue);
+        Entry := ContractMgt.Parameter(Name, JsonType, Required, Description);
+        Entry.Add('allowed', Allowed);
+    end;
+
 }

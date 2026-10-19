@@ -19,6 +19,46 @@ codeunit 95776 "Sub Renewal Tst ori"
         Assert: Codeunit "Library Assert";
         TestLibrary: Codeunit "Sub Test Library ori";
 
+    /// <summary>#41 AC06: selected contract line numbers create only their renewal lines and quote.</summary>
+    [Test]
+    procedure CreateQuote_SelectedLines_ExcludesOtherRenewableLines()
+    var
+        CustomerContract: Record "Customer Subscription Contract";
+        SubscriptionHeader: Record "Subscription Header";
+        ExtraPackage: Record "Subscription Package";
+        ContractLine: Record "Cust. Sub. Contract Line";
+        RenewalLine: Record "Sub. Contract Renewal Line";
+        SalesHeader: Record "Sales Header";
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+        Selected: JsonArray;
+        SelectedEntryNo: Integer;
+        QuoteNo: Code[20];
+    begin
+        // [GIVEN] Two independently renewable subscription lines on one customer contract.
+        TestLibrary.CreateBillableCustomerContract(CustomerContract, SubscriptionHeader, CalcDate('<CM+11M>', WorkDate()));
+        TestLibrary.CreatePackage(ExtraPackage, true, false, false);
+        TestLibrary.RunLineCreate(SubscriptionHeader."No.", ExtraPackage.Code, WorkDate(), CalcDate('<CM+11M>', WorkDate()));
+        TestLibrary.RunGetLines(Enum::"Message Type ori"::"Subscription.Contract.GetLines", CustomerContract."No.");
+        ContractLine.SetRange("Subscription Contract No.", CustomerContract."No.");
+        Assert.RecordCount(ContractLine, 2);
+        ContractLine.FindFirst();
+        Selected.Add(ContractLine."Line No.");
+        SelectedEntryNo := ContractLine."Subscription Line Entry No.";
+        RequestJson.Add('contractNo', CustomerContract."No.");
+        RequestJson.Add('contractLineNos', Selected);
+        // [WHEN] A renewal quote is requested for only the first line.
+        ResponseJson := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Renewal.CreateQuote", RequestJson);
+        // [THEN] Exactly the selected line is in the persisted renewal and the quote exists.
+        Assert.AreEqual(1, TestLibrary.ReadInteger(ResponseJson, 'renewalLinesCreated'), 'Only one selected line may renew.');
+        QuoteNo := CopyStr(TestLibrary.ReadText(ResponseJson, 'salesQuoteNo'), 1, MaxStrLen(QuoteNo));
+        Assert.IsTrue(SalesHeader.Get(SalesHeader."Document Type"::Quote, QuoteNo), 'The renewal quote must exist.');
+        RenewalLine.SetRange("Linked to Sub. Contract No.", CustomerContract."No.");
+        Assert.RecordCount(RenewalLine, 1);
+        RenewalLine.FindFirst();
+        Assert.AreEqual(SelectedEntryNo, RenewalLine."Subscription Line Entry No.", 'The renewal must refer to the selected original line.');
+    end;
+
     [Test]
     procedure Scenario_AC06_Extend_AddsPackageLinesOntoContract()
     var
