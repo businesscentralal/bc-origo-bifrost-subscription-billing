@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-20) - AppSource release preparation
+
+- `test/app.json`: the Bifrost Foundation dependency minimum is 28.0.5.590, the same as `app/app.json` (Gunnar raised the app's floor on 20.10.2026).
+- `contextSensitiveHelpUrl` stays at https://docs.bifrost.origo.is/{0}/subscription-billing/. AppSourceCop (AS0051) requires it even though the app has no pages, and `tools/Test-HelpLinks.ps1` checks that it names the app's own page. That page is now published (bifrost#104) in en-us and is-is, so the link resolves.
+
 ### Changed (2026-10-19) - Foundation minimum 28.0.3.530
 
 - The Bifrost Foundation dependency minimum is 28.0.3.530 (the 28.0.3 release, as for Bifrost Attachments) instead of 28.0.5.590. The app compiles with AppSourceCop against that package, and the UAT tenant (Deploy to Bifrost) runs no newer Foundation, so main's deployment failed with AL1024 at 28.0.5.590.
