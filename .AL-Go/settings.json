@@ -54,5 +54,6 @@
     "tools/Get-SharedAlpacaBuildOrder.ps1",
     "tools/SharedAlpacaContainer.ps1",
     "tools/Test-SharedAlpacaContainer.ps1"
-  ]
+  ],
+  "repoVersion": "1.0.1"
 }
