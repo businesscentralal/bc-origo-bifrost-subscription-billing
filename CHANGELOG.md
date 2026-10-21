@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [28.0.0.0] - 2026-10-20 (first AppSource version; developed as 29.0.0.0 until 2026-10-14)
+
 ### Changed (2026-10-20) - AppSource release preparation
 
 - `test/app.json`: the Bifrost Foundation dependency minimum is 28.0.5.590, the same as `app/app.json` (Gunnar raised the app's floor on 20.10.2026).
@@ -72,7 +74,6 @@
 - Correct possessive apostrophes in nine public help implementations; replace the misleading missing-Currency-Code refusal with a local-currency explanation in `Sub Con UpdFCY Impl ori` (10035041), and use an explicit bilingual missing-supplier refusal in `Sub Usg Import Impl ori` (10035053).
 - Native regressions in `Sub Usage Tst ori` (95777) parse both text and base64 CSV files and assert persisted blob status/hash and imported values. `Sub Should Have Tst ori` (95715) exercises actual vendor invoice billing, and `Sub Renewal Tst ori` (95776) verifies only selected contract lines renew. Existing #36 expired customer/vendor lines and Force refusal and #38 connect-through-billing assertions are retained.
 
-
 ### Fixed (2026-10-16) - usage processing scope
 
 - `Sub Usg Process Impl ori` (codeunit 10035054): scope every processing stage to the requested Usage Data Import. Microsoft's billing codeunit iterates the incoming view, so an unfiltered record could process other imports and pass the wrong import to the next stage. The #38 AC04 native test also verifies that a later, unrelated import stays untouched.
@@ -130,7 +131,6 @@
 ### Changed (2026-10-04) - CI/CD builds only main; every pull request gets a Pull Request Build
 
 - Build policy only, no app change. `CI/CD` runs on pushes to `main` only, and `Pull Request Build` runs for pull requests into any branch. `.github/AL-Go-Settings.json` sets `CICDPushBranches` to `main` and `CICDPullRequestBranches` to `**`, so Update AL-Go System Files keeps the triggers.
-
 
 ### Added (2026-10-15) - should-have flows: vendor invoice lines, usage reset, billing filter, removal, partial renewal (#41)
 
@@ -254,7 +254,6 @@
 - `tools/` carries Foundation's source guards. The Source Guards workflow runs the checks that already pass on Attachments: no call stack in answers, validated table views, no obsolete, permission coverage, and Icelandic keyword counts. Contract-parameter and mixed-language guards are copied but not wired in.
 - Help Links is not wired in until `businesscentralal/bifrost` main has `help/subscription-billing/`.
 
-
 ### Fixed (2026-10-01) - Billing.CreateProposal is irreversible (issue #22)
 
 - `Subscription.Billing.CreateProposal` now declares effect `irreversible`. Microsoft Subscription
@@ -334,16 +333,12 @@
 - App logo: new Bifröst wordmark with "Powered by origo." tagline; app name renders in the blank space above the wordmark, tagline position unchanged.
 - `privacyStatement` and `EULA` in `app.json` now point at the Bifrost Foundation privacy and EULA pages (<https://businesscentralal.github.io/bifrost/en-us/foundation/privacy/> and <https://businesscentralal.github.io/bifrost/en-us/foundation/eula/>), and the Application Insights connection string now uses the shared Bifrost telemetry resource.
 
-
-## [28.0.0.0] - unreleased (first AppSource version; developed as 29.0.0.0 until 2026-10-14)
-
 ### Fixed (2026-09-17) - Icelandic translations and AL Comment authority (PR #7)
 
 - Icelandic translations in Subscription Billing were reviewed and corrected (terminology,
   grammar, plurals, spelling, and consistency). The AL `Comment = 'is-IS=…'` authority on
   Label declarations was brought into line with the generated `.xlf` targets so a future
   xlf regeneration cannot silently revert the corrections.
-
 
 ### Reviewed (2026-09-07) - Setup Wizard action rollout
 
