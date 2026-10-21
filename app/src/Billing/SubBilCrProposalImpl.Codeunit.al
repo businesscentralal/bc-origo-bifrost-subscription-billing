@@ -37,14 +37,14 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Billing.CreateProposal, Subscription, Billing, CreateProposal, proposal', Comment = 'is-IS=Subscription.Billing.CreateProposal, áskrift, reikningagerð, stofna tillögu, tillaga';
+        KeywordsLbl: Label 'create billing proposal, run recurring billing, which contracts are due, billing proposal for template, generate billing lines, bill due subscription lines, start a billing run, proposal for billing date', Comment = 'is-IS=stofna reikningstillögu, keyra endurtekna reikningagerð, hvaða samningar eru á gjalddaga, reikningstillaga fyrir sniðmát, útbúa reikningslínur, reikningsfæra gjaldfallnar áskriftarlínur, hefja reikningagerð, tillaga fyrir reikningsdagsetningu';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Billing.CreateProposal: Irreversible. Generates billing proposal lines; Microsoft Subscription Billing commits them every 50 contracts.', Comment = 'is-IS=Subscription.Billing.CreateProposal: Óafturkræft. Býr til línur í reikningatillögu; Microsoft Subscription Billing vistar þær eftir hverja 50 samninga.';
+        SelectionLbl: Label 'Create a billing proposal: generates billing proposal lines under a Billing Template for the Subscription Lines due on a billing date, without creating any document. Irreversible, because Microsoft commits the lines in batches. Next review with Subscription.Billing.PreviewDocuments and create documents with Subscription.Billing.CreateDocuments; undo with Subscription.Billing.ClearProposal.', Comment = 'is-IS=Stofna reikningstillögu: býr til tillögulínur undir reikningssniðmáti fyrir þær áskriftarlínur sem eru á gjalddaga á reikningsdagsetningu, án þess að búa til nokkurt skjal. Óafturkræf aðgerð, því Microsoft vistar línurnar í hópum. Næst er tillagan yfirfarin með Subscription.Billing.PreviewDocuments og skjöl stofnuð með Subscription.Billing.CreateDocuments; til að afturkalla skal nota Subscription.Billing.ClearProposal.';
     begin
         exit(SelectionLbl);
     end;

@@ -44,14 +44,14 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Usage.ConnectSubscriptions, Subscription, Usage, ConnectSubscriptions, connect, supplier, usage based billing', Comment = 'is-IS=Subscription.Usage.ConnectSubscriptions, áskrift, notkun, tengja áskriftir, tengja, birgir, notkunartengd reikningagerð';
+        KeywordsLbl: Label 'connect usage subscriptions, connect supplier subscription to subscription, link supplier subscriptions, connect usage data supplier subscription, connect to subscription, link supplier subscription to subscription line, connect new supplier subscriptions, match supplier subscriptions', Comment = 'is-IS=tengja notkunaráskriftir, tengja áskrift birgis við áskrift, tengja áskriftir birgis, tengja áskrift birgis notkunargagna, tengjast áskrift, tengja áskrift birgis við áskriftarlínu, tengja nýjar áskriftir birgis, para saman áskriftir birgis';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Usage.ConnectSubscriptions: Irreversible. Connects supplier subscriptions to Subscriptions; with New Subscription Lines it also ends the old lines.', Comment = 'is-IS=Subscription.Usage.ConnectSubscriptions: Óafturkræft. Tengir áskriftir birgis við áskriftir; með nýjum áskriftarlínum lýkur það einnig gömlu línunum.';
+        SelectionLbl: Label 'Connect supplier subscriptions: links a usage data supplier''s subscriptions to Subscriptions, and with New Subscription Lines it also ends the old lines. Irreversible, because Subscription.Usage.DisconnectSubscription removes the link but not the new lines. Run it before Subscription.Usage.Process for new supplier subscriptions.', Comment = 'is-IS=Tengja áskriftir birgis: tengir áskriftir birgis notkunargagna við áskriftir og með nýjum áskriftarlínum lýkur það einnig gömlu línunum. Óafturkræf aðgerð, því Subscription.Usage.DisconnectSubscription fjarlægir tenginguna en ekki nýju línurnar. Keyrðu hana á undan Subscription.Usage.Process fyrir nýjar áskriftir birgis.';
     begin
         exit(SelectionLbl);
     end;
@@ -70,7 +70,7 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.ConnectSubscriptionsParameters();
         exit(true);
     end;
 

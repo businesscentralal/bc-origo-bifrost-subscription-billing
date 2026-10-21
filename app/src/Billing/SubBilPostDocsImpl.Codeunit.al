@@ -24,7 +24,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         PostingGate: Codeunit "Sub Posting Gate ori";
-        DescriptionLbl: Label 'Posts unposted sales and purchase documents that a Subscription Billing run created, through Business Central''s own posting path. Refuses a document that run did not create.', MaxLength = 250, Comment = 'is-IS=Bókar óbókúð sölu- og innkaupaskjöl sem reikningskeyrsla áskrifta bjó til, með eigin bókunarleið Business Central. Hafnar skjali sem sú keyrsla bjó ekki til.';
+        DescriptionLbl: Label 'Posts unposted sales and purchase documents that a Subscription Billing run created, through Business Central''s own posting path. Refuses a document that run did not create.', MaxLength = 250, Comment = 'is-IS=Bókar óbókuð sölu- og innkaupaskjöl sem reikningskeyrsla áskrifta bjó til, með eigin bókunarleið Business Central. Hafnar skjali sem sú keyrsla bjó ekki til.';
         MissingDocumentsErr: Label 'The request is missing the required parameter ''%1''.', Comment = '%1 = parameter name||is-IS=Beiðnina vantar nauðsynlega færibreytu ''%1''.';
         EmptyDocumentsErr: Label 'The parameter ''documents'' must contain at least one document.', Comment = 'is-IS=Færibreytan ''documents'' verður að innihalda að minnsta kosti eitt skjal.';
         DocumentShapeErr: Label 'Each entry of ''documents'' must be a JSON object with partner, documentType and documentNo.', Comment = 'is-IS=Hver færsla í ''documents'' verður að vera JSON-hlutur með partner, documentType og documentNo.';
@@ -65,14 +65,14 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Billing.PostDocuments, Subscription, Billing, PostDocuments, invoice, post', Comment = 'is-IS=Subscription.Billing.PostDocuments, áskrift, reikningagerð, bóka skjöl, reikningur, bóka';
+        KeywordsLbl: Label 'post billing documents, post subscription invoices, post unposted billing invoices, post purchase documents from billing, book the invoices, post the billing run, post vendor invoices from contracts, post sales invoices from contracts', Comment = 'is-IS=bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningakeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Billing.PostDocuments: Posts billing documents. Irreversible and always commits.', Comment = 'is-IS=Subscription.Billing.PostDocuments: Bókar reikningsskjöl. Óafturkræf aðgerð sem staðfestir alltaf.';
+        SelectionLbl: Label 'Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purch.Document.Post instead.', Comment = 'is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purch.Document.Post.';
     begin
         exit(SelectionLbl);
     end;

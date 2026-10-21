@@ -43,14 +43,14 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Billing.CreateDocuments, Subscription, Billing, CreateDocuments, invoice, post', Comment = 'is-IS=Subscription.Billing.CreateDocuments, áskrift, reikningagerð, stofna skjöl, reikningur, bóka';
+        KeywordsLbl: Label 'create billing documents, bill all contracts, run the billing, turn proposal into invoices, create sales invoices from proposal, create purchase invoices from proposal, post billing documents, recurring billing run', Comment = 'is-IS=stofna reikningsskjöl, reikningsfæra alla samninga, keyra reikningagerð, breyta tillögu í reikninga, stofna sölureikninga út frá tillögu, stofna innkaupareikninga út frá tillögu, bóka reikningsskjöl, endurtekin reikningagerð';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Billing.CreateDocuments: Creates billing documents and may post them. Irreversible.', Comment = 'is-IS=Subscription.Billing.CreateDocuments: Stofnar reikningaskjöl og getur bókað þau. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Create billing documents: turns the unbilled proposal lines of a Billing Template into sales or purchase documents, one per contract or one per customer, and can post the sales documents. Irreversible. Create the proposal first with Subscription.Billing.CreateProposal; look before you run with Subscription.Billing.PreviewDocuments; post purchase documents with Subscription.Billing.PostDocuments.', Comment = 'is-IS=Stofna reikningsskjöl: breytir óreikningsfærðum tillögulínum reikningssniðmáts í sölu- eða innkaupaskjöl, eitt fyrir hvern samning eða eitt fyrir hvern viðskiptamann, og getur bókað söluskjölin. Óafturkræf aðgerð. Fyrst þarf að gera tillögu með Subscription.Billing.CreateProposal; til að skoða áður en keyrt er skal nota Subscription.Billing.PreviewDocuments; innkaupaskjöl eru bókuð með Subscription.Billing.PostDocuments.';
     begin
         exit(SelectionLbl);
     end;

@@ -40,14 +40,14 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Deferral.Release, Subscription, Deferral, Release, deferred revenue, posting', Comment = 'is-IS=Subscription.Deferral.Release, áskrift, frestun, losa, frestaðar tekjur, bókun';
+        KeywordsLbl: Label 'release deferrals, release deferred revenue, release deferred cost, post deferral release, deferred revenue release, release contract deferrals, post deferrals to the general ledger, deferral release up to date', Comment = 'is-IS=losa frestanir, losa frestaðar tekjur, losa frestaðan kostnað, bóka losun frestana, losun frestaðra tekna, losa frestanir samninga, bóka frestanir í fjárhagsbókhald, losa frestanir fram að dagsetningu';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Deferral.Release: Releases deferred revenue or cost. Irreversible.', Comment = 'is-IS=Subscription.Deferral.Release: Losar frestaðar tekjur eða kostnað. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Release deferrals: releases every eligible customer and vendor deferral of every contract up to the work date and posts the release to the general ledger. Irreversible, and not scoped to one contract. To rebuild contract analysis use Subscription.Analysis.Recalculate.', Comment = 'is-IS=Losa frestanir: losar allar gjaldgengar frestanir viðskiptamanna og lánardrottna á öllum samningum fram að vinnudagsetningu og bókar losunina í fjárhagsbókhald. Óafturkræf aðgerð og ekki afmörkuð við einn samning. Til að endurbyggja samningagreiningu skal nota Subscription.Analysis.Recalculate.';
     begin
         exit(SelectionLbl);
     end;
@@ -118,13 +118,14 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Runs Microsoft''s Contract Deferrals Release report, which releases every eligible customer and vendor deferral and posts the release to the general ' +
-            'ledger.';
+            'ledger. Use it when the deferrals of a period are due for release. It covers every contract up to the session work date; postingDate and postUntilDate only ' +
+            'guard that the release goes no further than the caller expects.';
         exit(true);
     end;
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := 'The report always uses the session work date: its dates live on its request page, SetRequestPageParameters is internal, and request page XML is not ' +
+        Notes := 'The report always uses the session work date: its dates live on its request page, which cannot be set from outside Business Central, and request page XML is not ' +
             'applied to it. postingDate and postUntilDate are therefore a guard, not instructions: the call refuses to run when the release would reach further ' +
             'than the caller asked. To release up to an earlier date, set the session work date first. The release is not scoped to a contract and cannot be ' +
             'undone except by the normal deferral correction. If deferrals outside the window are released anyway, the answer carries ' +

@@ -38,14 +38,14 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.VendorContract.GetLines, Subscription, VendorContract, GetLines, vendor, attach lines', Comment = 'is-IS=Subscription.VendorContract.GetLines, áskrift, áskriftarsamningur lánardrottins, sækja línur, lánardrottinn, tengja línur';
+        KeywordsLbl: Label 'attach lines to vendor contract, add subscription lines to vendor contract, get vendor contract lines, assign subscription lines to vendor contract, link lines to vendor contract, unassigned vendor lines, attach eligible vendor lines, add lines to vendor contract', Comment = 'is-IS=tengja línur við samning lánardrottins, bæta áskriftarlínum við samning lánardrottins, sækja samningslínur lánardrottins, úthluta áskriftarlínum á samning lánardrottins, festa línur við samning lánardrottins, ótengdar línur lánardrottins, tengja hæfar línur lánardrottins, bæta línum við samning lánardrottins';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.VendorContract.GetLines: Attaches eligible lines to a vendor contract.', Comment = 'is-IS=Subscription.VendorContract.GetLines: Tengir hæfar línur við áskriftarsamning lánardrottins.';
+        SelectionLbl: Label 'Attach lines to a vendor contract: creates a contract line for each unassigned Subscription Line and attaches it to the Vendor Subscription Contract. Writes data; nothing is billed. For customer contracts use Subscription.Contract.GetLines; bill afterwards with Subscription.VendorContract.CreateInvoice.', Comment = 'is-IS=Tengja línur við samning lánardrottins: stofnar samningslínu fyrir hverja ótengda áskriftarlínu og tengir hana við áskriftarsamning lánardrottins. Skrifar gögn; ekkert er reikningsfært. Fyrir samninga viðskiptamanna skal nota Subscription.Contract.GetLines; á eftir er reikningsfært með Subscription.VendorContract.CreateInvoice.';
     begin
         exit(SelectionLbl);
     end;
@@ -116,7 +116,7 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Attaches Subscription Lines that are on no contract yet to a Vendor Subscription Contract, creating a Vend. Sub. Contract Line for each. Microsoft ' +
-            'exposes only the single-line attach procedure, so the call runs it once per candidate line.';
+            'attaches one line at a time, so the call attaches the candidate lines one by one.';
         exit(true);
     end;
 

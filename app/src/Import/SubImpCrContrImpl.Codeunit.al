@@ -41,14 +41,14 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Import.CreateContracts, Subscription, Import, CreateContracts, migration, contract', Comment = 'is-IS=Subscription.Import.CreateContracts, áskrift, innflutningur, stofna samninga, gagnaflutningur, samningur';
+        KeywordsLbl: Label 'import contracts, create contracts from staging, migrate subscriptions, contract migration, create subscription contracts from import, load contracts from staging rows, import subscription headers, import contract lines', Comment = 'is-IS=flytja inn samninga, stofna samninga úr bráðabirgðalínum, flytja áskriftir yfir, gagnaflutningur samninga, stofna áskriftarsamninga úr innflutningi, hlaða samningum úr bráðabirgðalínum, flytja inn áskriftarhausa, flytja inn samningslínur';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Import.CreateContracts: Creates subscription records from staged import rows. Irreversible.', Comment = 'is-IS=Subscription.Import.CreateContracts: Stofnar áskriftarfærslur úr sviðsettum innflutningslínum. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Create contracts from staged import rows: turns unprocessed staging rows into Subscription Headers, Customer Subscription Contracts, Subscription Lines and contract lines, one stage at a time, committing as it goes. Irreversible. To add the lines of one package to a single Subscription without staging use Subscription.Line.Create.', Comment = 'is-IS=Stofna samninga úr innfluttum bráðabirgðalínum: breytir óunnum bráðabirgðalínum í áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur, eitt skref í einu, og vistar jafnóðum. Óafturkræf aðgerð. Til að bæta línum eins pakka við eina áskrift án bráðabirgðalína skal nota Subscription.Line.Create.';
     begin
         exit(SelectionLbl);
     end;
@@ -121,7 +121,10 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Turns staged import rows into subscription records through Microsoft''s import codeunits.';
+        Overview := 'Turns staged import rows into Subscription Headers, Customer Subscription Contracts, Subscription Lines and customer contract lines, in four stages that ' +
+            'always run in the fixed order SubscriptionHeaders, CustomerContracts, SubscriptionLines, ContractLines. The rows are staged beforehand in Imported Subscription Header, ' +
+            'Imported Cust. Sub. Contract and Imported Subscription Line. Use it to migrate existing subscriptions into Subscription Billing: a row that fails keeps its error text on ' +
+            'the staging row and does not fail the call.';
         exit(true);
     end;
 

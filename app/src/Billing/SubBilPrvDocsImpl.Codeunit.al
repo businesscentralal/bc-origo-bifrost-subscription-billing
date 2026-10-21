@@ -44,14 +44,14 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Billing.PreviewDocuments, Subscription, Billing, PreviewDocuments, preview, invoice', Comment = 'is-IS=Subscription.Billing.PreviewDocuments, áskrift, reikningagerð, forskoða skjöl, forskoðun, reikningur';
+        KeywordsLbl: Label 'preview billing documents, what would the billing run create, preview invoices before billing, dry run billing, check billing run, review proposal documents, preview bulk billing, billing warnings', Comment = 'is-IS=forskoða reikningsskjöl, hvað myndi reikningakeyrslan búa til, forskoða reikninga áður en reikningsfært er, þurrkeyrsla reikningagerðar, athuga reikningakeyrslu, yfirfara skjöl tillögunnar, forskoða magnreikningagerð, viðvaranir reikningagerðar';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Billing.PreviewDocuments: Previews the bulk billing run without writing. Read-only.', Comment = 'is-IS=Subscription.Billing.PreviewDocuments: Forskoðar magnreikningagerð án þess að skrifa. Lesaðgerð.';
+        SelectionLbl: Label 'Preview billing documents: lists the documents Subscription.Billing.CreateDocuments would create from a Billing Template''s proposal lines, with paging and warnings. Read-only. Create the proposal first with Subscription.Billing.CreateProposal; for one contract without a template use Subscription.Contract.PreviewInvoice.', Comment = 'is-IS=Forskoða reikningsskjöl: sýnir þau skjöl sem Subscription.Billing.CreateDocuments myndi búa til úr tillögulínum reikningssniðmáts, með síðuskiptingu og viðvörunum. Lesaðgerð. Fyrst þarf að gera tillögu með Subscription.Billing.CreateProposal; fyrir einn samning án sniðmáts skal nota Subscription.Contract.PreviewInvoice.';
     begin
         exit(SelectionLbl);
     end;

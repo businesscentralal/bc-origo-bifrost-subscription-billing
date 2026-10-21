@@ -41,14 +41,14 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Billing.ClearProposal, Subscription, Billing, ClearProposal, clear, undo, proposal', Comment = 'is-IS=Subscription.Billing.ClearProposal, áskrift, reikningagerð, hreinsa tillögu, hreinsa, afturkalla, tillaga';
+        KeywordsLbl: Label 'clear billing proposal, delete billing proposal, undo billing proposal, remove proposal lines, reset next billing date, start the billing run over, cancel the proposal, clear proposal for contract', Comment = 'is-IS=hreinsa reikningstillögu, eyða reikningstillögu, afturkalla reikningstillögu, fjarlægja tillögulínur, færa næstu reikningsdagsetningu til baka, byrja reikningagerðina upp á nýtt, hætta við tillöguna, hreinsa tillögu fyrir samning';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Billing.ClearProposal: Irreversible. Deletes a billing proposal and resets the Next Billing Date of its Subscription Lines.', Comment = 'is-IS=Subscription.Billing.ClearProposal: Óafturkræft. Eyðir reikningstillögu og færir næstu reikningsdagsetningu áskriftarlína hennar til baka.';
+        SelectionLbl: Label 'Clear a billing proposal: deletes the proposal lines of a Billing Template, or of one contract, that are not on a document yet and resets the Next Billing Date of their Subscription Lines. Irreversible. If lines are already on documents, delete the documents first with Subscription.Billing.DeleteDocuments; to propose again use Subscription.Billing.CreateProposal.', Comment = 'is-IS=Hreinsa reikningstillögu: eyðir tillögulínum reikningssniðmáts, eða eins samnings, sem eru ekki enn á skjali og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Óafturkræf aðgerð. Ef línur eru þegar á skjölum skal fyrst eyða skjölunum með Subscription.Billing.DeleteDocuments; til að gera tillögu aftur skal nota Subscription.Billing.CreateProposal.';
     begin
         exit(SelectionLbl);
     end;
@@ -67,7 +67,7 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.ClearProposalParameters();
         exit(true);
     end;
 

@@ -43,14 +43,14 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.PreviewInvoice, Subscription, Contract, PreviewInvoice, customer, preview', Comment = 'is-IS=Subscription.Contract.PreviewInvoice, áskrift, samningur, forskoða reikning, viðskiptamaður, forskoðun';
+        KeywordsLbl: Label 'preview customer invoice, what would the contract bill, preview contract billing, dry run contract invoice, check invoice before creating, preview billing lines for contract, how much would be invoiced, preview subscription invoice', Comment = 'is-IS=forskoða reikning viðskiptamanns, hvað myndi samningurinn reikningsfæra, forskoða reikningsfærslu samnings, þurrkeyrsla samningsreiknings, athuga reikning áður en hann er stofnaður, forskoða reikningslínur samnings, hve mikið yrði reikningsfært, forskoða áskriftarreikning';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.PreviewInvoice: Previews a customer invoice without writing. Read-only.', Comment = 'is-IS=Subscription.Contract.PreviewInvoice: Forskoðar reikning viðskiptamanns án þess að skrifa. Lesaðgerð.';
+        SelectionLbl: Label 'Preview a customer contract invoice: builds the billing proposal lines Subscription.Contract.CreateInvoice would use, reads them back and removes them again. Read-only in effect: nothing is left behind and no document is created. For a Billing Template run use Subscription.Billing.PreviewDocuments.', Comment = 'is-IS=Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.';
     begin
         exit(SelectionLbl);
     end;

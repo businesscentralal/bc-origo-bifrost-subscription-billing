@@ -43,14 +43,14 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.VendorContract.PreviewInvoice, Subscription, VendorContract, PreviewInvoice, vendor, preview', Comment = 'is-IS=Subscription.VendorContract.PreviewInvoice, áskrift, áskriftarsamningur lánardrottins, forskoða reikning, lánardrottinn, forskoðun';
+        KeywordsLbl: Label 'preview vendor invoice, what would the vendor contract bill, preview purchase invoice from contract, dry run vendor invoice, check vendor billing, preview vendor contract billing, how much would the vendor invoice, preview purchase document', Comment = 'is-IS=forskoða reikning lánardrottins, hvað myndi samningur lánardrottins reikningsfæra, forskoða innkaupareikning út frá samningi, þurrkeyrsla reiknings lánardrottins, athuga reikningagerð lánardrottins, forskoða reikningsfærslu samnings lánardrottins, hve mikið myndi lánardrottinn reikningsfæra, forskoða innkaupaskjal';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.VendorContract.PreviewInvoice: Previews a vendor invoice without writing. Read-only.', Comment = 'is-IS=Subscription.VendorContract.PreviewInvoice: Forskoðar reikning lánardrottins án þess að skrifa. Lesaðgerð.';
+        SelectionLbl: Label 'Preview a vendor contract invoice: builds the billing proposal lines Subscription.VendorContract.CreateInvoice would use, reads them back and removes them again. Read-only in effect: nothing is left behind and no document is created. For a customer contract use Subscription.Contract.PreviewInvoice.', Comment = 'is-IS=Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.';
     begin
         exit(SelectionLbl);
     end;

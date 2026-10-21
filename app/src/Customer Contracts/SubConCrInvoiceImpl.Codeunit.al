@@ -22,7 +22,7 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
         ForeignPendingErr: Label 'Contract ''%1'' has %2 pending billing line(s) with no billing template assigned. Clear or complete that proposal before billing this contract, because creating this invoice would also convert those lines.', Comment = '%1 = foreign contract no., %2 = row count||is-IS=Samningur ''%1'' er með %2 óafgreiddar reikningslínur án úthlutaðs reikningssniðmáts. Ljúktu við eða hreinsaðu þá tillögu áður en þessi samningur er reikningsfærður, því annars myndi þessi aðgerð einnig umbreyta þessum línum.';
         NothingDueMsg: Label 'No Subscription Lines were due for billing on or before %1 for contract %2.', Comment = '%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru komnar á gjalddaga til reikningsfærslu á eða fyrir %1 fyrir samning %2.';
         NothingNewMsg: Label 'Nothing new could be billed for contract %1. Its due Subscription Lines already sit on a billing proposal or on an unposted document - post or clear those first.', Comment = '%1 = contract number||is-IS=Ekkert nýtt var hægt að reikningsfæra fyrir samning %1. Gjaldfallnar áskriftarlínur hans eru þegar á reikningstillögu eða óbókuðu skjali - bókaðu þær eða hreinsaðu þær fyrst.';
-        DescriptionLbl: Label 'Bills one customer Subscription Contract to an unposted sales invoice. Returns the documents created.', MaxLength = 250, Comment = 'is-IS=Reikningsfærir einn áskriftarsamning viðskiptamanns á óbókaðan sölureikning. Skilar þeim skjölum sem urðu til.';
+        DescriptionLbl: Label 'Bills one customer Subscription Contract to an unposted sales invoice, or a credit memo when a line calls for one. Returns the documents created.', MaxLength = 250, Comment = 'is-IS=Reikningsfærir einn áskriftarsamning viðskiptamanns á óbókaðan sölureikning, eða kreditreikning þegar lína krefst þess. Skilar þeim skjölum sem urðu til.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -41,14 +41,14 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.CreateInvoice, Subscription, Contract, CreateInvoice, customer, invoice', Comment = 'is-IS=Subscription.Contract.CreateInvoice, áskrift, samningur, stofna reikning, viðskiptamaður, reikningur';
+        KeywordsLbl: Label 'invoice a customer contract, bill one contract, create sales invoice from contract, bill subscription contract, create contract invoice, invoice due contract lines, credit memo from contract, bill customer subscription', Comment = 'is-IS=reikningsfæra samning viðskiptamanns, reikningsfæra einn samning, stofna sölureikning út frá samningi, reikningsfæra áskriftarsamning, stofna samningsreikning, reikningsfæra gjaldfallnar samningslínur, kreditreikningur út frá samningi, reikningsfæra áskrift viðskiptamanns';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.CreateInvoice: Creates an unposted customer invoice. Irreversible.', Comment = 'is-IS=Subscription.Contract.CreateInvoice: Stofnar óbókaðan reikning viðskiptamanns. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Invoice one customer contract: bills the due Subscription Lines of one Customer Subscription Contract into an unposted sales invoice or credit memo, without a Billing Template. Irreversible, because Microsoft commits each document. Check first with Subscription.Contract.PreviewInvoice; for many contracts use Subscription.Billing.CreateProposal; to undo use Subscription.Billing.DeleteDocuments.', Comment = 'is-IS=Reikningsfæra samning viðskiptamanns: reikningsfærir gjaldfallnar áskriftarlínur eins áskriftarsamnings viðskiptamanns á óbókaðan sölureikning eða kreditreikning, án reikningssniðmáts. Óafturkræf aðgerð, því Microsoft vistar hvert skjal. Fyrst er athugað með Subscription.Contract.PreviewInvoice; fyrir marga samninga skal nota Subscription.Billing.CreateProposal; til að afturkalla skal nota Subscription.Billing.DeleteDocuments.';
     begin
         exit(SelectionLbl);
     end;
