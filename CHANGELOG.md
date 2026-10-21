@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-21) - AppSource delivery
+
+- `.AL-Go/settings.json`: `deliverToAppSource` names the Partner Center offer for Bifrost Subscription Billing (productId 38e354a0-cb89-4b45-81de-b3b69369627f, main app folder `app`, branch main, no continuous delivery), so the Publish To AppSource workflow can deliver new versions to the offer.
+
 ## [28.0.0.0] - 2026-10-20 (first AppSource version; developed as 29.0.0.0 until 2026-10-14)
 
 ### Changed (2026-10-20) - AppSource release preparation
