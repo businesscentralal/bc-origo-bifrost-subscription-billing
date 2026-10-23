@@ -44,14 +44,14 @@ codeunit 10035073 "Sub Con Merge Impl ori" implements "Msg Interface ori", "Msg 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.MergeLines, Subscription, Contract, MergeLines, customer, combine', Comment = 'is-IS=Subscription.Contract.MergeLines, áskrift, samningur, sameina línur, viðskiptamaður';
+        KeywordsLbl: Label 'merge contract lines, combine contract lines, merge duplicate lines, combine subscriptions into one, merge subscription lines, consolidate contract lines, merge lines into reference line, sum quantity of lines', Comment = 'is-IS=sameina samningslínur, steypa saman samningslínum, sameina tvíteknar línur, sameina áskriftir í eina, sameina áskriftarlínur, safna samningslínum saman, sameina línur í tilvísunarlínu, leggja saman magn lína';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.MergeLines: Merges customer contract lines. The closed lines stay closed.', Comment = 'is-IS=Subscription.Contract.MergeLines: Sameinar samningslínur viðskiptamanns. Lokaðu línurnar standa áfram lokaðar.';
+        SelectionLbl: Label 'Merge customer contract lines: closes the named lines, copies the reference line''s Subscription with the summed quantity and opens one new contract line for it. Writes data; nothing is posted. Vendor contract lines are not merged. Attach lines first with Subscription.Contract.GetLines; bill afterwards with Subscription.Contract.CreateInvoice.', Comment = 'is-IS=Sameina samningslínur viðskiptamanns: lokar nefndum línum, afritar áskrift tilvísunarlínunnar með samanlögðu magni og opnar eina nýja samningslínu fyrir hana. Skrifar gögn; ekkert er bókað. Samningslínur lánardrottna eru ekki sameinaðar. Fyrst eru línur tengdar með Subscription.Contract.GetLines; á eftir er reikningsfært með Subscription.Contract.CreateInvoice.';
     begin
         exit(SelectionLbl);
     end;

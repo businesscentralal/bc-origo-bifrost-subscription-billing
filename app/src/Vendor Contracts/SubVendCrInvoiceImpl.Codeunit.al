@@ -43,14 +43,14 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.VendorContract.CreateInvoice, Subscription, VendorContract, CreateInvoice, vendor, invoice', Comment = 'is-IS=Subscription.VendorContract.CreateInvoice, áskrift, áskriftarsamningur lánardrottins, stofna reikning, lánardrottinn, reikningur';
+        KeywordsLbl: Label 'invoice a vendor contract, bill vendor contract, create purchase invoice from contract, vendor subscription invoice, create purchase credit memo from contract, purchase invoice for subscription, bill vendor subscription, create vendor contract invoice', Comment = 'is-IS=reikningsfæra samning lánardrottins, reikningsfæra áskriftarsamning lánardrottins, stofna innkaupareikning út frá samningi, áskriftarreikningur lánardrottins, stofna innkaupakreditreikning út frá samningi, innkaupareikningur vegna áskriftar, reikningsfæra áskrift lánardrottins, stofna samningsreikning lánardrottins';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.VendorContract.CreateInvoice: Creates an unposted vendor invoice. Irreversible.', Comment = 'is-IS=Subscription.VendorContract.CreateInvoice: Stofnar óbókaðan reikning lánardrottins. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Create a vendor contract purchase invoice: bills the due Subscription Lines of one Vendor Subscription Contract into an unposted purchase invoice or credit memo and never posts it. Irreversible, because Microsoft commits each document. Check first with Subscription.VendorContract.PreviewInvoice; to add lines to an existing invoice use Subscription.VendorContract.AddLinesToInvoice.', Comment = 'is-IS=Stofna innkaupareikning fyrir samning lánardrottins: reikningsfærir gjaldfallnar áskriftarlínur eins áskriftarsamnings lánardrottins á óbókaðan innkaupareikning eða kreditreikning og bókar hann aldrei. Óafturkræf aðgerð, því Microsoft vistar hvert skjal. Fyrst er athugað með Subscription.VendorContract.PreviewInvoice; til að bæta línum við fyrirliggjandi reikning skal nota Subscription.VendorContract.AddLinesToInvoice.';
     begin
         exit(SelectionLbl);
     end;

@@ -27,7 +27,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
         ForceNextStepTxt: Label 'Ask an administrator to assign the BIFROST Force ori permission set to your user, then call again.', Comment = 'is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.';
         InvalidRunModeErr: Label 'The parameter ''runMode'' must be either ''foreground'' or ''background'', not ''%1''.', Comment = '%1 = the supplied run mode||is-IS=Færibreytan ''runMode'' verður að vera annaðhvort ''foreground'' eða ''background'', ekki ''%1''.';
         JobDescriptionTxt: Label 'Bifrost: update Subscription Line term dates', Comment = 'is-IS=Bifröst: uppfæra samningstímadagsetningar áskriftarlína';
-        DescriptionLbl: Label 'Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, by running Microsoft''s codeunit 8058 through a Job Queue Entry. Needs BIFROST Force ori.', MaxLength = 250, Comment = 'is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með því að keyra kótaeiningu 8058 frá Microsoft í verkraðarfærslu. Krefst BIFROST Force ori.';
+        DescriptionLbl: Label 'Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, through a Job Queue Entry. Needs BIFROST Force ori.', MaxLength = 250, Comment = 'is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með verkraðarfærslu. Krefst BIFROST Force ori.';
         ForegroundTok: Label 'foreground', Locked = true;
         BackgroundTok: Label 'background', Locked = true;
 
@@ -48,14 +48,14 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.UpdateLineDates, Subscription, Contract, UpdateLineDates, term dates, close, job queue', Comment = 'is-IS=Subscription.Contract.UpdateLineDates, áskrift, samningur, uppfæra línudagsetningar, samningstími, loka, verkröð';
+        KeywordsLbl: Label 'update subscription line dates, close ended subscription lines, roll term dates forward, run term dates job, close fully invoiced lines, update line term dates, end of term processing, schedule term dates job queue', Comment = 'is-IS=uppfæra dagsetningar áskriftarlína, loka áskriftarlínum sem er lokið, færa tímadagsetningar fram, keyra tímadagsetningaverk, loka fullreikningsfærðum línum, uppfæra tímadagsetningar lína, vinnsla við lok tímabils, tímasetja tímadagsetningaverk í verkröð';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.UpdateLineDates: Irreversible. Closes ended Subscription Lines in every Subscription through a Job Queue Entry; needs BIFROST Force ori.', Comment = 'is-IS=Subscription.Contract.UpdateLineDates: Óafturkræft. Lokar áskriftarlínum sem er lokið í öllum áskriftum með verkraðarfærslu; krefst BIFROST Force ori.';
+        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the BIFROST Force ori permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar BIFROST Force ori. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
     begin
         exit(SelectionLbl);
     end;
@@ -74,7 +74,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.UpdateLineDatesParameters();
         exit(true);
     end;
 
@@ -128,7 +128,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Runs Microsoft''s codeunit 8058 Update Sub. Lines Term. Dates through a Job Queue Entry. For every Subscription in the company it closes each ' +
+        Overview := 'Runs Microsoft''s update of Subscription Line term dates through a Job Queue Entry. For every Subscription in the company it closes each ' +
             'Subscription Line whose end date has passed and that is fully invoiced, closes its customer or vendor contract line, and rolls the Term Until and ' +
             'Cancellation Possible Until dates of the other lines forward. runMode foreground (the default) runs the entry at once and reports what it closed; ' +
             'background hands it to the job queue and returns the entry.';
@@ -137,10 +137,10 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := 'The run is not limited to one contract: Microsoft''s codeunit updates every Subscription and commits after each, also under Omit Commit, so a ' +
+        Notes := 'The run is not limited to one contract: Microsoft''s update covers every Subscription and commits after each, also under Omit Commit, so a ' +
             'failure part way leaves the Subscriptions already updated in place. Customer and vendor contract lines are both covered. A line counts as ended when ' +
             'its end date is before today (the system date, not the work date) and its Next Billing Date is the day after the end date with no billing line ' +
-            'pending. When a Job Queue Entry for codeunit 8058 is already Ready, Waiting or In Process, nothing new is created: the answer has alreadyQueued true and ' +
+            'pending. When a Job Queue Entry for this update is already Ready, Waiting or In Process, nothing new is created: the answer has alreadyQueued true and ' +
             'names that entry. In foreground mode the Job Queue Entry is deleted after the run, as the Run once (foreground) action does; its Job Queue Log Entry stays. ' +
             'The counts compare closed lines before and after the run, so a line another session closed meanwhile is counted too.';
         exit(true);

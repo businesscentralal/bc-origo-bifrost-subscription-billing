@@ -43,14 +43,14 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Renewal.CreateQuote, Subscription, Renewal, CreateQuote, renewal, quote', Comment = 'is-IS=Subscription.Renewal.CreateQuote, áskrift, endurnýjun, stofna tilboð, endurnýjun, tilboð';
+        KeywordsLbl: Label 'create renewal quote, renew contract, renewal quotation, quote for contract renewal, renew subscription lines, create sales quote for renewal, contract renewal lines, renew a customer contract', Comment = 'is-IS=stofna endurnýjunartilboð, endurnýja samning, endurnýjunartilboð, tilboð vegna endurnýjunar samnings, endurnýja áskriftarlínur, stofna sölutilboð vegna endurnýjunar, endurnýjunarlínur samnings, endurnýja samning viðskiptamanns';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Renewal.CreateQuote: Creates a renewal sales quote. Irreversible.', Comment = 'is-IS=Subscription.Renewal.CreateQuote: Stofnar sölutilboð fyrir endurnýjun. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Create a renewal quote: builds renewal lines from the lines of a customer contract that have an end date and creates a sales quote from them. Irreversible. To extend a Subscription directly without a quote use Subscription.Renewal.Extend.', Comment = 'is-IS=Stofna endurnýjunartilboð: býr til endurnýjunarlínur úr þeim línum áskriftarsamnings viðskiptamanns sem hafa lokadagsetningu og stofnar sölutilboð út frá þeim. Óafturkræf aðgerð. Til að framlengja áskrift beint án tilboðs skal nota Subscription.Renewal.Extend.';
     begin
         exit(SelectionLbl);
     end;
@@ -120,7 +120,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Creates a renewal sales quote for a Customer Subscription Contract through Microsoft''s Create Sub. Contract Renewal, without the interactive renewal ' +
+        Overview := 'Creates a renewal sales quote for a Customer Subscription Contract through Microsoft''s renewal creation, without the interactive renewal ' +
             'wrapper, its dialog or request page.';
         exit(true);
     end;

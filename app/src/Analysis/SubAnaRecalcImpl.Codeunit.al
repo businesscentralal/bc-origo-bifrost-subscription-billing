@@ -38,14 +38,14 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Analysis.Recalculate, Subscription, Analysis, Recalculate, contract analysis', Comment = 'is-IS=Subscription.Analysis.Recalculate, áskrift, greining, endurreikna, samningsgreining';
+        KeywordsLbl: Label 'recalculate contract analysis, refresh contract analysis, contract analysis entries, rebuild contract analysis, subscription analysis, update the analysis, contract analysis report, analysis for this month', Comment = 'is-IS=endurreikna samningagreiningu, uppfæra samningagreiningu, greiningarfærslur samninga, endurbyggja samningagreiningu, áskriftargreining, uppfæra greininguna, skýrsla um samningagreiningu, greining fyrir þennan mánuð';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Analysis.Recalculate: Rebuilds contract analysis entries.', Comment = 'is-IS=Subscription.Analysis.Recalculate: Endurreiknar greiningarfærslur samninga.';
+        SelectionLbl: Label 'Rebuild contract analysis: adds this month''s analysis entries for every Subscription Line that has a contract, across all contracts, and skips lines that already have one. Writes analysis entries only and posts nothing. To release deferred revenue or cost use Subscription.Deferral.Release.', Comment = 'is-IS=Endurbyggja samningagreiningu: bætir við greiningarfærslum þessa mánaðar fyrir allar áskriftarlínur sem eru á samningi, þvert á alla samninga, og sleppir línum sem hafa þegar færslu. Skrifar eingöngu greiningarfærslur og bókar ekkert. Til að losa frestaðar tekjur eða kostnað skal nota Subscription.Deferral.Release.';
     begin
         exit(SelectionLbl);
     end;
@@ -115,7 +115,9 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Runs Microsoft''s Create Contract Analysis report, which adds Sub. Contr. Analysis Entry rows for every Subscription Line that belongs to a contract.';
+        Overview := 'Runs Microsoft''s Create Contract Analysis report, which adds Sub. Contr. Analysis Entry rows for every Subscription Line that belongs to a contract, as of ' +
+            'the system date. Use it to bring the contract analysis up to date for the current month; a line that already has an entry for the month is skipped, so repeating ' +
+            'the call in the same month changes nothing.';
         exit(true);
     end;
 

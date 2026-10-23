@@ -30,7 +30,7 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
         EntryNotFoundErr: Label 'Usage Data Supp. Subscription entry %1 does not exist.', Comment = '%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er ekki til.';
         EntryNotConnectedErr: Label 'Usage Data Supp. Subscription entry %1 is not connected to a Subscription Line.', Comment = '%1 = entry number||is-IS=Færsla %1 í áskriftum birgis notkunargagna er ekki tengd áskriftarlínu.';
         LineNotConnectedErr: Label 'Subscription Line %1 is not connected to a usage data supplier''s subscription.', Comment = '%1 = subscription line entry number||is-IS=Áskriftarlína %1 er ekki tengd áskrift birgis notkunargagna.';
-        DescriptionLbl: Label 'Disconnects a Subscription Line from its usage data suppliers subscription, like Disconnect from Subscription, and returns the link that was removed.', MaxLength = 250, Comment = 'is-IS=Aftengir áskriftarlínu frá áskrift birgis notkunargagna, eins og Aftengjast áskrift, og skilar tengingunni sem var fjarlægð.';
+        DescriptionLbl: Label 'Disconnects a Subscription Line from its usage data supplier''s subscription, like Disconnect from Subscription, and returns the link that was removed.', MaxLength = 250, Comment = 'is-IS=Aftengir áskriftarlínu frá áskrift birgis notkunargagna, eins og Aftengjast áskrift, og skilar tengingunni sem var fjarlægð.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -49,14 +49,14 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Usage.DisconnectSubscription, Subscription, Usage, DisconnectSubscription, disconnect, supplier, usage based billing', Comment = 'is-IS=Subscription.Usage.DisconnectSubscription, áskrift, notkun, aftengja áskrift, aftengja, birgir, notkunartengd reikningagerð';
+        KeywordsLbl: Label 'disconnect usage subscription, unlink supplier subscription, remove supplier link, disconnect from subscription, break link between subscription line and supplier, disconnect subscription line, remove usage connection, unlink usage based line', Comment = 'is-IS=aftengja notkunaráskrift, aftengja áskrift birgis, fjarlægja tengingu við birgi, aftengjast áskrift, rjúfa tengingu áskriftarlínu og birgis, aftengja áskriftarlínu, fjarlægja notkunartengingu, aftengja notkunartengda línu';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Usage.DisconnectSubscription: Removes the link between a Subscription Line and a supplier subscription. Lines and contracts stay.', Comment = 'is-IS=Subscription.Usage.DisconnectSubscription: Fjarlægir tenginguna milli áskriftarlínu og áskriftar birgis. Línur og samningar standa óbreyttir.';
+        SelectionLbl: Label 'Disconnect a supplier subscription: clears the link between a Subscription Line and a usage data supplier''s subscription. Writes data; no line, contract or usage data is deleted. To link again use Subscription.Usage.ConnectSubscriptions.', Comment = 'is-IS=Aftengja áskrift birgis: hreinsar tenginguna milli áskriftarlínu og áskriftar birgis notkunargagna. Skrifar gögn; engri línu, samningi eða notkunargögnum er eytt. Til að tengja aftur skal nota Subscription.Usage.ConnectSubscriptions.';
     begin
         exit(SelectionLbl);
     end;
@@ -75,7 +75,7 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.DisconnectSubscriptionParameters();
         exit(true);
     end;
 
@@ -126,15 +126,15 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Disconnects a Subscription Line from the usage data suppliers subscription it is linked to, named by the Subscription Line or by the supplier ' +
-            'subscription entry. The Subscriptions lines lose their Supplier Reference Entry No. and the supplier subscription loses its Subscription No. and ' +
+        Overview := 'Disconnects a Subscription Line from the usage data supplier''s subscription it is linked to, named by the Subscription Line or by the supplier ' +
+            'subscription entry. The Subscription''s lines lose their Supplier Reference Entry No. and the supplier subscription loses its Subscription No. and ' +
             'Subscription Line Entry No., so it can be connected again with Subscription.Usage.ConnectSubscriptions.';
         exit(true);
     end;
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('Microsoft''s own disconnect procedure asks for confirmation and answers No when no user interface is present, so this type performs its two steps ' +
+        Notes := ('Microsoft''s own disconnect asks for confirmation and answers No when no user interface is present, so this type performs its two steps ' +
             'itself, unchanged. Every line of the same Subscription with the same Supplier Reference Entry No. is disconnected, as in the client; linesDisconnected ' +
             'counts them. Lines created by a New Subscription Lines connect are not removed, and the lines it ended are not reopened. When both parameters are ' +
             'sent, subscriptionLineEntryNo is used. ' +

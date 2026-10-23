@@ -47,14 +47,14 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Billing.DeleteDocuments, Subscription, Billing, DeleteDocuments, delete, undo, documents', Comment = 'is-IS=Subscription.Billing.DeleteDocuments, áskrift, reikningagerð, eyða skjölum, eyða, afturkalla, skjöl';
+        KeywordsLbl: Label 'delete billing documents, delete unposted invoices, undo billing run, remove unposted billing invoice, delete unposted credit memo, return lines to proposal, undo invoice creation, delete invoice from contract', Comment = 'is-IS=eyða reikningsskjölum, eyða óbókuðum reikningum, afturkalla reikningagerð, fjarlægja óbókaðan reikning, eyða óbókuðum kreditreikningi, skila línum í tillöguna, afturkalla reikningsstofnun, eyða reikningi af samningi';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Billing.DeleteDocuments: Irreversible. Deletes unposted billing documents and returns their lines to the billing proposal.', Comment = 'is-IS=Subscription.Billing.DeleteDocuments: Óafturkræft. Eyðir óbókuðum reikningsskjölum og skilar línum þeirra aftur í reikningstillöguna.';
+        SelectionLbl: Label 'Delete billing documents: deletes unposted sales or purchase invoices and credit memos made by billing and returns their lines to the proposal; lines of documents made without a Billing Template are deleted instead. Irreversible, and posted documents are refused. To remove the proposal itself use Subscription.Billing.ClearProposal; to make the documents again use Subscription.Billing.CreateDocuments.', Comment = 'is-IS=Eyða reikningsskjölum: eyðir óbókuðum sölu- eða innkaupareikningum og kreditreikningum sem reikningagerð bjó til og skilar línum þeirra í tillöguna; línum skjala sem búin voru til án reikningssniðmáts er eytt. Óafturkræf aðgerð og bókuðum skjölum er hafnað. Til að fjarlægja sjálfa tillöguna skal nota Subscription.Billing.ClearProposal; til að búa skjölin til aftur skal nota Subscription.Billing.CreateDocuments.';
     begin
         exit(SelectionLbl);
     end;
@@ -73,7 +73,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.DeleteDocumentsParameters();
         exit(true);
     end;
 
@@ -133,7 +133,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('Without billingTemplateCode the call works on the billing lines without a Billing Template, which Subscription.Contract.CreateInvoice and ' +
-            'Subscription.VendorContract.CreateInvoice create; contractNo or documentNo is then required. Each document is deleted once with Delete(true), so ' +
+            'Subscription.VendorContract.CreateInvoice create; contractNo or documentNo is then required. Each document is deleted once with its delete trigger, so ' +
             'Business Central and Subscription Billing run their usual delete checks. billingLinesReturnedToProposal counts the billing lines that still exist ' +
             'without a document afterwards; billingLinesRemoved counts those Microsoft deleted, which happens for billing lines without a Billing Template and for ' +
             'credit memo lines that reverse an invoice. A posted invoice or credit memo cannot be deleted: cancel or correct it, for example with ' +

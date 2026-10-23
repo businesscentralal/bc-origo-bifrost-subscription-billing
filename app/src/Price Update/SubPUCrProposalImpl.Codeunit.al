@@ -40,14 +40,14 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.PriceUpdate.CreateProposal, Subscription, PriceUpdate, CreateProposal, price update, proposal, indexation', Comment = 'is-IS=Subscription.PriceUpdate.CreateProposal, áskrift, uppfærsla verðs, stofna tillögu, verðuppfærsla, tillaga, vísitölutenging';
+        KeywordsLbl: Label 'create price update proposal, index contract prices, price increase proposal, propose new subscription prices, raise subscription prices, price update lines, contract price update, indexation proposal', Comment = 'is-IS=stofna tillögu að verðuppfærslu, vísitölutengja verð samninga, tillaga að verðhækkun, leggja til ný áskriftarverð, hækka áskriftarverð, línur verðuppfærslu, verðuppfærsla samninga, tillaga að vísitölutengingu';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.PriceUpdate.CreateProposal: Creates a price update proposal.', Comment = 'is-IS=Subscription.PriceUpdate.CreateProposal: Stofnar tillögu að verðuppfærslu.';
+        SelectionLbl: Label 'Create a price update proposal: creates Contract Price Update Lines with the new prices for the Subscription Lines a Price Update Template matches. Writes the proposal lines only; no price changes yet. Narrow the lines first with Subscription.PriceUpdate.SetTemplateFilter; apply the proposal with Subscription.PriceUpdate.Perform.', Comment = 'is-IS=Stofna tillögu að verðuppfærslu: býr til línur verðuppfærslu með nýjum verðum fyrir þær áskriftarlínur sem verðuppfærslusniðmát nær yfir. Skrifar eingöngu tillögulínurnar; engin verð breytast enn. Fyrst er línum afmarkað með Subscription.PriceUpdate.SetTemplateFilter; tillagan er framkvæmd með Subscription.PriceUpdate.Perform.';
     begin
         exit(SelectionLbl);
     end;
@@ -127,7 +127,7 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('Microsoft''s CreatePriceUpdateProposal is internal in Business Central 28, so this runs a referenced copy of it; the copy is checked against ' +
+        Notes := ('Microsoft''s proposal logic is internal in Business Central 28, so this runs a referenced copy of it; the copy is checked against ' +
             'Microsoft''s own page by tests. A Subscription Line is proposed only when it belongs to the template''s partner, is invoiced via a contract, is not excluded from ' +
             'price updates, not closed, not usage based, has no Planned Subscription Line and its Next Price Update is empty or on or before includeLinesUpToDate. A line that ' +
             'already has a price update line, under any template, is left out. A line whose new calculation base would be zero or less is not created and is counted in ' +

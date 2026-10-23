@@ -42,14 +42,14 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.PriceUpdate.Perform, Subscription, PriceUpdate, Perform, apply prices, subscription lines, indexation', Comment = 'is-IS=Subscription.PriceUpdate.Perform, áskrift, verðuppfærsla, framkvæma, beita verðum, áskriftarlínur, vísitölutenging';
+        KeywordsLbl: Label 'perform price update, apply price update, apply new prices, execute price increase, update subscription prices, apply the proposed prices, run price update, write new prices to subscription lines', Comment = 'is-IS=framkvæma verðuppfærslu, beita verðuppfærslu, beita nýjum verðum, framkvæma verðhækkun, uppfæra áskriftarverð, beita tillögðum verðum, keyra verðuppfærslu, skrifa ný verð á áskriftarlínur';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.PriceUpdate.Perform: Applies a price update proposal. Irreversible.', Comment = 'is-IS=Subscription.PriceUpdate.Perform: Beitir tillögu að verðuppfærslu. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Apply a price update: writes the proposed prices to the Subscription Lines, or to Planned Subscription Lines when they cannot take effect yet, archives the old values and deletes each performed proposal line. Irreversible. Create the proposal first with Subscription.PriceUpdate.CreateProposal.', Comment = 'is-IS=Framkvæma verðuppfærslu: skrifar tillögð verð á áskriftarlínur, eða á áætlaðar áskriftarlínur þegar þau geta ekki tekið gildi strax, geymir gömlu gildin í safni og eyðir hverri framkvæmdri tillögulínu. Óafturkræf aðgerð. Fyrst þarf að stofna tillöguna með Subscription.PriceUpdate.CreateProposal.';
     begin
         exit(SelectionLbl);
     end;
@@ -127,7 +127,7 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := 'Microsoft''s PerformPriceUpdate and codeunit 8013 are internal in Business Central 28, so this runs referenced copies of them; the copies are checked ' +
+        Notes := 'Microsoft''s price update logic is internal in Business Central 28, so this runs a referenced copy of it; the copy is checked ' +
             'against Microsoft''s own page by tests. Without priceUpdateTemplateCode or a subject every line of every template is performed, which is what Microsoft does; ' +
             'with one, only that template''s lines. A Planned Subscription Line is written instead of changing the line when Perform Update On is after the line''s Next ' +
             'Billing Date, when the line is on an unposted invoice or credit memo, or when its Next Billing Date is before its Next Price Update. A line that already has ' +

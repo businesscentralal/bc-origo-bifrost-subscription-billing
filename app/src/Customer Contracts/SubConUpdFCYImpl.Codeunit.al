@@ -57,14 +57,14 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.UpdateExchangeRates, Subscription, Contract, UpdateExchangeRates, currency, exchange rate, foreign currency', Comment = 'is-IS=Subscription.Contract.UpdateExchangeRates, áskrift, samningur, uppfæra gengi, gjaldmiðill, gengi, erlendur gjaldmiðill';
+        KeywordsLbl: Label 'update exchange rates on contract, recalculate contract currency, change currency factor, new exchange rate for subscription lines, foreign currency contract prices, refresh contract exchange rate, update currency factor date, recalculate prices in foreign currency', Comment = 'is-IS=uppfæra gengi á samningi, endurreikna gjaldmiðil samnings, breyta gengisstuðli, nýtt gengi fyrir áskriftarlínur, verð samnings í erlendum gjaldmiðli, endurnýja gengi samnings, uppfæra gengisdagsetningu, endurreikna verð í erlendum gjaldmiðli';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.UpdateExchangeRates: Recalculates a foreign-currency contracts Subscription Lines with a new exchange rate.', Comment = 'is-IS=Subscription.Contract.UpdateExchangeRates: Endurreiknar áskriftarlínur samnings í erlendum gjaldmiðli með nýju gengi.';
+        SelectionLbl: Label 'Update contract exchange rates: stores a new currency factor on the Subscription Lines of one foreign-currency customer or vendor contract and recalculates their prices and amounts, archiving the old ones. Writes data; nothing is billed. Create the invoice afterwards with Subscription.Contract.CreateInvoice or Subscription.VendorContract.CreateInvoice.', Comment = 'is-IS=Uppfæra gengi á samningi: vistar nýjan gengisstuðul á áskriftarlínum eins samnings viðskiptamanns eða lánardrottins í erlendum gjaldmiðli og endurreiknar verð þeirra og upphæðir, og geymir gömlu gildin í safni. Skrifar gögn; ekkert er reikningsfært. Reikningurinn er stofnaður á eftir með Subscription.Contract.CreateInvoice eða Subscription.VendorContract.CreateInvoice.';
     begin
         exit(SelectionLbl);
     end;
@@ -83,7 +83,7 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.UpdateExchangeRatesParameters();
         exit(true);
     end;
 
@@ -146,9 +146,9 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('Microsoft''s procedure is internal. Data.Records.Set refuses Currency Code on a subscription contract, because Microsoft''s validation would ' +
-            'recalculate the lines with a currency factor of zero when the exchange rate page cannot open. This type rebuilds Microsoft''s steps instead (see ' +
-            'docs/microsoft-dependencies.md). Each line is saved with its modify trigger, which flags its billing lines Update Required and archives the old ' +
+        Notes := ('Microsoft''s own update cannot be called from outside Business Central. Data.Records.Set refuses Currency Code on a subscription contract, because Microsoft''s validation would ' +
+            'recalculate the lines with a currency factor of zero when the exchange rate page cannot open. This type rebuilds Microsoft''s steps instead. ' +
+            'Each line is saved with its modify trigger, which flags its billing lines Update Required and archives the old ' +
             'amounts, as Microsoft does. A line whose contract line is closed is skipped and counted under linesSkipped, because Business Central does not allow ' +
             'such a line to be changed. currencyFactor is the factor Business Central stores: foreign currency per unit of local currency. Running the type again ' +
             'with another rate recalculates from the same local currency amounts. ' +

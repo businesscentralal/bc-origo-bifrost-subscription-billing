@@ -45,14 +45,14 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Usage.Process, Subscription, Usage, Process, usage, billable quantity', Comment = 'is-IS=Subscription.Usage.Process, áskrift, notkun, vinna, notkun, gjaldgengt magn';
+        KeywordsLbl: Label 'process usage data, process imported usage, create usage billing, process usage import, calculate billable usage, run usage processing steps, process imported lines, turn usage into billing lines', Comment = 'is-IS=vinna notkunargögn, vinna innflutta notkun, stofna notkunarreikningagerð, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Usage.Process: Processes imported usage data. Irreversible.', Comment = 'is-IS=Subscription.Usage.Process: Vinnur úr innfluttum notkunargögnum. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Process a usage import: runs the processing steps on an existing Usage Data Import and reports each step. Irreversible, since it commits before each step. Connect new supplier subscriptions first with Subscription.Usage.ConnectSubscriptions; to import a file use Subscription.Usage.ImportData; to start over use Subscription.Usage.DeleteData.', Comment = 'is-IS=Vinna úr innflutningi notkunar: keyrir vinnsluskrefin á fyrirliggjandi innflutningsfærslu notkunargagna og skilar niðurstöðu hvers skrefs. Óafturkræf aðgerð, því hún vistar á undan hverju skrefi. Fyrst eru nýjar áskriftir birgis tengdar með Subscription.Usage.ConnectSubscriptions; til að flytja inn skrá skal nota Subscription.Usage.ImportData; til að byrja upp á nýtt skal nota Subscription.Usage.DeleteData.';
     begin
         exit(SelectionLbl);
     end;
@@ -123,7 +123,9 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
     procedure GetOverview(var Overview: Text): Boolean
     begin
         Overview := 'Runs processing steps over an existing Usage Data Import: turning imported lines into quantities, creating Usage Data Billing rows, and processing ' +
-            'those into billing lines. Each step runs Microsoft''s own codeunit for it.';
+            'those into billing lines. Each step runs Microsoft''s own processing for it. Use it after ' +
+            'Subscription.Usage.ImportData when the file was not processed in the same call, once new supplier subscriptions are connected with Subscription.Usage.ConnectSubscriptions, ' +
+            'or to run the remaining steps after one step failed.';
         exit(true);
     end;
 
