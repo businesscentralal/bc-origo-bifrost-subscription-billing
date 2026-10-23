@@ -27,7 +27,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
         ForceNextStepTxt: Label 'Ask an administrator to assign the BIFROST Force ori permission set to your user, then call again.', Comment = 'is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.';
         InvalidRunModeErr: Label 'The parameter ''runMode'' must be either ''foreground'' or ''background'', not ''%1''.', Comment = '%1 = the supplied run mode||is-IS=Færibreytan ''runMode'' verður að vera annaðhvort ''foreground'' eða ''background'', ekki ''%1''.';
         JobDescriptionTxt: Label 'Bifrost: update Subscription Line term dates', Comment = 'is-IS=Bifröst: uppfæra samningstímadagsetningar áskriftarlína';
-        DescriptionLbl: Label 'Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, through a Job Queue Entry. Needs BIFROST Force ori.', MaxLength = 250, Comment = 'is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með verkraðarfærslu. Krefst BIFROST Force ori.';
+        DescriptionLbl: Label 'Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, through a Job Queue Entry. Needs Bifrost Force.', MaxLength = 250, Comment = 'is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með verkraðarfærslu. Krefst Bifrost Force.';
         ForegroundTok: Label 'foreground', Locked = true;
         BackgroundTok: Label 'background', Locked = true;
 
@@ -55,7 +55,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the BIFROST Force ori permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar BIFROST Force ori. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
+        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the Bifrost Force permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar Bifrost Force. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
     begin
         exit(SelectionLbl);
     end;

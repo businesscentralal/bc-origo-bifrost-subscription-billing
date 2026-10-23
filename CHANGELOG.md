@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-23) - operation help and workflow wording (#64)
+
+- `Sub Contract Parts ori` (10035075) describes temporary invoice previews as writes that leave no persistent changes, replaces posting/proposal implementation names and permission-set object names with business wording, and supplies workflows for every operation, including company-wide job-queue term updates and committed deferral posting.
+- Discovery labels remove Blob and update Icelandic terminology. Existing PR #68 wording/filter fixes are retained.
+- `Sub Contract Complete Tst ori` (95780) rejects the reported internal object/procedure names and permission-set suffix pattern in help, requires a workflow for all operations and checks the two temporary preview effects explicitly.
+
+- Additional touched objects: `Sub Bil CrProposal Impl ori` (10035045), `Sub Con RemoveLine Impl ori` (10035071), `Sub Con UpdDates Impl ori` (10035040), `Sub PU SetFilter Impl ori` (10035048), `Sub Usg Process Impl ori` (10035054), and `Sub Contract Batch1 Tst ori` (95706).
+
+- Refusal wording `Sub Bil PostDocs Impl ori` (10035085) uses translated document captions and corrected Icelandic spelling. Billing and price-update filter responses show field names; their refusals name `filter`, and PriceUpdate help lists InvalidFilterField.
+- Readable-filter and localized-refusal regressions: `Sub Bil SetFilter Impl ori` (10035070), `Sub PU Filter Tst ori` (95708), `Sub ShouldHave Tst ori` (95715), and `Sub Help Wording Tst ori` (95727).
+- Other touched acceptance objects: `Sub Bil SetFilter Impl ori` (10035070), `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend PrvInv Impl ori` (10035044).
+
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
 The contract chapters of all 33 message types were already complete; the audit against Bifrost Foundation found the gaps below and closes them. No public object, procedure, enum value or id changes, and no behaviour of a message type changes.

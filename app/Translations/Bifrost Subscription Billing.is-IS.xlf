@@ -221,14 +221,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 2252604841" size-unit="char" translate="yes" xml:space="preserve">
           <source>Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.</source>
-          <target>Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.</note>
+          <target>Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Sales.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Sales.Document.Post.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ForeignCustomerErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 345330225" size-unit="char" translate="yes" xml:space="preserve">
           <source>Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.</source>
-          <target>Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purch.Document.Post.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purch.Document.Post.</note>
+          <target>Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purch.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purch.Document.Post.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ForeignVendorErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 3172811853" size-unit="char" translate="yes" xml:space="preserve">
@@ -302,6 +302,18 @@
           <target>vendorInvoiceNo er aðeins lesið fyrir innkaupaskjöl og skjal %1 er söluskjal.</target>
           <note from="Developer" annotates="general" priority="2">%1 = document number||is-IS=vendorInvoiceNo er aðeins lesið fyrir innkaupaskjöl og skjal %1 er söluskjal.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType VendorInvoiceNoForCustomerErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - Method 1036530403 - NamedType 3804706331" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Invoice</source>
+          <target>Reikningur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Reikningur</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method DocumentTypeCaption - NamedType InvoiceTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - Method 1036530403 - NamedType 3292298585" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Credit Memo</source>
+          <target>Kreditreikningur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Kreditreikningur</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method DocumentTypeCaption - NamedType CreditMemoTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>post billing documents, post subscription invoices, post unposted billing invoices, post purchase documents from billing, book the invoices, post the billing run, post vendor invoices from contracts, post sales invoices from contracts</source>
@@ -592,9 +604,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Nothing is written and no invoice is ever created.</source>
-          <target>Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.</note>
+          <source>Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Temporary proposal writes are removed; no changes remain and no invoice is created.</source>
+          <target>Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og enginn reikningur er stofnaður.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og enginn reikningur er stofnaður.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 874973696" size-unit="char" translate="yes" xml:space="preserve">
@@ -622,9 +634,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Preview a customer contract invoice: builds the billing proposal lines Subscription.Contract.CreateInvoice would use, reads them back and removes them again. Read-only in effect: nothing is left behind and no document is created. For a Billing Template run use Subscription.Billing.PreviewDocuments.</source>
-          <target>Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.</note>
+          <source>Preview a customer contract invoice: builds the billing proposal lines Subscription.Contract.CreateInvoice would use, reads them back and removes them again. Temporary proposal writes are removed: nothing remains and no document is created. For a Billing Template run use Subscription.Billing.PreviewDocuments.</source>
+          <target>Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillöguskrifanir eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillöguskrifanir eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2970874974 - NamedType 839325841" size-unit="char" translate="yes" xml:space="preserve">
@@ -635,8 +647,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 2970874974 - NamedType 3334636019" size-unit="char" translate="yes" xml:space="preserve">
           <source>Line %1 of contract '%2' is closed. A closed contract line keeps the history of an ended Subscription Line and is not removed by this message type.</source>
-          <target>Lína %1 í samningi '%2' er lokuð. Lokuð samningslína geymir sögu áskriftarlínu sem er lokið og þessi skeytagerð fjarlægir hana ekki.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Lína %1 í samningi '%2' er lokuð. Lokuð samningslína geymir sögu áskriftarlínu sem er lokið og þessi skeytagerð fjarlægir hana ekki.</note>
+          <target>Lína %1 í samningi '%2' er lokuð. Lokuð samningslína geymir sögu áskriftarlínu sem er lokið og þessi skilaboðategund fjarlægir hana ekki.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = line number, %2 = contract number||is-IS=Lína %1 í samningi '%2' er lokuð. Lokuð samningslína geymir sögu áskriftarlínu sem er lokið og þessi skilaboðategund fjarlægir hana ekki.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - NamedType ClosedLineErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2970874974 - NamedType 4222890416" size-unit="char" translate="yes" xml:space="preserve">
@@ -682,9 +694,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con RemoveLine Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, through a Job Queue Entry. Needs BIFROST Force ori.</source>
-          <target>Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með verkraðarfærslu. Krefst BIFROST Force ori.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með verkraðarfærslu. Krefst BIFROST Force ori.</note>
+          <source>Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, through a Job Queue Entry. Needs Bifrost Force.</source>
+          <target>Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með verkraðarfærslu. Krefst Bifrost Force.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með verkraðarfærslu. Krefst Bifrost Force.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - NamedType 3314699509" size-unit="char" translate="yes" xml:space="preserve">
@@ -724,9 +736,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the BIFROST Force ori permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.</source>
-          <target>Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar BIFROST Force ori. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar BIFROST Force ori. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.</note>
+          <source>Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the Bifrost Force permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.</source>
+          <target>Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar Bifrost Force. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar Bifrost Force. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 4134144049 - NamedType 2156165308" size-unit="char" translate="yes" xml:space="preserve">
@@ -1054,9 +1066,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Price Update Mgt ori - NamedType UnknownPriceUpdateMethodErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1208222225 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Writes the contract, subscription or line view filter Blob on a Price Update Template and returns the current value of all three filters.</source>
-          <target>Skrifar síu (Blob) fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Skrifar síu (Blob) fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.</note>
+          <source>Writes the contract, subscription or line view filter on a Price Update Template and returns the current value of all three filters.</source>
+          <target>Skrifar síu  fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Skrifar síu  fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU SetFilter Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1208222225 - NamedType 880984256" size-unit="char" translate="yes" xml:space="preserve">
@@ -1361,8 +1373,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1755898718 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Runs the usage data processing stages (Process Imported Lines, Create Usage Data Billing, Process Usage Data Billing) over an existing Usage Data Import entry and reports the outcome of each stage.</source>
-          <target>Keyrir vinnsluskref notkunargagna (Process Imported Lines, Create Usage Data Billing, Process Usage Data Billing) á fyrirliggjandi innflutningsfærslu fyrir notkunargögn og skilar niðurstöðu hvers skrefs.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Keyrir vinnsluskref notkunargagna (Process Imported Lines, Create Usage Data Billing, Process Usage Data Billing) á fyrirliggjandi innflutningsfærslu fyrir notkunargögn og skilar niðurstöðu hvers skrefs.</note>
+          <target>Keyrir vinnsluskref notkunargagna (vinnsla innfluttra lína, stofnun og vinnsla notkunarreikningagerðar) á fyrirliggjandi innflutningsfærslu fyrir notkunargögn og skilar niðurstöðu hvers skrefs.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Keyrir vinnsluskref notkunargagna (vinnsla innfluttra lína, stofnun og vinnsla notkunarreikningagerðar) á fyrirliggjandi innflutningsfærslu fyrir notkunargögn og skilar niðurstöðu hvers skrefs.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Process Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1755898718 - NamedType 2257785892" size-unit="char" translate="yes" xml:space="preserve">
@@ -1522,9 +1534,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Previews the billing proposal lines that Subscription.VendorContract.CreateInvoice would build for a vendor subscription contract. Nothing is written and no document is ever created.</source>
-          <target>Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.</note>
+          <source>Previews the billing proposal lines that Subscription.VendorContract.CreateInvoice would build for a vendor subscription contract. Temporary proposal writes are removed; no changes remain and no document is created.</source>
+          <target>Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 1712851524" size-unit="char" translate="yes" xml:space="preserve">
@@ -1552,9 +1564,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Preview a vendor contract invoice: builds the billing proposal lines Subscription.VendorContract.CreateInvoice would use, reads them back and removes them again. Read-only in effect: nothing is left behind and no document is created. For a customer contract use Subscription.Contract.PreviewInvoice.</source>
-          <target>Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</note>
+          <source>Preview a vendor contract invoice: builds the billing proposal lines Subscription.VendorContract.CreateInvoice would use, reads them back and removes them again. Temporary proposal writes are removed: nothing remains and no document is created. For a customer contract use Subscription.Contract.PreviewInvoice.</source>
+          <target>Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillöguskrifanir eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillöguskrifanir eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="PermissionSet 142777260 - Property 2879900210" maxwidth="30" size-unit="char" translate="yes" xml:space="preserve">

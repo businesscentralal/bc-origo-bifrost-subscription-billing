@@ -172,12 +172,11 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
         OutStr: OutStream;
-        InStr: InStream;
         BillingTemplateCode: Code[20];
         SuppliedFilter: Text;
         FilterText: Text;
         BlankView: Text;
-        StoredFilter: Text;
+        PublicFilter: Text;
         TargetCaption: Text;
         ViewApplied: Boolean;
     begin
@@ -199,9 +198,11 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
         // Foundation has already answered with a structured refusal (code and nextStep) when it returns false.
         if not ViewApplied then begin
             Clear(RRef);
+            NormalizeFilterError(Argument);
             exit;
         end;
         FilterText := RRef.GetView(false);
+        PublicFilter := RRef.GetView(true);
         Clear(RRef);
 
         // Microsoft: "Billing Template".WriteFilter - the Blob is cleared and the view written unless it is the blank view.
@@ -211,18 +212,33 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
             OutStr.WriteText(FilterText);
         BillingTemplate.Modify(true);
 
-        BillingTemplate.CalcFields(Filter);
-        BillingTemplate.Filter.CreateInStream(InStr, TextEncoding::UTF8);
-        InStr.ReadText(StoredFilter);
-
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('billingTemplateCode', BillingTemplateCode);
         if BillingTemplate.Partner = BillingTemplate.Partner::Vendor then
             ResponseJson.Add('partner', 'Vendor')
         else
             ResponseJson.Add('partner', 'Customer');
-        ResponseJson.Add('filter', StoredFilter);
+        if FilterText = BlankView then
+            PublicFilter := '';
+        ResponseJson.Add('filter', PublicFilter);
         Helper.RespondWithSuccess(Argument, ResponseJson);
+    end;
+
+    local procedure NormalizeFilterError(var Argument: Record "Message Argument ori")
+    var
+        Response: JsonObject;
+        Token: JsonToken;
+    begin
+        Response := Argument.GetResponseJson();
+        if Response.Contains('parameter') then
+            Response.Replace('parameter', 'filter');
+        if Response.Get('error', Token) then
+            Response.Replace('error', Token.AsValue().AsText().Replace('tableView', 'filter'));
+        if Response.Get('expected', Token) then
+            Response.Replace('expected', Token.AsValue().AsText().Replace('tableView', 'filter'));
+        if Response.Get('nextStep', Token) then
+            Response.Replace('nextStep', Token.AsValue().AsText().Replace('tableView', 'filter'));
+        Argument.SetResponseJson(Response);
     end;
 
     /// <summary>Adapts filter to Foundation's tableView contract and validates it before applying it.</summary>
