@@ -11,6 +11,8 @@
 - `Sub Bil PostDocs Impl ori` (10035085) returns posted, failed and not-attempted documents after a posting failure. Earlier posted documents remain posted.
 - Native regressions in `Sub Data Safety Tst ori` (95722), `Sub Renewal Tst ori` (95776), `Sub PostDocs Tst ori` (95718) and the vendor invoice test cover these boundaries in 1033 and 1039.
 
+- Shared response/help contract `Sub Contract Parts ori` (10035075) and existing should-have regressions `Sub ShouldHave Tst ori` (95715) are updated with the data-safety changes.
+
 
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
