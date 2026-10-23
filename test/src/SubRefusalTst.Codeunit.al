@@ -269,14 +269,12 @@ codeunit 95723 "Sub Refusal Tst ori"
     end;
 
     [Test]
-    [HandlerFunctions('DocumentsCreatedHandler')]
     procedure Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_EN()
     begin
         AssertPostingFailure(1033);
     end;
 
     [Test]
-    [HandlerFunctions('DocumentsCreatedHandler')]
     procedure Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_IS()
     begin
         AssertPostingFailure(1039);
@@ -311,11 +309,6 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.AreEqual(FailureTest.GetDocumentNo(), TestLibrary.ReadText(Response, 'received'), TestLibrary.AsText(Response));
         Assert.IsTrue(TestLibrary.ReadText(Response, 'nextStep') <> '', 'Posting failure must explain recovery.');
         GlobalLanguage(PreviousLanguage);
-    end;
-
-    [MessageHandler]
-    procedure DocumentsCreatedHandler(Message: Text[1024])
-    begin
     end;
 
     local procedure Prepare(var TempArgument: Record "Message Argument ori" temporary; MessageType: Enum "Message Type ori"; Request: JsonObject)
