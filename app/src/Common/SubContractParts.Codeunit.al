@@ -660,6 +660,9 @@ codeunit 10035075 "Sub Contract Parts ori"
         Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::BusinessCentralError, 'A Business Central or Subscription Billing validation error prevented completion.', 'Correct the data or setup named by the error and retry.'));
         Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::MultipleErrors, 'Several request values are invalid. The errors array names each problem; no business writes have run.', 'Correct every named request parameter, then resend.'));
         Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::UnknownParameter, 'An unknown request key is warned about, or refused when the task envelope has strict true.', 'Use only declared parameter names.'));
+        Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::InvalidParameterFormat, 'A request value has an invalid JSON shape, number, date or encoding. Nothing is written.', 'Use the documented format for the named parameter.'));
+        if not (MessageType in ['Subscription.Deferral.Release', 'Subscription.Usage.DisconnectSubscription']) then
+            Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::InvalidParameter, 'A request identifier is too long or a value is outside its documented allowed set. Nothing is written.', 'Use a documented value for the named parameter.'));
         AddParameterErrors(MessageType, Errors);
         AddLookupErrors(MessageType, Errors);
         AddTypeErrors(MessageType, Errors);

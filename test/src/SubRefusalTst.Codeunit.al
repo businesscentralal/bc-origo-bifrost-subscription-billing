@@ -311,6 +311,24 @@ codeunit 95723 "Sub Refusal Tst ori"
         GlobalLanguage(PreviousLanguage);
     end;
 
+    [Test]
+    procedure Scenario_AC04_RequiredUsageEntry_HelpListsRealPreflightCodes()
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+        Contract: JsonObject;
+        ContractText: Text;
+    begin
+        ContractMgt.GetContract(Enum::"Message Type ori"::"Subscription.Usage.Process", Contract);
+        ContractText := TestLibrary.AsText(Contract);
+        Assert.IsTrue(ContractText.Contains('MissingParameter'), 'Usage.Process help must list its required-entry refusal.');
+        Assert.IsTrue(ContractText.Contains('InvalidParameterFormat'), 'Usage.Process help must list shape validation.');
+        Clear(Contract);
+        ContractMgt.GetContract(Enum::"Message Type ori"::"Subscription.Usage.DeleteData", Contract);
+        ContractText := TestLibrary.AsText(Contract);
+        Assert.IsTrue(ContractText.Contains('MissingParameter'), 'Usage.DeleteData help must list its required-entry refusal.');
+        Assert.IsTrue(ContractText.Contains('InvalidParameterFormat'), 'Usage.DeleteData help must list shape validation.');
+    end;
+
     local procedure Prepare(var TempArgument: Record "Message Argument ori" temporary; MessageType: Enum "Message Type ori"; Request: JsonObject)
     begin
         TempArgument.Init();
