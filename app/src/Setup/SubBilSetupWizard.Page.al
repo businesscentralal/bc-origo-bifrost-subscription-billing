@@ -135,6 +135,7 @@ page 10035035 "SubBil Setup Wizard ori"
             }
             action(EnableHttp)
             {
+                InFooterBar = true;
                 Visible = (CurrentStep = 2) and not HttpEnabled;
                 Caption = 'Enable HTTP in Bifrost Setup', Comment = 'is-IS=Virkja HTTP í uppsetningu Bifröst';
                 ToolTip = 'Open Foundation''s setup wizard, then refresh this app''s HTTP status.', Comment = 'is-IS=Opnaðu uppsetningarleiðsögn Foundation og endurnýjaðu síðan HTTP-stöðu þessa forrits.';
@@ -151,6 +152,7 @@ page 10035035 "SubBil Setup Wizard ori"
             }
             action(Verify)
             {
+                InFooterBar = true;
                 Visible = CurrentStep = 2;
                 Caption = 'Verify', Comment = 'is-IS=Staðfesta';
                 ToolTip = 'Read this app''s HTTP status again without changing it.', Comment = 'is-IS=Lestu HTTP-stöðu þessa forrits aftur án þess að breyta henni.';
@@ -162,6 +164,7 @@ page 10035035 "SubBil Setup Wizard ori"
             }
             action(ShowOperations)
             {
+                InFooterBar = true;
                 Visible = CurrentStep = 1;
                 Caption = 'Show operations', Comment = 'is-IS=Sýna aðgerðir';
                 ToolTip = 'Open Bifrost Message Types to see installed operations.', Comment = 'is-IS=Opnaðu Skilaboðategundir Bifröst til að sjá uppsettar aðgerðir.';
@@ -173,6 +176,7 @@ page 10035035 "SubBil Setup Wizard ori"
             }
             action(Documentation)
             {
+                InFooterBar = true;
                 Visible = CurrentStep = 1;
                 Caption = 'Documentation', Comment = 'is-IS=Skjölun';
                 ToolTip = 'Open the Subscription Billing documentation.', Comment = 'is-IS=Opnaðu skjölun áskriftareikningagerðar.';
@@ -184,6 +188,7 @@ page 10035035 "SubBil Setup Wizard ori"
             }
             action(OpenUsers)
             {
+                InFooterBar = true;
                 Visible = CurrentStep = 3;
                 Caption = 'Open Users', Comment = 'is-IS=Opna notendur';
                 ToolTip = 'Open Users to review and assign access.', Comment = 'is-IS=Opnaðu Notendur til að skoða og úthluta aðgangi.';
@@ -192,6 +197,7 @@ page 10035035 "SubBil Setup Wizard ori"
             }
             action(OpenPermissionSets)
             {
+                InFooterBar = true;
                 Visible = CurrentStep = 3;
                 Caption = 'Open Permission Sets', Comment = 'is-IS=Opna heimildasamstæður';
                 ToolTip = 'Open the standard Permission Sets page.', Comment = 'is-IS=Opnaðu stöðluðu síðuna Heimildasamstæður.';
