@@ -19,6 +19,61 @@ codeunit 95776 "Sub Renewal Tst ori"
         Assert: Codeunit "Library Assert";
         TestLibrary: Codeunit "Sub Test Library ori";
 
+    [Test]
+    procedure Scenario_63AC04_ClosedLines_ExcludedFromQuote_EN()
+    begin
+        AssertClosedRenewalLines(1033);
+    end;
+
+    [Test]
+    procedure Scenario_63AC04_ClosedLines_ExcludedFromQuote_IS()
+    begin
+        AssertClosedRenewalLines(1039);
+    end;
+
+    local procedure AssertClosedRenewalLines(LanguageId: Integer)
+    var
+        Contract: Record "Customer Subscription Contract";
+        Subscription: Record "Subscription Header";
+        Package: Record "Subscription Package";
+        ContractLine: Record "Cust. Sub. Contract Line";
+        QuotedLine: Record "Sales Subscription Line";
+        Request: JsonObject;
+        Response: JsonObject;
+        PreviousLanguage: Integer;
+        ClosedEntryNo: Integer;
+        QuoteNo: Code[20];
+    begin
+        // [GIVEN] Two renewable contract lines, one closed as after a merge.
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        TestLibrary.CreateBillableCustomerContract(Contract, Subscription, CalcDate('<CM+11M>', WorkDate()));
+        TestLibrary.CreatePackage(Package, true, false, false);
+        TestLibrary.RunLineCreate(Subscription."No.", Package.Code, WorkDate(), CalcDate('<CM+11M>', WorkDate()));
+        TestLibrary.RunGetLines(Enum::"Message Type ori"::"Subscription.Contract.GetLines", Contract."No.");
+        ContractLine.SetRange("Subscription Contract No.", Contract."No.");
+        Assert.RecordCount(ContractLine, 2);
+        ContractLine.FindFirst();
+        ClosedEntryNo := ContractLine."Subscription Line Entry No.";
+        ContractLine.Closed := true;
+        ContractLine.Modify(false);
+        Request.Add('contractNo', Contract."No.");
+
+        // [WHEN] Default renewal selection is used, matching Microsoft's open-line filter.
+        Response := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Renewal.CreateQuote", Request);
+
+        // [THEN] Exactly the open line appears on the quote.
+        Assert.AreEqual(1, TestLibrary.ReadInteger(Response, 'renewalLinesCreated'), TestLibrary.AsText(Response));
+        QuoteNo := CopyStr(TestLibrary.ReadText(Response, 'salesQuoteNo'), 1, MaxStrLen(QuoteNo));
+        QuotedLine.SetRange("Document Type", QuotedLine."Document Type"::Quote);
+        QuotedLine.SetRange("Document No.", QuoteNo);
+        QuotedLine.SetRange(Process, Enum::Process::"Contract Renewal");
+        Assert.RecordCount(QuotedLine, 1);
+        QuotedLine.FindFirst();
+        Assert.AreNotEqual(ClosedEntryNo, QuotedLine."Subscription Line Entry No.", 'A closed line must not be quoted.');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
     /// <summary>#41 AC06: selected contract line numbers create only their renewal lines and quote.</summary>
     [Test]
     procedure CreateQuote_SelectedLines_ExcludesOtherRenewableLines()

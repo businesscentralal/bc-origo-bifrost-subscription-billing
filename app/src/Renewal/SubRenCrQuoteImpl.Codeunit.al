@@ -129,7 +129,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
     begin
         Notes := ('Renewal lines left from an earlier run against the contract are deleted first. A renewal line is then built for every Subscription Line of the ' +
             'contract that has an end date and that Microsoft accepts for renewal. contractLineNos limits this to the listed contract lines; without it every ' +
-            'line with an end date is renewed, as before. A listed line without an end date is passed over, and when no listed line can be renewed the call ' +
+            'open line with an end date and no planned subscription line is renewed, matching the standard contract renewal action. A listed line without an end date is passed over, and when no listed line can be renewed the call ' +
             'is refused. Nothing is posted. ' +
             ContractParts.IsolationNote()).TrimEnd();
         exit(true);
@@ -196,6 +196,9 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
 
         CustSubContractLine.Reset();
         CustSubContractLine.SetRange("Subscription Contract No.", ContractNo);
+        CustSubContractLine.SetRange("Planned Sub. Line exists", false);
+        CustSubContractLine.SetRange("Contract Line Type", CustSubContractLine."Contract Line Type"::Item, CustSubContractLine."Contract Line Type"::"G/L Account");
+        CustSubContractLine.SetRange(Closed, false);
         CustSubContractLine.SetLoadFields("Subscription Contract No.", "Line No.", "Subscription Line Entry No.");
         if CustSubContractLine.FindSet() then
             repeat

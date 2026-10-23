@@ -198,11 +198,19 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         ResponseJson: JsonObject;
         Documents: JsonArray;
         PostedDocuments: JsonArray;
+        FailedDocuments: JsonArray;
+        NotAttemptedDocuments: JsonArray;
+        DocumentResult: JsonObject;
+        PostingFailed: Boolean;
+        FailureText: Text;
+        FailedDocumentNo: Text;
         PendingJson: JsonObject;
         Pending: List of [JsonObject];
         SharedVendorInvoiceNo: Text;
         MissingDocumentType: Text;
         MissingDocumentNo: Code[20];
+        RetryPostingTxt: Label 'Already posted documents remain posted. Fix the failed document and retry only the failed and notAttemptedDocuments entries.', Comment = 'is-IS=Þegar bókuð skjöl standa áfram bókuð. Lagfærðu skjalið sem mistókst og reyndu aðeins aftur færslurnar sem mistókust og í notAttemptedDocuments.';
+        ExpectedPostingTxt: Label 'A billing document that Business Central can post.', Comment = 'is-IS=Reikningsskjal sem Business Central getur bókað.';
     begin
         if not PostingGate.AssertCanPost(Argument) then
             exit;
@@ -223,8 +231,30 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             exit;
         end;
         foreach PendingJson in Pending do
-            PostedDocuments.Add(PostOne(PendingJson));
+            if PostingFailed then
+                NotAttemptedDocuments.Add(PendingJson)
+            else
+                if PostOne(PendingJson, DocumentResult) then
+                    PostedDocuments.Add(DocumentResult)
+                else begin
+                    PostingFailed := true;
+                    FailedDocuments.Add(DocumentResult);
+                    FailureText := Helper.GetText(DocumentResult, 'error', true);
+                    FailedDocumentNo := Helper.GetText(DocumentResult, 'documentNo', true);
+                end;
 
+        if PostingFailed then begin
+            Argument.RespondWithError("Bifrost Error Code ori"::BusinessCentralError, FailureText,
+                'documentNo', FailedDocumentNo, ExpectedPostingTxt, RetryPostingTxt);
+            ResponseJson := Argument.GetResponseJson();
+            ResponseJson.Add('failedDocuments', FailedDocuments);
+            ResponseJson.Add('notAttemptedDocuments', NotAttemptedDocuments);
+            ResponseJson.Add('postedCount', PostedDocuments.Count());
+            ResponseJson.Add('documents', PostedDocuments);
+            Argument.SetResponseJson(ResponseJson);
+            Commit();
+            exit;
+        end;
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('postedCount', PostedDocuments.Count());
         ResponseJson.Add('documents', PostedDocuments);
@@ -367,33 +397,38 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         exit(PostedPurchaseNo(PurchaseDocumentTypeFromText(Helper.FormatDocumentType(BillingDocumentType)), DocumentNo, ''));
     end;
 
-    local procedure PostOne(PendingJson: JsonObject) PostedJson: JsonObject
+    local procedure PostOne(PendingJson: JsonObject; var PostedJson: JsonObject): Boolean
     var
         PartnerText: Text;
         DocumentTypeText: Text;
         DocumentNo: Code[20];
         PostedNo: Code[20];
         VendorInvoiceNo: Code[35];
+        FailureText: Text;
     begin
+        Clear(PostedJson);
         PartnerText := Helper.GetText(PendingJson, 'partner', true);
         DocumentTypeText := Helper.GetText(PendingJson, 'documentType', true);
         DocumentNo := CopyStr(Helper.GetText(PendingJson, 'documentNo', true), 1, MaxStrLen(DocumentNo));
         VendorInvoiceNo := CopyStr(Helper.GetText(PendingJson, 'vendorInvoiceNo', false), 1, MaxStrLen(VendorInvoiceNo));
         if PartnerText = CustomerTok then
-            PostedNo := PostSalesDocument(DocumentTypeText, DocumentNo)
+            PostedNo := PostSalesDocument(DocumentTypeText, DocumentNo, FailureText)
         else
-            PostedNo := PostPurchaseDocument(DocumentTypeText, DocumentNo, VendorInvoiceNo);
+            PostedNo := PostPurchaseDocument(DocumentTypeText, DocumentNo, VendorInvoiceNo, FailureText);
 
         PostedJson.Add('partner', PartnerText);
         PostedJson.Add('documentType', DocumentTypeText);
         PostedJson.Add('documentNo', DocumentNo);
         PostedJson.Add('postedDocumentNo', PostedNo);
-        PostedJson.Add('posted', true);
+        PostedJson.Add('posted', FailureText = '');
+        if FailureText <> '' then
+            PostedJson.Add('error', FailureText);
         if PartnerText = VendorTok then
             PostedJson.Add('vendorInvoiceNo', VendorInvoiceNo);
+        exit(FailureText = '');
     end;
 
-    local procedure PostSalesDocument(DocumentTypeText: Text; DocumentNo: Code[20]) PostedNo: Code[20]
+    local procedure PostSalesDocument(DocumentTypeText: Text; DocumentNo: Code[20]; var FailureText: Text) PostedNo: Code[20]
     var
         SalesHeader: Record "Sales Header";
         SalesDocumentType: Enum "Sales Document Type";
@@ -410,14 +445,15 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         ClearLastError();
         if not Codeunit.Run(Codeunit::"Sales-Post", SalesHeader) then begin
             Failure := GetLastErrorText();
-            Error(PostFailedErr, DocumentNo, Failure);
+            FailureText := StrSubstNo(PostFailedErr, DocumentNo, Failure);
+            exit('');
         end;
         PostedNo := PostedSalesNo(SalesDocumentType, DocumentNo, SalesHeader."Last Posting No.");
         if PostedNo = '' then
-            Error(PostedNoMissingErr, DocumentNo);
+            FailureText := StrSubstNo(PostedNoMissingErr, DocumentNo);
     end;
 
-    local procedure PostPurchaseDocument(DocumentTypeText: Text; DocumentNo: Code[20]; var VendorInvoiceNo: Code[35]) PostedNo: Code[20]
+    local procedure PostPurchaseDocument(DocumentTypeText: Text; DocumentNo: Code[20]; var VendorInvoiceNo: Code[35]; var FailureText: Text) PostedNo: Code[20]
     var
         PurchaseHeader: Record "Purchase Header";
         PurchaseDocumentType: Enum "Purchase Document Type";
@@ -444,11 +480,12 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         ClearLastError();
         if not Codeunit.Run(Codeunit::"Purch.-Post", PurchaseHeader) then begin
             Failure := GetLastErrorText();
-            Error(PostFailedErr, DocumentNo, Failure);
+            FailureText := StrSubstNo(PostFailedErr, DocumentNo, Failure);
+            exit('');
         end;
         PostedNo := PostedPurchaseNo(PurchaseDocumentType, DocumentNo, PurchaseHeader."Last Posting No.");
         if PostedNo = '' then
-            Error(PostedNoMissingErr, DocumentNo);
+            FailureText := StrSubstNo(PostedNoMissingErr, DocumentNo);
     end;
 
     local procedure BillingLineExists(Partner: Enum "Service Partner"; BillingDocumentType: Enum "Rec. Billing Document Type"; DocumentNo: Code[20]): Boolean

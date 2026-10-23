@@ -2,7 +2,6 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en-US" target-language="is-IS" original="Bifrost Subscription Billing">
     <body>
-      <group id="body">
         <trans-unit id="Table 1499020996 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>BIFROST SubPost ori</source>
           <target>Bifröst bókun áskrifta</target>
@@ -16,10 +15,28 @@
           <note from="Xliff Generator" annotates="general" priority="3">Table Sub Posting ori - Field Primary Key - Property Caption</note>
         </trans-unit>
         <trans-unit id="Codeunit 202989448 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Rebuilds Subscription Contract analysis entries as of today by running Microsoft's Create Contract Analysis report across every Subscription Line with a contract.</source>
-          <target>Endurbyggir greiningarfærslur áskriftarsamnings miðað við daginn í dag með því að keyra skýrslu Microsoft, Create Contract Analysis, á allar áskriftarlínur með samningi.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Endurbyggir greiningarfærslur áskriftarsamnings miðað við daginn í dag með því að keyra skýrslu Microsoft, Create Contract Analysis, á allar áskriftarlínur með samningi.</note>
+          <source>Updates this month's analysis entries for the given subscription contract, or all contracts when no contractNo is supplied. Existing entries are preserved.</source>
+          <target>Uppfærir greiningarfærslur þessa mánaðar fyrir tilgreindan áskriftarsamning eða alla samninga ef contractNo er ekki gefið. Fyrirliggjandi færslur haldast óbreyttar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Uppfærir greiningarfærslur þessa mánaðar fyrir tilgreindan áskriftarsamning eða alla samninga ef contractNo er ekki gefið. Fyrirliggjandi færslur haldast óbreyttar.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 202989448 - NamedType 1411014544" size-unit="char" translate="yes" xml:space="preserve">
+          <source>An existing customer or vendor subscription contract number.</source>
+          <target>Númer fyrirliggjandi áskriftarsamnings viðskiptamanns eða lánardrottins.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Númer fyrirliggjandi áskriftarsamnings viðskiptamanns eða lánardrottins.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - NamedType ExpectedContractTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 202989448 - NamedType 3657847601" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Choose an existing subscription contract and send its number as contractNo.</source>
+          <target>Veldu fyrirliggjandi áskriftarsamning og sendu númer hans sem contractNo.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Veldu fyrirliggjandi áskriftarsamning og sendu númer hans sem contractNo.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - NamedType FindContractTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 202989448 - NamedType 3351274" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Subscription Contract %1 does not exist.</source>
+          <target>Áskriftarsamningur %1 er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur %1 er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - NamedType NotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 202989448 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>recalculate contract analysis, refresh contract analysis, contract analysis entries, rebuild contract analysis, subscription analysis, update the analysis, contract analysis report, analysis for this month</source>
@@ -28,9 +45,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 202989448 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Rebuild contract analysis: adds this month's analysis entries for every Subscription Line that has a contract, across all contracts, and skips lines that already have one. Writes analysis entries only and posts nothing. To release deferred revenue or cost use Subscription.Deferral.Release.</source>
-          <target>Endurbyggja samningagreiningu: bætir við greiningarfærslum þessa mánaðar fyrir allar áskriftarlínur sem eru á samningi, þvert á alla samninga, og sleppir línum sem hafa þegar færslu. Skrifar eingöngu greiningarfærslur og bókar ekkert. Til að losa frestaðar tekjur eða kostnað skal nota Subscription.Deferral.Release.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Endurbyggja samningagreiningu: bætir við greiningarfærslum þessa mánaðar fyrir allar áskriftarlínur sem eru á samningi, þvert á alla samninga, og sleppir línum sem hafa þegar færslu. Skrifar eingöngu greiningarfærslur og bókar ekkert. Til að losa frestaðar tekjur eða kostnað skal nota Subscription.Deferral.Release.</note>
+          <source>Recalculate contract analysis: adds this month's entries for the given contract, or all contracts when contractNo is omitted. Existing entries are preserved. No documents are posted.</source>
+          <target>Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3267496714 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
@@ -314,6 +331,18 @@
           <target>Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purch.Document.Post.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purch.Document.Post.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - Method 3332459896 - NamedType 164348564" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Already posted documents remain posted. Fix the failed document and retry only the failed and notAttemptedDocuments entries.</source>
+          <target>Þegar bókuð skjöl standa áfram bókuð. Lagfærðu skjalið sem mistókst og reyndu aðeins aftur færslurnar sem mistókust og í notAttemptedDocuments.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Þegar bókuð skjöl standa áfram bókuð. Lagfærðu skjalið sem mistókst og reyndu aðeins aftur færslurnar sem mistókust og í notAttemptedDocuments.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method PerformWrite - NamedType RetryPostingTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - Method 3332459896 - NamedType 4083328746" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A billing document that Business Central can post.</source>
+          <target>Reikningsskjal sem Business Central getur bókað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Reikningsskjal sem Business Central getur bókað.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method PerformWrite - NamedType ExpectedPostingTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Previews the documents that Subscription.Billing.CreateDocuments would create for a Billing Template, by reading the existing proposal lines. Reads only; writes nothing.</source>
@@ -1353,6 +1382,18 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Flytja inn notkunargögn: vistar notkunarskrá birgis (texta eða base64), greinir hana í innfluttar línur og vinnur þær einnig með runProcessing. Óafturkræf aðgerð, því hvert skref vistar. Fyrir innflutning sem þegar er vistaður skal nota Subscription.Usage.Process; til að afturkalla innflutning skal nota Subscription.Usage.DeleteData.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2570584800 - Method 202776942 - NamedType 761809759" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The import and its file remain stored. Use usageDataImportEntryNo with Subscription.Usage.DeleteData to remove them, or fix the setup and retry Subscription.Usage.Process.</source>
+          <target>Innflutningurinn og skrá hans eru enn vistuð. Notaðu usageDataImportEntryNo með Subscription.Usage.DeleteData til að fjarlægja þau eða lagfærðu uppsetninguna og reyndu Subscription.Usage.Process aftur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Innflutningurinn og skrá hans eru enn vistuð. Notaðu usageDataImportEntryNo með Subscription.Usage.DeleteData til að fjarlægja þau eða lagfærðu uppsetninguna og reyndu Subscription.Usage.Process aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - Method RespondWithRetainedImport - NamedType NextStepTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2570584800 - Method 202776942 - NamedType 2918804866" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Valid usage data and supplier import settings.</source>
+          <target>Gild notkunargögn og innflutningsstillingar birgis.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Gild notkunargögn og innflutningsstillingar birgis.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - Method RespondWithRetainedImport - NamedType ExpectedTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 1755898718 - NamedType 3594301179" size-unit="char" translate="yes" xml:space="preserve">
           <source>Usage Data Import entry %1 is already Closed and cannot be processed again.</source>
           <target>Innflutningsfærslan %1 fyrir notkunargögn er þegar lokuð og er ekki hægt að vinna aftur.</target>
@@ -1448,6 +1489,30 @@
           <target>Bæta línum lánardrottins við innkaupareikning: bætir gjaldföllnum línum lánardrottins reikningsins við fyrirliggjandi óbókaðan innkaupareikning. Skrifar gögn; ekkert er bókað. Til að stofna nýjan innkaupareikning fyrir samning skal nota Subscription.VendorContract.CreateInvoice.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Bæta línum lánardrottins við innkaupareikning: bætir gjaldföllnum línum lánardrottins reikningsins við fyrirliggjandi óbókaðan innkaupareikning. Skrifar gögn; ekkert er bókað. Til að stofna nýjan innkaupareikning fyrir samning skal nota Subscription.VendorContract.CreateInvoice.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - Method 3179259596 - NamedType 3351274" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Vendor subscription contract %1 does not exist.</source>
+          <target>Áskriftarsamningur lánardrottins %1 er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur lánardrottins %1 er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - Method ValidateContractVendor - NamedType NotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - Method 3179259596 - NamedType 1342218725" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Contract %1 belongs to another vendor than invoice vendor %2.</source>
+          <target>Samningur %1 tilheyrir öðrum lánardrottni en lánardrottni reiknings %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number, %2 = invoice vendor||is-IS=Samningur %1 tilheyrir öðrum lánardrottni en lánardrottni reiknings %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - Method ValidateContractVendor - NamedType ConflictErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - Method 3179259596 - NamedType 2918804866" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A vendor subscription contract for the invoice vendor.</source>
+          <target>Áskriftarsamningur fyrir lánardrottin reikningsins.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Áskriftarsamningur fyrir lánardrottin reikningsins.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - Method ValidateContractVendor - NamedType ExpectedTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1703725318 - Method 3179259596 - NamedType 761809759" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Use an invoice for the contract vendor, or choose a contract for this invoice vendor.</source>
+          <target>Notaðu reikning fyrir lánardrottin samningsins eða veldu samning fyrir lánardrottin þessa reiknings.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Notaðu reikning fyrir lánardrottin samningsins eða veldu samning fyrir lánardrottin þessa reiknings.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend AddToInv Impl ori - Method ValidateContractVendor - NamedType NextStepTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 18511243 - NamedType 2424113080" size-unit="char" translate="yes" xml:space="preserve">
           <source>The Vendor Subscription Contract '%1' does not exist.</source>
@@ -1569,7 +1634,6 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Bókun áskriftareikninga</note>
           <note from="Xliff Generator" annotates="general" priority="3">PermissionSet BIFROST SubPost ori - Property Caption</note>
         </trans-unit>
-      </group>
-    </body>
+      </body>
   </file>
 </xliff>

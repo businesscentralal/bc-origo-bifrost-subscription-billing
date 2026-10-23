@@ -165,3 +165,10 @@ SOFTWARE.
 - **Microsoft source:** table 8060 "Billing Template", `internal procedure WriteFilter` (and `EditFilter`, which opens a FilterPageBuilder), in `Billing/Tables/BillingTemplate.Table.al`.
 - **Our copy:** `Sub Bil SetFilter Impl ori` (codeunit 10035070, `app/src/Billing/SubBilSetFilterImpl.Codeunit.al`): the Filter Blob is cleared and the normalised view written unless it is the blank view of the template's contract table. The view is validated by Foundation's `Message Argument ori.ApplyTableView` first, as `Subscription.PriceUpdate.SetTemplateFilter` does for Price Update Templates.
 - **Change we want from Microsoft:** make `WriteFilter(FieldNumber, FilterText)` public.
+
+
+## Operation safety comparison (#63, 2026-10-23)
+
+Microsoft BCApps `releases/28.x`, `Subscription Billing/App/Contract Renewal/Codeunits/SubContractRenewalMgt.Codeunit.al`, `FilterRenewableContractLines`, filters `Planned Sub. Line exists=false`, the item/account contract line types, `Closed=false`, and a nonzero subscription line end date. `Sub Ren CrQuote Impl ori` applies those same filters before renewal creation. Native regressions include a closed line alongside an open line and assert only the open line appears on the quote.
+
+Report 8005 `Create Contract Analysis` sets its nonblank contract filter in `OnPreDataItem`; a caller's filter in group 0 would be replaced. The app supplies the requested contract in filter group 2 and runs the standard report. Regression assertions check the entire physical analysis table, a second independently created contract and repeat-call idempotency. No Microsoft internal table procedure is called or copied.

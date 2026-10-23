@@ -297,7 +297,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     /// <summary>The parameters of Subscription.Analysis.Recalculate.</summary>
     procedure AnalysisParameters() Parameters: JsonArray
     begin
-        Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Narrows the counts in the response to this Subscription Contract. It does not scope the run: the report always analyses every contract.'));
+        Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Limits changes and counts to this existing customer or vendor subscription contract. Without it, all contracts are analysed.'));
     end;
 
     /// <summary>The parameters of Subscription.Import.CreateContracts.</summary>
@@ -394,7 +394,9 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Billing.PostDocuments':
                 begin
-                    Fields.Add(ContractMgt.ResponseField('postedCount', 'integer', 'Number of documents this call posted.'));
+                    Fields.Add(ContractMgt.ResponseField('postedCount', 'integer', 'Number of documents this call posted, also returned after a partial posting failure.'));
+                    Fields.Add(ContractMgt.ResponseField('failedDocuments', 'array', 'On a posting error: the failed document identity and error.'));
+                    Fields.Add(ContractMgt.ResponseField('notAttemptedDocuments', 'array', 'On a posting error: documents not attempted after the failure.'));
                     Children.Add(ContractMgt.ResponseField('partner', 'string', 'Customer or Vendor.'));
                     Children.Add(ContractMgt.ResponseField('documentType', 'string', 'Invoice or Credit Memo.'));
                     Children.Add(ContractMgt.ResponseField('documentNo', 'string', 'No. of the document that was posted.'));
@@ -519,7 +521,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 begin
                     Fields.Add(ContractMgt.ResponseField('purchaseInvoiceNo', 'string', 'The purchase invoice.'));
                     Fields.Add(ContractMgt.ResponseField('vendorNo', 'string', 'Its Buy-from Vendor No.'));
-                    Fields.Add(ContractMgt.ResponseField('linesAdded', 'integer', 'Purchase lines the invoice gained. Zero is still a success.'));
+                    Fields.Add(ContractMgt.ResponseField('linesAdded', 'integer', 'Billing lines the invoice gained, excluding text lines. Zero is still a success.'));
                     Fields.Add(ContractMgt.ResponseField('subscriptionLineEntryNos', 'array', 'Entry No. of every Subscription Line that was proposed onto the invoice.'));
                 end;
             'Subscription.Usage.DeleteData':
@@ -579,7 +581,8 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Usage.ImportData':
                 begin
-                    Fields.Add(ContractMgt.ResponseField('usageDataImportEntryNo', 'integer', 'Entry No. of the created Usage Data Import.'));
+                    Fields.Add(ContractMgt.ResponseField('usageDataImportEntryNo', 'integer', 'Entry No. of the created import, also present on an error after its file was committed.'));
+                    Fields.Add(ContractMgt.ResponseField('importRetained', 'boolean', 'On an error after a committed import: true. Remove the import with Subscription.Usage.DeleteData or fix its setup and retry Subscription.Usage.Process.'));
                     Fields.Add(ContractMgt.ResponseField('processingStatus', 'string', 'Processing Status of the import after the last step: None, Ok, Error or Closed.'));
                     Fields.Add(ContractMgt.ResponseField('reason', 'string', 'The import''s reason text when processingStatus is Error; empty otherwise.'));
                     Fields.Add(ContractMgt.ResponseField('importedLineCount', 'integer', 'Usage Data Generic Import rows now standing for the import.'));
@@ -591,7 +594,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Children.Add(ContractMgt.ResponseField('status', 'string', 'Processing Status after the step: None, Ok, Error or Closed.'));
                     Children.Add(ContractMgt.ResponseField('reason', 'string', 'Why the step failed; empty when it did not.'));
                     Fields.Add(FieldWithChildren('steps', 'array', 'One entry per step, in the order they ran.', Children));
-                    Fields.Add(ContractMgt.ResponseField('processingStatus', 'string', 'Processing Status of the entry after the last step.'));
+                    Fields.Add(ContractMgt.ResponseField('processingStatus', 'string', 'Processing status after the last step, including Error when an imported or billing line of this entry is in Error.'));
                     Fields.Add(ContractMgt.ResponseField('usageDataBillingCount', 'integer', 'Usage Data Billing rows of the entry.'));
                     Fields.Add(ContractMgt.ResponseField('usageDataBillingErrorCount', 'integer', 'Usage Data Billing rows of the entry whose Processing Status is Error.'));
                 end;

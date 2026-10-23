@@ -193,6 +193,8 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos);
 
         GetUnpostedInvoice(InvoiceNo, PurchaseHeader);
+        if not ValidateContractVendor(Argument, ContractNo, PurchaseHeader."Buy-from Vendor No.") then
+            exit;
 
         if SelectedEntryNos.Count() > 0 then
             foreach EntryNo in SelectedEntryNos.Keys() do begin
@@ -206,6 +208,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
 
         PurchaseLine.SetRange("Document Type", PurchaseHeader."Document Type");
         PurchaseLine.SetRange("Document No.", PurchaseHeader."No.");
+        PurchaseLine.SetFilter(Type, '<>%1', PurchaseLine.Type::" ");
         LinesBefore := PurchaseLine.Count();
 
         if CandidateEntryNos.Count() > 0 then begin
@@ -223,6 +226,29 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         ResponseJson.Add('linesAdded', PurchaseLine.Count() - LinesBefore);
         ResponseJson.Add('subscriptionLineEntryNos', AddedArray);
         Helper.RespondWithSuccess(Argument, ResponseJson);
+    end;
+
+    local procedure ValidateContractVendor(var Argument: Record "Message Argument ori"; ContractNo: Code[20]; VendorNo: Code[20]): Boolean
+    var
+        VendorContract: Record "Vendor Subscription Contract";
+        NotFoundErr: Label 'Vendor subscription contract %1 does not exist.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur lánardrottins %1 er ekki til.';
+        ConflictErr: Label 'Contract %1 belongs to another vendor than invoice vendor %2.', Comment = '%1 = contract number, %2 = invoice vendor||is-IS=Samningur %1 tilheyrir öðrum lánardrottni en lánardrottni reiknings %2.';
+        ExpectedTxt: Label 'A vendor subscription contract for the invoice vendor.', Comment = 'is-IS=Áskriftarsamningur fyrir lánardrottin reikningsins.';
+        NextStepTxt: Label 'Use an invoice for the contract vendor, or choose a contract for this invoice vendor.', Comment = 'is-IS=Notaðu reikning fyrir lánardrottin samningsins eða veldu samning fyrir lánardrottin þessa reiknings.';
+    begin
+        if ContractNo = '' then
+            exit(true);
+        if not VendorContract.Get(ContractNo) then begin
+            Argument.RespondWithError("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotFoundErr, ContractNo),
+                'contractNo', ContractNo, ExpectedTxt, NextStepTxt);
+            exit(false);
+        end;
+        if VendorContract."Buy-from Vendor No." <> VendorNo then begin
+            Argument.RespondWithError("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(ConflictErr, ContractNo, VendorNo),
+                'contractNo', ContractNo, ExpectedTxt, NextStepTxt);
+            exit(false);
+        end;
+        exit(true);
     end;
 
     local procedure GetUnpostedInvoice(InvoiceNo: Code[20]; var PurchaseHeader: Record "Purchase Header")

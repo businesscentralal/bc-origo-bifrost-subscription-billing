@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-23) - scoped operations and recoverable failures (#63)
+
+- `Sub Ana Recalc Impl ori` (10035056) limits both analysis writes and response counts to `contractNo`, and refuses unknown contracts before any write. The standard report runs with the contract in a separate filter group so its own nonblank filter cannot replace it.
+- `Sub Vend AddToInv Impl ori` (10035068) refuses a contract for another invoice vendor with `ConflictingIdentifiers`, checks unknown contracts, and excludes text lines from `linesAdded`.
+- `Sub Ren CrQuote Impl ori` (10035052) matches Microsoft's contract renewal selection: open item/account lines, no planned subscription line, and an end date. Closed lines from a prior merge are excluded.
+- `Sub Usg Import Impl ori` (10035053) retains the committed import and file on processing failure and returns `usageDataImportEntryNo`, `importRetained` and deletion/retry guidance. `Sub Usg Process Impl ori` (10035054) reports Error when its own imported or billing lines are in Error, even if the header says None.
+- `Sub Bil PostDocs Impl ori` (10035085) returns posted, failed and not-attempted documents after a posting failure. Earlier posted documents remain posted.
+- Native regressions in `Sub Data Safety Tst ori` (95722), `Sub Renewal Tst ori` (95776), `Sub PostDocs Tst ori` (95718) and the vendor invoice test cover these boundaries in 1033 and 1039.
+
+
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
 The contract chapters of all 33 message types were already complete; the audit against Bifrost Foundation found the gaps below and closes them. No public object, procedure, enum value or id changes, and no behaviour of a message type changes.

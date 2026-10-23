@@ -19,7 +19,10 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
-        DescriptionLbl: Label 'Rebuilds Subscription Contract analysis entries as of today by running Microsoft''s Create Contract Analysis report across every Subscription Line with a contract.', MaxLength = 250, Comment = 'is-IS=Endurbyggir greiningarfærslur áskriftarsamnings miðað við daginn í dag með því að keyra skýrslu Microsoft, Create Contract Analysis, á allar áskriftarlínur með samningi.';
+        NotFoundErr: Label 'Subscription Contract %1 does not exist.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur %1 er ekki til.';
+        ExpectedContractTxt: Label 'An existing customer or vendor subscription contract number.', Comment = 'is-IS=Númer fyrirliggjandi áskriftarsamnings viðskiptamanns eða lánardrottins.';
+        FindContractTxt: Label 'Choose an existing subscription contract and send its number as contractNo.', Comment = 'is-IS=Veldu fyrirliggjandi áskriftarsamning og sendu númer hans sem contractNo.';
+        DescriptionLbl: Label 'Updates this month''s analysis entries for the given subscription contract, or all contracts when no contractNo is supplied. Existing entries are preserved.', MaxLength = 250, Comment = 'is-IS=Uppfærir greiningarfærslur þessa mánaðar fyrir tilgreindan áskriftarsamning eða alla samninga ef contractNo er ekki gefið. Fyrirliggjandi færslur haldast óbreyttar.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -45,7 +48,7 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Rebuild contract analysis: adds this month''s analysis entries for every Subscription Line that has a contract, across all contracts, and skips lines that already have one. Writes analysis entries only and posts nothing. To release deferred revenue or cost use Subscription.Deferral.Release.', Comment = 'is-IS=Endurbyggja samningagreiningu: bætir við greiningarfærslum þessa mánaðar fyrir allar áskriftarlínur sem eru á samningi, þvert á alla samninga, og sleppir línum sem hafa þegar færslu. Skrifar eingöngu greiningarfærslur og bókar ekkert. Til að losa frestaðar tekjur eða kostnað skal nota Subscription.Deferral.Release.';
+        SelectionLbl: Label 'Recalculate contract analysis: adds this month''s entries for the given contract, or all contracts when contractNo is omitted. Existing entries are preserved. No documents are posted.', Comment = 'is-IS=Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð.';
     begin
         exit(SelectionLbl);
     end;
@@ -115,7 +118,7 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Runs Microsoft''s Create Contract Analysis report, which adds Sub. Contr. Analysis Entry rows for every Subscription Line that belongs to a contract, as of ' +
+        Overview := 'Adds analysis entries for the selected subscription contract, or all contracts when contractNo is omitted, as of ' +
             'the system date. Use it to bring the contract analysis up to date for the current month; a line that already has an entry for the month is skipped, so repeating ' +
             'the call in the same month changes nothing.';
         exit(true);
@@ -123,9 +126,9 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('The report takes no parameters: it always analyses as of the system date, not the work date, always covers every contract, and only adds. A line that ' +
-            'already has an entry for the current month is skipped, so a second call in the same month adds nothing and still succeeds. contractNo only narrows ' +
-            'the counts in the answer. The report writes only the analysis entries; no ledger, contract or Subscription Line changes. ' +
+        Notes := ('Analysis uses the system date, not the work date, and only adds entries. contractNo limits both changes and counts to the given contract. A line that ' +
+            'already has an entry for the current month is skipped, so a second call in the same month adds nothing and still succeeds. Without contractNo, ' +
+            'all contracts are analysed. An unknown contract is refused before any write. Only analysis entries change; no ledger, contract or Subscription Line changes. ' +
             ContractParts.IsolationNote()).TrimEnd();
         exit(true);
     end;
@@ -163,6 +166,8 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
         SubContrAnalysisEntry: Record "Sub. Contr. Analysis Entry";
+        CustomerContract: Record "Customer Subscription Contract";
+        VendorContract: Record "Vendor Subscription Contract";
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
         ContractNo: Code[20];
@@ -173,6 +178,14 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
         RequestJson := Argument.GetRequestJson();
         ContractNo := Helper.GetCode20(RequestJson, 'contractNo', false);
 
+        if ContractNo <> '' then
+            if not CustomerContract.Get(ContractNo) then
+                if not VendorContract.Get(ContractNo) then begin
+                    Argument.RespondWithError("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotFoundErr, ContractNo),
+                        'contractNo', ContractNo, ExpectedContractTxt, FindContractTxt);
+                    exit;
+                end;
+
         SubContrAnalysisEntry.Reset();
         SubContrAnalysisEntry.SetLoadFields("Entry No.");
         if SubContrAnalysisEntry.FindLast() then
@@ -180,7 +193,10 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
         else
             MaxEntryNoBefore := 0;
 
-        Report.Run(Report::"Create Contract Analysis", false, false);
+        if ContractNo = '' then
+            Report.Run(Report::"Create Contract Analysis", false, false)
+        else
+            CreateContractAnalysis(ContractNo);
 
         SubContrAnalysisEntry.Reset();
         SubContrAnalysisEntry.SetFilter("Entry No.", '>%1', MaxEntryNoBefore);
@@ -198,5 +214,19 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
         ResponseJson.Add('entriesCreated', EntriesCreated);
         ResponseJson.Add('totalEntries', TotalEntries);
         Helper.RespondWithSuccess(Argument, ResponseJson);
+    end;
+    // Keep the contract in a separate filter group: the standard report sets its own
+    // nonblank contract filter in group 0 during OnPreDataItem.
+    local procedure CreateContractAnalysis(ContractNo: Code[20])
+    var
+        SubscriptionLine: Record "Subscription Line";
+        CreateContractAnalysisReport: Report "Create Contract Analysis";
+    begin
+        SubscriptionLine.FilterGroup(2);
+        SubscriptionLine.SetRange("Subscription Contract No.", ContractNo);
+        SubscriptionLine.FilterGroup(0);
+        CreateContractAnalysisReport.SetTableView(SubscriptionLine);
+        CreateContractAnalysisReport.UseRequestPage(false);
+        CreateContractAnalysisReport.RunModal();
     end;
 }

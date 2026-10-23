@@ -212,7 +212,7 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('usageDataImportEntryNo', EntryNo);
         ResponseJson.Add('steps', StepsArray);
-        ResponseJson.Add('processingStatus', Helper.FormatProcessingStatus(UsageDataImport."Processing Status"));
+        ResponseJson.Add('processingStatus', Helper.FormatProcessingStatus(EffectiveStatus(UsageDataImport)));
         ResponseJson.Add('usageDataBillingCount', UsageDataBilling.Count());
         UsageDataBilling.SetRange("Processing Status", UsageDataBilling."Processing Status"::Error);
         ResponseJson.Add('usageDataBillingErrorCount', UsageDataBilling.Count());
@@ -292,9 +292,27 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
             StepReason := GetLastErrorText();
 
         StepJson.Add('step', StepName);
-        StepJson.Add('status', Helper.FormatProcessingStatus(UsageDataImport."Processing Status"));
+        StepJson.Add('status', Helper.FormatProcessingStatus(EffectiveStatus(UsageDataImport)));
         StepJson.Add('reason', StepReason);
         StepsArray.Add(StepJson);
+    end;
+
+    local procedure EffectiveStatus(UsageDataImport: Record "Usage Data Import"): Enum "Processing Status"
+    var
+        ImportedLine: Record "Usage Data Generic Import";
+        BillingLine: Record "Usage Data Billing";
+    begin
+        if UsageDataImport."Processing Status" = UsageDataImport."Processing Status"::Error then
+            exit(UsageDataImport."Processing Status");
+        ImportedLine.SetRange("Usage Data Import Entry No.", UsageDataImport."Entry No.");
+        ImportedLine.SetRange("Processing Status", ImportedLine."Processing Status"::Error);
+        if not ImportedLine.IsEmpty() then
+            exit(Enum::"Processing Status"::Error);
+        BillingLine.SetRange("Usage Data Import Entry No.", UsageDataImport."Entry No.");
+        BillingLine.SetRange("Processing Status", BillingLine."Processing Status"::Error);
+        if not BillingLine.IsEmpty() then
+            exit(Enum::"Processing Status"::Error);
+        exit(UsageDataImport."Processing Status");
     end;
 
     /// <summary>Clears the status a previous step left on the Usage Data Import, so the next step reports its own outcome.</summary>

@@ -26,6 +26,83 @@ codeunit 95718 "Sub PostDocs Tst ori"
 
     [Test]
     [HandlerFunctions('BillingMessageHandler')]
+    procedure Scenario_63AC05_PartialPosting_ListsPostedAndFailed_EN()
+    begin
+        AssertPartialPosting(1033);
+    end;
+
+    [Test]
+    [HandlerFunctions('BillingMessageHandler')]
+    procedure Scenario_63AC05_PartialPosting_ListsPostedAndFailed_IS()
+    begin
+        AssertPartialPosting(1039);
+    end;
+
+    local procedure AssertPartialPosting(LanguageId: Integer)
+    var
+        SalesHeader: Record "Sales Header";
+        SalesInvoice: Record "Sales Invoice Header";
+        Request: JsonObject;
+        Response: JsonObject;
+        Documents: JsonArray;
+        Document: JsonObject;
+        Token: JsonToken;
+        FirstNo: Code[20];
+        SecondNo: Code[20];
+        PostedNo: Code[20];
+        PreviousLanguage: Integer;
+    begin
+        // [GIVEN] Two own billing invoices; the second is deliberately missing its posting date.
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        FirstNo := CreateCustomerBillingInvoice();
+        SecondNo := CreateCustomerBillingInvoice();
+        SalesHeader.Get(SalesHeader."Document Type"::Invoice, SecondNo);
+        SalesHeader."Posting Date" := 0D;
+        SalesHeader.Modify(false);
+        Document.Add('partner', 'Customer');
+        Document.Add('documentType', 'Invoice');
+        Document.Add('documentNo', FirstNo);
+        Documents.Add(Document);
+        Document.Replace('documentNo', SecondNo);
+        Documents.Add(Document);
+        Request.Add('documents', Documents);
+
+        // [WHEN] The first posts and the second fails in Business Central posting.
+        Response := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
+
+        // [THEN] The error tells the caller exactly which invoice posted and which remains open.
+        Assert.AreEqual('Error', TestLibrary.ReadText(Response, 'status'), TestLibrary.AsText(Response));
+        Assert.AreEqual('BusinessCentralError', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
+        Assert.AreEqual(1, TestLibrary.ReadInteger(Response, 'postedCount'), TestLibrary.AsText(Response));
+        TestLibrary.ReadArray(Response, 'documents').Get(0, Token);
+        Assert.AreEqual(FirstNo, TestLibrary.ReadText(Token.AsObject(), 'documentNo'), 'The first invoice must be listed as posted.');
+        PostedNo := CopyStr(TestLibrary.ReadText(Token.AsObject(), 'postedDocumentNo'), 1, MaxStrLen(PostedNo));
+        Assert.IsTrue(SalesInvoice.Get(PostedNo), 'The reported posted invoice must exist.');
+        TestLibrary.ReadArray(Response, 'failedDocuments').Get(0, Token);
+        Assert.AreEqual(SecondNo, TestLibrary.ReadText(Token.AsObject(), 'documentNo'), 'The failed invoice must be named.');
+        Assert.IsTrue(SalesHeader.Get(SalesHeader."Document Type"::Invoice, SecondNo), 'The failed invoice must remain open.');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    local procedure CreateCustomerBillingInvoice(): Code[20]
+    var
+        Contract: Record "Customer Subscription Contract";
+        Subscription: Record "Subscription Header";
+        BillingSetup: Record "Billing Template";
+        Response: JsonObject;
+        Token: JsonToken;
+    begin
+        TestLibrary.CreateBillableCustomerContract(Contract, Subscription, 0D);
+        TestLibrary.CreateBillingTemplate(BillingSetup, Enum::"Service Partner"::Customer, Contract."No.");
+        TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", TemplateRequest(BillingSetup.Code));
+        Response := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateDocuments", TemplateRequest(BillingSetup.Code));
+        TestLibrary.ReadArray(Response, 'documents').Get(0, Token);
+        exit(CopyStr(TestLibrary.ReadText(Token.AsObject(), 'documentNo'), 1, 20));
+    end;
+
+    [Test]
+    [HandlerFunctions('BillingMessageHandler')]
     procedure Scenario_AC03_PostDocuments_PostsBillingInvoice_AndRefusesItAgain()
     var
         CustomerContract: Record "Customer Subscription Contract";

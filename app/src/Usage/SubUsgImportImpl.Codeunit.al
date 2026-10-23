@@ -130,7 +130,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('The call commits the import and the blob before Microsoft''s step runs, and commits again before Process Imported Lines, so an error after that leaves ' +
-            'the import entry in place. A file that parses with row-level problems is still a success: check processingStatus and reason, and the import in the ' +
+            'the import entry in place. An error answer includes usageDataImportEntryNo, importRetained true and a deletion or retry nextStep. A file that parses with row-level problems is still a success: check processingStatus and reason, and the import in the ' +
             'client for row detail. The blob is stamped Import Status Ok with the hash of its data, as Microsoft''s own file import does, because the Create Imported Lines step reads only Ok blobs. ' +
             ContractParts.BooleanNote()).TrimEnd();
         exit(true);
@@ -238,16 +238,20 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         UsageDataImport.Modify(false);
 
         Commit();
-        if not Codeunit.Run(Codeunit::"Import And Process Usage Data", UsageDataImport) then
-            Error(GetLastErrorText());
+        if not Codeunit.Run(Codeunit::"Import And Process Usage Data", UsageDataImport) then begin
+                RespondWithRetainedImport(Argument, UsageDataImport."Entry No.", GetLastErrorText());
+                exit;
+            end;
 
         if RunProcessing then begin
             UsageDataImport.Get(UsageDataImport."Entry No.");
             UsageDataImport."Processing Step" := UsageDataImport."Processing Step"::"Process Imported Lines";
             UsageDataImport.Modify(false);
             Commit();
-            if not Codeunit.Run(Codeunit::"Import And Process Usage Data", UsageDataImport) then
-                Error(GetLastErrorText());
+            if not Codeunit.Run(Codeunit::"Import And Process Usage Data", UsageDataImport) then begin
+                RespondWithRetainedImport(Argument, UsageDataImport."Entry No.", GetLastErrorText());
+                exit;
+            end;
         end;
 
         UsageDataImport.Get(UsageDataImport."Entry No.");
@@ -265,4 +269,18 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         ResponseJson.Add('importedLineCount', UsageDataGenericImport.Count());
         Helper.RespondWithSuccess(Argument, ResponseJson);
     end;
+    local procedure RespondWithRetainedImport(var Argument: Record "Message Argument ori"; EntryNo: Integer; FailureText: Text)
+    var
+        ResponseJson: JsonObject;
+        NextStepTxt: Label 'The import and its file remain stored. Use usageDataImportEntryNo with Subscription.Usage.DeleteData to remove them, or fix the setup and retry Subscription.Usage.Process.', Comment = 'is-IS=Innflutningurinn og skrá hans eru enn vistuð. Notaðu usageDataImportEntryNo með Subscription.Usage.DeleteData til að fjarlægja þau eða lagfærðu uppsetninguna og reyndu Subscription.Usage.Process aftur.';
+        ExpectedTxt: Label 'Valid usage data and supplier import settings.', Comment = 'is-IS=Gild notkunargögn og innflutningsstillingar birgis.';
+    begin
+        Argument.RespondWithError("Bifrost Error Code ori"::BusinessCentralError, FailureText,
+            'usageDataImportEntryNo', Format(EntryNo, 0, 9), ExpectedTxt, NextStepTxt);
+        ResponseJson := Argument.GetResponseJson();
+        ResponseJson.Add('usageDataImportEntryNo', EntryNo);
+        ResponseJson.Add('importRetained', true);
+        Argument.SetResponseJson(ResponseJson);
+    end;
+
 }
