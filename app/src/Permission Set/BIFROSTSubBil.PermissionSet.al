@@ -14,6 +14,9 @@ permissionset 10035062 "BIFROST SubBil ori"
     Access = Public;
 
     Permissions =
+        page "SubBil Setup Wizard ori" = X,
+        codeunit "SubBil Wizard Mgt ori" = X,
+        codeunit "SubBil Wizard Reg. ori" = X,
         codeunit "Sub Helper ori" = X,
         codeunit "Sub Line Create Impl ori" = X,
         codeunit "Sub Con GetLines Impl ori" = X,

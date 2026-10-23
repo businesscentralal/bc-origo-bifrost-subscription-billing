@@ -207,3 +207,8 @@ It is a customized version of the [AL-Go-AppSource](https://github.com/microsoft
 
 Please go to https://aka.ms/AL-Go and [COSMO Docs](https://docs.cosmoconsult.com/en-us/cloud-service/alpaca) to learn more.
 <!-- AUTO-UPDATE-END -->
+
+
+### Set up with the wizard
+
+Open **Assisted Setup**, then **Set up Bifrost Subscription Billing**. Review what the app adds, check its HTTP status, and read which permission sets users need. **Enable HTTP in Bifrost Setup** opens Foundation's setup wizard; this app only reads the setting. Assign `BIFROST SubBil ori` for operations and, separately, `BIFROST SubPost ori` for posting, alongside the user's Foundation permissions. Choose **Finish** to mark the assisted setup complete. Closing early leaves its completion state unchanged.

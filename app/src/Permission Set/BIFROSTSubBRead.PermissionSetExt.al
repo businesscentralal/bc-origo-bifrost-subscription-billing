@@ -11,5 +11,8 @@ using Origo.Bifrost;
 permissionsetextension 10035064 "BIFROST SubBRead ori" extends "BIFROST Read ori"
 {
     Permissions =
+        page "SubBil Setup Wizard ori" = X,
+        codeunit "SubBil Wizard Mgt ori" = X,
+        codeunit "SubBil Wizard Reg. ori" = X,
         codeunit "Sub Helper ori" = X;
 }

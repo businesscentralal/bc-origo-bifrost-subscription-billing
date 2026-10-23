@@ -2,7 +2,6 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en-US" target-language="is-IS" original="Bifrost Subscription Billing">
     <body>
-      <group id="body">
         <trans-unit id="Table 1499020996 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>BIFROST SubPost ori</source>
           <target>Bifröst bókun áskrifta</target>
@@ -1557,6 +1556,294 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3747124654 - Method 2805992183 - NamedType 3179608058" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The setup step is invalid. Close the wizard and open it again from Assisted Setup.</source>
+          <target>Uppsetningarskrefið er ógilt. Lokaðu leiðsögninni og opnaðu hana aftur úr Leiðsögn um uppsetningu.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Uppsetningarskrefið er ógilt. Lokaðu leiðsögninni og opnaðu hana aftur úr Leiðsögn um uppsetningu.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit SubBil Wizard Mgt ori - Method NextStep - NamedType InvalidStepErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 439973510 - Method 550388558 - NamedType 3683717780" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Set up Bifrost Subscription Billing</source>
+          <target>Setja upp Bifröst áskriftareikningagerð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Setja upp Bifröst áskriftareikningagerð</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit SubBil Wizard Reg. ori - Method RegisterWizard - NamedType TitleTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 439973510 - Method 550388558 - NamedType 957268046" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bifrost Subscription Billing</source>
+          <target>Bifröst áskriftareikningagerð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bifröst áskriftareikningagerð</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit SubBil Wizard Reg. ori - Method RegisterWizard - NamedType ShortTitleTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 439973510 - Method 550388558 - NamedType 1427565258" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Learn about subscription operations, enable HTTP through Bifrost Setup, and review the access users need.</source>
+          <target>Kynntu þér áskriftaraðgerðir, virkjaðu HTTP í uppsetningu Bifröst og farðu yfir aðgang sem notendur þurfa.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Kynntu þér áskriftaraðgerðir, virkjaðu HTTP í uppsetningu Bifröst og farðu yfir aðgang sem notendur þurfa.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit SubBil Wizard Reg. ori - Method RegisterWizard - NamedType DescriptionTxt</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Set up Bifrost Subscription Billing</source>
+          <target>Setja upp Bifröst áskriftareikningagerð</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Setja upp Bifröst áskriftareikningagerð</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - NamedType 3741120694" size-unit="char" translate="yes" xml:space="preserve">
+          <source>HTTP could not be enabled here. Ask an administrator to enable it in Bifrost Setup, then choose Verify.</source>
+          <target>Ekki var hægt að virkja HTTP hér. Biddu stjórnanda um að virkja það í uppsetningu Bifröst og veldu síðan Staðfesta.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ekki var hægt að virkja HTTP hér. Biddu stjórnanda um að virkja það í uppsetningu Bifröst og veldu síðan Staðfesta.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - NamedType AskAdministratorTxt</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - NamedType 797954468" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Done</source>
+          <target>Lokið</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Lokið</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - NamedType DoneTxt</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - NamedType 3712358470" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Needs an administrator</source>
+          <target>Þarfnast stjórnanda</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Þarfnast stjórnanda</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - NamedType NeedsAdministratorTxt</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 1850829176 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Users also need Foundation's Bifrost permission sets. Assign permission sets to users or through an Entra security group. This wizard does not assign permissions.</source>
+          <target>Notendur þurfa einnig Bifröst heimildasamstæður Foundation. Úthlutaðu heimildasamstæðum til notenda eða með Entra-öryggishópi. Þessi leiðsögn úthlutar ekki heimildum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Notendur þurfa einnig Bifröst heimildasamstæður Foundation. Úthlutaðu heimildasamstæðum til notenda eða með Entra-öryggishópi. Þessi leiðsögn úthlutar ekki heimildum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control Access - Property InstructionalText</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 1850829176 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Access</source>
+          <target>Aðgangur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Aðgangur</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control Access - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 4084921742 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Allows Subscription Billing operations within the user's existing access to subscription and contract data.</source>
+          <target>Leyfir áskriftarreikningaaðgerðir innan núverandi aðgangs notandans að áskriftar- og samningsgögnum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Leyfir áskriftarreikningaaðgerðir innan núverandi aðgangs notandans að áskriftar- og samningsgögnum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control OperationsAccess - Property InstructionalText</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 4084921742 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>BIFROST SubBil ori</source>
+          <target>BIFROST SubBil ori</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=BIFROST SubBil ori</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control OperationsAccess - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 1168656128 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Allows posting subscription billing documents. Assign it separately to users who should post.</source>
+          <target>Leyfir bókun áskriftarreikningsskjala. Úthlutaðu henni sérstaklega til notenda sem eiga að bóka.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Leyfir bókun áskriftarreikningsskjala. Úthlutaðu henni sérstaklega til notenda sem eiga að bóka.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control PostingAccess - Property InstructionalText</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 1168656128 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>BIFROST SubPost ori</source>
+          <target>BIFROST SubPost ori</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=BIFROST SubPost ori</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control PostingAccess - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 200834921 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Review the summary. Finish marks this assisted setup complete. You can repeat the wizard later.</source>
+          <target>Farðu yfir samantektina. Ljúka merkir þessari leiðsögn um uppsetningu lokið. Þú getur endurtekið leiðsögnina síðar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Farðu yfir samantektina. Ljúka merkir þessari leiðsögn um uppsetningu lokið. Þú getur endurtekið leiðsögnina síðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control FinishSummary - Property InstructionalText</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 200834921 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Finish setup</source>
+          <target>Ljúka uppsetningu</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ljúka uppsetningu</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control FinishSummary - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 3712887036 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shows that the permission-set guidance has been reviewed; no permissions were assigned.</source>
+          <target>Sýnir að leiðbeiningar um heimildasamstæður hafi verið skoðaðar; engum heimildum var úthlutað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sýnir að leiðbeiningar um heimildasamstæður hafi verið skoðaðar; engum heimildum var úthlutað.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control AccessSummary - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 3712887036 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Access guidance reviewed</source>
+          <target>Aðgangsleiðbeiningar skoðaðar</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Aðgangsleiðbeiningar skoðaðar</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control AccessSummary - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 3679675544 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shows whether HTTP is enabled or needs an administrator.</source>
+          <target>Sýnir hvort HTTP sé virkt eða þarfnist stjórnanda.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sýnir hvort HTTP sé virkt eða þarfnist stjórnanda.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control HttpSummary - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 3679675544 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>HTTP</source>
+          <target>HTTP</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=HTTP</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control HttpSummary - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 3864340406 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shows that the introduction to subscription operations has been reviewed.</source>
+          <target>Sýnir að kynning á áskriftaraðgerðum hafi verið skoðuð.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sýnir að kynning á áskriftaraðgerðum hafi verið skoðuð.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control OperationsSummary - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 3864340406 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Operations reviewed</source>
+          <target>Aðgerðir skoðaðar</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Aðgerðir skoðaðar</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control OperationsSummary - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 1627599036 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bifrost needs outbound HTTP for licensing. Foundation enables HTTP for registered apps in Bifrost Setup.</source>
+          <target>Bifröst þarf HTTP út á við fyrir leyfisveitingu. Foundation virkjar HTTP fyrir skráð forrit í uppsetningu Bifröst.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bifröst þarf HTTP út á við fyrir leyfisveitingu. Foundation virkjar HTTP fyrir skráð forrit í uppsetningu Bifröst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control Http - Property InstructionalText</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 1627599036 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>HTTP</source>
+          <target>HTTP</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=HTTP</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control Http - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 2349109274 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
+          <source>You do not have permission to change extension settings. Ask an administrator with the SUPER permission set (or write permission on table NAV App Setting) to enable Allow HttpClient Requests for the applications listed above.</source>
+          <target>Þú hefur ekki heimild til að breyta stillingum viðbóta. Biddu kerfisstjóra sem hefur SUPER heimildasamstæðuna (eða skrifheimild á töfluna NAV App Setting) um að virkja Leyfa HttpClient-beiðnir fyrir forritin hér að ofan.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Þú hefur ekki heimild til að breyta stillingum viðbóta. Biddu kerfisstjóra sem hefur SUPER heimildasamstæðuna (eða skrifheimild á töfluna NAV App Setting) um að virkja Leyfa HttpClient-beiðnir fyrir forritin hér að ofan.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control AdminHelp - Property InstructionalText</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 2778804623 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Shows whether Allow HttpClient Requests is enabled for this app.</source>
+          <target>Sýnir hvort Leyfa HttpClient-beiðnir sé virkt fyrir þetta forrit.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sýnir hvort Leyfa HttpClient-beiðnir sé virkt fyrir þetta forrit.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control HttpEnabled - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 2778804623 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>HTTP enabled</source>
+          <target>HTTP virkt</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=HTTP virkt</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control HttpEnabled - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 3800514526 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bifrost Subscription Billing adds contracts and their lines, billing from proposal to posting, usage billing, price updates, renewals, deferrals, contract analysis and subscription migration to the Subscription domain in Bifrost.</source>
+          <target>Bifröst áskriftareikningagerð bætir samningum og línum þeirra, reikningagerð frá tillögu til bókunar, notkunarreikningagerð, verðuppfærslum, endurnýjunum, frestunum, samningagreiningu og flutningi áskrifta við Subscription-sviðið í Bifröst.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bifröst áskriftareikningagerð bætir samningum og línum þeirra, reikningagerð frá tillögu til bókunar, notkunarreikningagerð, verðuppfærslum, endurnýjunum, frestunum, samningagreiningu og flutningi áskrifta við Subscription-sviðið í Bifröst.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control Welcome - Property InstructionalText</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 3800514526 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Welcome</source>
+          <target>Velkomin</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Velkomin</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control Welcome - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Control 2787756605 - Property 1968111052" size-unit="char" translate="yes" xml:space="preserve">
+          <source>AI assistants and other systems use these operations through Bifrost as the signed-in user and within that user's permissions. See the installed operations on the Bifrost Message Types page or open the app documentation.</source>
+          <target>Gervigreindaraðstoð og önnur kerfi nota þessar aðgerðir í gegnum Bifröst sem innskráður notandi og innan heimilda hans. Skoðaðu uppsettar aðgerðir á síðunni Skilaboðategundir Bifröst eða opnaðu skjölun forritsins.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Gervigreindaraðstoð og önnur kerfi nota þessar aðgerðir í gegnum Bifröst sem innskráður notandi og innan heimilda hans. Skoðaðu uppsettar aðgerðir á síðunni Skilaboðategundir Bifröst eða opnaðu skjölun forritsins.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Control AccessContext - Property InstructionalText</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 742034285 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Return to the previous step.</source>
+          <target>Farðu aftur í fyrra skref.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Farðu aftur í fyrra skref.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action Back - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 742034285 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Back</source>
+          <target>Til baka</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Til baka</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action Back - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 632153598 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Open the Subscription Billing documentation.</source>
+          <target>Opnaðu skjölun áskriftareikningagerðar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Opnaðu skjölun áskriftareikningagerðar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action Documentation - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 632153598 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Documentation</source>
+          <target>Skjölun</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Skjölun</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action Documentation - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 3275419427 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Open Foundation's setup wizard, then refresh this app's HTTP status.</source>
+          <target>Opnaðu uppsetningarleiðsögn Foundation og endurnýjaðu síðan HTTP-stöðu þessa forrits.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Opnaðu uppsetningarleiðsögn Foundation og endurnýjaðu síðan HTTP-stöðu þessa forrits.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action EnableHttp - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 3275419427 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Enable HTTP in Bifrost Setup</source>
+          <target>Virkja HTTP í uppsetningu Bifröst</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Virkja HTTP í uppsetningu Bifröst</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action EnableHttp - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 210777352 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Mark this assisted setup complete and close the wizard.</source>
+          <target>Merktu þessari leiðsögn um uppsetningu lokið og lokaðu henni.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Merktu þessari leiðsögn um uppsetningu lokið og lokaðu henni.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action FinishSetup - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 210777352 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Finish</source>
+          <target>Ljúka</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ljúka</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action FinishSetup - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 1235620153 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Continue to the next step.</source>
+          <target>Haltu áfram í næsta skref.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Haltu áfram í næsta skref.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action Next - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 1235620153 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Next</source>
+          <target>Áfram</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Áfram</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action Next - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 3933687258 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Open the standard Permission Sets page.</source>
+          <target>Opnaðu stöðluðu síðuna Heimildasamstæður.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Opnaðu stöðluðu síðuna Heimildasamstæður.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action OpenPermissionSets - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 3933687258 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Open Permission Sets</source>
+          <target>Opna heimildasamstæður</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Opna heimildasamstæður</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action OpenPermissionSets - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 2793276546 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Open Users to review and assign access.</source>
+          <target>Opnaðu Notendur til að skoða og úthluta aðgangi.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Opnaðu Notendur til að skoða og úthluta aðgangi.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action OpenUsers - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 2793276546 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Open Users</source>
+          <target>Opna notendur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Opna notendur</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action OpenUsers - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 719030663 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Open Bifrost Message Types to see installed operations.</source>
+          <target>Opnaðu Skilaboðategundir Bifröst til að sjá uppsettar aðgerðir.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Opnaðu Skilaboðategundir Bifröst til að sjá uppsettar aðgerðir.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action ShowOperations - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 719030663 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Show operations</source>
+          <target>Sýna aðgerðir</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Sýna aðgerðir</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action ShowOperations - Property Caption</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 2156087049 - Property 1295455071" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Read this app's HTTP status again without changing it.</source>
+          <target>Lestu HTTP-stöðu þessa forrits aftur án þess að breyta henni.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Lestu HTTP-stöðu þessa forrits aftur án þess að breyta henni.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action Verify - Property ToolTip</note>
+        </trans-unit>
+        <trans-unit id="Page 667072733 - Action 2156087049 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Verify</source>
+          <target>Staðfesta</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Staðfesta</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Action Verify - Property Caption</note>
+        </trans-unit>
         <trans-unit id="PermissionSet 142777260 - Property 2879900210" maxwidth="30" size-unit="char" translate="yes" xml:space="preserve">
           <source>Bifrost Sub. Billing</source>
           <target>Bifröst - áskriftir</target>
@@ -1569,7 +1856,6 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Bókun áskriftareikninga</note>
           <note from="Xliff Generator" annotates="general" priority="3">PermissionSet BIFROST SubPost ori - Property Caption</note>
         </trans-unit>
-      </group>
-    </body>
+      </body>
   </file>
 </xliff>
