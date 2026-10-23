@@ -11,7 +11,8 @@
 - Additional touched objects: `Sub Bil CrProposal Impl ori` (10035045), `Sub Con RemoveLine Impl ori` (10035071), `Sub Con UpdDates Impl ori` (10035040), `Sub PU SetFilter Impl ori` (10035048), `Sub Usg Process Impl ori` (10035054), and `Sub Contract Batch1 Tst ori` (95706).
 
 - Refusal wording `Sub Bil PostDocs Impl ori` (10035085) uses translated document captions and corrected Icelandic spelling. Billing and price-update filter responses show field names; their refusals name `filter`, and PriceUpdate help lists InvalidFilterField.
-- Readable-filter and localized-refusal regressions: `Sub Bil SetFilter Impl ori` (10035049), `Sub PU Filter Tst ori` (95708), `Sub ShouldHave Tst ori` (95715), and `Sub Help Wording Tst ori` (95727).
+- Readable-filter and localized-refusal regressions: `Sub Bil SetFilter Impl ori` (10035070), `Sub PU Filter Tst ori` (95708), `Sub ShouldHave Tst ori` (95715), and `Sub Help Wording Tst ori` (95727).
+- Other touched acceptance objects: `Sub Bil SetFilter Impl ori` (10035070), `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend PrvInv Impl ori` (10035044).
 
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 

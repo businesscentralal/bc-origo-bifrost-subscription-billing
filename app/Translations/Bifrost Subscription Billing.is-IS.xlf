@@ -604,9 +604,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Nothing is written and no invoice is ever created.</source>
-          <target>Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Engu er skrifað og enginn reikningur er nokkurn tímann búinn til.</note>
+          <source>Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Temporary proposal writes are removed; no changes remain and no invoice is created.</source>
+          <target>Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og enginn reikningur er stofnaður.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og enginn reikningur er stofnaður.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 874973696" size-unit="char" translate="yes" xml:space="preserve">
@@ -634,9 +634,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Preview a customer contract invoice: builds the billing proposal lines Subscription.Contract.CreateInvoice would use, reads them back and removes them again. Read-only in effect: nothing is left behind and no document is created. For a Billing Template run use Subscription.Billing.PreviewDocuments.</source>
-          <target>Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.</note>
+          <source>Preview a customer contract invoice: builds the billing proposal lines Subscription.Contract.CreateInvoice would use, reads them back and removes them again. Temporary proposal writes are removed: nothing remains and no document is created. For a Billing Template run use Subscription.Billing.PreviewDocuments.</source>
+          <target>Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillöguskrifanir eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings viðskiptamanns: býr til þær reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillöguskrifanir eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir keyrslu reikningssniðmáts skal nota Subscription.Billing.PreviewDocuments.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2970874974 - NamedType 839325841" size-unit="char" translate="yes" xml:space="preserve">
@@ -1534,9 +1534,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Previews the billing proposal lines that Subscription.VendorContract.CreateInvoice would build for a vendor subscription contract. Nothing is written and no document is ever created.</source>
-          <target>Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.</note>
+          <source>Previews the billing proposal lines that Subscription.VendorContract.CreateInvoice would build for a vendor subscription contract. Temporary proposal writes are removed; no changes remain and no document is created.</source>
+          <target>Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 1712851524" size-unit="char" translate="yes" xml:space="preserve">
@@ -1564,9 +1564,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Preview a vendor contract invoice: builds the billing proposal lines Subscription.VendorContract.CreateInvoice would use, reads them back and removes them again. Read-only in effect: nothing is left behind and no document is created. For a customer contract use Subscription.Contract.PreviewInvoice.</source>
-          <target>Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</note>
+          <source>Preview a vendor contract invoice: builds the billing proposal lines Subscription.VendorContract.CreateInvoice would use, reads them back and removes them again. Temporary proposal writes are removed: nothing remains and no document is created. For a customer contract use Subscription.Contract.PreviewInvoice.</source>
+          <target>Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillöguskrifanir eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillöguskrifanir eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="PermissionSet 142777260 - Property 2879900210" maxwidth="30" size-unit="char" translate="yes" xml:space="preserve">
