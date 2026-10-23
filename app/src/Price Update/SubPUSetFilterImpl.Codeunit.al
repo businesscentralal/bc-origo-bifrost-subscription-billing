@@ -26,7 +26,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
         ContractTok: Label 'contract', Locked = true;
         SubscriptionTok: Label 'subscription', Locked = true;
         LineTok: Label 'line', Locked = true;
-        DescriptionLbl: Label 'Writes the contract, subscription or line view filter Blob on a Price Update Template and returns the current value of all three filters.', MaxLength = 250, Comment = 'is-IS=Skrifar síu (Blob) fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.';
+        DescriptionLbl: Label 'Writes the contract, subscription or line view filter on a Price Update Template and returns the current value of all three filters.', MaxLength = 250, Comment = 'is-IS=Skrifar síu  fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.';
 
     procedure IsEnabled(): Boolean
     begin

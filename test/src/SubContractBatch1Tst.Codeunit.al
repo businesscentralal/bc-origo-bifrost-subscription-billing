@@ -39,12 +39,12 @@ codeunit 95706 "Sub Contract Batch1 Tst ori"
         AssertEffect('Subscription.Contract.GetLines', 'write');
         AssertEffect('Subscription.Contract.MergeLines', 'write');
         AssertEffect('Subscription.Contract.CreateInvoice', 'irreversible');
-        AssertEffect('Subscription.Contract.PreviewInvoice', 'read');
+        AssertEffect('Subscription.Contract.PreviewInvoice', 'write');
         AssertEffect('Subscription.Contract.UpdateLineDates', 'irreversible');
         AssertEffect('Subscription.Contract.UpdateExchangeRates', 'write');
         AssertEffect('Subscription.VendorContract.GetLines', 'write');
         AssertEffect('Subscription.VendorContract.CreateInvoice', 'irreversible');
-        AssertEffect('Subscription.VendorContract.PreviewInvoice', 'read');
+        AssertEffect('Subscription.VendorContract.PreviewInvoice', 'write');
         AssertEffect('Subscription.Billing.CreateProposal', 'irreversible');
         AssertEffect('Subscription.Billing.CreateDocuments', 'irreversible');
         AssertEffect('Subscription.Billing.PostDocuments', 'irreversible');
@@ -78,8 +78,8 @@ codeunit 95706 "Sub Contract Batch1 Tst ori"
         AssertEffect('Subscription.PriceUpdate.SetTemplateFilter', 'write');
         AssertEffect('Subscription.PriceUpdate.CreateProposal', 'write');
         AssertEffect('Subscription.Analysis.Recalculate', 'write');
-        AssertEffect('Subscription.Contract.PreviewInvoice', 'read');
-        AssertEffect('Subscription.VendorContract.PreviewInvoice', 'read');
+        AssertEffect('Subscription.Contract.PreviewInvoice', 'write');
+        AssertEffect('Subscription.VendorContract.PreviewInvoice', 'write');
         AssertEffect('Subscription.Billing.PreviewDocuments', 'read');
     end;
 

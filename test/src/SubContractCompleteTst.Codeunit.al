@@ -2,6 +2,7 @@ namespace Origo.Bifrost.SubscriptionBilling.Test;
 
 using Origo.Bifrost;
 using System.TestLibraries.Utilities;
+using System.Text;
 using System.Utilities;
 
 /// <summary>
@@ -166,8 +167,8 @@ codeunit 95780 "Sub Contract Complete Tst ori"
                     Problems.AppendLine(TypeNames.Get(Index) + ': it is Outbound but its effect is ' + EffectName + '.');
                 if (Direction <> Direction::Outbound) and (EffectName = 'read') and not TypeNames.Get(Index).Contains('.Preview') then
                     Problems.AppendLine(TypeNames.Get(Index) + ': its effect is read but it is neither Outbound nor a preview.');
-                if TypeNames.Get(Index).Contains('.Preview') and (EffectName <> 'read') then
-                    Problems.AppendLine(TypeNames.Get(Index) + ': it is a preview but its effect is ' + EffectName + '.');
+                if (TypeNames.Get(Index) in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice']) and (EffectName <> 'write') then
+                    Problems.AppendLine(TypeNames.Get(Index) + ': it creates and removes temporary billing lines but its effect is ' + EffectName + '.');
             end;
         end;
 
@@ -346,9 +347,32 @@ codeunit 95780 "Sub Contract Complete Tst ori"
     end;
 
     [Test]
+    procedure Scenario_64AC01_AllTypes_DeclareWorkflow()
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+        MessageType: Enum "Message Type ori";
+        Contract: JsonObject;
+        Workflow: JsonObject;
+        Steps: JsonArray;
+        TypeNames: List of [Text];
+        TypeOrdinals: List of [Integer];
+        Index: Integer;
+    begin
+        CollectTypes(TypeNames, TypeOrdinals);
+        for Index := 1 to TypeNames.Count() do begin
+            MessageType := Enum::"Message Type ori".FromInteger(TypeOrdinals.Get(Index));
+            ContractMgt.GetContract(MessageType, Contract);
+            Assert.IsTrue(ReadChapterObject(Contract, 'workflow', Workflow), TypeNames.Get(Index) + ': workflow required.');
+            Assert.IsTrue(ReadChapterArray(Workflow, 'steps', Steps), TypeNames.Get(Index) + ': workflow steps required.');
+            Assert.IsTrue(Steps.Count() > 0, TypeNames.Get(Index) + ': workflow must describe at least one step.');
+        end;
+    end;
+
+    [Test]
     procedure AllTypes_ContractTextNamesNoAlObjectOrInternalProcedure()
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
+        Regex: Codeunit Regex;
         MessageType: Enum "Message Type ori";
         Contract: JsonObject;
         TypeNames: List of [Text];
@@ -366,6 +390,8 @@ codeunit 95780 "Sub Contract Complete Tst ori"
             MessageType := Enum::"Message Type ori".FromInteger(TypeOrdinals.Get(Index));
             ContractMgt.GetContract(MessageType, Contract);
             Contract.WriteTo(ContractText);
+            if Regex.IsMatch(ContractText, '(?i)BIFROST[^"''\r\n]* ori\b') then
+                Problems.AppendLine(TypeNames.Get(Index) + ': a permission-set object name appears in the help.');
             foreach Forbidden in ForbiddenTexts() do
                 if ContractText.Contains(Forbidden) then
                     Problems.AppendLine(TypeNames.Get(Index) + ': the contract text contains ''' + Forbidden + '''.');
@@ -582,6 +608,10 @@ codeunit 95780 "Sub Contract Complete Tst ori"
         Forbidden.Add('Mgt.');
         Forbidden.Add('docs/');
         Forbidden.Add('10035');
+        Forbidden.Add('Sales-Post');
+        Forbidden.Add('Purch.-Post');
+        Forbidden.Add('CommitBatchSize');
+        Forbidden.Add('Sub. Contr. Price Update Line');
     end;
 
     local procedure StartsWithVerb(Description: Text): Boolean
