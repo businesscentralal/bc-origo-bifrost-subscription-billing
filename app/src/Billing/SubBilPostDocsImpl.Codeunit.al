@@ -32,8 +32,8 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         InvalidDocumentTypeErr: Label 'The parameter ''documentType'' must be either ''Invoice'' or ''Credit Memo''.', Comment = 'is-IS=Færibreytan ''documentType'' verður að vera annaðhvort ''Invoice'' eða ''Credit Memo''.';
         ValueTooLongErr: Label 'The parameter ''%1'' is longer than the %2 characters allowed.', Comment = '%1 = parameter name, %2 = maximum length||is-IS=Færibreytan ''%1'' er lengri en leyfilegur hámarksfjöldi stafa, %2.';
         DuplicateDocumentErr: Label 'Document %1 is listed more than once. Nothing was posted.', Comment = '%1 = document number||is-IS=Skjal %1 er tilgreint oftar en einu sinni. Ekkert var bókað.';
-        ForeignCustomerErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.';
-        ForeignVendorErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purch.Document.Post.';
+        ForeignCustomerErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Sales.Document.Post.';
+        ForeignVendorErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purch.Document.Post.';
         AlreadyPostedErr: Label 'Document %1 %2 is already posted.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 er þegar bókað.';
         NotOpenErr: Label 'Billing document %1 %2 is not an open sales or purchase document.', Comment = '%1 = document type, %2 = document number||is-IS=Reikningsskjalið %1 %2 er ekki opið sölu- eða innkaupaskjal.';
         PostFailedErr: Label 'Posting document %1 failed. Documents this call already posted stay posted. %2', Comment = '%1 = document number, %2 = the underlying error||is-IS=Bókun skjals %1 mistókst. Skjöl sem þetta kall hefur þegar bókað standa áfram bókuð. %2';
@@ -349,15 +349,15 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
         if (not OnBillingLine) and (not OnArchive) then
             if Partner = Enum::"Service Partner"::Customer then
-                Error(ForeignCustomerErr, DocumentTypeText, DocumentNo)
+                Error(ForeignCustomerErr, DocumentTypeCaption(DocumentTypeText), DocumentNo)
             else
-                Error(ForeignVendorErr, DocumentTypeText, DocumentNo);
+                Error(ForeignVendorErr, DocumentTypeCaption(DocumentTypeText), DocumentNo);
 
         if OpenHeader then
             exit;
         if (PostedNo <> '') or OnArchive then
-            Error(AlreadyPostedErr, DocumentTypeText, DocumentNo);
-        Error(NotOpenErr, DocumentTypeText, DocumentNo);
+            Error(AlreadyPostedErr, DocumentTypeCaption(DocumentTypeText), DocumentNo);
+        Error(NotOpenErr, DocumentTypeCaption(DocumentTypeText), DocumentNo);
     end;
 
     local procedure PostedNoOf(Partner: Enum "Service Partner"; BillingDocumentType: Enum "Rec. Billing Document Type"; DocumentNo: Code[20]): Code[20]
@@ -538,6 +538,16 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         PendingJson.Add('documentType', DocumentTypeText);
         PendingJson.Add('documentNo', DocumentNo);
         PendingJson.Add('vendorInvoiceNo', VendorInvoiceNo);
+    end;
+
+    local procedure DocumentTypeCaption(DocumentTypeText: Text): Text
+    var
+        InvoiceTxt: Label 'Invoice', Comment = 'is-IS=Reikningur';
+        CreditMemoTxt: Label 'Credit Memo', Comment = 'is-IS=Kreditreikningur';
+    begin
+        if DocumentTypeText = CreditMemoTok then
+            exit(CreditMemoTxt);
+        exit(InvoiceTxt);
     end;
 
     local procedure NormalizePartner(PartnerText: Text): Text

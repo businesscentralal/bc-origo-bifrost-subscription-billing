@@ -212,6 +212,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
             Error(InvalidFilterErr, TargetName);
         if not ViewApplied then begin
             Clear(RRef);
+            NormalizeFilterError(Argument);
             exit;
         end;
         FilterText := RRef.GetView(false);
@@ -244,18 +245,64 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
 
         PriceUpdateTemplate.CalcFields("Subscription Contract Filter", "Subscription Filter", "Subscription Line Filter");
         PriceUpdateTemplate."Subscription Contract Filter".CreateInStream(InStr, TextEncoding::UTF8);
-        FiltersJson.Add('contract', ReadStreamAsText(InStr));
+        if PriceUpdateTemplate.Partner = PriceUpdateTemplate.Partner::Vendor then
+            FiltersJson.Add('contract', DisplayFilter(Database::"Vendor Subscription Contract", ReadStreamAsText(InStr)))
+        else
+            FiltersJson.Add('contract', DisplayFilter(Database::"Customer Subscription Contract", ReadStreamAsText(InStr)));
         PriceUpdateTemplate."Subscription Filter".CreateInStream(InStr, TextEncoding::UTF8);
-        FiltersJson.Add('subscription', ReadStreamAsText(InStr));
+        FiltersJson.Add('subscription', DisplayFilter(Database::"Subscription Header", ReadStreamAsText(InStr)));
         PriceUpdateTemplate."Subscription Line Filter".CreateInStream(InStr, TextEncoding::UTF8);
-        FiltersJson.Add('line', ReadStreamAsText(InStr));
+        FiltersJson.Add('line', DisplayFilter(Database::"Subscription Line", ReadStreamAsText(InStr)));
 
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('priceUpdateTemplateCode', PriceUpdateTemplateCode);
         ResponseJson.Add('target', TargetName);
-        ResponseJson.Add('filter', FilterText);
+        if FilterText = BlankView then
+            ResponseJson.Add('filter', '')
+        else
+            ResponseJson.Add('filter', DisplayFilter(TargetTableNo, FilterText));
         ResponseJson.Add('filters', FiltersJson);
         Helper.RespondWithSuccess(Argument, ResponseJson);
+    end;
+
+    local procedure DisplayFilter(TableId: Integer; StoredView: Text): Text
+    var
+        PublicView: Text;
+    begin
+        if StoredView = '' then
+            exit('');
+        if TryDisplayFilter(TableId, StoredView, PublicView) then
+            exit(PublicView);
+        ClearLastError();
+        exit(StoredView);
+    end;
+
+    [TryFunction]
+    local procedure TryDisplayFilter(TableId: Integer; StoredView: Text; var PublicView: Text)
+    var
+        RRef: RecordRef;
+    begin
+        RRef.Open(TableId);
+        RRef.SetView(StoredView);
+        PublicView := RRef.GetView(true);
+        RRef.Close();
+    end;
+
+    local procedure NormalizeFilterError(var Argument: Record "Message Argument ori")
+    var
+        Response: JsonObject;
+        Token: JsonToken;
+    begin
+        Response := Argument.GetResponseJson();
+        if Response.Contains('parameter') then
+            Response.Replace('parameter', 'filter');
+        if Response.Get('error', Token) then
+            Response.Replace('error', Token.AsValue().AsText().Replace('tableView', 'filter'));
+        if Response.Get('expected', Token) then
+            Response.Replace('expected', Token.AsValue().AsText().Replace('tableView', 'filter'));
+        if Response.Get('nextStep', Token) then
+            Response.Replace('nextStep', Token.AsValue().AsText().Replace('tableView', 'filter'));
+        Argument.SetResponseJson(Response);
     end;
 
     /// <summary>Adapts filter to Foundation's tableView contract and validates before applying it.</summary>

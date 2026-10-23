@@ -1291,6 +1291,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 begin
+                    Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::InvalidFilterField, 'The filter names an unknown or unreadable field, or is not a valid view.', 'Correct filter using readable field names of the selected table; no template filter is changed.'));
                     AddBusinessCentralError(Errors, 'The parameter ''target'' must be one of ''contract'', ''subscription'' or ''line'', not ''%1''.', 'target is none of the three names.', 'Send contract, subscription or line.');
                     AddBusinessCentralError(Errors, 'The parameter ''filter'' is not a valid Business Central view for target ''%1''. ...', 'Business Central cannot parse filter as a view of the target''s table.', 'Send a view such as WHERE(Field=FILTER(Value)) with field names of that table.');
                 end;

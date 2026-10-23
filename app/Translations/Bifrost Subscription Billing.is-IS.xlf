@@ -221,14 +221,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 2252604841" size-unit="char" translate="yes" xml:space="preserve">
           <source>Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.</source>
-          <target>Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.</note>
+          <target>Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Sales.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Sales.Document.Post.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ForeignCustomerErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 345330225" size-unit="char" translate="yes" xml:space="preserve">
           <source>Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.</source>
-          <target>Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purch.Document.Post.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purch.Document.Post.</note>
+          <target>Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purch.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purch.Document.Post.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ForeignVendorErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 3172811853" size-unit="char" translate="yes" xml:space="preserve">
@@ -302,6 +302,18 @@
           <target>vendorInvoiceNo er aðeins lesið fyrir innkaupaskjöl og skjal %1 er söluskjal.</target>
           <note from="Developer" annotates="general" priority="2">%1 = document number||is-IS=vendorInvoiceNo er aðeins lesið fyrir innkaupaskjöl og skjal %1 er söluskjal.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType VendorInvoiceNoForCustomerErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - Method 1036530403 - NamedType 3804706331" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Invoice</source>
+          <target>Reikningur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Reikningur</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method DocumentTypeCaption - NamedType InvoiceTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2718484512 - Method 1036530403 - NamedType 3292298585" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Credit Memo</source>
+          <target>Kreditreikningur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Kreditreikningur</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method DocumentTypeCaption - NamedType CreditMemoTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>post billing documents, post subscription invoices, post unposted billing invoices, post purchase documents from billing, book the invoices, post the billing run, post vendor invoices from contracts, post sales invoices from contracts</source>
@@ -1569,7 +1581,7 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Bókun áskriftareikninga</note>
           <note from="Xliff Generator" annotates="general" priority="3">PermissionSet BIFROST SubPost ori - Property Caption</note>
         </trans-unit>
-        </group>
+      </group>
     </body>
   </file>
 </xliff>
