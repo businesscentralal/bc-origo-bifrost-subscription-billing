@@ -30,7 +30,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             if MessageType in ['Subscription.Usage.Process', 'Subscription.Usage.DeleteData'] then
                 Subject.Add('description', 'The Usage Data Import entry number, written as a whole number. When set it is used instead of data.usageDataImportEntryNo; a subject that is not a whole number is refused.')
             else
-                Subject.Add('description', 'The ' + SubjectForm + '. When set it is used instead of data.' + DataKey + ', and it may be at most 20 characters long.');
+                Subject.Add('description', 'The ' + SubjectForm.TrimEnd('.') + '. When set it is used instead of data.' + DataKey + ', and it may be at most 20 characters long.');
         end else begin
             Subject.Add('use', 'notUsed');
             Subject.Add('description', 'The subject is not read by this message type.');
