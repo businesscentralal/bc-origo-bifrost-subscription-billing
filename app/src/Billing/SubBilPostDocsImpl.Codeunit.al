@@ -550,7 +550,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             'VENDOR':
                 exit(VendorTok);
             else
-                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidPartnerErr, 'partner', '');
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidPartnerErr, 'partner', PartnerText);
         end;
     end;
 
@@ -562,7 +562,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             'CREDIT MEMO':
                 exit(CreditMemoTok);
             else
-                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidDocumentTypeErr, 'documentType', '');
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidDocumentTypeErr, 'documentType', DocumentTypeText);
         end;
     end;
 

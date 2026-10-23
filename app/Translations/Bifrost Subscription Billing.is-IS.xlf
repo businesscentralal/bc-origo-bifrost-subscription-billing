@@ -885,6 +885,12 @@
           <note from="Developer" annotates="general" priority="2">%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidValueErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 2450001600" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 characters at most.</source>
+          <target>Að hámarki %1 stafir.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = maximum length||is-IS=Að hámarki %1 stafir.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType MaximumLengthTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 2436593916" size-unit="char" translate="yes" xml:space="preserve">
           <source>The request is missing the required parameter '%1'.</source>
           <target>Beiðnina vantar nauðsynlega færibreytu '%1'.</target>

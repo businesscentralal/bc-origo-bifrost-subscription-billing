@@ -145,8 +145,11 @@ codeunit 95708 "Sub PU Filter Tst ori"
         AssertOtherFiltersUnchanged('contract');
         Initialize(false);
         // [WHEN] The required property is absent, the request fails before any write.
-        asserterror ResponseJson := InvokeFilter('contract', '', false);
-        Assert.ExpectedError('The request is missing the required parameter');
+        ResponseJson := InvokeFilter('contract', '', false);
+        Assert.AreEqual('Error', ReadText(ResponseJson, 'status'), 'Missing required filter must be refused.');
+        Assert.AreEqual('MissingParameter', ReadText(ResponseJson, 'code'), 'The refusal must use the shared code.');
+        Assert.AreEqual('filter', ReadText(ResponseJson, 'parameter'), 'The refusal must identify the missing filter.');
+        Assert.AreNotEqual('', ReadText(ResponseJson, 'nextStep'), 'The refusal must explain recovery.');
         AssertAllFiltersUnchanged();
     end;
 

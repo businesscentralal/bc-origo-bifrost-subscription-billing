@@ -249,6 +249,75 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.AreEqual('contractNo', TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
     end;
 
+    [Test]
+    procedure Scenario_AC02_SelectionArray_CollectsEachBadEntry()
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Request: JsonObject;
+        Entries: JsonArray;
+        Response: JsonObject;
+    begin
+        Entries.Add('bad-one');
+        Entries.Add('bad-two');
+        Request.Add('contractNo', 'XS62-NO-LOOKUP');
+        Request.Add('subscriptionLineEntryNos', Entries);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.GetLines", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Every selection value is checked before the contract lookup.');
+        Response := TempArgument.GetResponseJson();
+        Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
+        Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), 'Both malformed entry numbers must be returned.');
+    end;
+
+    [Test]
+    [HandlerFunctions('DocumentsCreatedHandler')]
+    procedure Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_EN()
+    begin
+        AssertPostingFailure(1033);
+    end;
+
+    [Test]
+    [HandlerFunctions('DocumentsCreatedHandler')]
+    procedure Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_IS()
+    begin
+        AssertPostingFailure(1039);
+    end;
+
+    local procedure AssertPostingFailure(LanguageId: Integer)
+    var
+        CustomerContract: Record "Customer Subscription Contract";
+        SubscriptionHeader: Record "Subscription Header";
+        BillingTemplate: Record "Billing Template";
+        FailureTest: Codeunit "Sub Posting Failure Test ori";
+        Request: JsonObject;
+        Response: JsonObject;
+        PreviousLanguage: Integer;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        TestLibrary.CreateBillableCustomerContract(CustomerContract, SubscriptionHeader, 0D);
+        TestLibrary.CreateBillingTemplate(BillingTemplate, Enum::"Service Partner"::Customer, CustomerContract."No.");
+        Request.Add('billingTemplateCode', BillingTemplate.Code);
+        TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", Request);
+        FailureTest.SetCustomer(CustomerContract."Sell-to Customer No.");
+        BindSubscription(FailureTest);
+        Request.Add('postDocuments', true);
+        Response := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateDocuments", Request);
+        UnbindSubscription(FailureTest);
+        Assert.AreEqual('Error', TestLibrary.ReadText(Response, 'status'), TestLibrary.AsText(Response));
+        Assert.AreEqual('BusinessCentralError', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
+        Assert.AreNotEqual('', FailureTest.GetDocumentNo(), 'The actual posting event must have been reached.');
+        Assert.AreEqual(FailureTest.GetDocumentNo(), TestLibrary.ReadText(Response, 'documentNo'), 'The failing posting document must be captured, never inferred from a list.');
+        Assert.AreEqual('documentNo', TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
+        Assert.AreEqual(FailureTest.GetDocumentNo(), TestLibrary.ReadText(Response, 'received'), TestLibrary.AsText(Response));
+        Assert.IsTrue(TestLibrary.ReadText(Response, 'nextStep') <> '', 'Posting failure must explain recovery.');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    [MessageHandler]
+    procedure DocumentsCreatedHandler(Message: Text[1024])
+    begin
+    end;
+
     local procedure Prepare(var TempArgument: Record "Message Argument ori" temporary; MessageType: Enum "Message Type ori"; Request: JsonObject)
     begin
         TempArgument.Init();

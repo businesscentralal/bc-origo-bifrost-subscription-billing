@@ -237,7 +237,7 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
             ForeignLineCount := BillingLine.Count();
             BillingLine.FindFirst();
             ForeignContractNo := BillingLine."Subscription Contract No.";
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingProposalErr, ForeignLineCount, ForeignContractNo, ContractNo), 'contractNo', Format(ForeignLineCount, 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingProposalErr, ForeignLineCount, ForeignContractNo, ContractNo), 'contractNo', ContractNo);
         end;
 
         SubscriptionLine.SetRange(Partner, Enum::"Service Partner"::Vendor);

@@ -17,6 +17,7 @@ codeunit 10035058 "Sub Helper ori"
 
     var
         CorrectParameterTxt: Label 'Correct %1 and resend the request.', Comment = '%1 = parameter||is-IS=Leiðréttu %1 og sendu beiðnina aftur.';
+        MaximumLengthTxt: Label '%1 characters at most.', Comment = '%1 = maximum length||is-IS=Að hámarki %1 stafir.';
         ExpectedValueTxt: Label 'A valid value for %1.', Comment = '%1 = parameter||is-IS=Gilt gildi fyrir %1.';
         InvalidValueErr: Label 'The parameter %1 has an invalid value. Expected %2.', Comment = '%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.';
         ProblemsErr: Label '%1 problems in the request. Nothing was written.', Comment = '%1 = problem count||is-IS=%1 vandamál í beiðninni. Ekkert var skrifað.';
@@ -146,7 +147,7 @@ codeunit 10035058 "Sub Helper ori"
                     ProblemCount += 1;
                 end else
                     if IsCodeParameter(ParameterName) and (StrLen(Received) > 20) then begin
-                        Argument.AddError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, ParameterName, 20), ParameterName, Received, '20 characters at most', StrSubstNo(CorrectParameterTxt, ParameterName));
+                        Argument.AddError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, ParameterName, 20), ParameterName, Received, StrSubstNo(MaximumLengthTxt, 20), StrSubstNo(CorrectParameterTxt, ParameterName));
                         ProblemCount += 1;
                     end else
                         if not AllowedParameterValue(Definition, ValueToken) then begin
@@ -174,6 +175,7 @@ codeunit 10035058 "Sub Helper ori"
                 end;
         end;
         CollectNestedProblems(Argument, Request, TypeName, ProblemCount);
+        CollectSelectionProblems(Argument, Request, TypeName, ProblemCount);
         if (TypeName = 'Subscription.Usage.ImportData') and not HasValue(Request, 'content') and not HasValue(Request, 'contentBase64') then begin
             Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'content'), 'content', '<missing>', Base64ExpectedTxt, StrSubstNo(CorrectParameterTxt, 'content'));
             ProblemCount += 1;
@@ -256,6 +258,68 @@ codeunit 10035058 "Sub Helper ori"
             exit;
         Argument.AddError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidValueErr, Path, Allowed), Path, Received, StrSubstNo(ExpectedValueTxt, Path), StrSubstNo(CorrectParameterTxt, Path));
         ProblemCount += 1;
+    end;
+
+    local procedure CollectSelectionProblems(var Argument: Record "Message Argument ori"; Request: JsonObject; TypeName: Text; var ProblemCount: Integer)
+    var
+        Token: JsonToken;
+        Entry: JsonToken;
+        NumberToken: JsonToken;
+        Values: JsonArray;
+        Item: JsonObject;
+        Definition: JsonObject;
+        Definitions: JsonArray;
+        Contract: Interface "Msg Contract ori";
+        ParameterName: Text;
+        Path: Text;
+        Received: Text;
+        Index: Integer;
+        EntryNo: Integer;
+        Valid: Boolean;
+        PathTxt: Label '%1[%2]', Locked = true;
+    begin
+        Contract := Argument."Type";
+        Contract.GetParameters(Definitions);
+        foreach Token in Definitions do begin
+            Definition := Token.AsObject();
+            ParameterName := GetText(Definition, 'name', false);
+            if ParameterName in ['entryNos', 'subscriptionLineEntryNos', 'contractLineNos', 'subscriptionPackageCodes', 'lines'] then
+                if Request.Get(ParameterName, Token) then
+                    if Token.IsArray() then begin
+                        Values := Token.AsArray();
+                        Index := 0;
+                        foreach Entry in Values do begin
+                            Path := StrSubstNo(PathTxt, ParameterName, Index);
+                            Entry.WriteTo(Received);
+                            Valid := false;
+                            if (ParameterName = 'lines') and (TypeName = 'Subscription.Contract.MergeLines') then begin
+                                if Entry.IsObject() then begin
+                                    Item := Entry.AsObject();
+                                    if Item.Get('lineNo', NumberToken) then
+                                        if NumberToken.IsValue() then
+                                            if not NumberToken.AsValue().IsNull() then
+                                                Valid := Evaluate(EntryNo, NumberToken.AsValue().AsText(), 9);
+                                    CheckNestedProperty(Argument, Item, 'contractNo', Path + '.contractNo', false, '', 20, ProblemCount);
+                                end;
+                            end else
+                                if Entry.IsValue() then
+                                    if not Entry.AsValue().IsNull() then begin
+                                        Received := Entry.AsValue().AsText();
+                                        if ParameterName = 'subscriptionPackageCodes' then
+                                            Valid := (Received <> '') and (StrLen(Received) <= 20)
+                                        else
+                                            Valid := Evaluate(EntryNo, Received, 9);
+                                    end;
+                            if Valid and (ParameterName <> 'subscriptionPackageCodes') then
+                                Received := Format(EntryNo, 0, 9);
+                            if not Valid then begin
+                                Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, Path, ParameterName), Path, Received, StrSubstNo(ExpectedValueTxt, Path), StrSubstNo(CorrectParameterTxt, Path));
+                                ProblemCount += 1;
+                            end;
+                            Index += 1;
+                        end;
+                    end;
+        end;
     end;
 
     local procedure ValidParameterValue(ValueToken: JsonToken; ParameterType: Text; Expected: Text): Boolean
@@ -437,7 +501,7 @@ codeunit 10035058 "Sub Helper ori"
     begin
         TextValue := GetText(RequestJson, PropertyName, Required);
         if StrLen(TextValue) > MaxStrLen(Value) then
-            RaiseError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, PropertyName, MaxStrLen(Value)), PropertyName, TextValue, '20 characters at most');
+            RaiseError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, PropertyName, MaxStrLen(Value)), PropertyName, TextValue, StrSubstNo(MaximumLengthTxt, 20));
         Value := CopyStr(TextValue, 1, MaxStrLen(Value));
     end;
 
@@ -547,7 +611,7 @@ codeunit 10035058 "Sub Helper ori"
     begin
         if Argument.Subject <> '' then begin
             if StrLen(Argument.Subject) > MaxStrLen(Value) then
-                RaiseError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, PropertyName, MaxStrLen(Value)), PropertyName, Argument.Subject, '20 characters at most');
+                RaiseError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, PropertyName, MaxStrLen(Value)), PropertyName, Argument.Subject, StrSubstNo(MaximumLengthTxt, 20));
             exit(CopyStr(Argument.Subject, 1, MaxStrLen(Value)));
         end;
         exit(GetCode20(RequestJson, PropertyName, Required));

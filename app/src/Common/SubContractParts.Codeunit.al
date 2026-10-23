@@ -1217,19 +1217,19 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Billing.PostDocuments':
                 begin
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The parameter ''documents'' must contain at least one document.', 'documents is an empty array. Nothing is posted.', 'Send at least one document.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::MissingParameter, 'The parameter ''documents'' must contain at least one document.', 'documents is an empty array. Nothing is posted.', 'Send at least one document.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'Each entry of ''documents'' must be a JSON object with partner, documentType and documentNo.', 'An entry of documents is not an object.', 'Send an object with partner, documentType and documentNo.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameter, 'The parameter ''partner'' must be either ''Customer'' or ''Vendor''.', 'partner is neither Customer nor Vendor.', 'Send Customer or Vendor.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameter, 'The parameter ''documentType'' must be either ''Invoice'' or ''Credit Memo''.', 'documentType is neither Invoice nor Credit Memo.', 'Send Invoice or Credit Memo.');
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Document %1 is listed more than once. Nothing was posted.', 'The same document appears twice. Nothing is posted.', 'Send each document once.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::ConflictingIdentifiers, 'Document %1 is listed more than once. Nothing was posted.', 'The same document appears twice. Nothing is posted.', 'Send each document once.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', 'The customer document is on neither Billing Line nor Billing Line Archive.', 'Post an ordinary sales document with Sales.Document.Post.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.', 'The vendor document is on neither Billing Line nor Billing Line Archive.', 'Post an ordinary purchase document with Purch.Document.Post.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Document %1 %2 is already posted.', 'The billing document has already been posted.', 'Do not post it again.');
                     Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::MissingParameter, 'Purchase %1 %2 has no vendor document number. Nothing was posted.', 'A Vendor document has neither Vendor Invoice No. (Vendor Cr. Memo No. on a credit memo) nor a vendorInvoiceNo in the request. The answer names parameter vendorInvoiceNo.', 'Send vendorInvoiceNo on the document entry with the number on the vendor''s invoice or credit memo, then call again.'));
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The top-level vendorInvoiceNo can be used for one purchase document only, and %1 purchase documents need it. Send vendorInvoiceNo on each document entry instead.', 'The top-level vendorInvoiceNo would be used for more than one purchase document. Nothing is posted.', 'Send vendorInvoiceNo on each document entry.');
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'vendorInvoiceNo is read for purchase documents only, and document %1 is a sales document.', 'A Customer entry carries vendorInvoiceNo. Nothing is posted.', 'Leave vendorInvoiceNo out of Customer entries.');
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Billing document %1 %2 is not an open sales or purchase document.', 'The billing document is not open and is not a posted document.', 'Check the document number.');
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Posting document %1 failed. Documents this call already posted stay posted. %2', 'Business Central failed while posting one document. Earlier documents in this call stay posted.', 'Fix the cause named in the error and call again for the documents that are still open.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::ConflictingIdentifiers, 'The top-level vendorInvoiceNo can be used for one purchase document only, and %1 purchase documents need it. Send vendorInvoiceNo on each document entry instead.', 'The top-level vendorInvoiceNo would be used for more than one purchase document. Nothing is posted.', 'Send vendorInvoiceNo on each document entry.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::ConflictingIdentifiers, 'vendorInvoiceNo is read for purchase documents only, and document %1 is a sales document.', 'A Customer entry carries vendorInvoiceNo. Nothing is posted.', 'Leave vendorInvoiceNo out of Customer entries.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::RecordNotFound, 'Billing document %1 %2 is not an open sales or purchase document.', 'The billing document is not open and is not a posted document.', 'Check the document number.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::BusinessCentralError, 'Posting document %1 failed. Documents this call already posted stay posted. %2', 'Business Central failed while posting one document. Earlier documents in this call stay posted.', 'Fix the cause named in the error and call again for the documents that are still open.');
                     Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'Posting denied: missing ''BIFROST SubPost ori'' permission set.', 'The caller cannot write the subscription billing posting token. Nothing is posted.', 'Assign BIFROST SubPost ori. Sales.Document.Post and Purch.Document.Post do not cover this type.'));
                 end;
             'Subscription.Billing.PreviewDocuments':
@@ -1239,21 +1239,21 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Billing.ClearProposal':
                 begin
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The request must name a Billing Template in ''billingTemplateCode'' or the subject, or, for the billing lines without a Billing Template, a contract in ''contractNo''.', 'Neither a Billing Template nor a contract was given.', 'Send billingTemplateCode, or contractNo for the lines without a template.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::MissingParameter, 'The request must name a Billing Template in ''billingTemplateCode'' or the subject, or, for the billing lines without a Billing Template, a contract in ''contractNo''.', 'Neither a Billing Template nor a contract was given.', 'Send billingTemplateCode, or contractNo for the lines without a template.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, '%1 billing line(s) of Billing Template ''%2'' are already on document %3. ...', 'A selected proposal line is already on an unposted document. Nothing is deleted.', 'Delete the documents first with Subscription.Billing.DeleteDocuments.');
                     AddAutomationError(Errors);
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Only last Billing Line for Subscription Line can be deleted or all Billing Lines. ...', 'A later billing line of the same Subscription Line sits under another Billing Template or contract. Nothing is deleted.', 'Clear that proposal first, or clear without contractNo.');
                 end;
             'Subscription.Billing.DeleteDocuments':
                 begin
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The request must name a Billing Template in ''billingTemplateCode'' or the subject, or, for the billing lines without a Billing Template, a contract in ''contractNo'' or a document in ''documentNo''.', 'No Billing Template, contract or document was given.', 'Send billingTemplateCode, or contractNo or documentNo for the documents without a template.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::MissingParameter, 'The request must name a Billing Template in ''billingTemplateCode'' or the subject, or, for the billing lines without a Billing Template, a contract in ''contractNo'' or a document in ''documentNo''.', 'No Billing Template, contract or document was given.', 'Send billingTemplateCode, or contractNo or documentNo for the documents without a template.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Document %1 is posted and cannot be deleted. ...', 'documentNo names a posted invoice or credit memo.', 'Cancel or correct the posted document, for example with Sales.SalesInvoice.Cancel or Sales.SalesInvoice.Correct.');
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'No billing line of Billing Template ''%1'' is on document %2.', 'documentNo names no unposted document of the selected billing lines.', 'Use a document number the template''s billing lines carry.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::RecordNotFound, 'No billing line of Billing Template ''%1'' is on document %2.', 'documentNo names no unposted document of the selected billing lines.', 'Use a document number the template''s billing lines carry.');
                     AddAutomationError(Errors);
                 end;
             'Subscription.PriceUpdate.SetTemplateFilter':
                 begin
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The parameter ''target'' must be one of ''contract'', ''subscription'' or ''line'', not ''%1''.', 'target is none of the three names.', 'Send contract, subscription or line.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameter, 'The parameter ''target'' must be one of ''contract'', ''subscription'' or ''line'', not ''%1''.', 'target is none of the three names.', 'Send contract, subscription or line.');
                     AddBusinessCentralError(Errors, 'The parameter ''filter'' is not a valid Business Central view for target ''%1''. ...', 'Business Central cannot parse filter as a view of the target''s table.', 'Send a view such as WHERE(Field=FILTER(Value)) with field names of that table.');
                 end;
             'Subscription.VendorContract.AddLinesToInvoice':
@@ -1267,7 +1267,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Usage.DeleteData':
                 begin
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The subject ''%1'' is not a Usage Data Import entry number. ...', 'The subject is set but is not a whole number.', 'Send the entry number as the subject, or as usageDataImportEntryNo.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'The subject ''%1'' is not a Usage Data Import entry number. ...', 'The subject is set but is not a whole number.', 'Send the entry number as the subject, or as usageDataImportEntryNo.');
                     AddNotFoundError(Errors, 'The Usage Data Import entry %1 does not exist.', 'No Usage Data Import has that entry number.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameter, 'The parameter ''mode'' must be either ''resetLines'' or ''deleteImport'', not ''%1''.', 'mode is neither resetLines nor deleteImport.', 'Send resetLines or deleteImport, or leave mode out.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Usage Data Import entry %1 has usage billing on document %2. ...', 'Usage billing of the import is on a document, posted or not.', 'Delete or cancel that document first; posted usage cannot be imported again.');
@@ -1312,14 +1312,14 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Renewal.CreateQuote':
                 begin
                     AddBusinessCentralError(Errors, 'The Customer Subscription Contract ''%1'' has no Subscription Lines that can be renewed.', 'No Subscription Line of the contract has an end date that Microsoft accepts for renewal.', 'Check the end dates of the contract''s Subscription Lines.');
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Line %1 of contractLineNos is not a line of Customer Subscription Contract ''%2''.', 'A listed contract line number does not exist on the contract.', 'Send Line No. values of the contract''s lines.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::RecordNotFound, 'Line %1 of contractLineNos is not a line of Customer Subscription Contract ''%2''.', 'A listed contract line number does not exist on the contract.', 'Send Line No. values of the contract''s lines.');
                     AddBusinessCentralError(Errors, 'Create Sub. Contract Renewal did not produce a sales quote for Customer Subscription Contract ''%1''.', 'Microsoft''s renewal logic finished without creating a quote.', 'Check the renewal setup and the contract''s lines in the Business Central client.');
                 end;
             'Subscription.Usage.ImportData':
-                AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The request must supply either ''content'' (raw text) or ''contentBase64'' (base64 encoded) for the usage data file.', 'Neither content nor contentBase64 was given.', 'Send the file as content or contentBase64.');
+                AddTypedError(Errors, "Bifrost Error Code ori"::MissingParameter, 'The request must supply either ''content'' (raw text) or ''contentBase64'' (base64 encoded) for the usage data file.', 'Neither content nor contentBase64 was given.', 'Send the file as content or contentBase64.');
             'Subscription.Usage.Process':
                 begin
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The subject ''%1'' is not a Usage Data Import entry number. ...', 'The subject is set but is not a whole number.', 'Send the entry number as the subject, or as usageDataImportEntryNo.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'The subject ''%1'' is not a Usage Data Import entry number. ...', 'The subject is set but is not a whole number.', 'Send the entry number as the subject, or as usageDataImportEntryNo.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Usage Data Import entry %1 is already Closed and cannot be processed again.', 'The entry''s Processing Status is Closed.', 'Import the data again with Subscription.Usage.ImportData.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameter, '''%1'' is not a known processing step. ...', 'An entry of steps is not one of the four step names. The steps before it have already run and committed.', 'Use CreateImportedLines, ProcessImportedLines, CreateUsageDataBilling or ProcessUsageDataBilling.');
                 end;
@@ -1333,7 +1333,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Usage.DisconnectSubscription':
                 begin
-                    AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'The request must supply ''subscriptionLineEntryNo'' or ''usageDataSubscriptionEntryNo''.', 'Neither parameter was sent.', 'Send one of the two entry numbers.');
+                    AddTypedError(Errors, "Bifrost Error Code ori"::MissingParameter, 'The request must supply ''subscriptionLineEntryNo'' or ''usageDataSubscriptionEntryNo''.', 'Neither parameter was sent.', 'Send one of the two entry numbers.');
                     AddNotFoundError(Errors, 'Subscription Line %1 does not exist.', 'subscriptionLineEntryNo names no Subscription Line.');
                     AddNotFoundError(Errors, 'Usage Data Supp. Subscription entry %1 does not exist.', 'usageDataSubscriptionEntryNo names no entry.');
                     AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, 'Usage Data Supp. Subscription entry %1 is not connected to a Subscription Line.', 'The supplier subscription has no Subscription Line.', 'Nothing to disconnect.');
@@ -1358,7 +1358,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     local procedure AddGroupByErrors(var Errors: JsonArray)
     begin
         AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameter, 'The parameter ''groupBy'' must be either ''Contract'' or ''Customer''.', 'groupBy is neither Contract nor Customer.', 'Send Contract or Customer, or leave groupBy out.');
-        AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameter, '''groupBy'' = ''Customer'' only applies when the pending proposal lines belong to customer contracts.', 'groupBy is Customer and the template has pending vendor proposal lines.', 'Use groupBy Contract for vendor proposal lines.');
+        AddTypedError(Errors, "Bifrost Error Code ori"::PreconditionFailed, '''groupBy'' = ''Customer'' only applies when the pending proposal lines belong to customer contracts.', 'groupBy is Customer and the template has pending vendor proposal lines.', 'Use groupBy Contract for vendor proposal lines.');
     end;
 
     local procedure AddNotFoundError(var Errors: JsonArray; ErrorText: Text; When: Text)
