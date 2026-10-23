@@ -182,7 +182,7 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
         BillingToDate := Helper.GetDate(RequestJson, 'billingToDate', false);
 
         if not BillingTemplate.Get(BillingTemplateCode) then
-            Error(TemplateNotFoundErr, BillingTemplateCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
 
         BillingLine.SetRange("Billing Template Code", BillingTemplateCode);
         LinesBefore := BillingLine.Count();

@@ -190,16 +190,16 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
 
         if BillingTemplateCode = '' then begin
             if ContractNo = '' then
-                Error(TemplateOrContractErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'contractNo', '');
         end else
             if not BillingTemplate.Get(BillingTemplateCode) then
-                Error(TemplateNotFoundErr, BillingTemplateCode);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
         Helper.AssertMayClearBillingProposal();
 
         FilterProposal(BillingLine, BillingTemplateCode, ContractNo);
         BillingLine.SetFilter("Document No.", '<>%1', '');
         if BillingLine.FindFirst() then
-            Error(LinesOnDocumentErr, BillingLine.Count(), BillingTemplateCode, BillingLine."Document No.");
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LinesOnDocumentErr, BillingLine.Count(), BillingTemplateCode, BillingLine."Document No."), 'contractNo', Format(BillingLine.Count(), 0, 9));
 
         FilterProposal(BillingLine, BillingTemplateCode, ContractNo);
         BillingLine.SetCurrentKey("Subscription Header No.", "Subscription Line Entry No.", "Billing to");

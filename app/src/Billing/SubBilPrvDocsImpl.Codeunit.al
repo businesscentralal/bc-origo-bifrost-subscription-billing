@@ -204,7 +204,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
         HasMore: Boolean;
     begin
         if not BillingTemplate.Get(BillingTemplateCode) then
-            Error(TemplateNotFoundErr, BillingTemplateCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
 
         BillingLine.SetRange("Billing Template Code", BillingTemplateCode);
         BillingLine.SetRange("Document Type", Enum::"Rec. Billing Document Type"::None);
@@ -241,11 +241,11 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
             'CUSTOMER':
                 begin
                     if VendorLineCount > 0 then
-                        Error(GroupByCustomerOnlyErr);
+                        Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, GroupByCustomerOnlyErr, 'groupBy', GroupBy);
                     GroupByCustomer := true;
                 end;
             else
-                Error(InvalidGroupByErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidGroupByErr, 'groupBy', GroupBy);
         end;
 
         BuildDocumentsPreview(BillingLine, GroupByCustomer, Skip, Take, DocumentsArray, DocumentCount, HasMore);

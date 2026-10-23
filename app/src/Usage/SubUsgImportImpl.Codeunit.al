@@ -201,7 +201,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         RunProcessing := Helper.GetBoolean(RequestJson, 'runProcessing', false);
 
         if (Content = '') and (ContentBase64 = '') then
-            Error(NoContentErr);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, NoContentErr, 'content', '');
 
         if ContentBase64 <> '' then
             if not Helper.TryDecodeBase64(ContentBase64, TempBlob) then begin
@@ -210,7 +210,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
             end;
 
         if not UsageDataSupplier.Get(SupplierNo) then
-            Error(SupplierNotFoundErr, SupplierNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(SupplierNotFoundErr, SupplierNo), 'supplierNo', Format(SupplierNo, 0, 9));
 
         UsageDataImport.Init();
         UsageDataImport."Entry No." := 0;

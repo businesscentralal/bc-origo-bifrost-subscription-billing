@@ -184,11 +184,11 @@ codeunit 10035073 "Sub Con Merge Impl ori" implements "Msg Interface ori", "Msg 
         RequestJson := Argument.GetRequestJson();
         ContractNo := Helper.GetSubjectOr(RequestJson, 'contractNo', Argument, true);
         if not Helper.TryGetArray(RequestJson, 'lines', LineNos) then
-            Error(MissingLinesErr, 'lines');
+            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingLinesErr, 'lines'), 'lines', '');
         ReferenceLineNo := Helper.GetInteger(RequestJson, 'referenceLineNo', true);
 
         if not CustomerContract.Get(ContractNo) then
-            Error(ContractNotFoundErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(ContractNotFoundErr, ContractNo), 'contractNo', ContractNo);
 
         SelectLines(ContractNo, LineNos, ReferenceLineNo, CustomerContractLine, ReferenceLine);
         ClosedLineCount := CustomerContractLine.Count();
@@ -216,9 +216,9 @@ codeunit 10035073 "Sub Con Merge Impl ori" implements "Msg Interface ori", "Msg 
         foreach LineToken in Lines do begin
             ReadLine(LineToken, ContractNo, LineContractNo, LineNo);
             if LineContractNo <> ContractNo then
-                Error(DifferentContractErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, DifferentContractErr, 'lines', '');
             if not CustomerContractLine.Get(LineContractNo, LineNo) then
-                Error(LineNotFoundErr, LineNo, LineContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(LineNotFoundErr, LineNo, LineContractNo), 'lineNo', Format(LineNo, 0, 9));
             CustomerContractLine.Mark(true);
             if LineNo = ReferenceLineNo then begin
                 ReferenceLine := CustomerContractLine;
@@ -227,7 +227,7 @@ codeunit 10035073 "Sub Con Merge Impl ori" implements "Msg Interface ori", "Msg 
         end;
 
         if not ReferenceFound then
-            Error(ReferenceNotInSetErr, ReferenceLineNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(ReferenceNotInSetErr, ReferenceLineNo), 'lines', Format(ReferenceLineNo, 0, 9));
 
         CustomerContractLine.MarkedOnly(true);
     end;
@@ -239,20 +239,20 @@ codeunit 10035073 "Sub Con Merge Impl ori" implements "Msg Interface ori", "Msg 
         ContractText: Text;
     begin
         if not LineToken.IsObject() then
-            Error(LineShapeErr);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, LineShapeErr, 'lines', '');
         LineObject := LineToken.AsObject();
         if not LineObject.Get('lineNo', Token) then
-            Error(LineShapeErr);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, LineShapeErr, 'lines', '');
         if not Token.IsValue() then
-            Error(LineNoShapeErr);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, LineNoShapeErr, 'lines', '');
         if not Evaluate(LineNo, Token.AsValue().AsText(), 9) then
-            Error(LineNoShapeErr);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, LineNoShapeErr, 'lines', '');
         if LineObject.Get('contractNo', Token) then begin
             if not Token.IsValue() then
-                Error(LineShapeErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, LineShapeErr, 'lines', '');
             ContractText := Token.AsValue().AsText();
             if StrLen(ContractText) > MaxStrLen(LineContractNo) then
-                Error(ValueTooLongErr, 'contractNo', MaxStrLen(LineContractNo));
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(ValueTooLongErr, 'contractNo', MaxStrLen(LineContractNo)), 'lines.contractNo', ContractText);
             LineContractNo := CopyStr(ContractText, 1, MaxStrLen(LineContractNo));
         end else
             LineContractNo := ContractNo;

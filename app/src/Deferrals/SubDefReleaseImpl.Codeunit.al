@@ -191,7 +191,7 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
         PostUntilDate := Helper.GetDateOrDefault(RequestJson, 'postUntilDate', PostingDate);
 
         if PostUntilDate > PostingDate then
-            Error(PostUntilAfterPostingErr, Helper.FormatDate(PostUntilDate), Helper.FormatDate(PostingDate));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(PostUntilAfterPostingErr, Helper.FormatDate(PostUntilDate), Helper.FormatDate(PostingDate)), 'postUntilDate', Format(Helper.FormatDate(PostUntilDate), 0, 9));
 
         // Microsoft's report takes its two dates from its request page, backed by global variables.
         // "Contract Deferrals Release".SetRequestPageParameters is internal, and Report.Execute's
@@ -203,7 +203,7 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
         EffectiveDate := WorkDate();
 
         if PostingDate <> EffectiveDate then
-            Error(PostingDateNotSupportedErr, Helper.FormatDate(EffectiveDate), Helper.FormatDate(PostingDate));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(PostingDateNotSupportedErr, Helper.FormatDate(EffectiveDate), Helper.FormatDate(PostingDate)), 'postUntilDate', Format(Helper.FormatDate(EffectiveDate), 0, 9));
 
         // Count every unreleased deferral, not only the ones inside the requested window. The report
         // decides for itself how far it goes, and measuring only the window would hide a run that
@@ -222,7 +222,7 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
                 (CountUnreleasedCustomerDeferrals(EffectiveDate) - CustomerBeforeInWindow) +
                 (CountUnreleasedVendorDeferrals(EffectiveDate) - VendorBeforeInWindow);
             if WouldOverRelease > 0 then
-                Error(WouldOverReleaseErr, WouldOverRelease, Helper.FormatDate(PostUntilDate), Helper.FormatDate(EffectiveDate));
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(WouldOverReleaseErr, WouldOverRelease, Helper.FormatDate(PostUntilDate), Helper.FormatDate(EffectiveDate)), 'postUntilDate', Format(WouldOverRelease, 0, 9));
         end;
 
         // Business Central matches request page values against the report they belong to, and drops

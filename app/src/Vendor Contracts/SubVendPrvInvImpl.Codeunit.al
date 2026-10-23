@@ -223,7 +223,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
         ForeignContractNo: Code[20];
     begin
         if not VendorSubscriptionContract.Get(ContractNo) then
-            Error(ContractNotFoundErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(ContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
 
         BillingLine.SetRange("Billing Template Code", '');
         BillingLine.SetFilter("Subscription Contract No.", '<>%1', ContractNo);
@@ -233,7 +233,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
             ForeignLineCount := BillingLine.Count();
             BillingLine.FindFirst();
             ForeignContractNo := BillingLine."Subscription Contract No.";
-            Error(ForeignPendingProposalErr, ForeignLineCount, ForeignContractNo, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingProposalErr, ForeignLineCount, ForeignContractNo, ContractNo), 'contractNo', Format(ForeignLineCount, 0, 9));
         end;
 
         SubscriptionLine.SetRange(Partner, Enum::"Service Partner"::Vendor);

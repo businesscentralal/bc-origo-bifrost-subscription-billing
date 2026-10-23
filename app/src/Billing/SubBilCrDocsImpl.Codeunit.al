@@ -171,6 +171,7 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
     /// <summary>Processes the pending proposal lines into documents. Called directly, or by OnRun when ExecuteBifrostTask runs this codeunit in its own transaction.</summary>
     procedure PerformWrite(var Argument: Record "Message Argument ori")
     var
+        PostingContext: Codeunit "Sub Posting Context ori";
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
         DocumentsArray: JsonArray;
@@ -182,6 +183,9 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
         PostDocuments: Boolean;
         GroupBy: Text;
         FailureReason: Text;
+        FailedDocumentNo: Text;
+        ExpectedPostTxt: Label 'A document Business Central can create and post.', Comment = 'is-IS=Skjal sem Business Central getur stofnað og bókað.';
+        ReviewDocumentTxt: Label 'Review the named document and the underlying Business Central error before retrying. Documents listed in the response still exist.', Comment = 'is-IS=Yfirfarðu tilgreint skjal og undirliggjandi villu Business Central áður en þú reynir aftur. Skjöl sem talin eru upp í svarinu eru enn til.';
     begin
         RequestJson := Argument.GetRequestJson();
         BillingTemplateCode := Helper.GetSubjectOr(RequestJson, 'billingTemplateCode', Argument, true);
@@ -190,7 +194,11 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
         PostDocuments := Helper.GetBoolean(RequestJson, 'postDocuments', false);
         GroupBy := Helper.GetText(RequestJson, 'groupBy', false);
 
+        Argument.SetErrorContext('billingTemplateCode', ExpectedPostTxt, ReviewDocumentTxt);
+        BindSubscription(PostingContext);
         if CreateDocumentsFromProposal(BillingTemplateCode, DocumentDate, PostingDate, PostDocuments, GroupBy, BillingLinesProcessed, DocumentCount, DocumentsArray, FailureReason) then begin
+            UnbindSubscription(PostingContext);
+            Argument.ClearErrorContext();
             ResponseJson.Add('status', 'Success');
             ResponseJson.Add('billingTemplateCode', BillingTemplateCode);
             ResponseJson.Add('message', StrSubstNo(NothingPendingMsg, BillingTemplateCode));
@@ -201,9 +209,23 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
             exit;
         end;
 
+        Argument.ClearErrorContext();
+        FailedDocumentNo := PostingContext.GetDocumentNo();
+        UnbindSubscription(PostingContext);
         if FailureReason <> '' then begin
             ResponseJson.Add('status', 'Error');
             ResponseJson.Add('error', StrSubstNo(NotRolledBackErr, FailureReason));
+            ResponseJson.Add('code', 'BusinessCentralError');
+            if FailedDocumentNo <> '' then begin
+                ResponseJson.Add('parameter', 'documentNo');
+                ResponseJson.Add('received', FailedDocumentNo);
+                ResponseJson.Add('documentNo', FailedDocumentNo);
+            end else begin
+                ResponseJson.Add('parameter', 'billingTemplateCode');
+                ResponseJson.Add('received', BillingTemplateCode);
+            end;
+            ResponseJson.Add('expected', ExpectedPostTxt);
+            ResponseJson.Add('nextStep', ReviewDocumentTxt);
             ResponseJson.Add('billingTemplateCode', BillingTemplateCode);
             ResponseJson.Add('billingLinesProcessed', BillingLinesProcessed);
             ResponseJson.Add('documentCount', DocumentCount);
@@ -247,7 +269,7 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
         ComboKey: Text;
     begin
         if not BillingTemplate.Get(BillingTemplateCode) then
-            Error(TemplateNotFoundErr, BillingTemplateCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
 
         BillingLine.SetRange("Billing Template Code", BillingTemplateCode);
         BillingLine.SetRange("Document Type", Enum::"Rec. Billing Document Type"::None);
@@ -261,7 +283,7 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
         BillingLine.SetRange(Partner, Enum::"Service Partner"::Vendor);
         HasVendorLines := not BillingLine.IsEmpty();
         if HasCustomerLines and HasVendorLines then
-            Error(MixedPartnerErr, BillingTemplateCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(MixedPartnerErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
         if HasVendorLines then
             ActualPartner := Enum::"Service Partner"::Vendor
         else
@@ -273,11 +295,11 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
             'CUSTOMER':
                 begin
                     if ActualPartner <> Enum::"Service Partner"::Customer then
-                        Error(GroupByCustomerOnlyErr);
+                        Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, GroupByCustomerOnlyErr, 'groupBy', GroupBy);
                     CreateBillingDocuments.SetCustomerRecurringBillingGrouping(Enum::"Customer Rec. Billing Grouping"::"Bill-to Customer No.");
                 end;
             else
-                Error(InvalidGroupByErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidGroupByErr, 'groupBy', GroupBy);
         end;
 
         CreateBillingDocuments.SetDocumentDataFromRequestPage(DocumentDate, PostingDate, PostDocuments, false);

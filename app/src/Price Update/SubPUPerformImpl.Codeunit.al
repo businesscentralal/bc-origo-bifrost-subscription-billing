@@ -193,15 +193,15 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
         PriceUpdateTemplateCode := Helper.GetSubjectOr(RequestJson, 'priceUpdateTemplateCode', Argument, false);
         if PriceUpdateTemplateCode <> '' then begin
             if not PriceUpdateTemplate.Get(PriceUpdateTemplateCode) then
-                Error(TemplateNotFoundErr, PriceUpdateTemplateCode);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, PriceUpdateTemplateCode), 'priceUpdateTemplateCode', Format(PriceUpdateTemplateCode, 0, 9));
             ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplateCode);
         end;
 
         if ContractPriceUpdateLine.IsEmpty() then
             if PriceUpdateTemplateCode = '' then
-                Error(NothingToPerformErr)
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, NothingToPerformErr, 'priceUpdateTemplateCode', '')
             else
-                Error(NothingToPerformForTemplateErr, PriceUpdateTemplateCode);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(NothingToPerformForTemplateErr, PriceUpdateTemplateCode), 'priceUpdateTemplateCode', Format(PriceUpdateTemplateCode, 0, 9));
 
         PriceUpdateManagement.PerformPriceUpdate(ContractPriceUpdateLine, not Argument."Omit Commit", Results);
 

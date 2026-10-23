@@ -190,7 +190,7 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
         Helper.GetEntryNoSelection(RequestJson, 'entryNos', SelectedEntryNos);
 
         if not UsageDataSupplier.Get(SupplierNo) then
-            Error(SupplierNotFoundErr, SupplierNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(SupplierNotFoundErr, SupplierNo), 'supplierNo', Format(SupplierNo, 0, 9));
 
         if SelectedEntryNos.Count() > 0 then
             foreach EntryNo in SelectedEntryNos.Keys() do begin
@@ -232,13 +232,13 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
         UsageDataSubscription: Record "Usage Data Supp. Subscription";
     begin
         if not UsageDataSubscription.Get(EntryNo) then
-            Error(EntryNotFoundErr, EntryNo, SupplierNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(EntryNotFoundErr, EntryNo, SupplierNo), 'entryNos', Format(EntryNo, 0, 9));
         if UsageDataSubscription."Supplier No." <> SupplierNo then
-            Error(EntryNotFoundErr, EntryNo, SupplierNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(EntryNotFoundErr, EntryNo, SupplierNo), 'entryNos', Format(EntryNo, 0, 9));
         if UsageDataSubscription."Subscription Line Entry No." <> 0 then
-            Error(AlreadyConnectedErr, EntryNo, UsageDataSubscription."Subscription Line Entry No.");
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(AlreadyConnectedErr, EntryNo, UsageDataSubscription."Subscription Line Entry No."), 'entryNos', Format(EntryNo, 0, 9));
         if UsageDataSubscription."Connect to Sub. Header Method" = Enum::"Connect To SO Method"::None then
-            Error(NoConnectMethodErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(NoConnectMethodErr, EntryNo), 'entryNos', Format(EntryNo, 0, 9));
     end;
 
     /// <summary>
@@ -255,7 +255,7 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
             UsageDataSubscription.Get(EntryNo);
             if UsageDataSubscription."Connect to Sub. Header No." <> '' then begin
                 if FirstEntryBySubscription.ContainsKey(UsageDataSubscription."Connect to Sub. Header No.") then
-                    Error(SameSubscriptionErr, FirstEntryBySubscription.Get(UsageDataSubscription."Connect to Sub. Header No."), EntryNo, UsageDataSubscription."Connect to Sub. Header No.");
+                    Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(SameSubscriptionErr, FirstEntryBySubscription.Get(UsageDataSubscription."Connect to Sub. Header No."), EntryNo, UsageDataSubscription."Connect to Sub. Header No."), 'entryNos', Format(FirstEntryBySubscription.Get(UsageDataSubscription."Connect to Sub. Header No."), 0, 9));
                 FirstEntryBySubscription.Add(UsageDataSubscription."Connect to Sub. Header No.", EntryNo);
             end;
         end;

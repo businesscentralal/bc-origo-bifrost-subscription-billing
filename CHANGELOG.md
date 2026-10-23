@@ -2,11 +2,12 @@
 
 ## [Unreleased]
 
-### Fixed (2026-10-23) - request validation phase of structured refusals (#62)
+### Fixed (2026-10-23) - structured refusals and request validation (#62)
 
+- Foundation minimum dependency is 28.0.8.617 in product and test apps, providing the public rollback-safe error context API used by this change.
 - `Sub Helper ori` (10035058) collects missing, malformed, bounded and allowed-value request problems before business lookups/writes; billing template existence joins other collected problems. Shared readers raise Foundation's structured errors. `Sub Contract Parts ori` (10035075) exposes the existing subject-key contract internally so each subject keeps its actual parameter name.
-- All Subscription Billing message entrypoints invoke the shared preflight (codeunits 8013, 8058, 10035036, 10035037, 10035038, 10035039, 10035041, 10035042, 10035043, 10035044, 10035045, 10035046, 10035047, 10035048, 10035049, 10035051, 10035052, 10035053, 10035054, 10035055, 10035056, 10035057, 10035061, 10035065, 10035066, 10035067, 10035068, 10035069, 10035070, 10035071, 10035072, 10035073, 10035085). `Sub Usg Import Impl ori` (10035053) decodes base64 into memory before any persisted import write and returns InvalidParameterFormat instead of raw decoder details.
-- `Sub Refusal Tst ori` (95723) covers single/aggregate errors, localized base64 refusal, subject fallback, empty filter compatibility and the unknown-template/bad-date combination. This phase does not claim the remaining domain-refusal/context/help acceptance is complete.
+- All Subscription Billing message entrypoints invoke the shared preflight (codeunits 10035036, 10035037, 10035038, 10035039, 10035040, 10035041, 10035042, 10035043, 10035044, 10035045, 10035046, 10035047, 10035048, 10035049, 10035050, 10035051, 10035052, 10035053, 10035054, 10035055, 10035056, 10035057, 10035061, 10035065, 10035066, 10035067, 10035068, 10035069, 10035070, 10035071, 10035072, 10035073, 10035085). `Sub Usg Import Impl ori` (10035053) decodes base64 into memory before any persisted import write and returns InvalidParameterFormat instead of raw decoder details.
+- `Sub Refusal Tst ori` (95723) covers single/aggregate errors, localized base64 refusal, subject fallback, empty filter compatibility and the unknown-template/bad-date combination. Domain refusals now use stable shared codes and translated recovery fields; error chapters identify those actual codes. `Sub Posting Context ori` (10035063) scopes a read-only posting subscriber to capture the actual sales document when CreateDocuments posting fails. Positive live MCP, full native/UI and independent verification remain required.
 
 
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity

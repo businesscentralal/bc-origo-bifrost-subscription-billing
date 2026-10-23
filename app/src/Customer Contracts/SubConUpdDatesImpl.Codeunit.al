@@ -198,7 +198,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
         if RunMode = '' then
             RunMode := ForegroundTok;
         if not (RunMode in [ForegroundTok, BackgroundTok]) then
-            Error(InvalidRunModeErr, RunMode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidRunModeErr, RunMode), 'runMode', Format(RunMode, 0, 9));
 
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('runMode', RunMode);

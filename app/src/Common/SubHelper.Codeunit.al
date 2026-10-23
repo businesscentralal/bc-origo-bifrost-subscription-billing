@@ -43,6 +43,30 @@ codeunit 10035058 "Sub Helper ori"
         TempArgument.RaiseCollectedErrors("Bifrost Error Code ori"::MultipleErrors, MessageText);
     end;
 
+    /// <summary>Raises an app-owned refusal with the stable shared code and translated recovery fields.</summary>
+    procedure RaiseRefusal(ErrorCode: Enum "Bifrost Error Code ori"; MessageText: Text; ParameterName: Text; Received: Text)
+    var
+        Expected: Text;
+        ExistingRecordTxt: Label 'An existing record identified by %1.', Comment = '%1 = parameter||is-IS=Fyrirliggjandi færsla sem %1 auðkennir.';
+        PreconditionsTxt: Label 'The conditions described in the error must hold for %1.', Comment = '%1 = parameter||is-IS=Skilyrðin sem lýst er í villunni verða að vera uppfyllt fyrir %1.';
+        ConsistentIdentifiersTxt: Label 'Consistent identifiers for %1.', Comment = '%1 = parameter||is-IS=Samræmd auðkenni fyrir %1.';
+        BusinessOperationTxt: Label 'Business Central must be able to complete the operation for %1.', Comment = '%1 = parameter||is-IS=Business Central verður að geta lokið aðgerðinni fyrir %1.';
+    begin
+        case ErrorCode of
+            "Bifrost Error Code ori"::RecordNotFound:
+                Expected := StrSubstNo(ExistingRecordTxt, ParameterName);
+            "Bifrost Error Code ori"::PreconditionFailed:
+                Expected := StrSubstNo(PreconditionsTxt, ParameterName);
+            "Bifrost Error Code ori"::ConflictingIdentifiers:
+                Expected := StrSubstNo(ConsistentIdentifiersTxt, ParameterName);
+            "Bifrost Error Code ori"::BusinessCentralError:
+                Expected := StrSubstNo(BusinessOperationTxt, ParameterName);
+            else
+                Expected := StrSubstNo(ExpectedValueTxt, ParameterName);
+        end;
+        RaiseError(ErrorCode, MessageText, ParameterName, Received, Expected);
+    end;
+
     /// <summary>Decodes only into an in-memory blob. Decode exceptions never expose platform/.NET text.</summary>
     [TryFunction]
     procedure TryDecodeBase64(ContentBase64: Text; var TempBlob: Codeunit "Temp Blob")
@@ -105,6 +129,8 @@ codeunit 10035058 "Sub Helper ori"
                     ProblemCount += 1;
                 end;
             end else begin
+                if not ValueToken.IsValue() then
+                    ValueToken.WriteTo(Received);
                 Expected := ParameterType;
                 if GetText(Definition, 'format', false) = 'date' then
                     Expected := 'YYYY-MM-DD';
@@ -140,10 +166,89 @@ codeunit 10035058 "Sub Helper ori"
                     ProblemCount += 1;
                 end;
         end;
+        CollectNestedProblems(Argument, Request, TypeName, ProblemCount);
+        if (TypeName = 'Subscription.Usage.ImportData') and not HasValue(Request, 'content') and not HasValue(Request, 'contentBase64') then begin
+            Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'content'), 'content', '<missing>', Base64ExpectedTxt, StrSubstNo(CorrectParameterTxt, 'content'));
+            ProblemCount += 1;
+        end;
         if ProblemCount = 0 then
             exit(true);
         Argument.RespondWithCollectedErrors("Bifrost Error Code ori"::MultipleErrors, StrSubstNo(ProblemsErr, ProblemCount));
         exit(false);
+    end;
+
+    local procedure CollectNestedProblems(var Argument: Record "Message Argument ori"; Request: JsonObject; TypeName: Text; var ProblemCount: Integer)
+    var
+        ArrayToken: JsonToken;
+        Entry: JsonToken;
+        Values: JsonArray;
+        Item: JsonObject;
+        Index: Integer;
+        Path: Text;
+        Received: Text;
+        DocumentPathTxt: Label 'documents[%1]', Locked = true;
+    begin
+        Index := 0;
+        if TypeName = 'Subscription.Billing.PostDocuments' then begin
+            if not Request.Get('documents', ArrayToken) then
+                exit;
+            if not ArrayToken.IsArray() then
+                exit;
+            Values := ArrayToken.AsArray();
+            if Values.Count() = 0 then begin
+                Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'documents'), 'documents', '[]', 'array', StrSubstNo(CorrectParameterTxt, 'documents'));
+                ProblemCount += 1;
+            end;
+            foreach Entry in Values do begin
+                Path := StrSubstNo(DocumentPathTxt, Index);
+                if not Entry.IsObject() then begin
+                    Entry.WriteTo(Received);
+                    Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, Path, 'object'), Path, Received, 'object', StrSubstNo(CorrectParameterTxt, Path));
+                    ProblemCount += 1;
+                end else begin
+                    Item := Entry.AsObject();
+                    CheckNestedProperty(Argument, Item, 'partner', Path + '.partner', true, 'Customer|Vendor', 0, ProblemCount);
+                    CheckNestedProperty(Argument, Item, 'documentType', Path + '.documentType', true, 'Invoice|Credit Memo', 0, ProblemCount);
+                    CheckNestedProperty(Argument, Item, 'documentNo', Path + '.documentNo', true, '', 20, ProblemCount);
+                    CheckNestedProperty(Argument, Item, 'vendorInvoiceNo', Path + '.vendorInvoiceNo', false, '', 35, ProblemCount);
+                end;
+                Index += 1;
+            end;
+        end;
+    end;
+
+    local procedure CheckNestedProperty(var Argument: Record "Message Argument ori"; Item: JsonObject; PropertyName: Text; Path: Text; Required: Boolean; Allowed: Text; MaximumLength: Integer; var ProblemCount: Integer)
+    var
+        Token: JsonToken;
+        Received: Text;
+        Candidate: Text;
+        Found: Boolean;
+        AllowedValues: List of [Text];
+    begin
+        if not Item.Get(PropertyName, Token) then begin
+            if Required then begin
+                Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, Path), Path, '<missing>', StrSubstNo(ExpectedValueTxt, Path), StrSubstNo(CorrectParameterTxt, Path));
+                ProblemCount += 1;
+            end;
+            exit;
+        end;
+        Token.WriteTo(Received);
+        if Token.IsValue() then
+            if not Token.AsValue().IsNull() then begin
+                Received := Token.AsValue().AsText();
+                Found := (not Required or (Received <> '')) and ((MaximumLength = 0) or (StrLen(Received) <= MaximumLength));
+                if Found and (Allowed <> '') then begin
+                    Found := false;
+                    AllowedValues := Allowed.Split('|');
+                    foreach Candidate in AllowedValues do
+                        if LowerCase(Candidate) = LowerCase(Received) then
+                            Found := true;
+                end;
+            end;
+        if Found then
+            exit;
+        Argument.AddError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidValueErr, Path, Allowed), Path, Received, StrSubstNo(ExpectedValueTxt, Path), StrSubstNo(CorrectParameterTxt, Path));
+        ProblemCount += 1;
     end;
 
     local procedure ValidParameterValue(ValueToken: JsonToken; ParameterType: Text; Expected: Text): Boolean
@@ -181,11 +286,26 @@ codeunit 10035058 "Sub Helper ori"
     var
         AllowedToken: JsonToken;
         Candidate: JsonToken;
+        Entry: JsonToken;
+        Matches: Boolean;
     begin
         if not Definition.Get('allowed', AllowedToken) then
             exit(true);
         if not AllowedToken.IsArray() then
             exit(true);
+        if ValueToken.IsArray() then begin
+            foreach Entry in ValueToken.AsArray() do begin
+                Matches := false;
+                if Entry.IsValue() then
+                    if not Entry.AsValue().IsNull() then
+                        foreach Candidate in AllowedToken.AsArray() do
+                            if LowerCase(Candidate.AsValue().AsText()) = LowerCase(Entry.AsValue().AsText()) then
+                                Matches := true;
+                if not Matches then
+                    exit(false);
+            end;
+            exit(true);
+        end;
         if not ValueToken.IsValue() then
             exit(true);
         foreach Candidate in AllowedToken.AsArray() do
@@ -505,7 +625,7 @@ codeunit 10035058 "Sub Helper ori"
         if UserSetup.Get(UserId()) then
             if UserSetup."Auto Contract Billing" then
                 exit;
-        Error(NotAuthorizedErr);
+        RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, NotAuthorizedErr, 'permission', 'Auto Contract Billing');
     end;
 
     /// <summary>Formats a date for a JSON response using the ISO format.</summary>

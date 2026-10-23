@@ -180,7 +180,7 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
         SubscriptionHeaderNo := Helper.GetCode20(RequestJson, 'subscriptionHeaderNo', false);
 
         if not VendorSubscriptionContract.Get(ContractNo) then
-            Error(ContractNotFoundErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(ContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
 
         EntryNoFilter := Helper.GetEntryNoSelection(RequestJson, 'subscriptionLineEntryNos', SelectedEntryNos);
 

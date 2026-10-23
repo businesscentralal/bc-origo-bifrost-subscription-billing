@@ -186,7 +186,7 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
         RequestJson := Argument.GetRequestJson();
         PriceUpdateTemplateCode := Helper.GetSubjectOr(RequestJson, 'priceUpdateTemplateCode', Argument, true);
         if not PriceUpdateTemplate.Get(PriceUpdateTemplateCode) then
-            Error(TemplateNotFoundErr, PriceUpdateTemplateCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, PriceUpdateTemplateCode), 'priceUpdateTemplateCode', Format(PriceUpdateTemplateCode, 0, 9));
 
         // The Contract Price Update page's defaults (ApplyPriceUpdateTemplateFilter): both dates come from the template's formulas and the work date.
         IncludeLinesUpToDate := Helper.GetDate(RequestJson, 'includeLinesUpToDate', false);

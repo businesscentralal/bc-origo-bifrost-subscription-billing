@@ -123,6 +123,18 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Stofna reikningsskjöl: breytir óreikningsfærðum tillögulínum reikningssniðmáts í sölu- eða innkaupaskjöl, eitt fyrir hvern samning eða eitt fyrir hvern viðskiptamann, og getur bókað söluskjölin. Óafturkræf aðgerð. Fyrst þarf að gera tillögu með Subscription.Billing.CreateProposal; til að skoða áður en keyrt er skal nota Subscription.Billing.PreviewDocuments; innkaupaskjöl eru bókuð með Subscription.Billing.PostDocuments.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3224492679 - Method 3332459896 - NamedType 1696185714" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A document Business Central can create and post.</source>
+          <target>Skjal sem Business Central getur stofnað og bókað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Skjal sem Business Central getur stofnað og bókað.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrDocs Impl ori - Method PerformWrite - NamedType ExpectedPostTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 3224492679 - Method 3332459896 - NamedType 2653919383" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Review the named document and the underlying Business Central error before retrying. Documents listed in the response still exist.</source>
+          <target>Yfirfarðu tilgreint skjal og undirliggjandi villu Business Central áður en þú reynir aftur. Skjöl sem talin eru upp í svarinu eru enn til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Yfirfarðu tilgreint skjal og undirliggjandi villu Business Central áður en þú reynir aftur. Skjöl sem talin eru upp í svarinu eru enn til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil CrDocs Impl ori - Method PerformWrite - NamedType ReviewDocumentTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 794001358 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Creates billing proposal lines for a Billing Template and a billing date. Returns the number of proposal lines created and the contracts they cover.</source>
           <target>Býr til reikningstillögulínur fyrir reikningssniðmát og reikningsdagsetningu. Skilar fjölda tillögulína sem urðu til og þeim samningum sem þær ná yfir.</target>
@@ -908,6 +920,30 @@
           <target>Þú hefur ekki heimild til að hreinsa reikningstillögur eða eyða reikningsskjölum á meðan reikningssniðmát gerir reikninga sjálfvirkt. Merktu við Reikningsregla samnings á notandanum þínum í Uppsetningu notanda.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Þú hefur ekki heimild til að hreinsa reikningstillögur eða eyða reikningsskjölum á meðan reikningssniðmát gerir reikninga sjálfvirkt. Merktu við Reikningsregla samnings á notandanum þínum í Uppsetningu notanda.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method AssertMayClearBillingProposal - NamedType NotAuthorizedErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - Method 1340663706 - NamedType 1061477122" size-unit="char" translate="yes" xml:space="preserve">
+          <source>An existing record identified by %1.</source>
+          <target>Fyrirliggjandi færsla sem %1 auðkennir.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter||is-IS=Fyrirliggjandi færsla sem %1 auðkennir.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method RaiseRefusal - NamedType ExistingRecordTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - Method 1340663706 - NamedType 479619345" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The conditions described in the error must hold for %1.</source>
+          <target>Skilyrðin sem lýst er í villunni verða að vera uppfyllt fyrir %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter||is-IS=Skilyrðin sem lýst er í villunni verða að vera uppfyllt fyrir %1.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method RaiseRefusal - NamedType PreconditionsTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - Method 1340663706 - NamedType 3968254732" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Consistent identifiers for %1.</source>
+          <target>Samræmd auðkenni fyrir %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter||is-IS=Samræmd auðkenni fyrir %1.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method RaiseRefusal - NamedType ConsistentIdentifiersTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - Method 1340663706 - NamedType 2058475845" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Business Central must be able to complete the operation for %1.</source>
+          <target>Business Central verður að geta lokið aðgerðinni fyrir %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter||is-IS=Business Central verður að geta lokið aðgerðinni fyrir %1.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method RaiseRefusal - NamedType BusinessOperationTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2484466267 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.</source>

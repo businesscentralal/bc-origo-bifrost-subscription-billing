@@ -187,10 +187,10 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
         Helper.GetEntryNoSelection(RequestJson, 'contractLineNos', SelectedLineNos);
 
         if not CustomerSubscriptionContract.Get(ContractNo) then
-            Error(ContractNotFoundErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(ContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
         foreach SelectedLineNo in SelectedLineNos.Keys() do
             if not CustSubContractLine.Get(ContractNo, SelectedLineNo) then
-                Error(UnknownContractLineErr, SelectedLineNo, ContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(UnknownContractLineErr, SelectedLineNo, ContractNo), 'contractLineNo', Format(SelectedLineNo, 0, 9));
 
         SubContractRenewalLine.SetRange("Linked to Sub. Contract No.", ContractNo);
         if not SubContractRenewalLine.IsEmpty() then
@@ -215,7 +215,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
             until CustSubContractLine.Next() = 0;
 
         if RenewalLinesCreated = 0 then
-            Error(NoRenewableLinesErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(NoRenewableLinesErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
 
         SubContractRenewalLine.Reset();
         SubContractRenewalLine.SetRange("Subscription Contract No.", ContractNo);
@@ -233,7 +233,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
 
         SalesQuoteNo := CreateSubContractRenewal.GetSalesQuoteNo();
         if SalesQuoteNo = '' then
-            Error(QuoteNotCreatedErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::BusinessCentralError, StrSubstNo(QuoteNotCreatedErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
 
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('contractNo', ContractNo);

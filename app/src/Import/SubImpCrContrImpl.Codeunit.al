@@ -217,7 +217,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
                     SubscriptionHeadersTok, CustomerContractsTok, SubscriptionLinesTok, ContractLinesTok:
                         RequestedStages.Add(StageName);
                     else
-                        Error(UnknownStageErr, StageName);
+                        Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(UnknownStageErr, StageName), 'stages', Format(StageName, 0, 9));
                 end;
             end;
             exit;

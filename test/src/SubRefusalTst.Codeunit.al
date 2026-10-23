@@ -176,6 +176,62 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
     end;
 
+    [Test]
+    procedure Scenario_AC01_RecordNotFound_Context_EN()
+    begin
+        AssertRecordRefusal(1033);
+    end;
+
+    [Test]
+    procedure Scenario_AC01_RecordNotFound_Context_IS()
+    begin
+        AssertRecordRefusal(1039);
+    end;
+
+    local procedure AssertRecordRefusal(LanguageId: Integer)
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Implementation: Codeunit "Sub Con GetLines Impl ori";
+        Request: JsonObject;
+        Response: JsonObject;
+        PreviousLanguage: Integer;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        Request.Add('contractNo', 'XS62-OWN-NONEXISTENT');
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.GetLines", Request);
+        asserterror Implementation.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        Response := TempArgument.GetResponseJson();
+        Assert.AreEqual('RecordNotFound', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
+        Assert.AreEqual('contractNo', TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
+        Assert.AreEqual('XS62-OWN-NONEXISTENT', TestLibrary.ReadText(Response, 'received'), TestLibrary.AsText(Response));
+        Assert.IsTrue(TestLibrary.ReadText(Response, 'expected') <> '', 'Expected must guide the caller.');
+        Assert.IsTrue(TestLibrary.ReadText(Response, 'nextStep') <> '', 'Recovery must guide the caller.');
+        if LanguageId = 1039 then
+            Assert.IsTrue(TestLibrary.ReadText(Response, 'nextStep').Contains('Leiðréttu'), 'Recovery must be Icelandic.');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    [Test]
+    procedure Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues()
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Request: JsonObject;
+        Item: JsonObject;
+        Documents: JsonArray;
+        Response: JsonObject;
+    begin
+        Documents.Add(Item.Clone());
+        Documents.Add(Item.Clone());
+        Request.Add('documents', Documents);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Both nested documents are validated before any lookup or post.');
+        Response := TempArgument.GetResponseJson();
+        Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
+        Assert.AreEqual(6, TestLibrary.ReadArray(Response, 'errors').Count(), 'All three required values on both documents must be reported.');
+    end;
+
     local procedure Prepare(var TempArgument: Record "Message Argument ori" temporary; MessageType: Enum "Message Type ori"; Request: JsonObject)
     begin
         TempArgument.Init();

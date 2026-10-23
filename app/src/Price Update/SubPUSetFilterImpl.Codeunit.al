@@ -191,7 +191,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
         TargetName := LowerCase(Helper.GetText(RequestJson, 'target', true));
 
         if not PriceUpdateTemplate.Get(PriceUpdateTemplateCode) then
-            Error(TemplateNotFoundErr, PriceUpdateTemplateCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, PriceUpdateTemplateCode), 'priceUpdateTemplateCode', Format(PriceUpdateTemplateCode, 0, 9));
 
         case TargetName of
             ContractTok:
@@ -204,14 +204,14 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
             LineTok:
                 TargetTableNo := Database::"Subscription Line";
             else
-                Error(InvalidTargetErr, TargetName);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidTargetErr, TargetName), 'target', Format(TargetName, 0, 9));
         end;
 
         RRef.Open(TargetTableNo);
         BlankView := RRef.GetView(false);
         // Preserve the published filter parameter while using Foundation's fail-closed validation.
         if not TryApplyTableView(Argument, RRef, SuppliedFilter, ViewApplied) then
-            Error(InvalidFilterErr, TargetName);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidFilterErr, TargetName), 'filter', Format(TargetName, 0, 9));
         if not ViewApplied then begin
             Clear(RRef);
             exit;
