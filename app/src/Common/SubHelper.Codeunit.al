@@ -90,6 +90,7 @@ codeunit 10035058 "Sub Helper ori"
         Parameters: JsonArray;
         DefinitionToken: JsonToken;
         ValueToken: JsonToken;
+        SubjectValue: JsonValue;
         TypeName: Text;
         SubjectKey: Text;
         SubjectForm: Text;
@@ -99,6 +100,7 @@ codeunit 10035058 "Sub Helper ori"
         Expected: Text;
         ProblemCount: Integer;
         Required: Boolean;
+        Missing: Boolean;
     begin
         Request := Argument.GetRequestJson();
         TypeName := Argument."Type".Names().Get(Argument."Type".Ordinals().IndexOf(Argument."Type".AsInteger()));
@@ -113,17 +115,22 @@ codeunit 10035058 "Sub Helper ori"
             Clear(ValueToken);
             Clear(Received);
             if (ParameterName = SubjectKey) and (Argument.Subject <> '') then begin
-                ValueToken.ReadFrom('""');
-                ValueToken.AsValue().SetValue(Argument.Subject);
+                SubjectValue.SetValue(Argument.Subject);
+                ValueToken := SubjectValue.AsToken();
             end else
-                Request.Get(ParameterName, ValueToken);
+                if not Request.Get(ParameterName, ValueToken) then
+                    Clear(ValueToken);
             if ValueToken.IsValue() then
                 if not ValueToken.AsValue().IsNull() then
                     Received := ValueToken.AsValue().AsText();
-            if (not Request.Contains(ParameterName)) and not ((ParameterName = SubjectKey) and (Argument.Subject <> '')) or
-               (ValueToken.IsValue() and ValueToken.AsValue().IsNull()) or
-               (ValueToken.IsValue() and (Received = '') and (ParameterType = 'string') and (ParameterName <> 'filter'))
-            then begin
+            Missing := (not Request.Contains(ParameterName)) and not ((ParameterName = SubjectKey) and (Argument.Subject <> ''));
+            if ValueToken.IsValue() then
+                if ValueToken.AsValue().IsNull() then
+                    Missing := true
+                else
+                    if (Received = '') and (ParameterType = 'string') and (ParameterName <> 'filter') then
+                        Missing := true;
+            if Missing then begin
                 if Required then begin
                     Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, ParameterName), ParameterName, '<missing>', StrSubstNo(ExpectedValueTxt, ParameterName), StrSubstNo(CorrectParameterTxt, ParameterName));
                     ProblemCount += 1;

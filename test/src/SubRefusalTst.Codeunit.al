@@ -232,6 +232,23 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.AreEqual(6, TestLibrary.ReadArray(Response, 'errors').Count(), 'All three required values on both documents must be reported.');
     end;
 
+    [Test]
+    procedure Scenario_AC02_ObjectInsteadOfScalar_IsStructuredBeforeLookup()
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Request: JsonObject;
+        InvalidValue: JsonObject;
+        Response: JsonObject;
+    begin
+        InvalidValue.Add('ownMalformedValue', 'XS62');
+        Request.Add('contractNo', InvalidValue);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Analysis.Recalculate", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'An object value is a structured request problem, never a runtime conversion error.');
+        Response := TempArgument.GetResponseJson();
+        Assert.AreEqual('InvalidParameterFormat', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
+        Assert.AreEqual('contractNo', TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
+    end;
+
     local procedure Prepare(var TempArgument: Record "Message Argument ori" temporary; MessageType: Enum "Message Type ori"; Request: JsonObject)
     begin
         TempArgument.Init();

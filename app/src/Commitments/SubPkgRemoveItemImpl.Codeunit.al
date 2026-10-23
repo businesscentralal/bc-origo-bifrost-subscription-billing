@@ -172,7 +172,7 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
         PackageCode := Helper.GetCode20(RequestJson, 'subscriptionPackageCode', true);
 
         if not ItemSubscriptionPackage.Get(ItemNo, PackageCode) then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(AssignmentNotFoundErr, PackageCode, ItemNo), 'packageCode', Format(PackageCode, 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(AssignmentNotFoundErr, PackageCode, ItemNo), 'subscriptionPackageCode', Format(PackageCode, 0, 9));
         WasStandard := ItemSubscriptionPackage.Standard;
         ItemSubscriptionPackage.Delete(true);
 
