@@ -1094,7 +1094,8 @@ codeunit 10035075 "Sub Contract Parts ori"
         exit('The operation invokes Microsoft Subscription Billing logic and changes the records described by the request.');
     end;
 
-    local procedure GetSubjectKey(MessageType: Text; var DataKey: Text; var SubjectForm: Text): Boolean
+    /// <summary>Returns the published subject fallback key without reading any business record.</summary>
+    internal procedure GetSubjectKey(MessageType: Text; var DataKey: Text; var SubjectForm: Text): Boolean
     begin
         case MessageType of
             'Subscription.Line.Create', 'Subscription.Renewal.Extend':

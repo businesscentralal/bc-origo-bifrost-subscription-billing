@@ -813,6 +813,36 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Losa frestanir: losar allar gjaldgengar frestanir viðskiptamanna og lánardrottna á öllum samningum fram að vinnudagsetningu og bókar losunina í fjárhagsbókhald. Óafturkræf aðgerð og ekki afmörkuð við einn samning. Til að endurbyggja samningagreiningu skal nota Subscription.Analysis.Recalculate.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Def Release Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 961444862" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter contentBase64 is not valid base64.</source>
+          <target>Færibreytan contentBase64 er ekki gilt base64.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Færibreytan contentBase64 er ekki gilt base64.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType Base64Err</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 1370025035" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A valid base64-encoded file.</source>
+          <target>Gild base64-kóðuð skrá.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Gild base64-kóðuð skrá.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType Base64ExpectedTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 1656680017" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Correct %1 and resend the request.</source>
+          <target>Leiðréttu %1 og sendu beiðnina aftur.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter||is-IS=Leiðréttu %1 og sendu beiðnina aftur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType CorrectParameterTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 459974093" size-unit="char" translate="yes" xml:space="preserve">
+          <source>An existing billing template code.</source>
+          <target>Kóði fyrirliggjandi reikningssniðmáts.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Kóði fyrirliggjandi reikningssniðmáts.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType ExistingTemplateTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 2330257887" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A valid value for %1.</source>
+          <target>Gilt gildi fyrir %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter||is-IS=Gilt gildi fyrir %1.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType ExpectedValueTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 1432801292" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter '%1' is not a valid date. Use the ISO format YYYY-MM-DD.</source>
           <target>Færibreytan '%1' er ekki gild dagsetning. Notaðu ISO sniðið YYYY-MM-DD.</target>
@@ -837,6 +867,12 @@
           <note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Færibreytan '%1' verður að vera annaðhvort 'Customer' eða 'Vendor'.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidPartnerErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 2510853505" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter %1 has an invalid value. Expected %2.</source>
+          <target>Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidValueErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 2436593916" size-unit="char" translate="yes" xml:space="preserve">
           <source>The request is missing the required parameter '%1'.</source>
           <target>Beiðnina vantar nauðsynlega færibreytu '%1'.</target>
@@ -848,6 +884,18 @@
           <target>Færibreytan '%1' verður að vera JSON-fylki.</target>
           <note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Færibreytan '%1' verður að vera JSON-fylki.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType NotAnArrayErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 494448295" size-unit="char" translate="yes" xml:space="preserve">
+          <source>%1 problems in the request. Nothing was written.</source>
+          <target>%1 vandamál í beiðninni. Ekkert var skrifað.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = problem count||is-IS=%1 vandamál í beiðninni. Ekkert var skrifað.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType ProblemsErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 1069379362" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The Billing Template %1 does not exist.</source>
+          <target>Reikningssniðmátið %1 er ekki til.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = template code||is-IS=Reikningssniðmátið %1 er ekki til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType TemplateNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 2127484308" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter '%1' is longer than the %2 characters allowed.</source>
@@ -1323,11 +1371,23 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Aftengja áskrift birgis: hreinsar tenginguna milli áskriftarlínu og áskriftar birgis notkunargagna. Skrifar gögn; engri línu, samningi eða notkunargögnum er eytt. Til að tengja aftur skal nota Subscription.Usage.ConnectSubscriptions.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Disconnect Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2570584800 - NamedType 1370025035" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A valid base64-encoded file.</source>
+          <target>Gild base64-kóðuð skrá.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Gild base64-kóðuð skrá.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - NamedType Base64ExpectedTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2570584800 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Imports a usage data file (as raw text or base64) for metered Subscription Lines and creates the imported usage data lines. Optionally also processes those lines into billable quantities.</source>
           <target>Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - NamedType DescriptionLbl</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2570584800 - NamedType 828985333" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter contentBase64 is not valid base64.</source>
+          <target>Færibreytan contentBase64 er ekki gilt base64.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Færibreytan contentBase64 er ekki gilt base64.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Import Impl ori - NamedType InvalidBase64Err</note>
         </trans-unit>
         <trans-unit id="Codeunit 2570584800 - NamedType 2456682063" size-unit="char" translate="yes" xml:space="preserve">
           <source>The request must supply either 'content' (raw text) or 'contentBase64' (base64 encoded) for the usage data file.</source>

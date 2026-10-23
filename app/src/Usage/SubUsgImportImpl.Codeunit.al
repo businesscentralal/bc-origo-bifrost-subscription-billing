@@ -23,6 +23,8 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         SupplierNotFoundErr: Label 'The Usage Data Supplier ''%1'' does not exist.', Comment = '%1 = supplier number||is-IS=Birgir notkunargagna ''%1'' er ekki til.';
+        InvalidBase64Err: Label 'The parameter contentBase64 is not valid base64.', Comment = 'is-IS=Færibreytan contentBase64 er ekki gilt base64.';
+        Base64ExpectedTxt: Label 'A valid base64-encoded file.', Comment = 'is-IS=Gild base64-kóðuð skrá.';
         NoContentErr: Label 'The request must supply either ''content'' (raw text) or ''contentBase64'' (base64 encoded) for the usage data file.', Comment = 'is-IS=Beiðnin verður að innihalda annaðhvort ''content'' (hreinan texta) eða ''contentBase64'' (base64-kóðað) fyrir notkunargögnin.';
         DefaultFileNameTok: Label 'bifrost-usage.csv', Locked = true;
         DescriptionLbl: Label 'Imports a usage data file (as raw text or base64) for metered Subscription Lines and creates the imported usage data lines. Optionally also processes those lines into billable quantities.', MaxLength = 250, Comment = 'is-IS=Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.';
@@ -155,6 +157,8 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -172,13 +176,11 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         UsageDataSupplier: Record "Usage Data Supplier";
         UsageDataBlob: Record "Usage Data Blob";
         UsageDataGenericImport: Record "Usage Data Generic Import";
-        Base64Convert: Codeunit "Base64 Convert";
         TempBlob: Codeunit "Temp Blob";
         CryptographyManagement: Codeunit "Cryptography Management";
         RequestJson: JsonObject;
         ResponseJson: JsonObject;
         OutStr: OutStream;
-        TempOutStr: OutStream;
         TempInStr: InStream;
         HashInStr: InStream;
         HashAlgorithmType: Option MD5,SHA1,SHA256,SHA384,SHA512;
@@ -201,6 +203,12 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         if (Content = '') and (ContentBase64 = '') then
             Error(NoContentErr);
 
+        if ContentBase64 <> '' then
+            if not Helper.TryDecodeBase64(ContentBase64, TempBlob) then begin
+                ClearLastError();
+                Helper.RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, InvalidBase64Err, 'contentBase64', '[omitted]', Base64ExpectedTxt);
+            end;
+
         if not UsageDataSupplier.Get(SupplierNo) then
             Error(SupplierNotFoundErr, SupplierNo);
 
@@ -215,8 +223,6 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         UsageDataBlob.Insert(false);
         UsageDataBlob.Data.CreateOutStream(OutStr);
         if ContentBase64 <> '' then begin
-            TempBlob.CreateOutStream(TempOutStr);
-            Base64Convert.FromBase64(ContentBase64, TempOutStr);
             TempBlob.CreateInStream(TempInStr);
             CopyStream(OutStr, TempInStr);
         end else
