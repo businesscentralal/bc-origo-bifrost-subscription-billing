@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-23) - permission test isolation (#73)
+
+- Tests `Sub Post Gate Tst ori` (95719) and `Sub Perm Full Tst ori` (95771) execute the product calls under exactly `BIFROST Full ori`, then restore test permissions before invoking Library Assert. Each contract read reapplies the restricted role. The tests require permission mocking to be active, so a runner cannot silently execute these scenarios with its ambient permissions.
+
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
 The contract chapters of all 33 message types were already complete; the audit against Bifrost Foundation found the gaps below and closes them. No public object, procedure, enum value or id changes, and no behaviour of a message type changes.
