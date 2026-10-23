@@ -23,7 +23,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         VendorContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = vendor contract no.||is-IS=Áskriftarsamningur lánardrottins ''%1'' er ekki til.';
         PackageNotFoundErr: Label 'The Subscription Package ''%1'' does not exist.', Comment = '%1 = subscription package code||is-IS=Áskriftarpakkinn ''%1'' er ekki til.';
         NeitherContractErr: Label 'The request must supply at least one of ''customerContractNo'' or ''vendorContractNo''.', Comment = 'is-IS=Beiðnin verður að innihalda a.m.k. annað af ''customerContractNo'' eða ''vendorContractNo''.';
-        DescriptionLbl: Label 'Extends a Subscription with a new customer and/or vendor contract, applying the item''s standard packages plus any extra packages supplied. Returns the contract line counts created.', MaxLength = 250, Comment = 'is-IS=Framlengir áskrift með nýjum áskriftarsamningi viðskiptamanns og/eða lánardrottins og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.';
+        DescriptionLbl: Label 'Extends an existing Subscription onto a customer contract, a vendor contract or both, applying the item''s standard packages plus any extra packages supplied. Returns the contract line counts created.', MaxLength = 250, Comment = 'is-IS=Framlengir fyrirliggjandi áskrift á áskriftarsamning viðskiptamanns, samning lánardrottins eða báða og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -42,14 +42,14 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Renewal.Extend, Subscription, Renewal, Extend, package lines, contract term', Comment = 'is-IS=Subscription.Renewal.Extend, áskrift, endurnýjun, framlengja, pakkalínur, samningstími';
+        KeywordsLbl: Label 'extend subscription, extend contract term, extend subscription onto contract, extend without quote, add package lines to a contract, renew without quotation, extend customer and vendor contract, prolong subscription', Comment = 'is-IS=framlengja áskrift, framlengja samningstíma, framlengja áskrift á samning, framlengja án tilboðs, bæta pakkalínum við samning, endurnýja án tilboðs, framlengja samning viðskiptamanns og lánardrottins, lengja áskrift';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Renewal.Extend: Extends a subscription contract term. Irreversible.', Comment = 'is-IS=Subscription.Renewal.Extend: Framlengir gildistíma áskriftarsamnings. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Extend a Subscription: applies the item''s standard packages and any extra packages to an existing Subscription and adds the lines to the named customer and/or vendor contracts, with no dialog. Irreversible. To renew through a sales quote use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Framlengja áskrift: beitir stöðluðum pökkum vörunnar og aukapökkum á fyrirliggjandi áskrift og bætir línunum við tilgreinda samninga viðskiptamanns og/eða lánardrottins, án gluggasamskipta. Óafturkræf aðgerð. Til að endurnýja með sölutilboði skal nota Subscription.Renewal.CreateQuote.';
     begin
         exit(SelectionLbl);
     end;
@@ -119,7 +119,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Extends an existing Subscription onto a customer contract, a vendor contract or both, through Microsoft''s Extend Sub. Contract Mgt. The Subscription ' +
+        Overview := 'Extends an existing Subscription onto a customer contract, a vendor contract or both, through Microsoft''s extend-contract logic. The Subscription ' +
             'must exist; this type does not create one.';
         exit(true);
     end;

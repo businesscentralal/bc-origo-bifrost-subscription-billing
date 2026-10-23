@@ -38,14 +38,14 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Line.Create, Subscription, Line, Create, package, billing', Comment = 'is-IS=Subscription.Line.Create, áskrift, lína, stofna, pakki, reikningur';
+        KeywordsLbl: Label 'add subscription lines, apply subscription package, create subscription lines from package, add package to subscription, new subscription lines, add usage based lines, attach package to subscription header, assign package lines', Comment = 'is-IS=bæta við áskriftarlínum, beita áskriftarpakka, stofna áskriftarlínur út frá pakka, bæta pakka við áskrift, nýjar áskriftarlínur, bæta við notkunartengdum línum, tengja pakka við áskriftarhaus, úthluta pakkalínum';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Line.Create: Applies a package and creates subscription lines.', Comment = 'is-IS=Subscription.Line.Create: Beitir pakka og stofnar áskriftarlínur.';
+        SelectionLbl: Label 'Create Subscription Lines: applies a Subscription Package to a Subscription Header and creates the package''s lines. Writes data; no contract is touched and nothing is billed. Attach the lines to a contract afterwards with Subscription.Contract.GetLines or Subscription.VendorContract.GetLines.', Comment = 'is-IS=Stofna áskriftarlínur: beitir áskriftarpakka á áskriftarhaus og býr til línur pakkans. Skrifar gögn; enginn samningur er snertur og ekkert er reikningsfært. Línurnar eru tengdar við samning á eftir með Subscription.Contract.GetLines eða Subscription.VendorContract.GetLines.';
     begin
         exit(SelectionLbl);
     end;

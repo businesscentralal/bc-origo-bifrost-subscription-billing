@@ -44,14 +44,14 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Billing.SetTemplateFilter, Subscription, Billing, SetTemplateFilter, filter, billing template, contracts', Comment = 'is-IS=Subscription.Billing.SetTemplateFilter, áskrift, reikningagerð, setja sniðmátssíu, sía, reikningssniðmát, samningar';
+        KeywordsLbl: Label 'set billing template filter, filter contracts of billing template, restrict billing run to contracts, billing template contract filter, change which contracts are billed, edit template filter, limit billing template, billing filter', Comment = 'is-IS=setja síu á reikningssniðmát, sía samninga reikningssniðmáts, takmarka reikningakeyrslu við samninga, samningssía reikningssniðmáts, breyta því hvaða samningar eru reikningsfærðir, breyta sniðmátssíu, afmarka reikningssniðmát, reikningssía';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Billing.SetTemplateFilter: Sets the validated contract filter of a Billing Template.', Comment = 'is-IS=Subscription.Billing.SetTemplateFilter: Setur sannreynda samningssíu á reikningssniðmát.';
+        SelectionLbl: Label 'Set a Billing Template filter: validates and stores the contract filter that decides which contracts Subscription.Billing.CreateProposal bills for the template. Writes only the template. For Price Update Templates use Subscription.PriceUpdate.SetTemplateFilter.', Comment = 'is-IS=Setja síu á reikningssniðmát: sannreynir og vistar samningssíuna sem ákveður hvaða samninga Subscription.Billing.CreateProposal reikningsfærir fyrir sniðmátið. Skrifar eingöngu sniðmátið. Fyrir verðuppfærslusniðmát skal nota Subscription.PriceUpdate.SetTemplateFilter.';
     begin
         exit(SelectionLbl);
     end;
@@ -70,7 +70,7 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.BillingTemplateFilterParameters();
         exit(true);
     end;
 

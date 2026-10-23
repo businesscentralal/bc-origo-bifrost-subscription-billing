@@ -44,14 +44,14 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Usage.ImportData, Subscription, Usage, ImportData, usage, meter data', Comment = 'is-IS=Subscription.Usage.ImportData, áskrift, notkun, flytja inn gögn, notkun, mæligögn';
+        KeywordsLbl: Label 'import usage data, upload usage file, import supplier usage, import metered usage, load usage csv, import consumption data, usage data import, import usage for billing', Comment = 'is-IS=flytja inn notkunargögn, hlaða upp notkunarskrá, flytja inn notkun birgis, flytja inn mælda notkun, hlaða inn notkunar csv, flytja inn neyslugögn, innflutningur notkunargagna, flytja inn notkun fyrir reikningagerð';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Usage.ImportData: Imports usage data. Irreversible.', Comment = 'is-IS=Subscription.Usage.ImportData: Flytur inn notkunargögn. Óafturkræf aðgerð.';
+        SelectionLbl: Label 'Import usage data: stores a supplier''s usage file (text or base64), parses it into imported lines and, with runProcessing, also processes them. Irreversible, since each step commits. For an import that is already stored use Subscription.Usage.Process; to undo one use Subscription.Usage.DeleteData.', Comment = 'is-IS=Flytja inn notkunargögn: vistar notkunarskrá birgis (texta eða base64), greinir hana í innfluttar línur og vinnur þær einnig með runProcessing. Óafturkræf aðgerð, því hvert skref vistar. Fyrir innflutning sem þegar er vistaður skal nota Subscription.Usage.Process; til að afturkalla innflutning skal nota Subscription.Usage.DeleteData.';
     begin
         exit(SelectionLbl);
     end;
@@ -121,8 +121,8 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Stores a usage data file from a Usage Data Supplier as a Usage Data Import with a Usage Data Blob, then runs Microsoft''s Import And Process Usage ' +
-            'Data with the Create Imported Lines step, which parses the file into Usage Data Generic Import rows. Call Subscription.Usage.Process next, or set ' +
+        Overview := 'Stores a usage data file from a Usage Data Supplier as a Usage Data Import with a Usage Data Blob, then runs Microsoft''s usage data ' +
+            'import with the Create Imported Lines step, which parses the file into Usage Data Generic Import rows. Call Subscription.Usage.Process next, or set ' +
             'runProcessing.';
         exit(true);
     end;

@@ -43,14 +43,14 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.RemoveLine, Subscription, Contract, RemoveLine, remove, contract line, detach', Comment = 'is-IS=Subscription.Contract.RemoveLine, áskrift, samningur, fjarlægja línu, fjarlægja, samningslína, losa';
+        KeywordsLbl: Label 'remove contract line, delete contract line, detach subscription line from contract, remove line from customer contract, remove line from vendor contract, delete line of contract, unattach subscription line, take line off contract', Comment = 'is-IS=fjarlægja samningslínu, eyða samningslínu, aftengja áskriftarlínu frá samningi, fjarlægja línu af samningi viðskiptamanns, fjarlægja línu af samningi lánardrottins, eyða línu samnings, losa áskriftarlínu, taka línu af samningi';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.RemoveLine: Removes an unbilled contract line; its Subscription Line can be attached again.', Comment = 'is-IS=Subscription.Contract.RemoveLine: Fjarlægir samningslínu sem hefur ekki verið reikningsfærð; hægt er að tengja áskriftarlínu hennar aftur.';
+        SelectionLbl: Label 'Remove a contract line: deletes an unbilled line of a customer or vendor contract and detaches its Subscription Line, which is not deleted. Writes data; billed, closed, deferred and in-billing lines are refused. Attach the Subscription Line again with Subscription.Contract.GetLines or Subscription.VendorContract.GetLines.', Comment = 'is-IS=Fjarlægja samningslínu: eyðir línu sem ekki hefur verið reikningsfærð á samningi viðskiptamanns eða lánardrottins og losar áskriftarlínu hennar, sem er ekki eytt. Skrifar gögn; línum sem eru reikningsfærðar, lokaðar, frestaðar eða í reikningagerð er hafnað. Áskriftarlínan er tengd aftur með Subscription.Contract.GetLines eða Subscription.VendorContract.GetLines.';
     begin
         exit(SelectionLbl);
     end;
@@ -69,7 +69,7 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.RemoveLineParameters();
         exit(true);
     end;
 

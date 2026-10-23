@@ -46,14 +46,14 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.VendorContract.AddLinesToInvoice, Subscription, VendorContract, AddLinesToInvoice, purchase invoice, vendor, contract lines', Comment = 'is-IS=Subscription.VendorContract.AddLinesToInvoice, áskrift, samningur lánardrottins, bæta línum við reikning, innkaupareikningur, lánardrottinn, samningslínur';
+        KeywordsLbl: Label 'add lines to purchase invoice, add vendor contract lines to invoice, add contract lines to existing invoice, add due lines to purchase invoice, extend purchase invoice with contract lines, add subscription lines to vendor invoice, append vendor lines, complete the purchase invoice', Comment = 'is-IS=bæta línum við innkaupareikning, bæta samningslínum lánardrottins við reikning, bæta samningslínum við fyrirliggjandi reikning, bæta gjaldföllnum línum við innkaupareikning, bæta samningslínum við innkaupareikning, bæta áskriftarlínum við reikning lánardrottins, bæta við línum lánardrottins, fullgera innkaupareikninginn';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.VendorContract.AddLinesToInvoice: Adds due vendor contract lines to an existing unposted purchase invoice.', Comment = 'is-IS=Subscription.VendorContract.AddLinesToInvoice: Bætir gjaldföllnum samningslínum lánardrottins við óbókaðan innkaupareikning.';
+        SelectionLbl: Label 'Add vendor lines to a purchase invoice: adds the due lines of the invoice''s vendor to an existing unposted purchase invoice. Writes data; nothing is posted. To create a new purchase invoice for a contract use Subscription.VendorContract.CreateInvoice.', Comment = 'is-IS=Bæta línum lánardrottins við innkaupareikning: bætir gjaldföllnum línum lánardrottins reikningsins við fyrirliggjandi óbókaðan innkaupareikning. Skrifar gögn; ekkert er bókað. Til að stofna nýjan innkaupareikning fyrir samning skal nota Subscription.VendorContract.CreateInvoice.';
     begin
         exit(SelectionLbl);
     end;
@@ -72,7 +72,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.AddLinesToInvoiceParameters();
         exit(true);
     end;
 

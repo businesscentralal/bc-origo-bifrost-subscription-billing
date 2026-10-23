@@ -50,14 +50,14 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Usage.DeleteData, Subscription, Usage, DeleteData, delete, re-run, usage import', Comment = 'is-IS=Subscription.Usage.DeleteData, áskrift, notkun, eyða gögnum, eyða, keyra aftur, innflutningur notkunar';
+        KeywordsLbl: Label 'delete usage data, reset usage import, undo usage import, delete imported usage lines, reprocess usage data, re-run usage import, delete usage data import, clear imported usage', Comment = 'is-IS=eyða notkunargögnum, núllstilla innflutning notkunar, afturkalla innflutning notkunar, eyða innfluttum notkunarlínum, vinna notkunargögn aftur, keyra innflutning notkunar aftur, eyða innflutningi notkunargagna, hreinsa innflutta notkun';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Usage.DeleteData: Irreversible. Deletes a usage imports processed data, or the whole import, so it can be re-run.', Comment = 'is-IS=Subscription.Usage.DeleteData: Óafturkræft. Eyðir unnum gögnum innflutnings notkunar, eða öllum innflutningnum, svo hægt sé að keyra hann aftur.';
+        SelectionLbl: Label 'Delete usage data: deletes the imported lines and usage billing of one Usage Data Import so it can be processed again (resetLines), or deletes the whole import (deleteImport). Irreversible, and imports already on a billing line or document are refused. To process the import again use Subscription.Usage.Process.', Comment = 'is-IS=Eyða notkunargögnum: eyðir innfluttum línum og notkunarreikningagerð eins innflutnings notkunargagna svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Óafturkræf aðgerð og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.';
     begin
         exit(SelectionLbl);
     end;
@@ -76,7 +76,7 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.DeleteUsageDataParameters();
         exit(true);
     end;
 
@@ -135,7 +135,7 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := ('This is Microsoft''s Delete Usage Data Lines and Billing action and the delete of the import, rebuilt because the actions procedure is internal. The ' +
+        Notes := ('This is Microsoft''s Delete Usage Data Lines and Billing action and the delete of the import, rebuilt because Microsoft''s action cannot be called from outside Business Central. The ' +
             'call is refused while a Usage Data Billing row of the import is on a billing line (clear the proposal with Subscription.Billing.ClearProposal) or on a ' +
             'document, posted or not. Deleting a Usage Data Billing row reverts the Next Billing Date Microsoft moved for a rebilling. ' +
             ContractParts.IsolationNote()).TrimEnd();

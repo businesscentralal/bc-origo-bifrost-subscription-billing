@@ -45,14 +45,14 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.PriceUpdate.SetTemplateFilter, Subscription, PriceUpdate, SetTemplateFilter, filter, template', Comment = 'is-IS=Subscription.PriceUpdate.SetTemplateFilter, áskrift, verðuppfærsla, setja sniðmátssíu, sía, sniðmát';
+        KeywordsLbl: Label 'set price update template filter, filter price update, restrict price update to contracts, price update filter for subscription lines, limit price update, edit price update template, contract filter for price update, narrow price update', Comment = 'is-IS=setja síu á verðuppfærslusniðmát, sía verðuppfærslu, takmarka verðuppfærslu við samninga, verðuppfærslusía fyrir áskriftarlínur, afmarka verðuppfærslu, breyta verðuppfærslusniðmáti, samningssía fyrir verðuppfærslu, þrengja verðuppfærslu';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.PriceUpdate.SetTemplateFilter: Sets the filter on a price update template.', Comment = 'is-IS=Subscription.PriceUpdate.SetTemplateFilter: Setur síu á sniðmát verðuppfærslu.';
+        SelectionLbl: Label 'Set a Price Update Template filter: stores the contract, subscription or subscription line filter that decides what Subscription.PriceUpdate.CreateProposal covers. Writes only the template. For Billing Templates use Subscription.Billing.SetTemplateFilter.', Comment = 'is-IS=Setja síu á verðuppfærslusniðmát: vistar samnings-, áskriftar- eða áskriftarlínusíuna sem ákveður hvað Subscription.PriceUpdate.CreateProposal nær yfir. Skrifar eingöngu sniðmátið. Fyrir reikningssniðmát skal nota Subscription.Billing.SetTemplateFilter.';
     begin
         exit(SelectionLbl);
     end;
@@ -122,8 +122,8 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Writes one of the three view filters of a Price Update Template: the contract, subscription or line filter. The view is normalised through a ' +
-            'RecordRef of the target table before it is stored, in the syntax the Contract Price Update page stores.';
+        Overview := 'Writes one of the three view filters of a Price Update Template: the contract, subscription or line filter. The view is normalised as a view of ' +
+            'the target table before it is stored, in the syntax the Contract Price Update page stores.';
         exit(true);
     end;
 

@@ -37,14 +37,14 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori", "M
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Contract.GetLines, Subscription, Contract, GetLines, customer, attach lines', Comment = 'is-IS=Subscription.Contract.GetLines, áskrift, samningur, sækja línur, viðskiptamaður, tengja línur';
+        KeywordsLbl: Label 'attach lines to contract, add subscription lines to customer contract, get contract lines, assign subscription lines to contract, link lines to customer contract, add lines to contract, unassigned subscription lines, attach eligible lines', Comment = 'is-IS=tengja línur við samning, bæta áskriftarlínum við samning viðskiptamanns, sækja samningslínur, úthluta áskriftarlínum á samning, tengja línur við samning viðskiptamanns, bæta línum við samning, ótengdar áskriftarlínur, tengja hæfar línur';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Contract.GetLines: Attaches eligible lines to a customer contract.', Comment = 'is-IS=Subscription.Contract.GetLines: Tengir hæfar línur við áskriftarsamning viðskiptamanns.';
+        SelectionLbl: Label 'Attach lines to a customer contract: inserts a contract line for each unassigned Subscription Line and counts a line whose Subscription names another end-user customer as skipped. Writes data; nothing is billed. Create the lines first with Subscription.Line.Create; for vendor contracts use Subscription.VendorContract.GetLines.', Comment = 'is-IS=Tengja línur við samning viðskiptamanns: stofnar samningslínu fyrir hverja ótengda áskriftarlínu og telur línu sem sleppt þegar áskrift hennar nefnir annan notandaviðskiptamann. Skrifar gögn; ekkert er reikningsfært. Fyrst þarf að stofna línurnar með Subscription.Line.Create; fyrir samninga lánardrottna skal nota Subscription.VendorContract.GetLines.';
     begin
         exit(SelectionLbl);
     end;

@@ -36,14 +36,14 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'Subscription.Package.RemoveItemAssignment, Subscription, Package, RemoveItemAssignment, item, subscription package, remove', Comment = 'is-IS=Subscription.Package.RemoveItemAssignment, áskrift, pakki, fjarlægja úthlutun vöru, vara, áskriftarpakki, fjarlægja';
+        KeywordsLbl: Label 'remove package from item, unassign subscription package, delete item package assignment, stop item getting package, remove item subscription package, detach package from item, item no longer gets the package, delete item subscription package', Comment = 'is-IS=fjarlægja pakka af vöru, afúthluta áskriftarpakka, eyða úthlutun pakka á vöru, hætta að láta vöru fá pakka, fjarlægja áskriftarpakka vöru, aftengja pakka frá vöru, varan fær ekki lengur pakkann, eyða áskriftarpakka vöru';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Subscription.Package.RemoveItemAssignment: Removes a Subscription Package from an item.', Comment = 'is-IS=Subscription.Package.RemoveItemAssignment: Fjarlægir áskriftarpakka af vöru.';
+        SelectionLbl: Label 'Remove a package from an item: deletes the assignment of a Subscription Package to an item, so new sales lines and Subscriptions of the item no longer get the package. Writes data; existing Subscriptions keep their lines. To apply a package to a Subscription directly use Subscription.Line.Create.', Comment = 'is-IS=Fjarlægja pakka af vöru: eyðir úthlutun áskriftarpakka á vöru, svo nýjar sölulínur og áskriftir vörunnar fá ekki lengur pakkann. Skrifar gögn; fyrirliggjandi áskriftir halda línum sínum. Til að beita pakka beint á áskrift skal nota Subscription.Line.Create.';
     begin
         exit(SelectionLbl);
     end;
@@ -62,7 +62,7 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
 
     procedure GetParameters(var Parameters: JsonArray): Boolean
     begin
-        Parameters := ContractParts.GetParameters(ContractType());
+        Parameters := ContractParts.RemoveItemAssignmentParameters();
         exit(true);
     end;
 
