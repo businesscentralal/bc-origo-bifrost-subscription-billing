@@ -171,7 +171,7 @@ page 10035035 "SubBil Setup Wizard ori"
                 Image = List;
                 trigger OnAction()
                 begin
-                    Page.RunModal(Page::"Message Type List ori");
+                    Page.RunModal(Page::"SubBil Operations ori");
                 end;
             }
             action(Documentation)

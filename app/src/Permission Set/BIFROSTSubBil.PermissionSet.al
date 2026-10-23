@@ -15,6 +15,7 @@ permissionset 10035062 "BIFROST SubBil ori"
 
     Permissions =
         page "SubBil Setup Wizard ori" = X,
+        page "SubBil Operations ori" = X,
         codeunit "SubBil Wizard Mgt ori" = X,
         codeunit "SubBil Wizard Reg. ori" = X,
         codeunit "Sub Helper ori" = X,

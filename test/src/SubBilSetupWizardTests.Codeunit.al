@@ -14,6 +14,7 @@ codeunit 95721 "SubBil Setup Wizard Tests"
     var
         Assert: Codeunit "Library Assert";
         WizardMgt: Codeunit "SubBil Wizard Mgt ori";
+        OperationsOpened: Boolean;
 
     [Test]
     procedure Scenario_AC01_AssistedSetup_RegistersWizard()
@@ -113,4 +114,24 @@ codeunit 95721 "SubBil Setup Wizard Tests"
         Assert.AreEqual(1, WizardMgt.NextStep(1, false), 'Back at the first step must not underflow.');
         Assert.AreEqual(4, WizardMgt.NextStep(4, true), 'Next at the last step must not overflow.');
     end;
+    [Test]
+    [HandlerFunctions('OperationsHandler')]
+    procedure Scenario_AC02_ShowOperations_OpensUsableHostPage()
+    var
+        Wizard: TestPage "SubBil Setup Wizard ori";
+    begin
+        OperationsOpened := false;
+        Wizard.OpenView();
+        Wizard.ShowOperations.Invoke();
+        Assert.IsTrue(OperationsOpened, 'Show operations must open a supported page hosting the installed Foundation list.');
+        Wizard.Close();
+    end;
+
+    [ModalPageHandler]
+    procedure OperationsHandler(var Operations: TestPage "SubBil Operations ori")
+    begin
+        OperationsOpened := true;
+        Operations.Close();
+    end;
+
 }

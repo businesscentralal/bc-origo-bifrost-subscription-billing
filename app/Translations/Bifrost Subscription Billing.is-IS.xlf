@@ -1581,6 +1581,12 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Kynntu þér áskriftaraðgerðir, virkjaðu HTTP í uppsetningu Bifröst og farðu yfir aðgang sem notendur þurfa.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit SubBil Wizard Reg. ori - Method RegisterWizard - NamedType DescriptionTxt</note>
         </trans-unit>
+        <trans-unit id="Page 3775162715 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Bifrost Message Types</source>
+          <target>Skilaboðategundir Bifröst</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Skilaboðategundir Bifröst</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Operations ori - Property Caption</note>
+        </trans-unit>
         <trans-unit id="Page 667072733 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>Set up Bifrost Subscription Billing</source>
           <target>Setja upp Bifröst áskriftareikningagerð</target>
@@ -1857,7 +1863,7 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Bókun áskriftareikninga</note>
           <note from="Xliff Generator" annotates="general" priority="3">PermissionSet BIFROST SubPost ori - Property Caption</note>
         </trans-unit>
-        </group>
+      </group>
     </body>
   </file>
 </xliff>

@@ -4,7 +4,7 @@
 
 ### Added (2026-10-23) - Subscription Billing assisted setup (#69)
 
-- Page `SubBil Setup Wizard ori` (10035035), registration codeunit `SubBil Wizard Reg. ori` (10035035) and management codeunit `SubBil Wizard Mgt ori` (10035062): four steps introduce subscription operations, read this app's HTTP status, open Foundation for HTTP enablement, and explain the two assignable permission sets. The wizard never writes HTTP settings or assigns access; only explicit Finish completes Assisted Setup.
+- Pages `SubBil Setup Wizard ori` (10035035) and `SubBil Operations ori` (10035036), registration codeunit `SubBil Wizard Reg. ori` (10035035) and management codeunit `SubBil Wizard Mgt ori` (10035062): four steps introduce subscription operations, read this app's HTTP status, open Foundation for HTTP enablement, and explain the two assignable permission sets. The wizard never writes HTTP settings or assigns access; only explicit Finish completes Assisted Setup.
 - Full/read permission coverage, English and Icelandic wizard text, README setup guidance and codeunit `SubBil Setup Wizard Tests` (95721) cover registration, status, navigation, cancellation and completion.
 
 
