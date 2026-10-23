@@ -33,7 +33,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         ValueTooLongErr: Label 'The parameter ''%1'' is longer than the %2 characters allowed.', Comment = '%1 = parameter name, %2 = maximum length||is-IS=Færibreytan ''%1'' er lengri en leyfilegur hámarksfjöldi stafa, %2.';
         DuplicateDocumentErr: Label 'Document %1 is listed more than once. Nothing was posted.', Comment = '%1 = document number||is-IS=Skjal %1 er tilgreint oftar en einu sinni. Ekkert var bókað.';
         ForeignCustomerErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.';
-        ForeignVendorErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purch.Document.Post.';
+        ForeignVendorErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Purchase.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purchase.Document.Post.';
         AlreadyPostedErr: Label 'Document %1 %2 is already posted.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 er þegar bókað.';
         NotOpenErr: Label 'Billing document %1 %2 is not an open sales or purchase document.', Comment = '%1 = document type, %2 = document number||is-IS=Reikningsskjalið %1 %2 er ekki opið sölu- eða innkaupaskjal.';
         PostFailedErr: Label 'Posting document %1 failed. Documents this call already posted stay posted. %2', Comment = '%1 = document number, %2 = the underlying error||is-IS=Bókun skjals %1 mistókst. Skjöl sem þetta kall hefur þegar bókað standa áfram bókuð. %2';
@@ -72,7 +72,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purch.Document.Post instead.', Comment = 'is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purch.Document.Post.';
+        SelectionLbl: Label 'Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purchase.Document.Post instead.', Comment = 'is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.';
     begin
         exit(SelectionLbl);
     end;
@@ -153,7 +153,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := 'This call always commits, including when Omit Commit is set, because a posted ledger document cannot be rolled back. ' +
-            'Every document is checked before the first one is posted. A document Subscription Billing did not create is refused and the caller is sent to Sales.Document.Post or Purch.Document.Post. ' +
+            'Every document is checked before the first one is posted. A document Subscription Billing did not create is refused and the caller is sent to Sales.Document.Post or Purchase.Document.Post. ' +
             'An already posted document is refused. A purchase document needs the vendor''s own document number: send vendorInvoiceNo on its entry (or once at the top level when only one purchase document needs it); ' +
             'it is validated into Vendor Invoice No. on an invoice and Vendor Cr. Memo No. on a credit memo. A purchase document that has no such number and gets none is refused before anything is posted. ' +
             'Sales.Document.Post cannot post these documents: it refuses a subscription item before posting.';
