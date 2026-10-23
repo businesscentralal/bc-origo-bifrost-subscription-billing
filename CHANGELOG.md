@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-23) - permission tests on ordinary containers (#73)
+
+- `Sub Post Gate Tst ori` (95719) and `Sub Perm Full Tst ori` (95771) activate the permission mock when the runner has not done so, execute product calls under exactly `BIFROST Full ori`, and restore test permissions before calling Library Assert. The posting-token denial and all contract-content assertions remain.
+- The full-role contract tests continue to exercise Foundation's public `Msg Contract Mgt ori` (10078353) under the restricted role. They expose a missing Foundation Execute grant instead of adding test-only product access. No product permission set is changed by this repair.
+
+
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
 The contract chapters of all 33 message types were already complete; the audit against Bifrost Foundation found the gaps below and closes them. No public object, procedure, enum value or id changes, and no behaviour of a message type changes.
