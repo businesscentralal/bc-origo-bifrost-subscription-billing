@@ -24,10 +24,10 @@ codeunit 95719 "Sub Post Gate Tst ori"
         TempArgument: Record "Message Argument ori" temporary;
         PostImpl: Codeunit "Sub Bil PostDocs Impl ori";
         PostingGate: Codeunit "Sub Posting Gate ori";
+        PermissionsMock: Codeunit "Permissions Mock";
         ResponseJson: JsonObject;
         CodeToken: JsonToken;
         ErrorToken: JsonToken;
-        PermissionsMock: Codeunit "Permissions Mock";
         IsEnabled: Boolean;
         HasPostingPermission: Boolean;
         CanPost: Boolean;
