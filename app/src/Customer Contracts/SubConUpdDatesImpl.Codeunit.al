@@ -165,6 +165,8 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if not HasForcePermission() then begin
             Argument.RespondWithError("Bifrost Error Code ori"::PermissionDenied, ForcePermissionErr, '', '', ForceExpectedTxt, ForceNextStepTxt);
@@ -196,7 +198,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
         if RunMode = '' then
             RunMode := ForegroundTok;
         if not (RunMode in [ForegroundTok, BackgroundTok]) then
-            Error(InvalidRunModeErr, RunMode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidRunModeErr, RunMode), 'runMode', Format(RunMode, 0, 9));
 
         ResponseJson.Add('status', 'Success');
         ResponseJson.Add('runMode', RunMode);

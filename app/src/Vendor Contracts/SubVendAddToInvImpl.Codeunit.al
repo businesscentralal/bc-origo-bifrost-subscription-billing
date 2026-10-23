@@ -159,6 +159,8 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -233,12 +235,12 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
             exit;
         PurchInvHeader.SetRange("No.", InvoiceNo);
         if not PurchInvHeader.IsEmpty() then
-            Error(InvoicePostedErr, InvoiceNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(InvoicePostedErr, InvoiceNo), 'purchaseInvoiceNo', Format(InvoiceNo, 0, 9));
         PurchInvHeader.SetRange("No.");
         PurchInvHeader.SetRange("Pre-Assigned No.", InvoiceNo);
         if not PurchInvHeader.IsEmpty() then
-            Error(InvoicePostedErr, InvoiceNo);
-        Error(InvoiceNotFoundErr, InvoiceNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(InvoicePostedErr, InvoiceNo), 'purchaseInvoiceNo', Format(InvoiceNo, 0, 9));
+        Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(InvoiceNotFoundErr, InvoiceNo), 'purchaseInvoiceNo', Format(InvoiceNo, 0, 9));
     end;
 
     /// <summary>The candidates of the Get Vendor Contract Lines page: LoadVendorServiceCommitments and LoadVendorServiceCommitmentIfRelevant.</summary>
@@ -266,13 +268,13 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         SubscriptionLine: Record "Subscription Line";
     begin
         if not SubscriptionLine.Get(EntryNo) then
-            Error(LineNotFoundErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(LineNotFoundErr, EntryNo), 'subscriptionLineEntryNos', Format(EntryNo, 0, 9));
         if (SubscriptionLine.Partner <> SubscriptionLine.Partner::Vendor) or (SubscriptionLine."Invoicing via" <> SubscriptionLine."Invoicing via"::Contract) or
            (SubscriptionLine."Subscription Contract No." = '') or SubscriptionLine.Closed or (not IsBillableLine(SubscriptionLine))
         then
-            Error(NotBillableErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(NotBillableErr, EntryNo), 'subscriptionLineEntryNos', Format(EntryNo, 0, 9));
         if GetContractVendorNo(SubscriptionLine."Subscription Contract No.") <> VendorNo then
-            Error(OtherVendorErr, EntryNo, VendorNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(OtherVendorErr, EntryNo, VendorNo), 'subscriptionLineEntryNos', Format(EntryNo, 0, 9));
     end;
 
     local procedure IsBillableLine(SubscriptionLine: Record "Subscription Line"): Boolean
@@ -301,7 +303,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         BillingLine.SetRange("Document No.", '');
         BillingLine.SetLoadFields("Subscription Contract No.");
         if BillingLine.FindFirst() then
-            Error(ForeignPendingProposalErr, BillingLine.Count(), BillingLine."Subscription Contract No.");
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingProposalErr, BillingLine.Count(), BillingLine."Subscription Contract No."), 'contractNo', Format(BillingLine.Count(), 0, 9));
     end;
 
     /// <summary>

@@ -11,5 +11,6 @@ using Origo.Bifrost;
 permissionsetextension 10035064 "BIFROST SubBRead ori" extends "BIFROST Read ori"
 {
     Permissions =
-        codeunit "Sub Helper ori" = X;
+        codeunit "Sub Helper ori" = X,
+        codeunit "Sub Posting Context ori" = X;
 }

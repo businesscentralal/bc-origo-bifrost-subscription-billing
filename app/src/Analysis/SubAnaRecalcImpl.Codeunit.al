@@ -149,6 +149,8 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);

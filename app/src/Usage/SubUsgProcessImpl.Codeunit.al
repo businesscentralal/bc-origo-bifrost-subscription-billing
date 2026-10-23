@@ -159,6 +159,8 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -188,18 +190,18 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
         EntryNo := 0;
         if Argument.Subject <> '' then
             if not Evaluate(EntryNo, Argument.Subject, 9) then
-                Error(InvalidSubjectErr, Argument.Subject);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidSubjectErr, Argument.Subject), 'usageDataImportEntryNo', Format(Argument.Subject, 0, 9));
         if EntryNo = 0 then
             EntryNo := Helper.GetInteger(RequestJson, 'usageDataImportEntryNo', true);
 
         if not UsageDataImport.Get(EntryNo) then
-            Error(NotFoundErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotFoundErr, EntryNo), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
         // Microsoft's Create Usage Data Billing copies this record's filters and iterates them.
         // Get alone leaves the record unfiltered, so another open import could be processed and
         // returned to the next stage. Keep every stage scoped to the requested entry.
         UsageDataImport.SetRecFilter();
         if UsageDataImport."Processing Status" = UsageDataImport."Processing Status"::Closed then
-            Error(AlreadyClosedErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(AlreadyClosedErr, EntryNo), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
 
         GetRequestedSteps(RequestJson, StepNames);
 
@@ -280,7 +282,7 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
                     StepOk := Codeunit.Run(Codeunit::"Process Usage Data Billing", UsageDataImport);
                 end;
             else
-                Error(UnknownStepErr, StepName);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(UnknownStepErr, StepName), 'steps', Format(StepName, 0, 9));
         end;
 
         UsageDataImport.Get(UsageDataImport."Entry No.");
