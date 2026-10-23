@@ -68,9 +68,10 @@ codeunit 95706 "Sub Contract Batch1 Tst ori"
         Contract.Get('effect', Token);
         Effect := Token.AsObject();
         Effect.Get('changes', Token);
-        Assert.IsTrue(Token.AsValue().AsText().Contains('CommitBatchSize'), 'The changes text must name the CommitBatchSize commit.');
+        Assert.IsTrue(Token.AsValue().AsText().Contains('every batch of 50 contracts'), 'The changes text must name the real commit boundary in business terms.');
+        Assert.IsTrue(Token.AsValue().AsText().Contains('does not roll back'), 'The changes text must explain what survives a failed committed batch.');
 
-        // [THEN] The types that only write inside the caller's transaction stay write, and the previews stay read
+        // [THEN] The types that only write inside the caller's transaction stay write, and the previews declare their temporary proposal writes
         AssertEffect('Subscription.Line.Create', 'write');
         AssertEffect('Subscription.Contract.GetLines', 'write');
         AssertEffect('Subscription.Contract.MergeLines', 'write');
