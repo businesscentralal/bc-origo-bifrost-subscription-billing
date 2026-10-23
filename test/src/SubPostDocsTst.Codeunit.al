@@ -39,6 +39,7 @@ codeunit 95718 "Sub PostDocs Tst ori"
     local procedure AssertForeignVendorPostingHint(LanguageId: Integer)
     var
         PurchaseHeader: Record "Purchase Header";
+        LibraryUtility: Codeunit "Library - Utility";
         MessageType: Enum "Message Type ori";
         PreviousLanguage: Integer;
     begin
@@ -48,7 +49,7 @@ codeunit 95718 "Sub PostDocs Tst ori"
         TestLibrary.InitSubscriptionBilling();
         PurchaseHeader.Init();
         PurchaseHeader."Document Type" := PurchaseHeader."Document Type"::Invoice;
-        PurchaseHeader."No." := 'XS65-FOREIGN';
+        PurchaseHeader."No." := CopyStr(LibraryUtility.GenerateRandomCode20(PurchaseHeader.FieldNo("No."), Database::"Purchase Header"), 1, MaxStrLen(PurchaseHeader."No."));
         PurchaseHeader.Insert(false);
         Assert.IsTrue(MessageType.Names().Contains('Purchase.Document.Post'), 'The suggested posting type must be registered.');
 
