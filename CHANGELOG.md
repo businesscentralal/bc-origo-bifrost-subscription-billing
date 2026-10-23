@@ -8,6 +8,8 @@
 - Discovery labels remove Blob and update Icelandic terminology. Existing PR #68 wording/filter fixes are retained.
 - `Sub Contract Complete Tst ori` (95780) rejects the reported internal object/procedure names and permission-set suffix pattern in help, requires a workflow for all operations and checks the two temporary preview effects explicitly.
 
+- Additional touched objects: `Sub Bil CrProposal Impl ori` (10035045), `Sub Con RemoveLine Impl ori` (10035071), `Sub Con UpdDates Impl ori` (10035040), `Sub PU SetFilter Impl ori` (10035048), `Sub Usg Process Impl ori` (10035054), and `Sub Contract Batch1 Tst ori` (95706).
+
 
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
