@@ -63,9 +63,9 @@ codeunit 95718 "Sub PostDocs Tst ori"
         Document.Add('partner', 'Customer');
         Document.Add('documentType', 'Invoice');
         Document.Add('documentNo', FirstNo);
-        Documents.Add(Document);
+        Documents.Add(Document.Clone());
         Document.Replace('documentNo', SecondNo);
-        Documents.Add(Document);
+        Documents.Add(Document.Clone());
         Request.Add('documents', Documents);
 
         // [WHEN] The first posts and the second fails in Business Central posting.

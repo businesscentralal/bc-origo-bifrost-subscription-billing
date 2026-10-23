@@ -2,6 +2,7 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en-US" target-language="is-IS" original="Bifrost Subscription Billing">
     <body>
+      <group id="body">
         <trans-unit id="Table 1499020996 - Property 2879900210" size-unit="char" translate="yes" xml:space="preserve">
           <source>BIFROST SubPost ori</source>
           <target>Bifröst bókun áskrifta</target>
@@ -45,9 +46,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 202989448 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Recalculate contract analysis: adds this month's entries for the given contract, or all contracts when contractNo is omitted. Existing entries are preserved. No documents are posted.</source>
-          <target>Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð.</note>
+          <source>Recalculate contract analysis: adds this month's entries for the given contract, or all contracts when contractNo is omitted. Existing entries are preserved. No documents are posted. To release deferrals use Subscription.Deferral.Release.</source>
+          <target>Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð. Til að losa frestanir skal nota Subscription.Deferral.Release.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð. Til að losa frestanir skal nota Subscription.Deferral.Release.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3267496714 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
@@ -1634,6 +1635,7 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Bókun áskriftareikninga</note>
           <note from="Xliff Generator" annotates="general" priority="3">PermissionSet BIFROST SubPost ori - Property Caption</note>
         </trans-unit>
-      </body>
+      </group>
+    </body>
   </file>
 </xliff>

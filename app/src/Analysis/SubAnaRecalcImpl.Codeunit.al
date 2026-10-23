@@ -48,7 +48,7 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Recalculate contract analysis: adds this month''s entries for the given contract, or all contracts when contractNo is omitted. Existing entries are preserved. No documents are posted.', Comment = 'is-IS=Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð.';
+        SelectionLbl: Label 'Recalculate contract analysis: adds this month''s entries for the given contract, or all contracts when contractNo is omitted. Existing entries are preserved. No documents are posted. To release deferrals use Subscription.Deferral.Release.', Comment = 'is-IS=Endurreikna samningagreiningu: bætir við færslum þessa mánaðar fyrir tilgreindan samning eða alla samninga ef contractNo vantar. Fyrirliggjandi færslur haldast óbreyttar. Engin skjöl eru bókuð. Til að losa frestanir skal nota Subscription.Deferral.Release.';
     begin
         exit(SelectionLbl);
     end;
