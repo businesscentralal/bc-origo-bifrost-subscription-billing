@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-23) - purchase posting guidance (#65)
+
+- `Sub Bil PostDocs Impl ori` (10035085) now directs foreign vendor documents to the registered `Purchase.Document.Post` message type in English and Icelandic. The selection text, help notes, shared errors and posting permission comment use the same name.
+- `Sub PostDocs Tst ori` (95718) checks the actual refusal and the suggested type's registration in both languages, and verifies the foreign invoice stays open.
+
+
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
 The contract chapters of all 33 message types were already complete; the audit against Bifrost Foundation found the gaps below and closes them. No public object, procedure, enum value or id changes, and no behaviour of a message type changes.

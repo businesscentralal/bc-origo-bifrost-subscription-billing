@@ -25,6 +25,43 @@ codeunit 95718 "Sub PostDocs Tst ori"
         IcelandicVendorNoTok: Label 'skjalanúmer lánardrottins', Locked = true;
 
     [Test]
+    procedure Scenario_65AC02_ForeignVendor_UsesRegisteredType_EN()
+    begin
+        AssertForeignVendorPostingHint(1033);
+    end;
+
+    [Test]
+    procedure Scenario_65AC02_ForeignVendor_UsesRegisteredType_IS()
+    begin
+        AssertForeignVendorPostingHint(1039);
+    end;
+
+    local procedure AssertForeignVendorPostingHint(LanguageId: Integer)
+    var
+        PurchaseHeader: Record "Purchase Header";
+        MessageType: Enum "Message Type ori";
+        PreviousLanguage: Integer;
+    begin
+        // [GIVEN] An owned empty purchase invoice not created by a subscription billing run.
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        TestLibrary.InitSubscriptionBilling();
+        PurchaseHeader.Init();
+        PurchaseHeader."Document Type" := PurchaseHeader."Document Type"::Invoice;
+        PurchaseHeader."No." := 'XS65-FOREIGN';
+        PurchaseHeader.Insert(false);
+        Assert.IsTrue(MessageType.Names().Contains('Purchase.Document.Post'), 'The suggested posting type must be registered.');
+
+        // [WHEN] A vendor document is refused by Subscription Billing.
+        asserterror TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", DocumentsRequest('Vendor', 'Invoice', PurchaseHeader."No."));
+
+        // [THEN] The localized refusal names the real posting type and leaves the invoice open.
+        Assert.ExpectedError('Purchase.Document.Post');
+        Assert.IsTrue(PurchaseHeader.Get(PurchaseHeader."Document Type"::Invoice, PurchaseHeader."No."), 'A foreign invoice must remain unposted.');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    [Test]
     [HandlerFunctions('BillingMessageHandler')]
     procedure Scenario_AC03_PostDocuments_PostsBillingInvoice_AndRefusesItAgain()
     var
