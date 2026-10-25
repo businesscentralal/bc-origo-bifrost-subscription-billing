@@ -55,7 +55,7 @@
     "tools/SharedAlpacaContainer.ps1",
     "tools/Test-SharedAlpacaContainer.ps1"
   ],
-  "repoVersion": "1.0.1",
+  "repoVersion": "1.0.2",
   "deliverToAppSource": {
     "productId": "38e354a0-cb89-4b45-81de-b3b69369627f",
     "mainAppFolder": "app",
