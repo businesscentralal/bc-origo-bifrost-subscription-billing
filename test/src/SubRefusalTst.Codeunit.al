@@ -673,6 +673,14 @@ codeunit 95723 "Sub Refusal Tst ori"
         AssertProblem(Response, 'MissingParameter', 'subscriptionHeaderNo', '<missing>');
         AssertProblem(Response, 'MissingParameter', 'customerContractNo', '<missing>');
         AssertAggregateFields(Response);
+        Clear(Request);
+        Request.Add('customerContractNo', '');
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Renewal.Extend", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'An empty contract choice is still missing.');
+        Response := TempArgument.GetResponseJson();
+        Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
+        AssertProblem(Response, 'MissingParameter', 'subscriptionHeaderNo', '<missing>');
+        AssertProblem(Response, 'MissingParameter', 'customerContractNo', '<missing>');
         GlobalLanguage(PreviousLanguage);
     end;
 

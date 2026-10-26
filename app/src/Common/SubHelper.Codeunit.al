@@ -203,22 +203,22 @@ codeunit 10035058 "Sub Helper ori"
     begin
         case TypeName of
             'Subscription.Renewal.Extend':
-                if not HasValue(Request, 'customerContractNo') and not HasValue(Request, 'vendorContractNo') then begin
+                if not HasSelectionInput(Request, 'customerContractNo') and not HasSelectionInput(Request, 'vendorContractNo') then begin
                     ParameterName := 'customerContractNo';
                     Alternatives := 'customerContractNo, vendorContractNo';
                 end;
             'Subscription.Billing.ClearProposal':
-                if (Argument.Subject = '') and not HasValue(Request, 'billingTemplateCode') and not HasValue(Request, 'contractNo') then begin
+                if (Argument.Subject = '') and not HasSelectionInput(Request, 'billingTemplateCode') and not HasSelectionInput(Request, 'contractNo') then begin
                     ParameterName := 'billingTemplateCode';
                     Alternatives := 'billingTemplateCode, subject, contractNo';
                 end;
             'Subscription.Billing.DeleteDocuments':
-                if (Argument.Subject = '') and not HasValue(Request, 'billingTemplateCode') and not HasValue(Request, 'contractNo') and not HasValue(Request, 'documentNo') then begin
+                if (Argument.Subject = '') and not HasSelectionInput(Request, 'billingTemplateCode') and not HasSelectionInput(Request, 'contractNo') and not HasSelectionInput(Request, 'documentNo') then begin
                     ParameterName := 'billingTemplateCode';
                     Alternatives := 'billingTemplateCode, subject, contractNo, documentNo';
                 end;
             'Subscription.Usage.DisconnectSubscription':
-                if not HasValue(Request, 'subscriptionLineEntryNo') and not HasValue(Request, 'usageDataSubscriptionEntryNo') then begin
+                if not HasSelectionInput(Request, 'subscriptionLineEntryNo') and not HasSelectionInput(Request, 'usageDataSubscriptionEntryNo') then begin
                     ParameterName := 'usageDataSubscriptionEntryNo';
                     Alternatives := 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo';
                 end;
@@ -227,6 +227,20 @@ codeunit 10035058 "Sub Helper ori"
             exit;
         Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(OneOfExpectedTxt, Alternatives), ParameterName, '<missing>', StrSubstNo(OneOfExpectedTxt, Alternatives), StrSubstNo(CorrectParameterTxt, ParameterName));
         ProblemCount += 1;
+    end;
+
+    local procedure HasSelectionInput(Request: JsonObject; ParameterName: Text): Boolean
+    var
+        Token: JsonToken;
+    begin
+        if not Request.Get(ParameterName, Token) then
+            exit(false);
+        // A malformed supplied value already has its own format error; do not also report it missing.
+        if not Token.IsValue() then
+            exit(true);
+        if Token.AsValue().IsNull() then
+            exit(false);
+        exit(Token.AsValue().AsText() <> '');
     end;
 
     local procedure CollectNestedProblems(var Argument: Record "Message Argument ori"; Request: JsonObject; TypeName: Text; var ProblemCount: Integer)
