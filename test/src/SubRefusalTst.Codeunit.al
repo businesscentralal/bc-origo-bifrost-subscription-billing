@@ -573,7 +573,8 @@ codeunit 95723 "Sub Refusal Tst ori"
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Renewal.Extend", Request);
         asserterror Extend.PerformWrite(TempArgument);
         TempArgument.RespondWithLastError();
-        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'customerContractNo|vendorContractNo', '<missing>');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'customerContractNo', '<missing>');
+        Assert.IsTrue(TestLibrary.ReadText(TempArgument.GetResponseJson(), 'expected').Contains('customerContractNo') and TestLibrary.ReadText(TempArgument.GetResponseJson(), 'expected').Contains('vendorContractNo'), 'Expected must explain both accepted alternatives.');
 
         Clear(Request);
         // An expected error rolls back prior SQL fixtures; seed this independent scenario again.
@@ -638,6 +639,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.AreEqual('Error', TestLibrary.ReadText(Response, 'status'), TestLibrary.AsText(Response));
         Assert.AreEqual(ExpectedCode, TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(ExpectedParameter, TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
+        Assert.IsFalse(TestLibrary.ReadText(Response, 'parameter').Contains('|'), 'The parameter must name an actual request field; alternatives belong in expected.');
         Assert.AreEqual(ExpectedReceived, TestLibrary.ReadText(Response, 'received'), TestLibrary.AsText(Response));
         Assert.AreNotEqual('', TestLibrary.ReadText(Response, 'expected'), 'Expected cannot be empty.');
         Assert.AreNotEqual('', TestLibrary.ReadText(Response, 'nextStep'), 'Recovery cannot be empty.');

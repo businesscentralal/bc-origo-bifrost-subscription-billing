@@ -190,7 +190,7 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
 
         if BillingTemplateCode = '' then begin
             if ContractNo = '' then
-                Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'billingTemplateCode|contractNo', '');
+                Helper.RaiseError("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'billingTemplateCode', '', TemplateOrContractErr);
         end else
             if not BillingTemplate.Get(BillingTemplateCode) then
                 Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
