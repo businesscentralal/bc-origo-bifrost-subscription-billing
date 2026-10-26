@@ -1,5 +1,6 @@
 namespace Origo.Bifrost.SubscriptionBilling.Test;
 
+using Microsoft.Purchases.Document;
 using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
 using Origo.Bifrost.SubscriptionBilling;
@@ -44,6 +45,9 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Errors := TestLibrary.ReadArray(Response, 'errors');
         Assert.AreEqual(2, Errors.Count(), 'The header and package problems must both be returned.');
+        AssertProblem(Response, 'MissingParameter', 'subscriptionHeaderNo', '<missing>');
+        AssertProblem(Response, 'MissingParameter', 'subscriptionPackageCode', '<missing>');
+        AssertAggregateFields(Response);
         GlobalLanguage(PreviousLanguage);
     end;
 
@@ -82,11 +86,25 @@ codeunit 95723 "Sub Refusal Tst ori"
 
     [Test]
     procedure Scenario_AC02_BadDateAndPartner_Aggregate()
+    begin
+        AssertBadDateAndPartner(1033);
+    end;
+
+    [Test]
+    procedure Scenario_AC02_BadDateAndPartner_Aggregate_IS()
+    begin
+        AssertBadDateAndPartner(1039);
+    end;
+
+    local procedure AssertBadDateAndPartner(LanguageId: Integer)
     var
         TempArgument: Record "Message Argument ori" temporary;
         Request: JsonObject;
         Response: JsonObject;
+        PreviousLanguage: Integer;
     begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
         Request.Add('contractNo', 'XS62-NO-LOOKUP');
         Request.Add('currencyFactorDate', 'not-a-date');
         Request.Add('partner', 'unknown-partner');
@@ -95,6 +113,10 @@ codeunit 95723 "Sub Refusal Tst ori"
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
+        AssertProblem(Response, 'InvalidParameterFormat', 'currencyFactorDate', 'not-a-date');
+        AssertProblem(Response, 'InvalidParameter', 'partner', 'unknown-partner');
+        AssertAggregateFields(Response);
+        GlobalLanguage(PreviousLanguage);
     end;
 
     [Test]
@@ -162,11 +184,25 @@ codeunit 95723 "Sub Refusal Tst ori"
 
     [Test]
     procedure Scenario_AC02_UnknownTemplateAndBadDate_Aggregate()
+    begin
+        AssertUnknownTemplateAndBadDate(1033);
+    end;
+
+    [Test]
+    procedure Scenario_AC02_UnknownTemplateAndBadDate_Aggregate_IS()
+    begin
+        AssertUnknownTemplateAndBadDate(1039);
+    end;
+
+    local procedure AssertUnknownTemplateAndBadDate(LanguageId: Integer)
     var
         TempArgument: Record "Message Argument ori" temporary;
         Request: JsonObject;
         Response: JsonObject;
+        PreviousLanguage: Integer;
     begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
         Request.Add('billingTemplateCode', 'XS62-UNKNOWN');
         Request.Add('billingDate', 'not-a-date');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", Request);
@@ -174,6 +210,10 @@ codeunit 95723 "Sub Refusal Tst ori"
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
+        AssertProblem(Response, 'InvalidParameterFormat', 'billingDate', 'not-a-date');
+        AssertProblem(Response, 'RecordNotFound', 'billingTemplateCode', 'XS62-UNKNOWN');
+        AssertAggregateFields(Response);
+        GlobalLanguage(PreviousLanguage);
     end;
 
     [Test]
@@ -215,13 +255,27 @@ codeunit 95723 "Sub Refusal Tst ori"
 
     [Test]
     procedure Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues()
+    begin
+        AssertTwoNestedDocuments(1033);
+    end;
+
+    [Test]
+    procedure Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues_IS()
+    begin
+        AssertTwoNestedDocuments(1039);
+    end;
+
+    local procedure AssertTwoNestedDocuments(LanguageId: Integer)
     var
         TempArgument: Record "Message Argument ori" temporary;
         Request: JsonObject;
         Item: JsonObject;
         Documents: JsonArray;
         Response: JsonObject;
+        PreviousLanguage: Integer;
     begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
         Documents.Add(Item.Clone());
         Documents.Add(Item.Clone());
         Request.Add('documents', Documents);
@@ -230,6 +284,14 @@ codeunit 95723 "Sub Refusal Tst ori"
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(6, TestLibrary.ReadArray(Response, 'errors').Count(), 'All three required values on both documents must be reported.');
+        AssertProblem(Response, 'MissingParameter', 'documents[0].partner', '<missing>');
+        AssertProblem(Response, 'MissingParameter', 'documents[0].documentType', '<missing>');
+        AssertProblem(Response, 'MissingParameter', 'documents[0].documentNo', '<missing>');
+        AssertProblem(Response, 'MissingParameter', 'documents[1].partner', '<missing>');
+        AssertProblem(Response, 'MissingParameter', 'documents[1].documentType', '<missing>');
+        AssertProblem(Response, 'MissingParameter', 'documents[1].documentNo', '<missing>');
+        AssertAggregateFields(Response);
+        GlobalLanguage(PreviousLanguage);
     end;
 
     [Test]
@@ -251,12 +313,26 @@ codeunit 95723 "Sub Refusal Tst ori"
 
     [Test]
     procedure Scenario_AC02_SelectionArray_CollectsEachBadEntry()
+    begin
+        AssertSelectionEntries(1033);
+    end;
+
+    [Test]
+    procedure Scenario_AC02_SelectionArray_CollectsEachBadEntry_IS()
+    begin
+        AssertSelectionEntries(1039);
+    end;
+
+    local procedure AssertSelectionEntries(LanguageId: Integer)
     var
         TempArgument: Record "Message Argument ori" temporary;
         Request: JsonObject;
         Entries: JsonArray;
         Response: JsonObject;
+        PreviousLanguage: Integer;
     begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
         Entries.Add('bad-one');
         Entries.Add('bad-two');
         Request.Add('contractNo', 'XS62-NO-LOOKUP');
@@ -266,6 +342,10 @@ codeunit 95723 "Sub Refusal Tst ori"
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), 'Both malformed entry numbers must be returned.');
+        AssertProblem(Response, 'InvalidParameterFormat', 'subscriptionLineEntryNos[0]', 'bad-one');
+        AssertProblem(Response, 'InvalidParameterFormat', 'subscriptionLineEntryNos[1]', 'bad-two');
+        AssertAggregateFields(Response);
+        GlobalLanguage(PreviousLanguage);
     end;
 
     [Test]
@@ -329,8 +409,273 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.IsTrue(ContractText.Contains('InvalidParameterFormat'), 'Usage.DeleteData help must list shape validation.');
     end;
 
+    [Test]
+    procedure Review_ContextFields_EN()
+    begin
+        AssertReviewContextFields(1033);
+    end;
+
+    [Test]
+    procedure Review_ContextFields_IS()
+    begin
+        AssertReviewContextFields(1039);
+    end;
+
+    local procedure AssertReviewContextFields(LanguageId: Integer)
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        DeleteDocuments: Codeunit "Sub Bil DelDocs Impl ori";
+        DeferralRelease: Codeunit "Sub Def Release Impl ori";
+        Disconnect: Codeunit "Sub Usg Disconnect Impl ori";
+        Request: JsonObject;
+        PreviousLanguage: Integer;
+        RequestedDate: Date;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+
+        Request.Add('documentNo', 'ZZ62-OWN-MISSING');
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.DeleteDocuments", Request);
+        asserterror DeleteDocuments.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'RecordNotFound', 'documentNo', 'ZZ62-OWN-MISSING');
+
+        Clear(Request);
+        RequestedDate := CalcDate('<+1D>', WorkDate());
+        Request.Add('postingDate', Helper.FormatDate(RequestedDate));
+        Request.Add('postUntilDate', Helper.FormatDate(RequestedDate));
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Deferral.Release", Request);
+        asserterror DeferralRelease.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'postingDate', Helper.FormatDate(RequestedDate));
+
+        Clear(Request);
+        Request.Add('subscriptionLineEntryNo', 2147483000);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
+        asserterror Disconnect.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'RecordNotFound', 'subscriptionLineEntryNo', '2147483000');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    [Test]
+    procedure Review_LengthAndNestedShape_EN()
+    begin
+        AssertLengthAndNestedShape(1033);
+    end;
+
+    [Test]
+    procedure Review_LengthAndNestedShape_IS()
+    begin
+        AssertLengthAndNestedShape(1039);
+    end;
+
+    local procedure AssertLengthAndNestedShape(LanguageId: Integer)
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Request: JsonObject;
+        Document: JsonObject;
+        BadShape: JsonObject;
+        Documents: JsonArray;
+        LongIdentifier: Text;
+        PreviousLanguage: Integer;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        LongIdentifier := 'ZZ62-1234567890123456789';
+        Request.Add('contractNo', LongIdentifier);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.GetLines", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Preflight must reject an overlong identifier.');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'contractNo', LongIdentifier);
+        asserterror Helper.GetCode20(Request, 'contractNo', true);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'contractNo', LongIdentifier);
+        Clear(Request);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.GetLines", Request);
+        TempArgument.Subject := CopyStr(LongIdentifier, 1, MaxStrLen(TempArgument.Subject));
+        asserterror Helper.GetSubjectOr(Request, 'contractNo', TempArgument, true);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'contractNo', LongIdentifier);
+
+        Document.Add('partner', 'Vendor');
+        Document.Add('documentType', 'Invoice');
+        Document.Add('documentNo', BadShape);
+        Documents.Add(Document);
+        Request.Add('documents', Documents);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'A nested object cannot be a document number.');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'documents[0].documentNo', '{}');
+        Assert.IsFalse(TestLibrary.ReadText(TempArgument.GetResponseJson(), 'error').Contains('Expected .'), 'Expected cannot be empty.');
+        Assert.IsFalse(TestLibrary.ReadText(TempArgument.GetResponseJson(), 'error').Contains('Væntanlegt er .'), 'Icelandic expected cannot be empty.');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    [Test]
+    procedure Review_UnknownEnumValue_IsStructured()
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Request: JsonObject;
+    begin
+        Prepare(TempArgument, Enum::"Message Type ori".FromInteger(2147483000), Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'An unavailable enum ordinal must not access list item zero.');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameter', 'type', '2147483000');
+    end;
+
+    [Test]
+    procedure Review_DomainSelections_EN()
+    begin
+        AssertDomainSelections(1033);
+    end;
+
+    [Test]
+    procedure Review_DomainSelections_IS()
+    begin
+        AssertDomainSelections(1039);
+    end;
+
+    local procedure AssertDomainSelections(LanguageId: Integer)
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        CustomerContract: Record "Customer Subscription Contract";
+        SubscriptionHeader: Record "Subscription Header";
+        BillingTemplate: Record "Billing Template";
+        BillingLine: Record "Billing Line";
+        PurchaseHeader: Record "Purchase Header";
+        ExchangeRates: Codeunit "Sub Con UpdFCY Impl ori";
+        Extend: Codeunit "Sub Ren Extend Impl ori";
+        CreateQuote: Codeunit "Sub Ren CrQuote Impl ori";
+        ClearProposal: Codeunit "Sub Bil ClrProposal Impl ori";
+        Preview: Codeunit "Sub Con PrvInvoice Impl ori";
+        AddLines: Codeunit "Sub Vend AddToInv Impl ori";
+        Request: JsonObject;
+        LineNos: JsonArray;
+        PreviousLanguage: Integer;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        CustomerContract.Init();
+        CustomerContract."No." := 'ZZ62-OWN-CONTRACT';
+        CustomerContract."Currency Code" := 'USD';
+        CustomerContract.Insert(false);
+        Request.Add('contractNo', CustomerContract."No.");
+        Request.Add('currencyFactorDate', Helper.FormatDate(WorkDate()));
+        Request.Add('currencyFactor', 0);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.UpdateExchangeRates", Request);
+        asserterror ExchangeRates.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'currencyFactorDate', Helper.FormatDate(WorkDate()));
+
+        SubscriptionHeader.Init();
+        SubscriptionHeader."No." := 'ZZ62-OWN-HEADER';
+        SubscriptionHeader.Insert(false);
+        Clear(Request);
+        Request.Add('subscriptionHeaderNo', SubscriptionHeader."No.");
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Renewal.Extend", Request);
+        asserterror Extend.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'customerContractNo|vendorContractNo', '<missing>');
+
+        Clear(Request);
+        LineNos.Add(2147483000);
+        Request.Add('contractNo', CustomerContract."No.");
+        Request.Add('contractLineNos', LineNos);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Renewal.CreateQuote", Request);
+        asserterror CreateQuote.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'RecordNotFound', 'contractLineNos', '2147483000');
+
+        BillingTemplate.Init();
+        BillingTemplate.Code := 'ZZ62-OWN-TEMPLATE';
+        BillingTemplate.Insert(false);
+        BillingLine.Init();
+        BillingLine."Entry No." := 2147483000;
+        BillingLine."Billing Template Code" := BillingTemplate.Code;
+        BillingLine."Document No." := 'ZZ62-OWN-DOCUMENT';
+        BillingLine.Insert(false);
+        Clear(Request);
+        Request.Add('billingTemplateCode', BillingTemplate.Code);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.ClearProposal", Request);
+        asserterror ClearProposal.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'billingTemplateCode', BillingTemplate.Code);
+
+        BillingLine."Billing Template Code" := '';
+        BillingLine."Document No." := '';
+        BillingLine."Subscription Contract No." := 'ZZ62-OWN-FOREIGN';
+        BillingLine.Modify(false);
+        Clear(Request);
+        Request.Add('contractNo', CustomerContract."No.");
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.PreviewInvoice", Request);
+        asserterror Preview.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'contractNo', CustomerContract."No.");
+
+        PurchaseHeader.Init();
+        PurchaseHeader."Document Type" := PurchaseHeader."Document Type"::Invoice;
+        PurchaseHeader."No." := 'ZZ62-OWN-INVOICE';
+        PurchaseHeader.Insert(false);
+        Clear(Request);
+        Request.Add('purchaseInvoiceNo', PurchaseHeader."No.");
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.VendorContract.AddLinesToInvoice", Request);
+        asserterror AddLines.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'purchaseInvoiceNo', PurchaseHeader."No.");
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    local procedure AssertRefusalFields(Response: JsonObject; ExpectedCode: Text; ExpectedParameter: Text; ExpectedReceived: Text)
+    begin
+        Assert.AreEqual('Error', TestLibrary.ReadText(Response, 'status'), TestLibrary.AsText(Response));
+        Assert.AreEqual(ExpectedCode, TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
+        Assert.AreEqual(ExpectedParameter, TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
+        Assert.AreEqual(ExpectedReceived, TestLibrary.ReadText(Response, 'received'), TestLibrary.AsText(Response));
+        Assert.AreNotEqual('', TestLibrary.ReadText(Response, 'expected'), 'Expected cannot be empty.');
+        Assert.AreNotEqual('', TestLibrary.ReadText(Response, 'nextStep'), 'Recovery cannot be empty.');
+    end;
+
+    local procedure AssertProblem(Response: JsonObject; ExpectedCode: Text; ExpectedParameter: Text; ExpectedReceived: Text)
+    var
+        Problems: JsonArray;
+        Problem: JsonToken;
+        Entry: JsonObject;
+    begin
+        Problems := TestLibrary.ReadArray(Response, 'errors');
+        foreach Problem in Problems do begin
+            Entry := Problem.AsObject();
+            if TestLibrary.ReadText(Entry, 'parameter') = ExpectedParameter then begin
+                Assert.AreEqual(ExpectedCode, TestLibrary.ReadText(Entry, 'code'), TestLibrary.AsText(Entry));
+                Assert.AreEqual(ExpectedReceived, TestLibrary.ReadText(Entry, 'received'), TestLibrary.AsText(Entry));
+                if ExpectedParameter in ['currencyFactorDate', 'billingDate'] then
+                    Assert.AreEqual('YYYY-MM-DD', TestLibrary.ReadText(Entry, 'expected'), 'Date errors must name the accepted format.');
+                exit;
+            end;
+        end;
+        Assert.Fail('No problem names ' + ExpectedParameter + ': ' + TestLibrary.AsText(Response));
+    end;
+
+    local procedure AssertAggregateFields(Response: JsonObject)
+    var
+        Problems: JsonArray;
+        Problem: JsonToken;
+        Entry: JsonObject;
+    begin
+        Problems := TestLibrary.ReadArray(Response, 'errors');
+        foreach Problem in Problems do begin
+            Entry := Problem.AsObject();
+            Assert.AreNotEqual('', TestLibrary.ReadText(Entry, 'code'), 'Each problem needs its code.');
+            Assert.AreNotEqual('', TestLibrary.ReadText(Entry, 'parameter'), 'Each problem needs its parameter.');
+            Assert.AreNotEqual('', TestLibrary.ReadText(Entry, 'received'), 'Each problem needs its received value.');
+            Assert.AreNotEqual('', TestLibrary.ReadText(Entry, 'expected'), 'Each problem needs a meaningful expected value.');
+            Assert.IsTrue(TestLibrary.ReadText(Entry, 'nextStep').Contains(TestLibrary.ReadText(Entry, 'parameter')), 'Recovery must name the corresponding parameter.');
+            Assert.IsFalse(TestLibrary.ReadText(Entry, 'error').Contains('Expected .'), 'An empty allowed list must not become an empty expected clause.');
+            Assert.IsFalse(TestLibrary.ReadText(Entry, 'error').Contains('Væntanlegt er .'), 'Icelandic expected text must not be empty.');
+        end;
+    end;
+
     local procedure Prepare(var TempArgument: Record "Message Argument ori" temporary; MessageType: Enum "Message Type ori"; Request: JsonObject)
     begin
+        TempArgument.Reset();
+        TempArgument.DeleteAll(false);
         TempArgument.Init();
         TempArgument."Type" := MessageType;
         TempArgument.Insert(false);

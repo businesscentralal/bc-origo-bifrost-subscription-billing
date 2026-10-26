@@ -184,12 +184,21 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
         SubscriptionEntryNo: Integer;
         SupplierReferenceEntryNo: Integer;
         LinesDisconnected: Integer;
+        SelectionParameter: Text;
+        SelectionReceived: Integer;
     begin
         RequestJson := Argument.GetRequestJson();
         LineEntryNo := Helper.GetInteger(RequestJson, 'subscriptionLineEntryNo', false);
         SubscriptionEntryNo := Helper.GetInteger(RequestJson, 'usageDataSubscriptionEntryNo', false);
+        if LineEntryNo <> 0 then begin
+            SelectionParameter := 'subscriptionLineEntryNo';
+            SelectionReceived := LineEntryNo;
+        end else begin
+            SelectionParameter := 'usageDataSubscriptionEntryNo';
+            SelectionReceived := SubscriptionEntryNo;
+        end;
         if (LineEntryNo = 0) and (SubscriptionEntryNo = 0) then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, MissingSelectionErr, 'usageDataSubscriptionEntryNo', '');
+            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, MissingSelectionErr, 'subscriptionLineEntryNo|usageDataSubscriptionEntryNo', '');
 
         if LineEntryNo = 0 then begin
             if not UsageDataSubscription.Get(SubscriptionEntryNo) then
@@ -199,9 +208,9 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
             LineEntryNo := UsageDataSubscription."Subscription Line Entry No.";
         end;
         if not SubscriptionLine.Get(LineEntryNo) then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(LineNotFoundErr, LineEntryNo), 'lineNo', Format(LineEntryNo, 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(LineNotFoundErr, LineEntryNo), SelectionParameter, Format(SelectionReceived, 0, 9));
         if SubscriptionLine."Supplier Reference Entry No." = 0 then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LineNotConnectedErr, LineEntryNo), 'usageDataSubscriptionEntryNo', Format(LineEntryNo, 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LineNotConnectedErr, LineEntryNo), SelectionParameter, Format(SelectionReceived, 0, 9));
         SupplierReferenceEntryNo := SubscriptionLine."Supplier Reference Entry No.";
 
         // Microsoft: "Usage Based Billing Mgmt.".DisconnectServiceCommitmentFromSubscription finds the first supplier
@@ -209,7 +218,7 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
         UsageDataSubscription.Reset();
         UsageDataSubscription.SetRange("Supplier Reference Entry No.", SupplierReferenceEntryNo);
         if not UsageDataSubscription.FindFirst() then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LineNotConnectedErr, LineEntryNo), 'usageDataSubscriptionEntryNo', Format(LineEntryNo, 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LineNotConnectedErr, LineEntryNo), SelectionParameter, Format(SelectionReceived, 0, 9));
         SubscriptionEntryNo := UsageDataSubscription."Entry No.";
 
         LinesDisconnected := ResetSupplierReferenceEntryNo(SubscriptionLine."Subscription Header No.", SupplierReferenceEntryNo);

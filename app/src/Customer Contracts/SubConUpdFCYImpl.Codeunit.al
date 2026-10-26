@@ -216,7 +216,7 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
         else
             CurrencyFactor := CurrencyExchangeRate.ExchangeRate(CurrencyFactorDate, CurrencyCode);
         if CurrencyFactor <= 0 then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ZeroExchangeRateErr, CurrencyCode, Helper.FormatDate(CurrencyFactorDate), Helper.FormatDecimal(CurrencyFactor)), 'currencyFactorDate', Format(CurrencyCode, 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ZeroExchangeRateErr, CurrencyCode, Helper.FormatDate(CurrencyFactorDate), Helper.FormatDecimal(CurrencyFactor)), 'currencyFactorDate', Helper.FormatDate(CurrencyFactorDate));
 
         RecalculateLines(Partner, ContractNo, CurrencyCode, CurrencyFactor, CurrencyFactorDate, LinesRecalculated, LinesSkipped);
 

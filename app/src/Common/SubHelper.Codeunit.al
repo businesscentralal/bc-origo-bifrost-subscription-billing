@@ -100,11 +100,19 @@ codeunit 10035058 "Sub Helper ori"
         Received: Text;
         Expected: Text;
         ProblemCount: Integer;
+        TypeIndex: Integer;
+        Identifier: Code[20];
         Required: Boolean;
         Missing: Boolean;
     begin
         Request := Argument.GetRequestJson();
-        TypeName := Argument."Type".Names().Get(Argument."Type".Ordinals().IndexOf(Argument."Type".AsInteger()));
+        TypeIndex := Argument."Type".Ordinals().IndexOf(Argument."Type".AsInteger());
+        if TypeIndex < 1 then begin
+            Argument.RespondWithError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidValueErr, 'type', StrSubstNo(ExpectedValueTxt, 'type')),
+                'type', Format(Argument."Type".AsInteger(), 0, 9), StrSubstNo(ExpectedValueTxt, 'type'), StrSubstNo(CorrectParameterTxt, 'type'));
+            exit(false);
+        end;
+        TypeName := Argument."Type".Names().Get(TypeIndex);
         Parts.GetSubjectKey(TypeName, SubjectKey, SubjectForm);
         Contract := Argument."Type";
         Contract.GetParameters(Parameters);
@@ -146,8 +154,8 @@ codeunit 10035058 "Sub Helper ori"
                     Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, ParameterName, Expected), ParameterName, Received, Expected, StrSubstNo(CorrectParameterTxt, ParameterName));
                     ProblemCount += 1;
                 end else
-                    if IsCodeParameter(ParameterName) and (StrLen(Received) > 20) then begin
-                        Argument.AddError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, ParameterName, 20), ParameterName, Received, StrSubstNo(MaximumLengthTxt, 20), StrSubstNo(CorrectParameterTxt, ParameterName));
+                    if IsCodeParameter(ParameterName) and (StrLen(Received) > MaxStrLen(Identifier)) then begin
+                        Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(ValueTooLongErr, ParameterName, MaxStrLen(Identifier)), ParameterName, Received, StrSubstNo(MaximumLengthTxt, MaxStrLen(Identifier)), StrSubstNo(CorrectParameterTxt, ParameterName));
                         ProblemCount += 1;
                     end else
                         if not AllowedParameterValue(Definition, ValueToken) then begin
@@ -233,6 +241,8 @@ codeunit 10035058 "Sub Helper ori"
         Candidate: Text;
         Found: Boolean;
         AllowedValues: List of [Text];
+        Expected: Text;
+        ErrorCode: Enum "Bifrost Error Code ori";
     begin
         if not Item.Get(PropertyName, Token) then begin
             if Required then begin
@@ -256,7 +266,16 @@ codeunit 10035058 "Sub Helper ori"
             end;
         if Found then
             exit;
-        Argument.AddError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidValueErr, Path, Allowed), Path, Received, StrSubstNo(ExpectedValueTxt, Path), StrSubstNo(CorrectParameterTxt, Path));
+        ErrorCode := "Bifrost Error Code ori"::InvalidParameter;
+        Expected := Allowed;
+        if Expected = '' then begin
+            ErrorCode := "Bifrost Error Code ori"::InvalidParameterFormat;
+            if MaximumLength > 0 then
+                Expected := StrSubstNo(MaximumLengthTxt, MaximumLength)
+            else
+                Expected := StrSubstNo(ExpectedValueTxt, Path);
+        end;
+        Argument.AddError(ErrorCode, StrSubstNo(InvalidValueErr, Path, Expected), Path, Received, Expected, StrSubstNo(CorrectParameterTxt, Path));
         ProblemCount += 1;
     end;
 
@@ -501,7 +520,7 @@ codeunit 10035058 "Sub Helper ori"
     begin
         TextValue := GetText(RequestJson, PropertyName, Required);
         if StrLen(TextValue) > MaxStrLen(Value) then
-            RaiseError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, PropertyName, MaxStrLen(Value)), PropertyName, TextValue, StrSubstNo(MaximumLengthTxt, 20));
+            RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(ValueTooLongErr, PropertyName, MaxStrLen(Value)), PropertyName, TextValue, StrSubstNo(MaximumLengthTxt, MaxStrLen(Value)));
         Value := CopyStr(TextValue, 1, MaxStrLen(Value));
     end;
 
@@ -611,7 +630,7 @@ codeunit 10035058 "Sub Helper ori"
     begin
         if Argument.Subject <> '' then begin
             if StrLen(Argument.Subject) > MaxStrLen(Value) then
-                RaiseError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(ValueTooLongErr, PropertyName, MaxStrLen(Value)), PropertyName, Argument.Subject, StrSubstNo(MaximumLengthTxt, 20));
+                RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(ValueTooLongErr, PropertyName, MaxStrLen(Value)), PropertyName, Argument.Subject, StrSubstNo(MaximumLengthTxt, MaxStrLen(Value)));
             exit(CopyStr(Argument.Subject, 1, MaxStrLen(Value)));
         end;
         exit(GetCode20(RequestJson, PropertyName, Required));

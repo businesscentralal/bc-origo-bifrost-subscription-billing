@@ -209,7 +209,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         ExtendCustomerContract := CustomerContractNo <> '';
         ExtendVendorContract := VendorContractNo <> '';
         if not ExtendCustomerContract and not ExtendVendorContract then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, NeitherContractErr, 'contractNo', '');
+            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, NeitherContractErr, 'customerContractNo|vendorContractNo', '');
 
         if ExtendCustomerContract then
             if not CustomerSubscriptionContract.Get(CustomerContractNo) then

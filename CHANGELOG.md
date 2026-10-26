@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-26) - refusal context review amendments (#62)
+
+- 10035058 guards an unknown enum ordinal before list access, uses consistent InvalidParameterFormat for overlong identifiers with field-derived bounds, and gives nested shape/length errors a nonempty expected value.
+- Refusal context in 10035065, 10035055, 10035041, 10035067, 10035052, 10035051, 10035039, 10035061 and 10035068 names the actual request selection and received input; one-of requirements name their accepted alternatives. 10035075 preserves PR70's Purchase.Document.Post help correction.
+- 95723 pairs mixed aggregate scenarios in1033/1039 and asserts each problem's structured fields; targeted guards cover the corrected contexts. Vendor CreateDocuments posting failures use billingTemplateCode when no sales posting event supplies a document number; the native event capture is sales-only, matching the existing sales-only posting path.
+
+
 ### Fixed (2026-10-23) - structured refusals and request validation (#62)
 
 - Foundation minimum dependency is 28.0.8.617 in product and test apps, providing the public rollback-safe error context API used by this change.

@@ -201,7 +201,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
 
         if BillingTemplateCode = '' then begin
             if (ContractNo = '') and (DocumentNo = '') then
-                Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'documents', '');
+                Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'billingTemplateCode|contractNo|documentNo', '');
         end else
             if not BillingTemplate.Get(BillingTemplateCode) then
                 Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
@@ -217,8 +217,8 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
         BillingLine.SetCurrentKey("Document Type", "Document No.");
         if BillingLine.IsEmpty() and (DocumentNo <> '') then begin
             if IsPostedDocument(DocumentNo) then
-                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(PostedDocumentErr, DocumentNo), 'documents', Format(DocumentNo, 0, 9));
-            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(DocumentNotFoundErr, BillingTemplateCode, DocumentNo), 'documents', Format(BillingTemplateCode, 0, 9));
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(PostedDocumentErr, DocumentNo), 'documentNo', Format(DocumentNo, 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(DocumentNotFoundErr, BillingTemplateCode, DocumentNo), 'documentNo', Format(DocumentNo, 0, 9));
         end;
 
         // Read the documents first: deleting one changes the billing lines the filter selects.

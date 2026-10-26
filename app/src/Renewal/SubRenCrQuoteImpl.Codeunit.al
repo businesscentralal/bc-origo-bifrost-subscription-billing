@@ -190,7 +190,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
             Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(ContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
         foreach SelectedLineNo in SelectedLineNos.Keys() do
             if not CustSubContractLine.Get(ContractNo, SelectedLineNo) then
-                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(UnknownContractLineErr, SelectedLineNo, ContractNo), 'contractLineNo', Format(SelectedLineNo, 0, 9));
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(UnknownContractLineErr, SelectedLineNo, ContractNo), 'contractLineNos', Format(SelectedLineNo, 0, 9));
 
         SubContractRenewalLine.SetRange("Linked to Sub. Contract No.", ContractNo);
         if not SubContractRenewalLine.IsEmpty() then

@@ -204,7 +204,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         else
             CollectCandidates(PurchaseHeader."Buy-from Vendor No.", ContractNo, CandidateEntryNos);
 
-        CheckNoForeignPendingProposal();
+        CheckNoForeignPendingProposal(InvoiceNo);
 
         PurchaseLine.SetRange("Document Type", PurchaseHeader."Document Type");
         PurchaseLine.SetRange("Document No.", PurchaseHeader."No.");
@@ -295,7 +295,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         exit('');
     end;
 
-    local procedure CheckNoForeignPendingProposal()
+    local procedure CheckNoForeignPendingProposal(InvoiceNo: Code[20])
     var
         BillingLine: Record "Billing Line";
     begin
@@ -303,7 +303,7 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         BillingLine.SetRange("Document No.", '');
         BillingLine.SetLoadFields("Subscription Contract No.");
         if BillingLine.FindFirst() then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingProposalErr, BillingLine.Count(), BillingLine."Subscription Contract No."), 'contractNo', Format(BillingLine.Count(), 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingProposalErr, BillingLine.Count(), BillingLine."Subscription Contract No."), 'purchaseInvoiceNo', Format(InvoiceNo, 0, 9));
     end;
 
     /// <summary>

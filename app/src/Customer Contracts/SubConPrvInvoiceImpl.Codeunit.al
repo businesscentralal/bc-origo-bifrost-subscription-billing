@@ -229,7 +229,7 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
         ForeignCount := BillingLine.Count();
         if ForeignCount > 0 then begin
             BillingLine.FindFirst();
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingErr, BillingLine."Subscription Contract No.", ForeignCount), 'contractNo', Format(BillingLine."Subscription Contract No.", 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingErr, BillingLine."Subscription Contract No.", ForeignCount), 'contractNo', Format(ContractNo, 0, 9));
         end;
 
         SubscriptionLine.SetRange(Partner, Enum::"Service Partner"::Customer);

@@ -190,7 +190,7 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
 
         if BillingTemplateCode = '' then begin
             if ContractNo = '' then
-                Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'contractNo', '');
+                Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'billingTemplateCode|contractNo', '');
         end else
             if not BillingTemplate.Get(BillingTemplateCode) then
                 Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
@@ -199,7 +199,10 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
         FilterProposal(BillingLine, BillingTemplateCode, ContractNo);
         BillingLine.SetFilter("Document No.", '<>%1', '');
         if BillingLine.FindFirst() then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LinesOnDocumentErr, BillingLine.Count(), BillingTemplateCode, BillingLine."Document No."), 'contractNo', Format(BillingLine.Count(), 0, 9));
+            if ContractNo <> '' then
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LinesOnDocumentErr, BillingLine.Count(), BillingTemplateCode, BillingLine."Document No."), 'contractNo', Format(ContractNo, 0, 9))
+            else
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LinesOnDocumentErr, BillingLine.Count(), BillingTemplateCode, BillingLine."Document No."), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
 
         FilterProposal(BillingLine, BillingTemplateCode, ContractNo);
         BillingLine.SetCurrentKey("Subscription Header No.", "Subscription Line Entry No.", "Billing to");
