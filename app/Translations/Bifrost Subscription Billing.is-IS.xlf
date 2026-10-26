@@ -604,9 +604,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Previews the billing proposal lines that Subscription.Contract.CreateInvoice would build for one customer Subscription Contract. Temporary proposal writes are removed; no changes remain and no invoice is created.</source>
-          <target>Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og enginn reikningur er stofnaður.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.Contract.CreateInvoice myndi útbúa fyrir einn áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og enginn reikningur er stofnaður.</note>
+          <source>Previews invoice lines for a customer subscription contract. Temporary proposal writes are removed; no changes remain and no document is created.</source>
+          <target>Forskoðar reikningslínur fyrir áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningslínur fyrir áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con PrvInvoice Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1454530009 - NamedType 874973696" size-unit="char" translate="yes" xml:space="preserve">
@@ -700,21 +700,21 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - NamedType 3314699509" size-unit="char" translate="yes" xml:space="preserve">
-          <source>the BIFROST Force ori permission set</source>
-          <target>heimildasamstæðan BIFROST Force ori</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=heimildasamstæðan BIFROST Force ori</note>
+          <source>the Bifrost Force permission set</source>
+          <target>heimildasamstæðan Bifrost Force</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=heimildasamstæðan Bifrost Force</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForceExpectedTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - NamedType 775780324" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Ask an administrator to assign the BIFROST Force ori permission set to your user, then call again.</source>
-          <target>Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.</note>
+          <source>Ask an administrator to assign the Bifrost Force permission set to your user, then call again.</source>
+          <target>Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni Bifrost Force og kallaðu svo aftur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni Bifrost Force og kallaðu svo aftur.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForceNextStepTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - NamedType 1817117493" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Subscription.Contract.UpdateLineDates schedules a Job Queue Entry, which needs the BIFROST Force ori permission set. Your user does not have it.</source>
-          <target>Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar BIFROST Force ori. Notandinn þinn hefur hana ekki.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar BIFROST Force ori. Notandinn þinn hefur hana ekki.</note>
+          <source>Subscription.Contract.UpdateLineDates schedules a Job Queue Entry, which needs the Bifrost Force permission set. Your user does not have it.</source>
+          <target>Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar Bifrost Force. Notandinn þinn hefur hana ekki.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar Bifrost Force. Notandinn þinn hefur hana ekki.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdDates Impl ori - NamedType ForcePermissionErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2002185568 - NamedType 46511362" size-unit="char" translate="yes" xml:space="preserve">
@@ -1067,8 +1067,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1208222225 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Writes the contract, subscription or line view filter on a Price Update Template and returns the current value of all three filters.</source>
-          <target>Skrifar síu  fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Skrifar síu  fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.</note>
+          <target>Skrifar síu fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Skrifar síu fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU SetFilter Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1208222225 - NamedType 880984256" size-unit="char" translate="yes" xml:space="preserve">
@@ -1534,9 +1534,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - NamedType ContractNotFoundErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Previews the billing proposal lines that Subscription.VendorContract.CreateInvoice would build for a vendor subscription contract. Temporary proposal writes are removed; no changes remain and no document is created.</source>
-          <target>Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</note>
+          <source>Previews invoice lines for a vendor subscription contract. Temporary proposal writes are removed; no changes remain and no document is created.</source>
+          <target>Forskoðar reikningslínur fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Forskoðar reikningslínur fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Vend PrvInv Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3139070712 - NamedType 1712851524" size-unit="char" translate="yes" xml:space="preserve">
@@ -1577,8 +1577,8 @@
         </trans-unit>
         <trans-unit id="PermissionSet 1707067305 - Property 2879900210" maxwidth="30" size-unit="char" translate="yes" xml:space="preserve">
           <source>Sub. Billing Posting</source>
-          <target>Bókun áskriftareikninga</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Bókun áskriftareikninga</note>
+          <target>Bókun áskriftarreikninga</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bókun áskriftarreikninga</note>
           <note from="Xliff Generator" annotates="general" priority="3">PermissionSet BIFROST SubPost ori - Property Caption</note>
         </trans-unit>
       </group>

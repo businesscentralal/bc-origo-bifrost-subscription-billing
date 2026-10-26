@@ -8,7 +8,7 @@ namespace Origo.Bifrost.SubscriptionBilling;
 permissionset 10035086 "BIFROST SubPost ori"
 {
     Assignable = true;
-    Caption = 'Sub. Billing Posting', MaxLength = 30, Comment = 'is-IS=Bókun áskriftareikninga';
+    Caption = 'Sub. Billing Posting', MaxLength = 30, Comment = 'is-IS=Bókun áskriftarreikninga';
     Permissions =
         tabledata "Sub Posting ori" = RIMD;
 }

@@ -26,7 +26,7 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
         ContractTok: Label 'contract', Locked = true;
         SubscriptionTok: Label 'subscription', Locked = true;
         LineTok: Label 'line', Locked = true;
-        DescriptionLbl: Label 'Writes the contract, subscription or line view filter on a Price Update Template and returns the current value of all three filters.', MaxLength = 250, Comment = 'is-IS=Skrifar síu  fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.';
+        DescriptionLbl: Label 'Writes the contract, subscription or line view filter on a Price Update Template and returns the current value of all three filters.', MaxLength = 250, Comment = 'is-IS=Skrifar síu fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -280,12 +280,58 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
     [TryFunction]
     local procedure TryDisplayFilter(TableId: Integer; StoredView: Text; var PublicView: Text)
     var
+        TempDisplayArgument: Record "Message Argument ori" temporary;
         RRef: RecordRef;
+        ViewRequest: JsonObject;
     begin
         RRef.Open(TableId);
-        RRef.SetView(StoredView);
-        PublicView := RRef.GetView(true);
+        ViewRequest.Add('tableView', NamedStoredView(RRef, StoredView));
+        if TempDisplayArgument.ApplyTableView(ViewRequest, RRef) then
+            PublicView := RRef.GetView(true)
+        else
+            PublicView := StoredView;
         RRef.Close();
+    end;
+
+    /// <summary>Names field-number tokens in a persisted BC view before Foundation validates it.
+    /// Only tokens at the view clause level are changed; filter values are preserved verbatim.</summary>
+    local procedure NamedStoredView(var RRef: RecordRef; StoredView: Text) NamedView: Text
+    var
+        ViewField: FieldRef;
+        Position: Integer;
+        TokenEnd: Integer;
+        Depth: Integer;
+        FieldNumber: Integer;
+        Character: Text[1];
+        AtFieldStart: Boolean;
+    begin
+        Position := 1;
+        Depth := 0;
+        while Position <= StrLen(StoredView) do begin
+            Character := CopyStr(StoredView, Position, 1);
+            if AtFieldStart and (Depth = 1) and (CopyStr(StoredView, Position, 5) = 'Field') then begin
+                TokenEnd := Position + 5;
+                while (TokenEnd <= StrLen(StoredView)) and (StrPos('0123456789', CopyStr(StoredView, TokenEnd, 1)) > 0) do
+                    TokenEnd += 1;
+                if (TokenEnd > Position + 5) and (StrPos('=,)', CopyStr(StoredView, TokenEnd, 1)) > 0) then
+                    if Evaluate(FieldNumber, CopyStr(StoredView, Position + 5, TokenEnd - Position - 5)) then
+                        if RRef.FieldExist(FieldNumber) then begin
+                            ViewField := RRef.Field(FieldNumber);
+                            NamedView += '"' + ViewField.Name().Replace('"', '""') + '"';
+                            Position := TokenEnd;
+                            Character := CopyStr(StoredView, Position, 1);
+                        end;
+            end;
+            NamedView += Character;
+            case Character of
+                '(':
+                    Depth += 1;
+                ')':
+                    Depth -= 1;
+            end;
+            AtFieldStart := (Depth = 1) and ((Character = '(') or (Character = ','));
+            Position += 1;
+        end;
     end;
 
     local procedure NormalizeFilterError(var Argument: Record "Message Argument ori")

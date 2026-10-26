@@ -2,17 +2,24 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-26) - accurate preview and permission contracts (#64)
+
+- The customer and vendor PreviewInvoice effects report temporary writes with no lasting changes; descriptions in 10035039 and 10035044 stay within 20–200 characters in both languages. Permission-set contract values use captions users can find.
+
+### Fixed (2026-10-26) - review amendments (#64)
+
+- 10035048 validates stored views through Foundation before display; numeric field tokens are named without changing filter values. Unknown fields are never silently applied. 10035075 removes internal staging, renewal and archive table names and retains PR70's `Purchase.Document.Post` correction.
+- 10035046 and 10035057 remove archive and staging table names from their help. 10035040 and 10035086 correct permission names and Icelandic spelling; 95708, 95727 and 95780 cover readable filters, discovery limits and public wording. XLF stays synchronized.
+
 ### Fixed (2026-10-23) - operation help and workflow wording (#64)
 
 - `Sub Contract Parts ori` (10035075) describes temporary invoice previews as writes that leave no persistent changes, replaces posting/proposal implementation names and permission-set object names with business wording, and supplies workflows for every operation, including company-wide job-queue term updates and committed deferral posting.
 - Discovery labels remove Blob and update Icelandic terminology. Existing PR #68 wording/filter fixes are retained.
 - `Sub Contract Complete Tst ori` (95780) rejects the reported internal object/procedure names and permission-set suffix pattern in help, requires a workflow for all operations and checks the two temporary preview effects explicitly.
-
 - Additional touched objects: `Sub Bil CrProposal Impl ori` (10035045), `Sub Con RemoveLine Impl ori` (10035071), `Sub Con UpdDates Impl ori` (10035040), `Sub PU SetFilter Impl ori` (10035048), `Sub Usg Process Impl ori` (10035054), and `Sub Contract Batch1 Tst ori` (95706).
-
 - Refusal wording `Sub Bil PostDocs Impl ori` (10035085) uses translated document captions and corrected Icelandic spelling. Billing and price-update filter responses show field names; their refusals name `filter`, and PriceUpdate help lists InvalidFilterField.
 - Readable-filter and localized-refusal regressions: `Sub Bil SetFilter Impl ori` (10035070), `Sub PU Filter Tst ori` (95708), `Sub ShouldHave Tst ori` (95715), and `Sub Help Wording Tst ori` (95727).
-- Other touched acceptance objects: `Sub Bil SetFilter Impl ori` (10035070), `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend PrvInv Impl ori` (10035044).
+- Other touched acceptance objects: `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend PrvInv Impl ori` (10035044).
 
 ### Changed (2026-10-21) - AppSource delivery
 

@@ -574,7 +574,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Renewal.CreateQuote':
                 begin
                     Fields.Add(ContractMgt.ResponseField('contractNo', 'string', 'The renewed contract.'));
-                    Fields.Add(ContractMgt.ResponseField('renewalLinesCreated', 'integer', 'Number of Sub. Contract Renewal Lines built for the quote.'));
+                    Fields.Add(ContractMgt.ResponseField('renewalLinesCreated', 'integer', 'Number of renewal proposal lines built for the quote.'));
                     Fields.Add(ContractMgt.ResponseField('salesQuoteNo', 'string', 'No. of the created renewal sales quote.'));
                 end;
             'Subscription.Usage.ImportData':
@@ -678,7 +678,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Effect.Add('changes', GetChanges(MessageType));
         Effect.Add('idempotent', MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments', 'Subscription.Analysis.Recalculate']);
         if MessageType = 'Subscription.Billing.PostDocuments' then
-            Effect.Add('permissionSet', 'Bifrost Sub. Post')
+            Effect.Add('permissionSet', 'Sub. Billing Posting')
         else
             Effect.Add('permissionSet', 'Bifrost Sub. Billing');
         Preconditions.Add('Microsoft Subscription Billing is installed and set up, and the caller has the permissions on its tables.');
@@ -691,8 +691,8 @@ codeunit 10035075 "Sub Contract Parts ori"
                 Preconditions.Add('The template has unbilled proposal lines (Subscription.Billing.CreateProposal), all for customers or all for vendors.');
             'Subscription.Billing.PostDocuments':
                 begin
-                    Preconditions.Add('Each document was created by a Subscription Billing run, so it stands on Billing Line or Billing Line Archive.');
-                    Preconditions.Add('The caller holds permission set Bifrost Sub. Post.');
+                    Preconditions.Add('Each document was created by a Subscription Billing run, so it has current or archived billing lines.');
+                    Preconditions.Add('The caller holds permission set Sub. Billing Posting.');
                 end;
             'Subscription.Renewal.CreateQuote':
                 Preconditions.Add('The contract has Subscription Lines with an end date.');
@@ -1054,7 +1054,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 end;
             'Subscription.Import.CreateContracts':
                 begin
-                    Subject := 'The staging rows in Imported Subscription Header, Imported Cust. Sub. Contract and Imported Subscription Line';
+                    Subject := 'The staging rows in imported subscriptions, customer contracts and subscription lines';
                     Pronoun := 'them';
                 end;
             else
@@ -1106,7 +1106,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Renewal.Extend':
                 exit('Runs Microsoft''s extend-contract logic without its dialog: inserts Subscription Lines on the Subscription and contract lines on the named customer and vendor contracts.');
             'Subscription.Renewal.CreateQuote':
-                exit('Deletes the contract''s Sub. Contract Renewal Lines, builds new ones from its Subscription Lines that have an end date (only the contractLineNos lines when given), and creates a renewal sales quote from them. Nothing is posted.');
+                exit('Deletes the contract''s renewal proposal lines, builds new ones from its Subscription Lines that have an end date (only the contractLineNos lines when given), and creates a renewal sales quote from them. Nothing is posted.');
             'Subscription.Usage.ImportData':
                 exit('Stores the usage import and its file and commits them, then runs the Create Imported Lines step, and Process Imported Lines when runProcessing is true, each after a commit. Nothing is posted.');
             'Subscription.Usage.Process':
@@ -1260,15 +1260,15 @@ codeunit 10035075 "Sub Contract Parts ori"
                     AddBusinessCentralError(Errors, 'The parameter ''partner'' must be either ''Customer'' or ''Vendor''.', 'partner is neither Customer nor Vendor.', 'Send Customer or Vendor.');
                     AddBusinessCentralError(Errors, 'The parameter ''documentType'' must be either ''Invoice'' or ''Credit Memo''.', 'documentType is neither Invoice nor Credit Memo.', 'Send Invoice or Credit Memo.');
                     AddBusinessCentralError(Errors, 'Document %1 is listed more than once. Nothing was posted.', 'The same document appears twice. Nothing is posted.', 'Send each document once.');
-                    AddBusinessCentralError(Errors, 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', 'The customer document is on neither Billing Line nor Billing Line Archive.', 'Post an ordinary sales document with Sales.Document.Post.');
-                    AddBusinessCentralError(Errors, 'Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.', 'The vendor document is on neither Billing Line nor Billing Line Archive.', 'Post an ordinary purchase document with Purch.Document.Post.');
+                    AddBusinessCentralError(Errors, 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', 'The customer document is absent from both current and archived billing lines.', 'Post an ordinary sales document with Sales.Document.Post.');
+                    AddBusinessCentralError(Errors, 'Document %1 %2 was not created by Subscription Billing. Post it with Purchase.Document.Post.', 'The vendor document is absent from both current and archived billing lines.', 'Post an ordinary purchase document with Purchase.Document.Post.');
                     AddBusinessCentralError(Errors, 'Document %1 %2 is already posted.', 'The billing document has already been posted.', 'Do not post it again.');
                     Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::MissingParameter, 'Purchase %1 %2 has no vendor document number. Nothing was posted.', 'A Vendor document has neither Vendor Invoice No. (Vendor Cr. Memo No. on a credit memo) nor a vendorInvoiceNo in the request. The answer names parameter vendorInvoiceNo.', 'Send vendorInvoiceNo on the document entry with the number on the vendor''s invoice or credit memo, then call again.'));
                     AddBusinessCentralError(Errors, 'The top-level vendorInvoiceNo can be used for one purchase document only, and %1 purchase documents need it. Send vendorInvoiceNo on each document entry instead.', 'The top-level vendorInvoiceNo would be used for more than one purchase document. Nothing is posted.', 'Send vendorInvoiceNo on each document entry.');
                     AddBusinessCentralError(Errors, 'vendorInvoiceNo is read for purchase documents only, and document %1 is a sales document.', 'A Customer entry carries vendorInvoiceNo. Nothing is posted.', 'Leave vendorInvoiceNo out of Customer entries.');
                     AddBusinessCentralError(Errors, 'Billing document %1 %2 is not an open sales or purchase document.', 'The billing document is not open and is not a posted document.', 'Check the document number.');
                     AddBusinessCentralError(Errors, 'Posting document %1 failed. Documents this call already posted stay posted. %2', 'Business Central failed while posting one document. Earlier documents in this call stay posted.', 'Fix the cause named in the error and call again for the documents that are still open.');
-                    Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'Posting denied: missing ''Bifrost Sub. Post'' permission set.', 'The caller cannot write the subscription billing posting token. Nothing is posted.', 'Assign Bifrost Sub. Post. Sales.Document.Post and Purch.Document.Post do not cover this type.'));
+                    Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'Posting denied: missing ''Sub. Billing Posting'' permission set.', 'The caller cannot write the subscription billing posting token. Nothing is posted.', 'Assign Sub. Billing Posting. Sales.Document.Post and Purchase.Document.Post do not cover this type.'));
                 end;
             'Subscription.Billing.PreviewDocuments':
                 begin

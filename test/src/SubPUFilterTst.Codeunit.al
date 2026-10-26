@@ -170,6 +170,29 @@ codeunit 95708 "Sub PU Filter Tst ori"
         AssertOtherFiltersUnchanged('contract');
     end;
 
+    [Test]
+    procedure Filter_FieldTokenInValue_IsPreservedInReadableResponse()
+    var
+        CustomerContract: Record "Customer Subscription Contract";
+        ResponseJson: JsonObject;
+        FiltersToken: JsonToken;
+        Filters: JsonObject;
+    begin
+        // [GIVEN] A filter value that happens to look like an internal field token.
+        Initialize(false);
+        CreateCustomerContract('Field3');
+        CustomerContract.SetRange("No.", 'Field3');
+        // [WHEN] The validated filter is stored and displayed from its numeric representation.
+        ResponseJson := InvokeFilter('contract', CustomerContract.GetView(true), true);
+        // [THEN] Field names are readable while the literal value is unchanged.
+        Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Valid view must succeed.');
+        Assert.AreEqual(CustomerContract.GetView(true), ReadText(ResponseJson, 'filter'), 'A field-token literal must survive display conversion.');
+        ResponseJson.Get('filters', FiltersToken);
+        Filters := FiltersToken.AsObject();
+        Assert.AreEqual(CustomerContract.GetView(true), ReadText(Filters, 'contract'), 'Stored filters must display the same readable view.');
+        AssertOtherFiltersUnchanged('contract');
+    end;
+
     local procedure Initialize(VendorPartner: Boolean)
     var
         PriceUpdateTemplate: Record "Price Update Template";

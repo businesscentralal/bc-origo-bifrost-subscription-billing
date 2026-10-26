@@ -612,6 +612,12 @@ codeunit 95780 "Sub Contract Complete Tst ori"
         Forbidden.Add('Purch.-Post');
         Forbidden.Add('CommitBatchSize');
         Forbidden.Add('No..');
+        Forbidden.Add('Bifrost Sub. Post');
+        Forbidden.Add('Imported Subscription Header');
+        Forbidden.Add('Imported Cust. Sub. Contract');
+        Forbidden.Add('Imported Subscription Line');
+        Forbidden.Add('Sub. Contract Renewal Lines');
+        Forbidden.Add('Billing Line Archive');
         Forbidden.Add('Sub. Contr. Price Update Line');
     end;
 
