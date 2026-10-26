@@ -588,7 +588,6 @@ codeunit 95723 "Sub Refusal Tst ori"
         BillingTemplate.Code := 'ZZ62-OWN-TEMPLATE';
         BillingTemplate.Insert(false);
         BillingLine.Init();
-        BillingLine."Entry No." := 2147483000;
         BillingLine."Billing Template Code" := BillingTemplate.Code;
         BillingLine."Document No." := 'ZZ62-OWN-DOCUMENT';
         BillingLine.Insert(false);
