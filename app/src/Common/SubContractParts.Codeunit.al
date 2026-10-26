@@ -304,7 +304,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     procedure ImportParameters() Parameters: JsonArray
     begin
         Parameters.Add(WithAllowed(ContractMgt.Parameter('stages', 'array', false, 'The import stages to run. Defaults to all four. They always run in the fixed order SubscriptionHeaders, CustomerContracts, SubscriptionLines, ContractLines, whatever order is given.'), 'SubscriptionHeaders,CustomerContracts,SubscriptionLines,ContractLines'));
-        Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('allowCommentLines', 'boolean', false, 'When true, staged lines whose Sub_ContractLineType is Comment become contract comment lines in the ContractLines stage. When false, such a row fails with the line type error, because Comment is also the value of a row whose line type was never set.'), false));
+        Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('allowCommentLines', 'boolean', false, 'When true, staged lines whose contract line type is Comment become contract comment lines in the ContractLines stage. When false, such a row fails with the line type error, because Comment is also the value of a row whose line type was never set.'), false));
     end;
 
     /// <summary>Builds the fields of the Success answer.</summary>
@@ -505,12 +505,12 @@ codeunit 10035075 "Sub Contract Parts ori"
                 begin
                     Fields.Add(ContractMgt.ResponseField('subscriptionHeaderNo', 'string', 'The extended Subscription.'));
                     Fields.Add(ContractMgt.ResponseField('customerContractNo', 'string', 'Present only when a customer contract was extended, as are the three custContractLine fields.'));
-                    Fields.Add(ContractMgt.ResponseField('custContractLineCountBefore', 'integer', 'Cust. Sub. Contract Lines on the contract before the call.'));
-                    Fields.Add(ContractMgt.ResponseField('custContractLineCountAfter', 'integer', 'Cust. Sub. Contract Lines on the contract after the call.'));
+                    Fields.Add(ContractMgt.ResponseField('custContractLineCountBefore', 'integer', 'customer contract lines on the contract before the call.'));
+                    Fields.Add(ContractMgt.ResponseField('custContractLineCountAfter', 'integer', 'customer contract lines on the contract after the call.'));
                     Fields.Add(ContractMgt.ResponseField('custContractLinesCreated', 'integer', 'The difference of the two counts.'));
                     Fields.Add(ContractMgt.ResponseField('vendorContractNo', 'string', 'Present only when a vendor contract was extended, as are the three vendContractLine fields.'));
-                    Fields.Add(ContractMgt.ResponseField('vendContractLineCountBefore', 'integer', 'Vend. Sub. Contract Lines on the contract before the call.'));
-                    Fields.Add(ContractMgt.ResponseField('vendContractLineCountAfter', 'integer', 'Vend. Sub. Contract Lines on the contract after the call.'));
+                    Fields.Add(ContractMgt.ResponseField('vendContractLineCountBefore', 'integer', 'vendor contract lines on the contract before the call.'));
+                    Fields.Add(ContractMgt.ResponseField('vendContractLineCountAfter', 'integer', 'vendor contract lines on the contract after the call.'));
                     Fields.Add(ContractMgt.ResponseField('vendContractLinesCreated', 'integer', 'The difference of the two counts.'));
                     Fields.Add(ContractMgt.ResponseField('newSubscriptionLineEntryNos', 'array', 'Entry No. of every Subscription Line the call added to the Subscription, whichever contract it went to.'));
                     Fields.Add(ContractMgt.ResponseField('newSubscriptionLineCount', 'integer', 'Number of entries in newSubscriptionLineEntryNos.'));
@@ -568,8 +568,8 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Fields.Add(ContractMgt.ResponseField('result', 'string', 'Foreground only: Success or Error, from the Job Queue Log Entry of the run.'));
                     Fields.Add(ContractMgt.ResponseField('error', 'string', 'Foreground only: the error the run stopped on; empty when it succeeded.'));
                     Fields.Add(ContractMgt.ResponseField('subscriptionLinesClosed', 'integer', 'Foreground only: Subscription Lines closed during the call.'));
-                    Fields.Add(ContractMgt.ResponseField('customerContractLinesClosed', 'integer', 'Foreground only: Cust. Sub. Contract Lines closed during the call.'));
-                    Fields.Add(ContractMgt.ResponseField('vendorContractLinesClosed', 'integer', 'Foreground only: Vend. Sub. Contract Lines closed during the call.'));
+                    Fields.Add(ContractMgt.ResponseField('customerContractLinesClosed', 'integer', 'Foreground only: customer contract lines closed during the call.'));
+                    Fields.Add(ContractMgt.ResponseField('vendorContractLinesClosed', 'integer', 'Foreground only: vendor contract lines closed during the call.'));
                 end;
             'Subscription.Renewal.CreateQuote':
                 begin
@@ -654,7 +654,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         case MessageType of
             'Subscription.Contract.UpdateLineDates':
-                Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'The caller does not hold the Bifrost Force permission set. Nothing is created or run.', 'Have Bifrost Force assigned, then call again.'));
+                Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'The caller does not hold the Force Field Access permission set. Nothing is created or run.', 'Have Force Field Access assigned, then call again.'));
         end;
 
         Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::BusinessCentralError, 'A Business Central or Subscription Billing validation error prevented completion.', 'Correct the data or setup named by the error and retry.'));
@@ -728,7 +728,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 Preconditions.Add('The contract has a Currency Code, and an exchange rate exists for that currency on currencyFactorDate unless currencyFactor is sent.');
             'Subscription.Contract.UpdateLineDates':
                 begin
-                    Preconditions.Add('The caller holds the Bifrost Force permission set, checked before anything is read: scheduling work through the job queue is reserved for it.');
+                    Preconditions.Add('The caller holds the Force Field Access permission set, checked before anything is read: scheduling work through the job queue is reserved for it.');
                     Preconditions.Add('The caller may create and run Job Queue Entries: write permission on Job Queue Entry, Job Queue Log Entry, Error Message Register and Error Message.');
                 end;
             'Subscription.Deferral.Release':
@@ -955,7 +955,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Contract.UpdateLineDates':
                 begin
                     Steps.Add(ContractMgt.WorkflowStep(MessageType, 'Schedule the company-wide term-date update through the job queue; review its status and result.'));
-                    Workflow.Add('text', 'Requires the Bifrost Force permission set. Covers every subscription in the company and commits its changes; it is not limited to a selected contract.');
+                    Workflow.Add('text', 'Requires the Force Field Access permission set. Covers every subscription in the company and commits its changes; it is not limited to a selected contract.');
                 end;
             'Subscription.Deferral.Release':
                 begin
@@ -963,10 +963,15 @@ codeunit 10035075 "Sub Contract Parts ori"
                     Steps.Add(ContractMgt.WorkflowStep(MessageType, 'Release due deferrals after reviewing the posting date and the release window.'));
                     Workflow.Add('text', 'Posts deferred revenue or cost to the ledger. Posting commits and cannot be rolled back through this call.');
                 end;
-            'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote':
+            'Subscription.Renewal.Extend':
                 begin
-                    Steps.Add(ContractMgt.WorkflowStep(MessageType, 'Review the contract lines and renewal dates, then renew the selected subscriptions.'));
-                    Workflow.Add('text', 'Extend directly or create a renewal quote for review. No invoice is posted by these renewal operations.');
+                    Steps.Add(ContractMgt.WorkflowStep(MessageType, 'Review the contract lines and renewal dates, then extend the selected subscriptions.'));
+                    Workflow.Add('text', 'Extend the subscriptions directly, or use Subscription.Renewal.CreateQuote to prepare a quote for review instead.');
+                end;
+            'Subscription.Renewal.CreateQuote':
+                begin
+                    Steps.Add(ContractMgt.WorkflowStep(MessageType, 'Review the contract lines and renewal dates, then create a renewal sales quote.'));
+                    Workflow.Add('text', 'Creates a renewal quote for review. This call does not renew the subscriptions and posts nothing.');
                 end;
             'Subscription.Analysis.Recalculate':
                 begin
@@ -1130,7 +1135,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Analysis.Recalculate':
                 exit('Create Contract Analysis adds analysis entries for Subscription Lines with a contract and skips a line that already has an entry for the current month.');
             'Subscription.Import.CreateContracts':
-                exit('Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from the unprocessed staging rows, and contract comment lines when allowCommentLines is true. A failed row gets its error text on the staging row, committed at once.');
+                exit('Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and customer contract lines from the unprocessed staging rows, and contract comment lines when allowCommentLines is true. A failed row gets its error text on the staging row, committed at once.');
         end;
         exit('The operation invokes Microsoft Subscription Billing logic and changes the records described by the request.');
     end;

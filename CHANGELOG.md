@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-26) - independent verification wording follow-up (#64)
+
+- 10035040 and 10035075 use Foundation's actual Force Field Access caption (Þvinga reitaaðgang); 95727 compares it with installed permission metadata and 95780 rejects the guessed old name. 95711 retains the real permission boundary.
+- 10035039, 10035044 and 10035054 improve Icelandic wording; 10035075 separates quote creation from direct renewal. 10035073 uses business wording in merge notes; 10035042 and 10035057 remove the remaining abbreviated contract-line table names from public descriptions; actual machine field names in runtime refusals remain documented truthfully.
+
 ### Changed (2026-10-26) - accurate preview and permission contracts (#64)
 
 - The customer and vendor PreviewInvoice effects report temporary writes with no lasting changes; descriptions in 10035039 and 10035044 stay within 20–200 characters in both languages. Permission-set contract values use captions users can find.

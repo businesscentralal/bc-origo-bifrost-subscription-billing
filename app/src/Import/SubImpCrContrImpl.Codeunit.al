@@ -22,7 +22,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
         SubscriptionLinesTok: Label 'SubscriptionLines', Locked = true;
         ContractLinesTok: Label 'ContractLines', Locked = true;
         MaxErrorCount: Integer;
-        DescriptionLbl: Label 'Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from staged import rows, one stage at a time.', MaxLength = 250, Comment = 'is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur áskriftarsamnings viðskiptamanns út frá innfluttum bráðabirgðalínum, eitt skref í einu.';
+        DescriptionLbl: Label 'Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and customer contract lines from staged import rows, one stage at a time.', MaxLength = 250, Comment = 'is-IS=Býr til áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur áskriftarsamnings viðskiptamanns út frá innfluttum bráðabirgðalínum, eitt skref í einu.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -130,7 +130,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('Stage the subscriptions, customer contracts and subscription lines in the Business Central import worksheets first. ' +
-            'Every imported subscription line row needs Sub_ContractLineType: Item or G/L Account for a billable line, or Comment for a contract comment line. ' +
+            'Every imported subscription line row needs a contract line type: Item or G/L Account for a billable line, or Comment for a contract comment line. ' +
             'Comment is also the value of a row that never had the field set, so a Comment row is only imported when the call sends allowCommentLines = true; ' +
             'the SubscriptionLines stage then skips it, and the ContractLines stage creates the contract comment line, which needs Subscription Contract No., ' +
             'Partner and Invoicing via = Contract. Without allowCommentLines a Comment row fails with the line type error and no contract line is created for it. ' +
