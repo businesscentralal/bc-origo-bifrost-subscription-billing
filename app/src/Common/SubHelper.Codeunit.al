@@ -164,6 +164,7 @@ codeunit 10035058 "Sub Helper ori"
                         end;
             end;
         end;
+        CollectAlternativeSelections(Argument, Request, TypeName, ProblemCount);
         if HasValue(Request, 'contentBase64') then
             if not TryDecodeBase64(GetText(Request, 'contentBase64', false), TempBlob) then begin
                 ClearLastError();
@@ -192,6 +193,40 @@ codeunit 10035058 "Sub Helper ori"
             exit(true);
         Argument.RespondWithCollectedErrors("Bifrost Error Code ori"::MultipleErrors, StrSubstNo(ProblemsErr, ProblemCount));
         exit(false);
+    end;
+
+    local procedure CollectAlternativeSelections(var Argument: Record "Message Argument ori"; Request: JsonObject; TypeName: Text; var ProblemCount: Integer)
+    var
+        ParameterName: Text;
+        Alternatives: Text;
+        OneOfExpectedTxt: Label 'Supply at least one of: %1.', Comment = '%1 = accepted parameter names||is-IS=Sendu a.m.k. eina af: %1.';
+    begin
+        case TypeName of
+            'Subscription.Renewal.Extend':
+                if not HasValue(Request, 'customerContractNo') and not HasValue(Request, 'vendorContractNo') then begin
+                    ParameterName := 'customerContractNo';
+                    Alternatives := 'customerContractNo, vendorContractNo';
+                end;
+            'Subscription.Billing.ClearProposal':
+                if (Argument.Subject = '') and not HasValue(Request, 'billingTemplateCode') and not HasValue(Request, 'contractNo') then begin
+                    ParameterName := 'billingTemplateCode';
+                    Alternatives := 'billingTemplateCode, subject, contractNo';
+                end;
+            'Subscription.Billing.DeleteDocuments':
+                if (Argument.Subject = '') and not HasValue(Request, 'billingTemplateCode') and not HasValue(Request, 'contractNo') and not HasValue(Request, 'documentNo') then begin
+                    ParameterName := 'billingTemplateCode';
+                    Alternatives := 'billingTemplateCode, subject, contractNo, documentNo';
+                end;
+            'Subscription.Usage.DisconnectSubscription':
+                if not HasValue(Request, 'subscriptionLineEntryNo') and not HasValue(Request, 'usageDataSubscriptionEntryNo') then begin
+                    ParameterName := 'usageDataSubscriptionEntryNo';
+                    Alternatives := 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo';
+                end;
+        end;
+        if ParameterName = '' then
+            exit;
+        Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(OneOfExpectedTxt, Alternatives), ParameterName, '<missing>', StrSubstNo(OneOfExpectedTxt, Alternatives), StrSubstNo(CorrectParameterTxt, ParameterName));
+        ProblemCount += 1;
     end;
 
     local procedure CollectNestedProblems(var Argument: Record "Message Argument ori"; Request: JsonObject; TypeName: Text; var ProblemCount: Integer)

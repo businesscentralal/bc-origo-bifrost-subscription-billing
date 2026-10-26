@@ -927,6 +927,12 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Þú hefur ekki heimild til að hreinsa reikningstillögur eða eyða reikningsskjölum á meðan reikningssniðmát gerir reikninga sjálfvirkt. Merktu við Reikningsregla samnings á notandanum þínum í Uppsetningu notanda.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method AssertMayClearBillingProposal - NamedType NotAuthorizedErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - Method 923153254 - NamedType 599458333" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Supply at least one of: %1.</source>
+          <target>Sendu a.m.k. eina af: %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = accepted parameter names||is-IS=Sendu a.m.k. eina af: %1.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - Method CollectAlternativeSelections - NamedType OneOfExpectedTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2964411042 - Method 1340663706 - NamedType 1061477122" size-unit="char" translate="yes" xml:space="preserve">
           <source>An existing record identified by %1.</source>
           <target>Fyrirliggjandi færsla sem %1 auðkennir.</target>

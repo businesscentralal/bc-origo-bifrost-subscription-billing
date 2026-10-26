@@ -645,6 +645,37 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.AreNotEqual('', TestLibrary.ReadText(Response, 'nextStep'), 'Recovery cannot be empty.');
     end;
 
+    [Test]
+    procedure Review_MissingAlternatives_AggregatesBeforeLookup_EN()
+    begin
+        AssertMissingAlternatives(1033);
+    end;
+
+    [Test]
+    procedure Review_MissingAlternatives_AggregatesBeforeLookup_IS()
+    begin
+        AssertMissingAlternatives(1039);
+    end;
+
+    local procedure AssertMissingAlternatives(LanguageId: Integer)
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Request: JsonObject;
+        Response: JsonObject;
+        PreviousLanguage: Integer;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Renewal.Extend", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'The missing header and missing contract choice must both be collected before a lookup.');
+        Response := TempArgument.GetResponseJson();
+        Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
+        AssertProblem(Response, 'MissingParameter', 'subscriptionHeaderNo', '<missing>');
+        AssertProblem(Response, 'MissingParameter', 'customerContractNo', '<missing>');
+        AssertAggregateFields(Response);
+        GlobalLanguage(PreviousLanguage);
+    end;
+
     local procedure AssertProblem(Response: JsonObject; ExpectedCode: Text; ExpectedParameter: Text; ExpectedReceived: Text)
     var
         Problems: JsonArray;

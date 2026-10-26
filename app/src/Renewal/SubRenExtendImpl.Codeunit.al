@@ -203,13 +203,14 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         UsageBasedBillingPackageLinesOnly := Helper.GetBoolean(RequestJson, 'usageBasedBillingPackageLinesOnly', false);
         SupplierReferenceEntryNo := Helper.GetInteger(RequestJson, 'supplierReferenceEntryNo', false);
 
-        if not SubscriptionHeader.Get(SubscriptionHeaderNo) then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(SubscriptionHeaderNotFoundErr, SubscriptionHeaderNo), 'subscriptionHeaderNo', Format(SubscriptionHeaderNo, 0, 9));
-
         ExtendCustomerContract := CustomerContractNo <> '';
         ExtendVendorContract := VendorContractNo <> '';
         if not ExtendCustomerContract and not ExtendVendorContract then
             Helper.RaiseError("Bifrost Error Code ori"::MissingParameter, NeitherContractErr, 'customerContractNo', '', NeitherContractErr);
+
+        if not SubscriptionHeader.Get(SubscriptionHeaderNo) then
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(SubscriptionHeaderNotFoundErr, SubscriptionHeaderNo), 'subscriptionHeaderNo', Format(SubscriptionHeaderNo, 0, 9));
+
 
         if ExtendCustomerContract then
             if not CustomerSubscriptionContract.Get(CustomerContractNo) then
