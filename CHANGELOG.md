@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-26) - wizard context help (#69)
+
+- `app/app.json` uses the page-help URL for setup wizard 10035035 and operations host 10035036. English and Icelandic `subscription-billing-setup.md` handoff content is included under `app/docs/help/`; publication in the documentation repository remains a separate dependency.
+
 ### Fixed (2026-10-26) - setup wizard test page lifecycle (#69)
 
 - `SubBil Setup Wizard Tests` (95721) leaves modal-page closure to the test framework and asserts that the operations host displays installed message types. The full-suite regression no longer closes the same modal page twice.
