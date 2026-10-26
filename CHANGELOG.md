@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-26) - setup wizard test page lifecycle (#69)
+
+- `SubBil Setup Wizard Tests` (95721) leaves modal-page closure to the test framework and asserts that the operations host displays installed message types. The full-suite regression no longer closes the same modal page twice.
+
 ### Added (2026-10-23) - Subscription Billing assisted setup (#69)
 
 - Pages `SubBil Setup Wizard ori` (10035035) and `SubBil Operations ori` (10035036), registration codeunit `SubBil Wizard Reg. ori` (10035035) and management codeunit `SubBil Wizard Mgt ori` (10035062): four steps introduce subscription operations, read this app's HTTP status, open Foundation for HTTP enablement, and explain the two assignable permission sets. The wizard never writes HTTP settings or assigns access; only explicit Finish completes Assisted Setup.

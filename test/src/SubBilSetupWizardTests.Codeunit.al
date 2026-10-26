@@ -131,7 +131,8 @@ codeunit 95721 "SubBil Setup Wizard Tests"
     procedure OperationsHandler(var Operations: TestPage "SubBil Operations ori")
     begin
         OperationsOpened := true;
-        Operations.Close();
+        Assert.IsTrue(Operations.MessageTypes.First(), 'The operations host must display installed Bifrost message types.');
+        // The modal-page handler returns control to RunModal, which closes the page.
     end;
 
 }
