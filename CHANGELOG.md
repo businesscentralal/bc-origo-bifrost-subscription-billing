@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added (2026-10-26) - explicit live MCP fixture seed (#63)
+
+- Test-only table/codeunit `Sub MCP Fixture ori` / `Sub MCP Seed ori` (95728) create independent owned fixture families for both languages through the existing test library. The explicit seed refuses replay and runs only in CRONUS; it is never an installer, message type, consent, licence or write-guard override. Actual acceptance calls still run over the shipping MCP path. Final owned-container deletion removes all seeded business and fixture state.
+
 ### Fixed (2026-10-23) - scoped operations and recoverable failures (#63)
 
 - `Sub Ana Recalc Impl ori` (10035056) limits both analysis writes and response counts to `contractNo`, and refuses unknown contracts before any write. The standard report runs with the contract in a separate filter group so its own nonblank filter cannot replace it.
