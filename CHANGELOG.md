@@ -13,6 +13,9 @@
 
 - Shared response/help contract `Sub Contract Parts ori` (10035075) and existing should-have regressions `Sub ShouldHave Tst ori` (95715) are updated with the data-safety changes.
 
+### Changed (2026-10-21) - AppSource delivery
+
+- `.AL-Go/settings.json`: `deliverToAppSource` names the Partner Center offer for Bifrost Subscription Billing (productId 38e354a0-cb89-4b45-81de-b3b69369627f, main app folder `app`, branch main, no continuous delivery), so the Publish To AppSource workflow can deliver new versions to the offer.
 
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
