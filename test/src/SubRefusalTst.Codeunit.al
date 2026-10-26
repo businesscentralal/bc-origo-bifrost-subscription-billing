@@ -576,6 +576,10 @@ codeunit 95723 "Sub Refusal Tst ori"
         AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'customerContractNo|vendorContractNo', '<missing>');
 
         Clear(Request);
+        // An expected error rolls back prior SQL fixtures; seed this independent scenario again.
+        CustomerContract.Init();
+        CustomerContract."No." := 'ZZ62-OWN-CONTRACT';
+        CustomerContract.Insert(false);
         LineNos.Add(2147483000);
         Request.Add('contractNo', CustomerContract."No.");
         Request.Add('contractLineNos', LineNos);
@@ -598,10 +602,13 @@ codeunit 95723 "Sub Refusal Tst ori"
         TempArgument.RespondWithLastError();
         AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'billingTemplateCode', BillingTemplate.Code);
 
-        BillingLine."Billing Template Code" := '';
-        BillingLine."Document No." := '';
+        CustomerContract.Init();
+        CustomerContract."No." := 'ZZ62-OWN-CONTRACT';
+        CustomerContract.Insert(false);
+        Clear(BillingLine);
+        BillingLine.Init();
         BillingLine."Subscription Contract No." := 'ZZ62-OWN-FOREIGN';
-        BillingLine.Modify(false);
+        BillingLine.Insert(false);
         Clear(Request);
         Request.Add('contractNo', CustomerContract."No.");
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.PreviewInvoice", Request);
@@ -609,6 +616,10 @@ codeunit 95723 "Sub Refusal Tst ori"
         TempArgument.RespondWithLastError();
         AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'contractNo', CustomerContract."No.");
 
+        Clear(BillingLine);
+        BillingLine.Init();
+        BillingLine."Subscription Contract No." := 'ZZ62-OWN-FOREIGN';
+        BillingLine.Insert(false);
         PurchaseHeader.Init();
         PurchaseHeader."Document Type" := PurchaseHeader."Document Type"::Invoice;
         PurchaseHeader."No." := 'ZZ62-OWN-INVOICE';
