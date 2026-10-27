@@ -15,6 +15,12 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Aðallykill</note>
           <note from="Xliff Generator" annotates="general" priority="3">Table Sub Posting ori - Field Primary Key - Property Caption</note>
         </trans-unit>
+        <trans-unit id="Codeunit 202989448 - NamedType 4148992451" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Contract number %1 identifies both a customer and a vendor subscription contract. Nothing was changed.</source>
+          <target>Samningsnúmer %1 auðkennir bæði áskriftarsamning viðskiptamanns og lánardrottins. Engu var breytt.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Samningsnúmer %1 auðkennir bæði áskriftarsamning viðskiptamanns og lánardrottins. Engu var breytt.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - NamedType AmbiguousErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 202989448 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Updates this month's analysis entries for the given subscription contract, or all contracts when no contractNo is supplied. Existing entries are preserved.</source>
           <target>Uppfærir greiningarfærslur þessa mánaðar fyrir tilgreindan áskriftarsamning eða alla samninga ef contractNo er ekki gefið. Fyrirliggjandi færslur haldast óbreyttar.</target>
@@ -38,6 +44,18 @@
           <target>Áskriftarsamningur %1 er ekki til.</target>
           <note from="Developer" annotates="general" priority="2">%1 = contract number||is-IS=Áskriftarsamningur %1 er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - NamedType NotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 202989448 - NamedType 3695579466" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Use a unique contract number, or omit contractNo to analyse every contract.</source>
+          <target>Notaðu ótvírætt samningsnúmer eða slepptu contractNo til að greina alla samninga.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Notaðu ótvírætt samningsnúmer eða slepptu contractNo til að greina alla samninga.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - NamedType UniqueContractNextTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 202989448 - NamedType 2986579739" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A contract number that identifies one customer or vendor subscription contract.</source>
+          <target>Samningsnúmer sem auðkennir einn áskriftarsamning viðskiptamanns eða lánardrottins.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Samningsnúmer sem auðkennir einn áskriftarsamning viðskiptamanns eða lánardrottins.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Ana Recalc Impl ori - NamedType UniqueContractTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 202989448 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>recalculate contract analysis, refresh contract analysis, contract analysis entries, rebuild contract analysis, subscription analysis, update the analysis, contract analysis report, analysis for this month</source>

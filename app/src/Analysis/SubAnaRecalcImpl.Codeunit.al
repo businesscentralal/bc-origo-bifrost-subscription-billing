@@ -19,6 +19,9 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
+        AmbiguousErr: Label 'Contract number %1 identifies both a customer and a vendor subscription contract. Nothing was changed.', Comment = '%1 = contract number||is-IS=Samningsnúmer %1 auðkennir bæði áskriftarsamning viðskiptamanns og lánardrottins. Engu var breytt.';
+        UniqueContractTxt: Label 'A contract number that identifies one customer or vendor subscription contract.', Comment = 'is-IS=Samningsnúmer sem auðkennir einn áskriftarsamning viðskiptamanns eða lánardrottins.';
+        UniqueContractNextTxt: Label 'Use a unique contract number, or omit contractNo to analyse every contract.', Comment = 'is-IS=Notaðu ótvírætt samningsnúmer eða slepptu contractNo til að greina alla samninga.';
         NotFoundErr: Label 'Subscription Contract %1 does not exist.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur %1 er ekki til.';
         ExpectedContractTxt: Label 'An existing customer or vendor subscription contract number.', Comment = 'is-IS=Númer fyrirliggjandi áskriftarsamnings viðskiptamanns eða lánardrottins.';
         FindContractTxt: Label 'Choose an existing subscription contract and send its number as contractNo.', Comment = 'is-IS=Veldu fyrirliggjandi áskriftarsamning og sendu númer hans sem contractNo.';
@@ -174,17 +177,31 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
         MaxEntryNoBefore: Integer;
         EntriesCreated: Integer;
         TotalEntries: Integer;
+        SelectedPartner: Enum "Service Partner";
+        HasCustomer: Boolean;
+        HasVendor: Boolean;
     begin
         RequestJson := Argument.GetRequestJson();
         ContractNo := Helper.GetCode20(RequestJson, 'contractNo', false);
 
-        if ContractNo <> '' then
-            if not CustomerContract.Get(ContractNo) then
-                if not VendorContract.Get(ContractNo) then begin
-                    Argument.RespondWithError("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotFoundErr, ContractNo),
-                        'contractNo', ContractNo, ExpectedContractTxt, FindContractTxt);
-                    exit;
-                end;
+        if ContractNo <> '' then begin
+            HasCustomer := CustomerContract.Get(ContractNo);
+            HasVendor := VendorContract.Get(ContractNo);
+            if HasCustomer and HasVendor then begin
+                Argument.RespondWithError("Bifrost Error Code ori"::AmbiguousRecord, StrSubstNo(AmbiguousErr, ContractNo),
+                    'contractNo', ContractNo, UniqueContractTxt, UniqueContractNextTxt);
+                exit;
+            end;
+            if not HasCustomer and not HasVendor then begin
+                Argument.RespondWithError("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotFoundErr, ContractNo),
+                    'contractNo', ContractNo, ExpectedContractTxt, FindContractTxt);
+                exit;
+            end;
+            if HasCustomer then
+                SelectedPartner := SelectedPartner::Customer
+            else
+                SelectedPartner := SelectedPartner::Vendor;
+        end;
 
         SubContrAnalysisEntry.Reset();
         SubContrAnalysisEntry.SetLoadFields("Entry No.");
@@ -196,17 +213,21 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
         if ContractNo = '' then
             Report.Run(Report::"Create Contract Analysis", false, false)
         else
-            CreateContractAnalysis(ContractNo);
+            CreateContractAnalysis(ContractNo, SelectedPartner);
 
         SubContrAnalysisEntry.Reset();
         SubContrAnalysisEntry.SetFilter("Entry No.", '>%1', MaxEntryNoBefore);
-        if ContractNo <> '' then
+        if ContractNo <> '' then begin
             SubContrAnalysisEntry.SetRange("Subscription Contract No.", ContractNo);
+            SubContrAnalysisEntry.SetRange(Partner, SelectedPartner);
+        end;
         EntriesCreated := SubContrAnalysisEntry.Count();
 
         SubContrAnalysisEntry.Reset();
-        if ContractNo <> '' then
+        if ContractNo <> '' then begin
             SubContrAnalysisEntry.SetRange("Subscription Contract No.", ContractNo);
+            SubContrAnalysisEntry.SetRange(Partner, SelectedPartner);
+        end;
         TotalEntries := SubContrAnalysisEntry.Count();
 
         ResponseJson.Add('status', 'Success');
@@ -217,13 +238,14 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
     end;
     // Keep the contract in a separate filter group: the standard report sets its own
     // nonblank contract filter in group 0 during OnPreDataItem.
-    local procedure CreateContractAnalysis(ContractNo: Code[20])
+    local procedure CreateContractAnalysis(ContractNo: Code[20]; SelectedPartner: Enum "Service Partner")
     var
         SubscriptionLine: Record "Subscription Line";
         CreateContractAnalysisReport: Report "Create Contract Analysis";
     begin
         SubscriptionLine.FilterGroup(2);
         SubscriptionLine.SetRange("Subscription Contract No.", ContractNo);
+        SubscriptionLine.SetRange(Partner, SelectedPartner);
         SubscriptionLine.FilterGroup(0);
         CreateContractAnalysisReport.SetTableView(SubscriptionLine);
         CreateContractAnalysisReport.UseRequestPage(false);

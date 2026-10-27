@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-27) - analysis partner ambiguity (#63)
+
+- `Sub Ana Recalc Impl ori` (10035056) refuses a number shared by customer and vendor contracts with `AmbiguousRecord` before writes. A unique number filters the report and both counts by partner as well as contract number. `Sub Data Safety Tst ori` (95722) covers both languages. Live MCP exposed this collision; the original failed evidence remains retained. No new request parameter is added.
+
 ### Added (2026-10-26) - explicit live MCP fixture seed (#63)
 
 - Test-only table/page `Sub MCP Fixture ori` and codeunit `Sub MCP Seed ori` (95728) create independent owned fixture families for both languages through the existing test library. The explicit Web Client seed action resets record variables between independent subscriptions and refuses replay and runs only in CRONUS; it is never an installer, message type, consent, licence or write-guard override. Actual acceptance calls still run over the shipping MCP path. Final owned-container deletion removes all seeded business and fixture state.

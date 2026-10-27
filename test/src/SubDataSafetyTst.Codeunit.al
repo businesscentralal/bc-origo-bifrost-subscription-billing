@@ -28,6 +28,46 @@ codeunit 95722 "Sub Data Safety Tst ori"
         AssertScopedAnalysis(1039);
     end;
 
+    [Test]
+    procedure Scenario_AC01_AmbiguousPartnerNumber_Refused_EN()
+    begin
+        AssertAmbiguousPartnerNumber(1033);
+    end;
+
+    [Test]
+    procedure Scenario_AC01_AmbiguousPartnerNumber_Refused_IS()
+    begin
+        AssertAmbiguousPartnerNumber(1039);
+    end;
+
+    local procedure AssertAmbiguousPartnerNumber(LanguageId: Integer)
+    var
+        Contract: Record "Customer Subscription Contract";
+        VendorContract: Record "Vendor Subscription Contract";
+        Subscription: Record "Subscription Header";
+        VendorSubscription: Record "Subscription Header";
+        Entry: Record "Sub. Contr. Analysis Entry";
+        Request: JsonObject;
+        Response: JsonObject;
+        PreviousLanguage: Integer;
+        BeforeCount: Integer;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        TestLibrary.CreateBillableCustomerContract(Contract, Subscription, 0D);
+        TestLibrary.CreateBillableVendorContract(VendorContract, VendorSubscription);
+        if VendorContract."No." <> Contract."No." then
+            VendorContract.Rename(Contract."No.");
+        BeforeCount := Entry.Count();
+        Request.Add('contractNo', Contract."No.");
+        Response := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Analysis.Recalculate", Request);
+        Assert.AreEqual('AmbiguousRecord', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
+        Assert.AreEqual('contractNo', TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
+        Assert.IsTrue(TestLibrary.ReadText(Response, 'nextStep') <> '', 'The caller must get a correction.');
+        Assert.AreEqual(BeforeCount, Entry.Count(), 'An ambiguous number may not analyse either partner.');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
     local procedure AssertScopedAnalysis(LanguageId: Integer)
     var
         Contract: Record "Customer Subscription Contract";

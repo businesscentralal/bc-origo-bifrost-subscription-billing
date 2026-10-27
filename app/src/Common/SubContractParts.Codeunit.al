@@ -656,6 +656,8 @@ codeunit 10035075 "Sub Contract Parts ori"
     procedure GetErrors(MessageType: Text) Errors: JsonArray
     begin
         case MessageType of
+            'Subscription.Analysis.Recalculate':
+                Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::AmbiguousRecord, 'The contract number identifies both a customer and a vendor contract. Nothing is changed.', 'Use a unique contract number, or omit contractNo to analyse every contract.'));
             'Subscription.Contract.UpdateLineDates':
                 Errors.Add(ContractMgt.ErrorEntry("Bifrost Error Code ori"::PermissionDenied, 'The caller does not hold the BIFROST Force ori permission set. Nothing is created or run.', 'Have BIFROST Force ori assigned, then call again.'));
         end;
@@ -1090,7 +1092,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Deferral.Release':
                 exit('Runs Microsoft''s Contract Deferrals Release report, which releases every eligible customer and vendor deferral of every contract up to the work date and posts the release to the general ledger.');
             'Subscription.Analysis.Recalculate':
-                exit('Create Contract Analysis adds analysis entries for Subscription Lines with a contract and skips a line that already has an entry for the current month.');
+                exit('Create Contract Analysis adds analysis entries for Subscription Lines with a contract and skips a line that already has an entry for the current month. A supplied contractNo is scoped to its customer or vendor partner; if both partners use the number, AmbiguousRecord refuses it before writes.');
             'Subscription.Import.CreateContracts':
                 exit('Creates Subscription Headers, Customer Subscription Contracts, Subscription Lines and Cust. Sub. Contract Lines from the unprocessed staging rows, and contract comment lines when allowCommentLines is true. A failed row gets its error text on the staging row, committed at once.');
         end;
