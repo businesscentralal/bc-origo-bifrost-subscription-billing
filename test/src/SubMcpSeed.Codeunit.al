@@ -14,11 +14,11 @@ codeunit 95728 "Sub MCP Seed ori"
     begin
         if not CompanyName().StartsWith('CRONUS') then
             Error(CompanyErr);
-        Fixture.SetFilter("Fixture Key", 'ZZSB63W5*');
+        Fixture.SetFilter("Fixture Key", 'ZZSB63W5C*');
         if not Fixture.IsEmpty() then
             Error(AlreadySeededErr);
-        SeedLanguage('ZZSB63W5B-1033');
-        SeedLanguage('ZZSB63W5B-1039');
+        SeedLanguage('ZZSB63W5C-1033');
+        SeedLanguage('ZZSB63W5C-1039');
     end;
 
     var
@@ -33,6 +33,7 @@ codeunit 95728 "Sub MCP Seed ori"
         RenewalContract: Record "Customer Subscription Contract";
         VendorContract: Record "Vendor Subscription Contract";
         OtherVendorContract: Record "Vendor Subscription Contract";
+        CollisionVendor: Record "Vendor Subscription Contract";
         Subscription: Record "Subscription Header";
         Package: Record "Subscription Package";
         ContractLine: Record "Cust. Sub. Contract Line";
@@ -59,6 +60,13 @@ codeunit 95728 "Sub MCP Seed ori"
         Invoice.Insert(true);
         Invoice.Validate("Buy-from Vendor No.", VendorContract."Buy-from Vendor No.");
         Invoice.Modify(true);
+        if FixtureKey = 'ZZSB63W5C-1033' then
+            if not CollisionVendor.Get(Contract."No.") then begin
+                CollisionVendor.Init();
+                CollisionVendor."No." := Contract."No.";
+                CollisionVendor."Buy-from Vendor No." := VendorContract."Buy-from Vendor No.";
+                CollisionVendor.Insert(false);
+            end;
         Store(FixtureKey, 'vendorContract', VendorContract."No.");
         Store(FixtureKey, 'foreignVendorContract', OtherVendorContract."No.");
         Store(FixtureKey, 'vendorInvoice', Invoice."No.");

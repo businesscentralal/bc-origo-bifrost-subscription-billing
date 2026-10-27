@@ -4,7 +4,7 @@
 
 ### Fixed (2026-10-27) - analysis partner ambiguity (#63)
 
-- `Sub Ana Recalc Impl ori` (10035056) refuses a number shared by customer and vendor contracts with `AmbiguousRecord` before writes. A unique number filters the report and both counts by partner as well as contract number. `Sub Data Safety Tst ori` (95722) covers both languages. Live MCP exposed this collision; the original failed evidence remains retained. No new request parameter is added.
+- `Sub Ana Recalc Impl ori` (10035056) refuses a number shared by customer and vendor contracts with `AmbiguousRecord` before writes. A unique number filters the report and both counts by partner as well as contract number. `Sub Data Safety Tst ori` (95722) covers both languages using independent inserted headers (Microsoft forbids renaming vendor contracts). Fresh C fixture families isolate the final-candidate live checks. Live MCP exposed this collision; the original failed evidence remains retained. No new request parameter is added.
 
 ### Added (2026-10-26) - explicit live MCP fixture seed (#63)
 

@@ -44,6 +44,7 @@ codeunit 95722 "Sub Data Safety Tst ori"
     var
         Contract: Record "Customer Subscription Contract";
         VendorContract: Record "Vendor Subscription Contract";
+        CollisionVendor: Record "Vendor Subscription Contract";
         Subscription: Record "Subscription Header";
         VendorSubscription: Record "Subscription Header";
         Entry: Record "Sub. Contr. Analysis Entry";
@@ -56,8 +57,12 @@ codeunit 95722 "Sub Data Safety Tst ori"
         GlobalLanguage(LanguageId);
         TestLibrary.CreateBillableCustomerContract(Contract, Subscription, 0D);
         TestLibrary.CreateBillableVendorContract(VendorContract, VendorSubscription);
-        if VendorContract."No." <> Contract."No." then
-            VendorContract.Rename(Contract."No.");
+        if VendorContract."No." <> Contract."No." then begin
+            CollisionVendor.Init();
+            CollisionVendor."No." := Contract."No.";
+            CollisionVendor."Buy-from Vendor No." := VendorContract."Buy-from Vendor No.";
+            CollisionVendor.Insert(false);
+        end;
         BeforeCount := Entry.Count();
         Request.Add('contractNo', Contract."No.");
         Response := TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Analysis.Recalculate", Request);
