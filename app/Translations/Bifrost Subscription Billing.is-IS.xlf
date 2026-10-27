@@ -317,14 +317,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>post billing documents, post subscription invoices, post unposted billing invoices, post purchase documents from billing, book the invoices, post the billing run, post vendor invoices from contracts, post sales invoices from contracts</source>
-          <target>bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningakeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningakeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum</note>
+          <target>bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningskeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningskeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
           <source>Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purchase.Document.Post instead.</source>
-          <target>Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.</note>
+          <target>Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningskeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningskeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
@@ -371,8 +371,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>preview billing documents, what would the billing run create, preview invoices before billing, dry run billing, check billing run, review proposal documents, preview bulk billing, billing warnings</source>
-          <target>forskoða reikningsskjöl, hvað myndi reikningakeyrslan búa til, forskoða reikninga áður en reikningsfært er, þurrkeyrsla reikningagerðar, athuga reikningakeyrslu, yfirfara skjöl tillögunnar, forskoða magnreikningagerð, viðvaranir reikningagerðar</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=forskoða reikningsskjöl, hvað myndi reikningakeyrslan búa til, forskoða reikninga áður en reikningsfært er, þurrkeyrsla reikningagerðar, athuga reikningakeyrslu, yfirfara skjöl tillögunnar, forskoða magnreikningagerð, viðvaranir reikningagerðar</note>
+          <target>forskoða reikningsskjöl, hvað myndi reikningskeyrslan búa til, forskoða reikninga áður en reikningsfært er, þurrkeyrsla reikningagerðar, athuga reikningskeyrslu, yfirfara skjöl tillögunnar, forskoða magnreikningagerð, viðvaranir reikningagerðar</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=forskoða reikningsskjöl, hvað myndi reikningskeyrslan búa til, forskoða reikninga áður en reikningsfært er, þurrkeyrsla reikningagerðar, athuga reikningskeyrslu, yfirfara skjöl tillögunnar, forskoða magnreikningagerð, viðvaranir reikningagerðar</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PrvDocs Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
@@ -401,8 +401,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 3451705999 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>set billing template filter, filter contracts of billing template, restrict billing run to contracts, billing template contract filter, change which contracts are billed, edit template filter, limit billing template, billing filter</source>
-          <target>setja síu á reikningssniðmát, sía samninga reikningssniðmáts, takmarka reikningakeyrslu við samninga, samningssía reikningssniðmáts, breyta því hvaða samningar eru reikningsfærðir, breyta sniðmátssíu, afmarka reikningssniðmát, reikningssía</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=setja síu á reikningssniðmát, sía samninga reikningssniðmáts, takmarka reikningakeyrslu við samninga, samningssía reikningssniðmáts, breyta því hvaða samningar eru reikningsfærðir, breyta sniðmátssíu, afmarka reikningssniðmát, reikningssía</note>
+          <target>setja síu á reikningssniðmát, sía samninga reikningssniðmáts, takmarka reikningskeyrslu við samninga, samningssía reikningssniðmáts, breyta því hvaða samningar eru reikningsfærðir, breyta sniðmátssíu, afmarka reikningssniðmát, reikningssía</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=setja síu á reikningssniðmát, sía samninga reikningssniðmáts, takmarka reikningskeyrslu við samninga, samningssía reikningssniðmáts, breyta því hvaða samningar eru reikningsfærðir, breyta sniðmátssíu, afmarka reikningssniðmát, reikningssía</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil SetFilter Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 3451705999 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
@@ -1241,14 +1241,14 @@
         </trans-unit>
         <trans-unit id="Codeunit 1310317760 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Deletes the imported lines and usage billing of a usage import so it can be processed again, or deletes the whole import. Refuses imports already on a billing line or document.</source>
-          <target>Eyðir innfluttum línum og notkunarreikningagerð innflutnings svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Eyðir innfluttum línum og notkunarreikningagerð innflutnings svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.</note>
+          <target>Eyðir innfluttum línum og reikningsgerð fyrir innflutt notkunargögn svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Eyðir innfluttum línum og reikningsgerð fyrir innflutt notkunargögn svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType DescriptionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1310317760 - NamedType 2414655595" size-unit="char" translate="yes" xml:space="preserve">
           <source>Usage Data Import entry %1 has usage billing on billing line %2. Clear that billing proposal first with Subscription.Billing.ClearProposal.</source>
-          <target>Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = billing line entry number||is-IS=Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.</note>
+          <target>Færsla %1 í innflutningi notkunargagna hefur reikningsgerð fyrir notkunargögn á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = billing line entry number||is-IS=Færsla %1 í innflutningi notkunargagna hefur reikningsgerð fyrir notkunargögn á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType InBillingErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1310317760 - NamedType 704693649" size-unit="char" translate="yes" xml:space="preserve">
@@ -1265,8 +1265,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1310317760 - NamedType 1796841580" size-unit="char" translate="yes" xml:space="preserve">
           <source>Usage Data Import entry %1 has usage billing on document %2. Delete or cancel that document first; usage that is posted cannot be imported again.</source>
-          <target>Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = document number||is-IS=Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.</note>
+          <target>Færsla %1 í innflutningi notkunargagna hefur reikningsgerð fyrir notkunargögn á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = entry number, %2 = document number||is-IS=Færsla %1 í innflutningi notkunargagna hefur reikningsgerð fyrir notkunargögn á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - NamedType InvoicedErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 1310317760 - NamedType 3351274" size-unit="char" translate="yes" xml:space="preserve">
@@ -1283,8 +1283,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1310317760 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
           <source>Delete usage data: deletes the imported lines and usage billing of one Usage Data Import so it can be processed again (resetLines), or deletes the whole import (deleteImport). Irreversible, and imports already on a billing line or document are refused. To process the import again use Subscription.Usage.Process.</source>
-          <target>Eyða notkunargögnum: eyðir innfluttum línum og notkunarreikningagerð eins innflutnings notkunargagna svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Óafturkræf aðgerð og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Eyða notkunargögnum: eyðir innfluttum línum og notkunarreikningagerð eins innflutnings notkunargagna svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Óafturkræf aðgerð og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.</note>
+          <target>Eyða notkunargögnum: eyðir innfluttum línum og reikningsgerð fyrir gögn eins notkunarinnflutnings svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Óafturkræf aðgerð og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Eyða notkunargögnum: eyðir innfluttum línum og reikningsgerð fyrir gögn eins notkunarinnflutnings svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Óafturkræf aðgerð og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg DelData Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 141567435 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
@@ -1397,8 +1397,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 1755898718 - Method 1027590672 - NamedType 1290244428" size-unit="char" translate="yes" xml:space="preserve">
           <source>process usage data, process imported usage, create usage billing, process usage import, calculate billable usage, run usage processing steps, process imported lines, turn usage into billing lines</source>
-          <target>vinna notkunargögn, vinna innflutta notkun, stofna notkunarreikningagerð, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=vinna notkunargögn, vinna innflutta notkun, stofna notkunarreikningagerð, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur</note>
+          <target>vinna notkunargögn, vinna innflutta notkun, stofna reikningsgerð fyrir notkunargögn, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=vinna notkunargögn, vinna innflutta notkun, stofna reikningsgerð fyrir notkunargögn, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Usg Process Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1755898718 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
