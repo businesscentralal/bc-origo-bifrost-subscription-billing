@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-27) - refusal review follow-ups (#62)
+
+- 10035058 distinguishes nested missing values, wrong shapes and overlong scalars, avoids doubled expected-text punctuation, collects zero-valued missing selections with other request problems, derives template bounds from the field and translates nested JSON/partner/entry-array expectations.
+- 95723 asserts exact expected values and missing/shape/length codes in both languages, including zero-selection aggregation. PR70 retains its runtime posting-name integration dependency.
+
+### Fixed (2026-10-26) - refusal context review amendments (#62)
+
+- 10035058 guards an unknown enum ordinal before list access, uses consistent InvalidParameterFormat for overlong identifiers with identifier-derived bounds, and gives nested shape/length errors a nonempty expected value.
+- Refusal context in 10035065, 10035055, 10035041, 10035067, 10035052, 10035051, 10035039, 10035061 and 10035068 names the actual request selection and received input; one-of requirements name their accepted alternatives. 10035075 includes PR70's Purchase.Document.Post help correction; PR70 still owns the 10035085 runtime/XLF correction, which must be preserved during ordered integration.
+- 95723 pairs mixed aggregate scenarios in 1033/1039 and asserts each problem's structured fields; targeted guards cover the corrected contexts. Vendor CreateDocuments posting failures use billingTemplateCode when no sales posting event supplies a document number; the native event capture is sales-only, matching the existing sales-only posting path.
+
+### Fixed (2026-10-23) - structured refusals and request validation (#62)
+
+- Foundation minimum dependency is 28.0.8.617 in product and test apps, providing the public rollback-safe error context API used by this change.
+- `Sub Helper ori` (10035058) collects missing, malformed, bounded and allowed-value request problems before business lookups/writes; billing template existence joins other collected problems. Shared readers raise Foundation's structured errors. `Sub Contract Parts ori` (10035075) exposes the existing subject-key contract internally so each subject keeps its actual parameter name.
+- All Subscription Billing message entrypoints invoke the shared preflight (codeunits 10035036, 10035037, 10035038, 10035039, 10035040, 10035041, 10035042, 10035043, 10035044, 10035045, 10035046, 10035047, 10035048, 10035049, 10035050, 10035051, 10035052, 10035053, 10035054, 10035055, 10035056, 10035057, 10035061, 10035065, 10035066, 10035067, 10035068, 10035069, 10035070, 10035071, 10035072, 10035073, 10035085). `Sub Usg Import Impl ori` (10035053) decodes base64 into memory before any persisted import write and returns InvalidParameterFormat instead of raw decoder details.
+- `Sub Refusal Tst ori` (95723) covers single/aggregate errors, localized base64 refusal, subject fallback, empty filter compatibility and the unknown-template/bad-date combination. Domain refusals now use stable shared codes and translated recovery fields; error chapters identify those actual codes. `Sub Posting Context ori` (10035063) scopes a read-only posting subscriber to capture the actual sales document when CreateDocuments posting fails. Positive live MCP, full native/UI and independent verification remain required.
+
+- Permission coverage: `BIFROST SubBil ori` (10035062) and `BIFROST SubBRead ori` (10035064). Additional regressions: `Sub PU Filter Tst ori` (95708) and scoped posting fault helper `Sub Posting Failure Test ori` (95724).
+
+
 ### Changed (2026-10-21) - AppSource delivery
 
 - `.AL-Go/settings.json`: `deliverToAppSource` names the Partner Center offer for Bifrost Subscription Billing (productId 38e354a0-cb89-4b45-81de-b3b69369627f, main app folder `app`, branch main, no continuous delivery), so the Publish To AppSource workflow can deliver new versions to the offer.

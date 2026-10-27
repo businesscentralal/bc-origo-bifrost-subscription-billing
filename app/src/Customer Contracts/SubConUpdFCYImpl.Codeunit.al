@@ -175,6 +175,8 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -206,7 +208,7 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
 
         CurrencyCode := GetContractCurrencyCode(Partner, ContractNo);
         if CurrencyCode = '' then
-            Error(LocalCurrencyErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(LocalCurrencyErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
 
         // Exchange Rate Selection.SetData proposes the rate of the key date; the caller may override it.
         if Helper.HasValue(RequestJson, 'currencyFactor') then
@@ -214,7 +216,7 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
         else
             CurrencyFactor := CurrencyExchangeRate.ExchangeRate(CurrencyFactorDate, CurrencyCode);
         if CurrencyFactor <= 0 then
-            Error(ZeroExchangeRateErr, CurrencyCode, Helper.FormatDate(CurrencyFactorDate), Helper.FormatDecimal(CurrencyFactor));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ZeroExchangeRateErr, CurrencyCode, Helper.FormatDate(CurrencyFactorDate), Helper.FormatDecimal(CurrencyFactor)), 'currencyFactorDate', Helper.FormatDate(CurrencyFactorDate));
 
         RecalculateLines(Partner, ContractNo, CurrencyCode, CurrencyFactor, CurrencyFactorDate, LinesRecalculated, LinesSkipped);
 
@@ -239,11 +241,11 @@ codeunit 10035041 "Sub Con UpdFCY Impl ori" implements "Msg Interface ori", "Msg
     begin
         if Partner = Partner::Vendor then begin
             if not VendorContract.Get(ContractNo) then
-                Error(VendorContractNotFoundErr, ContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(VendorContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
             exit(VendorContract."Currency Code");
         end;
         if not CustomerContract.Get(ContractNo) then
-            Error(CustomerContractNotFoundErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(CustomerContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
         exit(CustomerContract."Currency Code");
     end;
 

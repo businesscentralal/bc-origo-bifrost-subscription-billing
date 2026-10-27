@@ -153,6 +153,8 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -182,13 +184,13 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
 
         if Partner = Partner::Vendor then begin
             if not VendSubContractLine.Get(ContractNo, LineNo) then
-                Error(VendorLineNotFoundErr, LineNo, ContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(VendorLineNotFoundErr, LineNo, ContractNo), 'lineNo', Format(LineNo, 0, 9));
             CheckRemovable(Partner, ContractNo, LineNo, VendSubContractLine.Closed);
             SubscriptionLineEntryNo := VendSubContractLine."Subscription Line Entry No.";
             VendSubContractLine.Delete(true);
         end else begin
             if not CustSubContractLine.Get(ContractNo, LineNo) then
-                Error(CustomerLineNotFoundErr, LineNo, ContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(CustomerLineNotFoundErr, LineNo, ContractNo), 'lineNo', Format(LineNo, 0, 9));
             CheckRemovable(Partner, ContractNo, LineNo, CustSubContractLine.Closed);
             SubscriptionLineEntryNo := CustSubContractLine."Subscription Line Entry No.";
             CustSubContractLine.Delete(true);
@@ -213,32 +215,32 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
         VendSubContractDeferral: Record "Vend. Sub. Contract Deferral";
     begin
         if IsClosed then
-            Error(ClosedLineErr, LineNo, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ClosedLineErr, LineNo, ContractNo), 'lineNo', Format(LineNo, 0, 9));
 
         BillingLine.SetRange(Partner, Partner);
         BillingLine.SetRange("Subscription Contract No.", ContractNo);
         BillingLine.SetRange("Subscription Contract Line No.", LineNo);
         if not BillingLine.IsEmpty() then
-            Error(PendingBillingErr, LineNo, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(PendingBillingErr, LineNo, ContractNo), 'lineNo', Format(LineNo, 0, 9));
 
         BillingLineArchive.SetRange(Partner, Partner);
         BillingLineArchive.SetRange("Subscription Contract No.", ContractNo);
         BillingLineArchive.SetRange("Subscription Contract Line No.", LineNo);
         if not BillingLineArchive.IsEmpty() then
-            Error(BilledErr, LineNo, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(BilledErr, LineNo, ContractNo), 'lineNo', Format(LineNo, 0, 9));
 
         if Partner = Partner::Vendor then begin
             VendSubContractDeferral.SetRange("Subscription Contract No.", ContractNo);
             VendSubContractDeferral.SetRange("Subscription Contract Line No.", LineNo);
             VendSubContractDeferral.SetRange(Released, false);
             if not VendSubContractDeferral.IsEmpty() then
-                Error(DeferralErr, LineNo, ContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(DeferralErr, LineNo, ContractNo), 'lineNo', Format(LineNo, 0, 9));
         end else begin
             CustSubContractDeferral.SetRange("Subscription Contract No.", ContractNo);
             CustSubContractDeferral.SetRange("Subscription Contract Line No.", LineNo);
             CustSubContractDeferral.SetRange(Released, false);
             if not CustSubContractDeferral.IsEmpty() then
-                Error(DeferralErr, LineNo, ContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(DeferralErr, LineNo, ContractNo), 'lineNo', Format(LineNo, 0, 9));
         end;
     end;
 }

@@ -154,6 +154,8 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -186,7 +188,7 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
         SuppliedFilter := Helper.GetText(RequestJson, 'filter', true);
 
         if not BillingTemplate.Get(BillingTemplateCode) then
-            Error(TemplateNotFoundErr, BillingTemplateCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
 
         if BillingTemplate.Partner = BillingTemplate.Partner::Vendor then
             RRef.Open(Database::"Vendor Subscription Contract")
@@ -195,7 +197,7 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
         TargetCaption := RRef.Caption();
         BlankView := RRef.GetView(false);
         if not TryApplyTableView(Argument, RRef, SuppliedFilter, ViewApplied) then
-            Error(InvalidFilterErr, TargetCaption);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidFilterErr, TargetCaption), 'filter', Format(TargetCaption, 0, 9));
         // Foundation has already answered with a structured refusal (code and nextStep) when it returns false.
         if not ViewApplied then begin
             Clear(RRef);

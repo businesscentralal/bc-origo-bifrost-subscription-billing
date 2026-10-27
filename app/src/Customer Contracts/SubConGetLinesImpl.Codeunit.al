@@ -147,6 +147,8 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori", "M
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -180,7 +182,7 @@ codeunit 10035037 "Sub Con GetLines Impl ori" implements "Msg Interface ori", "M
         SubscriptionHeaderNo := Helper.GetCode20(RequestJson, 'subscriptionHeaderNo', false);
 
         if not CustomerSubscriptionContract.Get(ContractNo) then
-            Error(ContractNotFoundErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(ContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
 
         SubscriptionLine.SetRange("Invoicing via", Enum::"Invoicing Via"::Contract);
         SubscriptionLine.SetRange("Subscription Contract No.", '');
