@@ -44,7 +44,7 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'set billing template filter, filter contracts of billing template, restrict billing run to contracts, billing template contract filter, change which contracts are billed, edit template filter, limit billing template, billing filter', Comment = 'is-IS=setja síu á reikningssniðmát, sía samninga reikningssniðmáts, takmarka reikningakeyrslu við samninga, samningssía reikningssniðmáts, breyta því hvaða samningar eru reikningsfærðir, breyta sniðmátssíu, afmarka reikningssniðmát, reikningssía';
+        KeywordsLbl: Label 'set billing template filter, filter contracts of billing template, restrict billing run to contracts, billing template contract filter, change which contracts are billed, edit template filter, limit billing template, billing filter', Comment = 'is-IS=setja síu á reikningssniðmát, sía samninga reikningssniðmáts, takmarka reikningskeyrslu við samninga, samningssía reikningssniðmáts, breyta því hvaða samningar eru reikningsfærðir, breyta sniðmátssíu, afmarka reikningssniðmát, reikningssía';
     begin
         exit(KeywordsLbl);
     end;

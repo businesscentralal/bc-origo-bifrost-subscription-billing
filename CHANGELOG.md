@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-27) - consistent Icelandic billing wording (#76)
+
+- 10035047, 10035054, 10035069, 10035070 and 10035085 use `reikningskeyrsla` consistently for billing runs and clearer wording for billing usage data. Canonical Icelandic label comments and the is-IS XLF stay synchronized.
+
 ### Fixed (2026-10-27) - posting hint matches registered type (#64)
 
 - 10035085 names `Purchase.Document.Post` consistently in vendor refusals, selection text and notes, matching 10035075 help and Foundation registration. XLF is synchronized; 95718 exercises the real foreign-invoice refusal in English and Icelandic. The same retained-owner correction is already present in PR70; no preview effect decision is inferred.

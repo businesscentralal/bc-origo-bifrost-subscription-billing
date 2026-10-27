@@ -65,14 +65,14 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'post billing documents, post subscription invoices, post unposted billing invoices, post purchase documents from billing, book the invoices, post the billing run, post vendor invoices from contracts, post sales invoices from contracts', Comment = 'is-IS=bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningakeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum';
+        KeywordsLbl: Label 'post billing documents, post subscription invoices, post unposted billing invoices, post purchase documents from billing, book the invoices, post the billing run, post vendor invoices from contracts, post sales invoices from contracts', Comment = 'is-IS=bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningskeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purchase.Document.Post instead.', Comment = 'is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.';
+        SelectionLbl: Label 'Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purchase.Document.Post instead.', Comment = 'is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningskeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.';
     begin
         exit(SelectionLbl);
     end;

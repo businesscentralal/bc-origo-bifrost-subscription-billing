@@ -45,7 +45,7 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'process usage data, process imported usage, create usage billing, process usage import, calculate billable usage, run usage processing steps, process imported lines, turn usage into billing lines', Comment = 'is-IS=vinna notkunargögn, vinna innflutta notkun, stofna notkunarreikningagerð, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur';
+        KeywordsLbl: Label 'process usage data, process imported usage, create usage billing, process usage import, calculate billable usage, run usage processing steps, process imported lines, turn usage into billing lines', Comment = 'is-IS=vinna notkunargögn, vinna innflutta notkun, stofna reikningsgerð fyrir notkunargögn, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur';
     begin
         exit(KeywordsLbl);
     end;
