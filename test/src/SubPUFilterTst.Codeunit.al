@@ -32,8 +32,9 @@ codeunit 95708 "Sub PU Filter Tst ori"
         // [THEN] The persisted view matches only the intended row and other Blobs survive.
         Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Expected a successful filter write. ' + ResponseAsText(ResponseJson));
         StoredView := ReadStoredFilter('contract');
-        Assert.AreEqual(ReadText(ResponseJson, 'filter'), StoredView, 'Response must match persisted view.');
         CustomerContract.SetView(StoredView);
+        Assert.AreEqual(CustomerContract.GetView(true), ReadText(ResponseJson, 'filter'), 'Response must use readable field names while preserving the stored view.');
+        Assert.IsFalse(ReadText(ResponseJson, 'filter').Contains('Field3'), 'Internal field identifiers must not be echoed.');
         Assert.AreEqual(1, CustomerContract.Count(), 'Stored filter must not broaden the intended rows.');
         CustomerContract.ReadIsolation := IsolationLevel::ReadCommitted;
         CustomerContract.FindFirst();
@@ -169,6 +170,29 @@ codeunit 95708 "Sub PU Filter Tst ori"
         AssertOtherFiltersUnchanged('contract');
     end;
 
+    [Test]
+    procedure Filter_FieldTokenInValue_IsPreservedInReadableResponse()
+    var
+        CustomerContract: Record "Customer Subscription Contract";
+        ResponseJson: JsonObject;
+        FiltersToken: JsonToken;
+        Filters: JsonObject;
+    begin
+        // [GIVEN] A filter value that happens to look like an internal field token.
+        Initialize(false);
+        CreateCustomerContract('Field3');
+        CustomerContract.SetRange("No.", 'Field3');
+        // [WHEN] The validated filter is stored and displayed from its numeric representation.
+        ResponseJson := InvokeFilter('contract', CustomerContract.GetView(true), true);
+        // [THEN] Field names are readable while the literal value is unchanged.
+        Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Valid view must succeed.');
+        Assert.AreEqual(CustomerContract.GetView(true), ReadText(ResponseJson, 'filter'), 'A field-token literal must survive display conversion.');
+        ResponseJson.Get('filters', FiltersToken);
+        Filters := FiltersToken.AsObject();
+        Assert.AreEqual(CustomerContract.GetView(true), ReadText(Filters, 'contract'), 'Stored filters must display the same readable view.');
+        AssertOtherFiltersUnchanged('contract');
+    end;
+
     local procedure Initialize(VendorPartner: Boolean)
     var
         PriceUpdateTemplate: Record "Price Update Template";
@@ -248,6 +272,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         Assert.AreNotEqual('', ReadText(ResponseJson, 'code'), 'Invalid views must have a structured error code.');
         Assert.AreNotEqual('', ReadText(ResponseJson, 'nextStep'), 'Invalid views must provide a corrective next step.');
         Assert.IsFalse(ResponseJson.Contains('callstack'), 'Errors must not expose a callstack.');
+        Assert.AreEqual('filter', ReadText(ResponseJson, 'parameter'), 'The published filter parameter must be named instead of the internal tableView adapter.');
         AssertAllFiltersUnchanged();
     end;
 
