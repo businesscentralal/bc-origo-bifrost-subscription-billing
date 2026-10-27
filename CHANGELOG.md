@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-27) - posting hint matches registered type (#64)
+
+- 10035085 names `Purchase.Document.Post` consistently in vendor refusals, selection text and notes, matching 10035075 help and Foundation registration. XLF is synchronized; 95718 exercises the real foreign-invoice refusal in English and Icelandic. The same retained-owner correction is already present in PR70; no preview effect decision is inferred.
+
 ### Fixed (2026-10-26) - independent verification wording follow-up (#64)
 
 - 10035040 and 10035075 use Foundation's actual Force Field Access caption (Þvinga reitaaðgang); 95727 compares it with installed permission metadata and 95780 rejects the guessed old name. 95711 retains the real permission boundary.

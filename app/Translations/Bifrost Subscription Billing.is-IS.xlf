@@ -226,9 +226,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ForeignCustomerErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 345330225" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Document %1 %2 was not created by Subscription Billing. Post it with Purch.Document.Post.</source>
-          <target>Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purch.Document.Post.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purch.Document.Post.</note>
+          <source>Document %1 %2 was not created by Subscription Billing. Post it with Purchase.Document.Post.</source>
+          <target>Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purchase.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purchase.Document.Post.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - NamedType ForeignVendorErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - NamedType 3172811853" size-unit="char" translate="yes" xml:space="preserve">
@@ -322,9 +322,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method GetKeywords - NamedType KeywordsLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 2718484512 - Method 79446908 - NamedType 895773054" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purch.Document.Post instead.</source>
-          <target>Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purch.Document.Post.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purch.Document.Post.</note>
+          <source>Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purchase.Document.Post instead.</source>
+          <target>Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Bil PostDocs Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
         <trans-unit id="Codeunit 1255069892 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
