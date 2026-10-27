@@ -19,7 +19,12 @@ codeunit 10035058 "Sub Helper ori"
         CorrectParameterTxt: Label 'Correct %1 and resend the request.', Comment = '%1 = parameter||is-IS=Leiðréttu %1 og sendu beiðnina aftur.';
         MaximumLengthTxt: Label '%1 characters at most.', Comment = '%1 = maximum length||is-IS=Að hámarki %1 stafir.';
         ExpectedValueTxt: Label 'A valid value for %1.', Comment = '%1 = parameter||is-IS=Gilt gildi fyrir %1.';
-        InvalidValueErr: Label 'The parameter %1 has an invalid value. Expected %2.', Comment = '%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.';
+        InvalidValueErr: Label 'The parameter %1 has an invalid value. Expected %2', Comment = '%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2';
+        TextValueTxt: Label 'A text value for %1.', Comment = '%1 = parameter||is-IS=Textagildi fyrir %1.';
+        JsonObjectTxt: Label 'A JSON object.', Comment = 'is-IS=JSON-hlutur.';
+        JsonArrayTxt: Label 'A JSON array.', Comment = 'is-IS=JSON-fylki.';
+        IntegerArrayTxt: Label 'An array of whole numbers.', Comment = 'is-IS=Fylki af heilum tölum.';
+        PartnerValuesTxt: Label 'Customer or Vendor.', Comment = 'Customer and Vendor are request values||is-IS=Customer eða Vendor.';
         ProblemsErr: Label '%1 problems in the request. Nothing was written.', Comment = '%1 = problem count||is-IS=%1 vandamál í beiðninni. Ekkert var skrifað.';
         Base64ExpectedTxt: Label 'A valid base64-encoded file.', Comment = 'is-IS=Gild base64-kóðuð skrá.';
         TemplateNotFoundErr: Label 'The Billing Template %1 does not exist.', Comment = '%1 = template code||is-IS=Reikningssniðmátið %1 er ekki til.';
@@ -177,7 +182,7 @@ codeunit 10035058 "Sub Helper ori"
             Received := GetText(Request, SubjectKey, false);
             if Argument.Subject <> '' then
                 Received := Argument.Subject;
-            if (Received <> '') and (StrLen(Received) <= 20) then
+            if (Received <> '') and (StrLen(Received) <= MaxStrLen(BillingTemplate.Code)) then
                 if not BillingTemplate.Get(CopyStr(Received, 1, MaxStrLen(BillingTemplate.Code))) then begin
                     Argument.AddError("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, Received), SubjectKey, Received, ExistingTemplateTxt, StrSubstNo(CorrectParameterTxt, SubjectKey));
                     ProblemCount += 1;
@@ -232,6 +237,7 @@ codeunit 10035058 "Sub Helper ori"
     local procedure HasSelectionInput(Request: JsonObject; ParameterName: Text): Boolean
     var
         Token: JsonToken;
+        EntryNo: Integer;
     begin
         if not Request.Get(ParameterName, Token) then
             exit(false);
@@ -240,6 +246,9 @@ codeunit 10035058 "Sub Helper ori"
             exit(true);
         if Token.AsValue().IsNull() then
             exit(false);
+        if ParameterName in ['subscriptionLineEntryNo', 'usageDataSubscriptionEntryNo'] then
+            if Evaluate(EntryNo, Token.AsValue().AsText(), 9) then
+                exit(EntryNo <> 0);
         exit(Token.AsValue().AsText() <> '');
     end;
 
@@ -262,14 +271,14 @@ codeunit 10035058 "Sub Helper ori"
                 exit;
             Values := ArrayToken.AsArray();
             if Values.Count() = 0 then begin
-                Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'documents'), 'documents', '[]', 'array', StrSubstNo(CorrectParameterTxt, 'documents'));
+                Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'documents'), 'documents', '[]', JsonArrayTxt, StrSubstNo(CorrectParameterTxt, 'documents'));
                 ProblemCount += 1;
             end;
             foreach Entry in Values do begin
                 Path := StrSubstNo(DocumentPathTxt, Index);
                 if not Entry.IsObject() then begin
                     Entry.WriteTo(Received);
-                    Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, Path, 'object'), Path, Received, 'object', StrSubstNo(CorrectParameterTxt, Path));
+                    Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, Path, JsonObjectTxt), Path, Received, JsonObjectTxt, StrSubstNo(CorrectParameterTxt, Path));
                     ProblemCount += 1;
                 end else begin
                     Item := Entry.AsObject();
@@ -301,30 +310,41 @@ codeunit 10035058 "Sub Helper ori"
             exit;
         end;
         Token.WriteTo(Received);
+        Expected := StrSubstNo(TextValueTxt, Path);
+        ErrorCode := "Bifrost Error Code ori"::InvalidParameterFormat;
         if Token.IsValue() then
-            if not Token.AsValue().IsNull() then begin
-                Received := Token.AsValue().AsText();
-                Found := (not Required or (Received <> '')) and ((MaximumLength = 0) or (StrLen(Received) <= MaximumLength));
-                if Found and (Allowed <> '') then begin
-                    Found := false;
-                    AllowedValues := Allowed.Split('|');
-                    foreach Candidate in AllowedValues do
-                        if LowerCase(Candidate) = LowerCase(Received) then
-                            Found := true;
+            if Token.AsValue().IsNull() then begin
+                if Required then begin
+                    ErrorCode := "Bifrost Error Code ori"::MissingParameter;
+                    Received := '<missing>';
                 end;
+            end else begin
+                Received := Token.AsValue().AsText();
+                if Required and (Received = '') then begin
+                    ErrorCode := "Bifrost Error Code ori"::MissingParameter;
+                    Received := '<missing>';
+                end else
+                    if (MaximumLength > 0) and (StrLen(Received) > MaximumLength) then
+                        Expected := StrSubstNo(MaximumLengthTxt, MaximumLength)
+                    else begin
+                        Found := true;
+                        if Allowed <> '' then begin
+                            Found := false;
+                            AllowedValues := Allowed.Split('|');
+                            foreach Candidate in AllowedValues do
+                                if LowerCase(Candidate) = LowerCase(Received) then
+                                    Found := true;
+                            ErrorCode := "Bifrost Error Code ori"::InvalidParameter;
+                            Expected := Allowed;
+                        end;
+                    end;
             end;
         if Found then
             exit;
-        ErrorCode := "Bifrost Error Code ori"::InvalidParameter;
-        Expected := Allowed;
-        if Expected = '' then begin
-            ErrorCode := "Bifrost Error Code ori"::InvalidParameterFormat;
-            if MaximumLength > 0 then
-                Expected := StrSubstNo(MaximumLengthTxt, MaximumLength)
-            else
-                Expected := StrSubstNo(ExpectedValueTxt, Path);
-        end;
-        Argument.AddError(ErrorCode, StrSubstNo(InvalidValueErr, Path, Expected), Path, Received, Expected, StrSubstNo(CorrectParameterTxt, Path));
+        if ErrorCode = "Bifrost Error Code ori"::MissingParameter then
+            Argument.AddError(ErrorCode, StrSubstNo(MissingParameterErr, Path), Path, Received, Expected, StrSubstNo(CorrectParameterTxt, Path))
+        else
+            Argument.AddError(ErrorCode, StrSubstNo(InvalidValueErr, Path, Expected), Path, Received, Expected, StrSubstNo(CorrectParameterTxt, Path));
         ProblemCount += 1;
     end;
 
@@ -527,9 +547,9 @@ codeunit 10035058 "Sub Helper ori"
 
         foreach EntryNoJToken in EntryNoJsonArray do begin
             if not EntryNoJToken.IsValue() then
-                RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidEntryNoArrayErr, PropertyName), PropertyName, '', 'array of integers');
+                RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidEntryNoArrayErr, PropertyName), PropertyName, '', IntegerArrayTxt);
             if not Evaluate(EntryNo, EntryNoJToken.AsValue().AsText(), 9) then
-                RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidEntryNoArrayErr, PropertyName), PropertyName, '', 'array of integers');
+                RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidEntryNoArrayErr, PropertyName), PropertyName, '', IntegerArrayTxt);
             if not SelectedEntryNos.ContainsKey(EntryNo) then
                 SelectedEntryNos.Add(EntryNo, true);
         end;
@@ -670,7 +690,7 @@ codeunit 10035058 "Sub Helper ori"
             VendorTok:
                 exit(Enum::"Service Partner"::Vendor);
             else
-                RaiseError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidPartnerErr, PropertyName), PropertyName, TextValue, 'Customer or Vendor');
+                RaiseError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidPartnerErr, PropertyName), PropertyName, TextValue, PartnerValuesTxt);
         end;
     end;
 

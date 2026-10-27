@@ -2,12 +2,16 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-27) - refusal review follow-ups (#62)
+
+- 10035058 distinguishes nested missing values, wrong shapes and overlong scalars, avoids doubled expected-text punctuation, collects zero-valued missing selections with other request problems, derives template bounds from the field and translates nested JSON/partner/entry-array expectations.
+- 95723 asserts exact expected values and missing/shape/length codes in both languages, including zero-selection aggregation. PR70 retains its runtime posting-name integration dependency.
+
 ### Fixed (2026-10-26) - refusal context review amendments (#62)
 
-- 10035058 guards an unknown enum ordinal before list access, uses consistent InvalidParameterFormat for overlong identifiers with field-derived bounds, and gives nested shape/length errors a nonempty expected value.
-- Refusal context in 10035065, 10035055, 10035041, 10035067, 10035052, 10035051, 10035039, 10035061 and 10035068 names the actual request selection and received input; one-of requirements name their accepted alternatives. 10035075 preserves PR70's Purchase.Document.Post help correction.
-- 95723 pairs mixed aggregate scenarios in1033/1039 and asserts each problem's structured fields; targeted guards cover the corrected contexts. Vendor CreateDocuments posting failures use billingTemplateCode when no sales posting event supplies a document number; the native event capture is sales-only, matching the existing sales-only posting path.
-
+- 10035058 guards an unknown enum ordinal before list access, uses consistent InvalidParameterFormat for overlong identifiers with identifier-derived bounds, and gives nested shape/length errors a nonempty expected value.
+- Refusal context in 10035065, 10035055, 10035041, 10035067, 10035052, 10035051, 10035039, 10035061 and 10035068 names the actual request selection and received input; one-of requirements name their accepted alternatives. 10035075 includes PR70's Purchase.Document.Post help correction; PR70 still owns the 10035085 runtime/XLF correction, which must be preserved during ordered integration.
+- 95723 pairs mixed aggregate scenarios in 1033/1039 and asserts each problem's structured fields; targeted guards cover the corrected contexts. Vendor CreateDocuments posting failures use billingTemplateCode when no sales posting event supplies a document number; the native event capture is sales-only, matching the existing sales-only posting path.
 
 ### Fixed (2026-10-23) - structured refusals and request validation (#62)
 

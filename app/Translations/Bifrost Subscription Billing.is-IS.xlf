@@ -855,6 +855,12 @@
           <note from="Developer" annotates="general" priority="2">%1 = parameter||is-IS=Gilt gildi fyrir %1.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType ExpectedValueTxt</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 3355950737" size-unit="char" translate="yes" xml:space="preserve">
+          <source>An array of whole numbers.</source>
+          <target>Fylki af heilum tölum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Fylki af heilum tölum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType IntegerArrayTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 1432801292" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter '%1' is not a valid date. Use the ISO format YYYY-MM-DD.</source>
           <target>Færibreytan '%1' er ekki gild dagsetning. Notaðu ISO sniðið YYYY-MM-DD.</target>
@@ -880,10 +886,22 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidPartnerErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 2510853505" size-unit="char" translate="yes" xml:space="preserve">
-          <source>The parameter %1 has an invalid value. Expected %2.</source>
-          <target>Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.</target>
-          <note from="Developer" annotates="general" priority="2">%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.</note>
+          <source>The parameter %1 has an invalid value. Expected %2</source>
+          <target>Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidValueErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 806955483" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A JSON array.</source>
+          <target>JSON-fylki.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=JSON-fylki.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType JsonArrayTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 2445195503" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A JSON object.</source>
+          <target>JSON-hlutur.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=JSON-hlutur.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType JsonObjectTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 2450001600" size-unit="char" translate="yes" xml:space="preserve">
           <source>%1 characters at most.</source>
@@ -903,6 +921,12 @@
           <note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Færibreytan '%1' verður að vera JSON-fylki.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType NotAnArrayErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 1874512770" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Customer or Vendor.</source>
+          <target>Customer eða Vendor.</target>
+          <note from="Developer" annotates="general" priority="2">Customer and Vendor are request values||is-IS=Customer eða Vendor.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType PartnerValuesTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 494448295" size-unit="char" translate="yes" xml:space="preserve">
           <source>%1 problems in the request. Nothing was written.</source>
           <target>%1 vandamál í beiðninni. Ekkert var skrifað.</target>
@@ -914,6 +938,12 @@
           <target>Reikningssniðmátið %1 er ekki til.</target>
           <note from="Developer" annotates="general" priority="2">%1 = template code||is-IS=Reikningssniðmátið %1 er ekki til.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType TemplateNotFoundErr</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 859587394" size-unit="char" translate="yes" xml:space="preserve">
+          <source>A text value for %1.</source>
+          <target>Textagildi fyrir %1.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter||is-IS=Textagildi fyrir %1.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType TextValueTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 2127484308" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter '%1' is longer than the %2 characters allowed.</source>

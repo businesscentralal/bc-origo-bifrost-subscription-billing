@@ -505,9 +505,46 @@ codeunit 95723 "Sub Refusal Tst ori"
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
         Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'A nested object cannot be a document number.');
         AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'documents[0].documentNo', '{}');
-        Assert.IsFalse(TestLibrary.ReadText(TempArgument.GetResponseJson(), 'error').Contains('Expected .'), 'Expected cannot be empty.');
-        Assert.IsFalse(TestLibrary.ReadText(TempArgument.GetResponseJson(), 'error').Contains('Væntanlegt er .'), 'Icelandic expected cannot be empty.');
+        AssertNestedExpected(TempArgument.GetResponseJson(), LanguageId, false);
+
+        Document.Remove('documentNo');
+        Document.Add('documentNo', '');
+        Clear(Documents);
+        Documents.Add(Document);
+        Request.Replace('documents', Documents);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'An empty required nested value is missing.');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'documents[0].documentNo', '<missing>');
+        AssertNestedExpected(TempArgument.GetResponseJson(), LanguageId, false);
+
+        Document.Remove('documentNo');
+        Document.Add('documentNo', LongIdentifier);
+        Clear(Documents);
+        Documents.Add(Document);
+        Request.Replace('documents', Documents);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Only an overlong scalar should report the length bound.');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'documents[0].documentNo', LongIdentifier);
+        AssertNestedExpected(TempArgument.GetResponseJson(), LanguageId, true);
         GlobalLanguage(PreviousLanguage);
+    end;
+
+    local procedure AssertNestedExpected(Response: JsonObject; LanguageId: Integer; IsLengthProblem: Boolean)
+    var
+        Expected: Text;
+    begin
+        if IsLengthProblem then
+            if LanguageId = 1039 then
+                Expected := 'Að hámarki 20 stafir.'
+            else
+                Expected := '20 characters at most.'
+        else
+            if LanguageId = 1039 then
+                Expected := 'Textagildi fyrir documents[0].documentNo.'
+            else
+                Expected := 'A text value for documents[0].documentNo.';
+        Assert.AreEqual(Expected, TestLibrary.ReadText(Response, 'expected'), 'Expected must describe the actual nested problem in the request language.');
+        Assert.IsFalse(TestLibrary.ReadText(Response, 'error').Contains('..'), 'Expected text must not produce doubled punctuation.');
     end;
 
     [Test]
@@ -681,6 +718,16 @@ codeunit 95723 "Sub Refusal Tst ori"
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
         AssertProblem(Response, 'MissingParameter', 'subscriptionHeaderNo', '<missing>');
         AssertProblem(Response, 'MissingParameter', 'customerContractNo', '<missing>');
+        Clear(Request);
+        Request.Add('subscriptionLineEntryNo', 0);
+        Request.Add('usageDataSubscriptionEntryNo', 0);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Zero selections must be rejected as missing before lookup.');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'usageDataSubscriptionEntryNo', '<missing>');
+        Request.Replace('usageDataSubscriptionEntryNo', 'not-an-entry-number');
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'A malformed supplied alternative has its own format error, without a duplicate missing error.');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'usageDataSubscriptionEntryNo', 'not-an-entry-number');
         GlobalLanguage(PreviousLanguage);
     end;
 
