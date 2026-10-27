@@ -17,8 +17,8 @@ codeunit 95728 "Sub MCP Seed ori"
         Fixture.SetFilter("Fixture Key", 'ZZSB63W5*');
         if not Fixture.IsEmpty() then
             Error(AlreadySeededErr);
-        SeedLanguage('ZZSB63W5-1033');
-        SeedLanguage('ZZSB63W5-1039');
+        SeedLanguage('ZZSB63W5B-1033');
+        SeedLanguage('ZZSB63W5B-1039');
     end;
 
     var
@@ -44,11 +44,15 @@ codeunit 95728 "Sub MCP Seed ori"
         FirstInvoice: Code[20];
         FailedInvoice: Code[20];
     begin
+        Clear(Subscription);
         TestLibrary.CreateBillableCustomerContract(Contract, Subscription, 0D);
+        Clear(Subscription);
         TestLibrary.CreateBillableCustomerContract(OtherContract, Subscription, 0D);
         Store(FixtureKey, 'analysisContract', Contract."No.");
         Store(FixtureKey, 'otherAnalysisContract', OtherContract."No.");
+        Clear(Subscription);
         TestLibrary.CreateBillableVendorContract(VendorContract, Subscription);
+        Clear(Subscription);
         TestLibrary.CreateBillableVendorContract(OtherVendorContract, Subscription);
         Invoice.Init();
         Invoice."Document Type" := Invoice."Document Type"::Invoice;
@@ -58,6 +62,7 @@ codeunit 95728 "Sub MCP Seed ori"
         Store(FixtureKey, 'vendorContract', VendorContract."No.");
         Store(FixtureKey, 'foreignVendorContract', OtherVendorContract."No.");
         Store(FixtureKey, 'vendorInvoice', Invoice."No.");
+        Clear(Subscription);
         TestLibrary.CreateBillableCustomerContract(RenewalContract, Subscription, CalcDate('<CM+11M>', WorkDate()));
         TestLibrary.CreatePackage(Package, true, false, false);
         TestLibrary.RunLineCreate(Subscription."No.", Package.Code, WorkDate(), CalcDate('<CM+11M>', WorkDate()));
@@ -109,6 +114,7 @@ codeunit 95728 "Sub MCP Seed ori"
         Response: JsonObject;
         Token: JsonToken;
     begin
+        Clear(Subscription);
         TestLibrary.CreateBillableCustomerContract(Contract, Subscription, 0D);
         TestLibrary.CreateBillingTemplate(BillingTemplate, Enum::"Service Partner"::Customer, Contract."No.");
         Request.Add('billingTemplateCode', BillingTemplate.Code);
