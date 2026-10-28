@@ -101,7 +101,7 @@ codeunit 95711 "Sub Con UpdDates Tst ori"
         LowerPermissions.StopLoggingNAVPermissions();
 
         // [THEN] It is refused with a structured PermissionDenied error that names the permission set, and nothing is queued
-        TestLib.AssertRefused(ResponseJson, 'BIFROST Force ori');
+        TestLib.AssertRefused(ResponseJson, 'Force Field Access');
         Assert.AreEqual('PermissionDenied', TestLib.GetText(ResponseJson, 'code'), 'The refusal must carry the PermissionDenied code.');
         Assert.AreEqual(EntriesBefore, JobQueueEntry.Count(), 'A refused call must not create a Job Queue Entry.');
     end;

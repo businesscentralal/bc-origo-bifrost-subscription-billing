@@ -44,7 +44,7 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'preview billing documents, what would the billing run create, preview invoices before billing, dry run billing, check billing run, review proposal documents, preview bulk billing, billing warnings', Comment = 'is-IS=forskoða reikningsskjöl, hvað myndi reikningakeyrslan búa til, forskoða reikninga áður en reikningsfært er, þurrkeyrsla reikningagerðar, athuga reikningakeyrslu, yfirfara skjöl tillögunnar, forskoða magnreikningagerð, viðvaranir reikningagerðar';
+        KeywordsLbl: Label 'preview billing documents, what would the billing run create, preview invoices before billing, dry run billing, check billing run, review proposal documents, preview bulk billing, billing warnings', Comment = 'is-IS=forskoða reikningsskjöl, hvað myndi reikningskeyrslan búa til, forskoða reikninga áður en reikningsfært er, þurrkeyrsla reikningagerðar, athuga reikningskeyrslu, yfirfara skjöl tillögunnar, forskoða magnreikningagerð, viðvaranir reikningagerðar';
     begin
         exit(KeywordsLbl);
     end;

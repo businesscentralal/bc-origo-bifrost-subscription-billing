@@ -6,6 +6,42 @@
 
 - Tests `Sub Post Gate Tst ori` (95719) and `Sub Perm Full Tst ori` (95771) execute the product calls under exactly `BIFROST Full ori`, then restore test permissions before invoking Library Assert. Each contract read reapplies the restricted role. The tests require permission mocking to be active, so a runner cannot silently execute these scenarios with its ambient permissions.
 
+### Fixed (2026-10-27) - consistent Icelandic billing wording (#76)
+
+- 10035047, 10035054, 10035069, 10035070 and 10035085 use `reikningskeyrsla` consistently for billing runs and clearer wording for billing usage data. Canonical Icelandic label comments and the is-IS XLF stay synchronized.
+
+### Fixed (2026-10-27) - posting hint matches registered type (#64)
+
+- 10035085 names `Purchase.Document.Post` consistently in vendor refusals, selection text and notes, matching 10035075 help and Foundation registration. XLF is synchronized; 95718 exercises the real foreign-invoice refusal in English and Icelandic. The same retained-owner correction is already present in PR70; no preview effect decision is inferred.
+
+### Fixed (2026-10-26) - independent verification wording follow-up (#64)
+
+- 10035040 and 10035075 use Foundation's actual Force Field Access caption (Þvinga reitaaðgang); 95727 compares it with installed permission metadata and 95780 rejects the guessed old name. 95711 retains the real permission boundary.
+- 10035039, 10035044 and 10035054 improve Icelandic wording; 10035075 separates quote creation from direct renewal. 10035073 uses business wording in merge notes; 10035042 and 10035057 remove the remaining abbreviated contract-line table names from public descriptions; actual machine field names in runtime refusals remain documented truthfully.
+
+### Changed (2026-10-26) - accurate preview and permission contracts (#64)
+
+- The customer and vendor PreviewInvoice effects report temporary writes with no lasting changes; descriptions in 10035039 and 10035044 stay within 20–200 characters in both languages. Permission-set contract values use captions users can find.
+
+### Fixed (2026-10-26) - review amendments (#64)
+
+- 10035048 validates stored views through Foundation before display; numeric field tokens are named without changing filter values. Unknown fields are never silently applied. 10035075 removes internal staging, renewal and archive table names and retains PR70's `Purchase.Document.Post` correction.
+- 10035046 and 10035057 remove archive and staging table names from their help. 10035040 and 10035086 correct permission names and Icelandic spelling; 95708, 95727 and 95780 cover readable filters, discovery limits and public wording. XLF stays synchronized.
+
+### Fixed (2026-10-23) - operation help and workflow wording (#64)
+
+- `Sub Contract Parts ori` (10035075) describes temporary invoice previews as writes that leave no persistent changes, replaces posting/proposal implementation names and permission-set object names with business wording, and supplies workflows for every operation, including company-wide job-queue term updates and committed deferral posting.
+- Discovery labels remove Blob and update Icelandic terminology. Existing PR #68 wording/filter fixes are retained.
+- `Sub Contract Complete Tst ori` (95780) rejects the reported internal object/procedure names and permission-set suffix pattern in help, requires a workflow for all operations and checks the two temporary preview effects explicitly.
+- Additional touched objects: `Sub Bil CrProposal Impl ori` (10035045), `Sub Con RemoveLine Impl ori` (10035071), `Sub Con UpdDates Impl ori` (10035040), `Sub PU SetFilter Impl ori` (10035048), `Sub Usg Process Impl ori` (10035054), and `Sub Contract Batch1 Tst ori` (95706).
+- Refusal wording `Sub Bil PostDocs Impl ori` (10035085) uses translated document captions and corrected Icelandic spelling. Billing and price-update filter responses show field names; their refusals name `filter`, and PriceUpdate help lists InvalidFilterField.
+- Readable-filter and localized-refusal regressions: `Sub Bil SetFilter Impl ori` (10035070), `Sub PU Filter Tst ori` (95708), `Sub ShouldHave Tst ori` (95715), and `Sub Help Wording Tst ori` (95727).
+- Other touched acceptance objects: `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend PrvInv Impl ori` (10035044).
+
+### Changed (2026-10-21) - AppSource delivery
+
+- `.AL-Go/settings.json`: `deliverToAppSource` names the Partner Center offer for Bifrost Subscription Billing (productId 38e354a0-cb89-4b45-81de-b3b69369627f, main app folder `app`, branch main, no continuous delivery), so the Publish To AppSource workflow can deliver new versions to the offer.
+
 ### Changed (2026-10-21) - message type contract and discovery brought to Foundation parity
 
 The contract chapters of all 33 message types were already complete; the audit against Bifrost Foundation found the gaps below and closes them. No public object, procedure, enum value or id changes, and no behaviour of a message type changes.
