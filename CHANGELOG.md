@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-28) - licence-administrator setup access (#80)
+
+- `Sub Registration ori` (10035060) has inherent execute permission so Foundation can collect installed apps when a restricted licence administrator opens Bifrost Setup.
+- `Sub LicAdm Setup Tst ori` (95728) opens the real setup page under the licence-administrator role in English and Icelandic, verifies the app is registered and the page remains read-only. The test-only platform baseline (95729) grants no Subscription Billing or Bifrost administrator permissions. Assertions run after restoring test permissions. `test/app.json` requires Foundation 28.0.10 or later for this regression.
+
 ### Fixed (2026-10-27) - consistent Icelandic billing wording (#76)
 
 - 10035047, 10035054, 10035069, 10035070 and 10035085 use `reikningskeyrsla` consistently for billing runs and clearer wording for billing usage data. Canonical Icelandic label comments and the is-IS XLF stay synchronized.
