@@ -59,7 +59,7 @@ codeunit 95728 "Sub LicAdm Setup Tst ori"
         PreviousLanguage := GlobalLanguage();
         GlobalLanguage(LanguageId);
         LowerPermissions.SetExactPermissionSet('BIFROST LicAdm ori');
-        LowerPermissions.AddPermissionSet('Sub Setup Platform ori');
+        LowerPermissions.AddPermissionSet('Sub Setup Test ori');
 
         // [WHEN] The real page invokes registration, before any direct registry warm-up.
         SetupPage.OpenView();

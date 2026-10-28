@@ -6,7 +6,7 @@ using System.Environment.Configuration;
 /// Supplies only platform reads for the restricted setup-page regression.
 /// Product execute and administrator permissions must come from the real product roles.
 /// </summary>
-permissionset 95729 "Sub Setup Platform ori"
+permissionset 95729 "Sub Setup Test ori"
 {
     Assignable = true;
     Caption = 'Setup test platform', Locked = true;

@@ -61,7 +61,7 @@ Tests:
   (behaviour tests that drive Microsoft Subscription Billing, #43)
 - 95717 `Sub Con Ccy Tst ori` (#51), 95718 `Sub PostDocs Tst ori`, 95719 `Sub Post Gate Tst ori` (#52)
 - 95720 `Sub Con Merge Tst ori` (#50)
-- 95728 `Sub LicAdm Setup Tst ori`, 95729 permission set `Sub Setup Platform ori` (#80)
+- 95728 `Sub LicAdm Setup Tst ori`, 95729 permission set `Sub Setup Test ori` (#80)
 - Free: 95721-95726, 95730-95739, 95744-95769, 95779, 95781-95799
 
 ## Setup Notifications
