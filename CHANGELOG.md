@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed (2026-10-29) - Microsoft source link
+
+- README.md and AGENTS.md link the source of the Microsoft Subscription Billing app (docs only, no AL).
+
 ### Fixed (2026-10-23) - permission test isolation (#73)
 
 - Tests `Sub Post Gate Tst ori` (95719) and `Sub Perm Full Tst ori` (95771) execute the product calls under exactly `BIFROST Full ori`, then restore test permissions before invoking Library Assert. Each contract read reapplies the restricted role. The tests require permission mocking to be active, so a runner cannot silently execute these scenarios with its ambient permissions.

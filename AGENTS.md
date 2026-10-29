@@ -10,3 +10,8 @@ stripping, signing requests, deferred cleanup, merged settings before secrets, a
 upgrade skipping. Keep this repository's app IDs, action versions, dependency settings and
 deployment variables. Apply compatible upstream updates and reapply the Bifrost custom blocks
 before pushing; do not disable the guard or exclude generated workflows from future updates.
+
+## Microsoft source
+
+The source code of the Microsoft Subscription Billing app is at
+<https://github.com/microsoft/BCApps/tree/main/src/Apps/W1/Subscription%20Billing>.
