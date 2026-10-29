@@ -18,13 +18,14 @@ codeunit 95771 "Sub Perm Full Tst ori"
     var
         Assert: Codeunit "Library Assert";
         LowerPermissions: Codeunit "Library - Lower Permissions";
+        PermissionsMock: Codeunit "Permissions Mock";
 
     [Test]
     procedure Scenario_AC03_FullSetOnly_ReadsContractOfContractPartsTypes()
     begin
         // Issue #42, AC03 | Time: none | Risk: None
         // [GIVEN] The session holds only BIFROST Full ori
-        LowerPermissions.SetExactPermissionSet('BIFROST Full ori');
+        Assert.IsTrue(PermissionsMock.IsStarted(), 'The test runner must enable permission mocking.');
 
         // [WHEN] The contracts of the four types that call Sub Contract Parts ori are built
         // [THEN] Each contract is built without a permission error
@@ -40,14 +41,22 @@ codeunit 95771 "Sub Perm Full Tst ori"
         Impl: Codeunit "Sub Bil CrProposal Impl ori";
         Effect: JsonObject;
         Parameters: JsonArray;
+        HasEffect: Boolean;
+        HasParameters: Boolean;
     begin
         // Issue #42, AC03 edge case | Time: none | Risk: None
         // [GIVEN] The session holds only BIFROST Full ori
+        Assert.IsTrue(PermissionsMock.IsStarted(), 'The test runner must enable permission mocking.');
         LowerPermissions.SetExactPermissionSet('BIFROST Full ori');
 
         // [WHEN] The implementation codeunit builds its chapters through Sub Contract Parts ori
-        Assert.IsTrue(Impl.GetEffect(Effect), 'GetEffect must answer.');
-        Assert.IsTrue(Impl.GetParameters(Parameters), 'GetParameters must answer.');
+        HasEffect := Impl.GetEffect(Effect);
+        HasParameters := Impl.GetParameters(Parameters);
+        LowerPermissions.SetOutsideO365Scope();
+
+        // Assertion-library Execute permission is test infrastructure, not a product grant.
+        Assert.IsTrue(HasEffect, 'GetEffect must answer.');
+        Assert.IsTrue(HasParameters, 'GetParameters must answer.');
 
         // [THEN] The chapters carry content
         Assert.IsTrue(Effect.Contains('effect'), 'The effect chapter must be built.');
@@ -58,8 +67,13 @@ codeunit 95771 "Sub Perm Full Tst ori"
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
         Contract: JsonObject;
+        HasContract: Boolean;
     begin
-        Assert.IsTrue(ContractMgt.GetContract(MessageType, Contract), 'The contract must be built.');
+        // Reapply the exact role for every call, including after the preceding assertions.
+        LowerPermissions.SetExactPermissionSet('BIFROST Full ori');
+        HasContract := ContractMgt.GetContract(MessageType, Contract);
+        LowerPermissions.SetOutsideO365Scope();
+        Assert.IsTrue(HasContract, 'The contract must be built.');
         Assert.IsTrue(Contract.Contains('effect'), 'The contract must carry the effect chapter.');
     end;
 }
