@@ -124,7 +124,8 @@ extension is operated entirely through message types.
 | Bifrost Foundation | `7505e808-6e52-4b96-a328-82573391297a` | Origo | 28.0.3.530 |
 | Subscription Billing | `3099ffc7-4cf7-4df6-9b96-7e4bc2bb587c` | Microsoft | 28.3.0.0 |
 
-The test app additionally depends on Bifrost Subscription Billing itself and on Microsoft's
+The test app requires Foundation 28.0.10 or later for the restricted licence-administrator setup regression.
+It additionally depends on Bifrost Subscription Billing itself and on Microsoft's
 Tests-TestLibraries, Application Test Library, Library Assert, Test Runner, Any and Library Variable
 Storage.
 
@@ -178,6 +179,8 @@ no `Apps` group action, no setup table, no setup page and no Secret Store entry.
 calls Microsoft's Subscription Billing app in-process; there is no external service, no API key and
 no outbound HTTP. Everything the operations need is configured in Microsoft's own Subscription
 Billing setup (billing templates, contract types, price update templates, usage data suppliers).
+The app registers itself with Foundation even when a restricted licence administrator opens Bifrost Setup;
+registration does not grant setup-edit or Subscription Billing permissions.
 Grant `BIFROST SubBil ori` alongside a Bifröst Foundation permission set and the Microsoft
 Subscription Billing permission sets, and the app is ready. Posting through
 `Subscription.Billing.PostDocuments` also needs `BIFROST SubPost ori`, which is assigned on its own
