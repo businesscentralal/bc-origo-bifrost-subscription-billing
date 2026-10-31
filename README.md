@@ -64,6 +64,13 @@ and `Help.Implementation.Get` answer the same list and each type's contract at r
 
 ---
 
+## Microsoft source
+
+The source code of the Microsoft Subscription Billing app is at
+<https://github.com/microsoft/BCApps/tree/main/src/Apps/W1/Subscription%20Billing>.
+
+---
+
 ## Documentation
 
 All public documentation lives in the [businesscentralal/bifrost](https://github.com/businesscentralal/bifrost)
