@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-29) - licence-administrator setup access (#80)
+
+- `Sub Registration ori` (10035060) has inherent execute permission and entitlement so Foundation can collect installed apps when a restricted licence administrator opens Bifrost Setup.
+- `Sub LicAdm Setup Tst ori` (95728) opens the real setup page under the licence-administrator role in English and Icelandic, verifies the app is registered and the page remains read-only. The test-only platform baseline (95729) grants no Subscription Billing or Bifrost administrator permissions. Assertions run after restoring test permissions. `test/app.json` requires Foundation 28.0.10 or later for this regression.
+
 ### Fixed (2026-10-23) - permission test isolation (#73)
 
 - Tests `Sub Post Gate Tst ori` (95719) and `Sub Perm Full Tst ori` (95771) execute the product calls under exactly `BIFROST Full ori`, then restore test permissions before invoking Library Assert. Each contract read reapplies the restricted role. The tests require permission mocking to be active, so a runner cannot silently execute these scenarios with its ambient permissions.
