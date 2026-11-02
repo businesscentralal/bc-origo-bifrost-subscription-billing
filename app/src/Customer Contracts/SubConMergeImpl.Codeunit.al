@@ -128,7 +128,7 @@ codeunit 10035073 "Sub Con Merge Impl ori" implements "Msg Interface ori", "Msg 
 
     procedure GetNotes(var Notes: Text): Boolean
     begin
-        Notes := 'The eligibility rules and the resulting line are Microsoft''s merge on Cust. Sub. Contract Line. ' +
+        Notes := 'The eligibility rules and the resulting line are Microsoft''s merge of customer contract lines. ' +
             'referenceLineNo replaces the selection page, which an unattended caller cannot open. ' +
             'Lines from more than one contract are refused. A single line is refused. ' +
             'This call does not commit. Vendor contract lines are not merged.';

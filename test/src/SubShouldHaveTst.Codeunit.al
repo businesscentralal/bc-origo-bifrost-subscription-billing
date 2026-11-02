@@ -156,8 +156,9 @@ codeunit 95715 "Sub Should Have Tst ori"
         BillingTemplate.CalcFields(Filter);
         BillingTemplate.Filter.CreateInStream(FilterStream, TextEncoding::UTF8);
         FilterStream.ReadText(StoredFilter);
-        Assert.AreEqual(TestLib.GetText(ResponseJson, 'filter'), StoredFilter, 'The answer must report the stored filter.');
         CustomerContract.SetView(StoredFilter);
+        Assert.AreEqual(CustomerContract.GetView(true), TestLib.GetText(ResponseJson, 'filter'), 'The answer must describe the same filter using field names.');
+        Assert.IsFalse(TestLib.GetText(ResponseJson, 'filter').Contains('Field3'), 'Internal field identifiers must not be echoed.');
         Assert.AreEqual('XSBA41CC', CustomerContract.GetFilter("No."), 'The stored view must keep the contract filter.');
     end;
 
