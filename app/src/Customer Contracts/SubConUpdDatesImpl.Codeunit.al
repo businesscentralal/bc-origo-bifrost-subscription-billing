@@ -13,7 +13,7 @@ using System.Threading;
 /// this type creates a Job Queue Entry for codeunit 8058 and either runs it at once through the
 /// Job Queue Dispatcher, the way the "Run once (foreground)" action of the Job Queue Entries page
 /// does, or hands it to the job queue. Scheduling work through the job queue is reserved for holders
-/// of BIFROST Force ori, as it is for a forced Job Queue Entry write through Data.Records.Set.
+/// of Force Field Access, as it is for a forced Job Queue Entry write through Data.Records.Set.
 /// </summary>
 codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
 {
@@ -22,12 +22,12 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
     var
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
-        ForcePermissionErr: Label 'Subscription.Contract.UpdateLineDates schedules a Job Queue Entry, which needs the BIFROST Force ori permission set. Your user does not have it.', Comment = 'is-IS=Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar BIFROST Force ori. Notandinn þinn hefur hana ekki.';
-        ForceExpectedTxt: Label 'the BIFROST Force ori permission set', Comment = 'is-IS=heimildasamstæðan BIFROST Force ori';
-        ForceNextStepTxt: Label 'Ask an administrator to assign the BIFROST Force ori permission set to your user, then call again.', Comment = 'is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni BIFROST Force ori og kallaðu svo aftur.';
+        ForcePermissionErr: Label 'Subscription.Contract.UpdateLineDates schedules a Job Queue Entry, which needs the Force Field Access permission set. Your user does not have it.', Comment = 'is-IS=Subscription.Contract.UpdateLineDates stofnar verkraðarfærslu, sem krefst heimildasamstæðunnar Þvinga reitaaðgang. Notandinn þinn hefur hana ekki.';
+        ForceExpectedTxt: Label 'the Force Field Access permission set', Comment = 'is-IS=heimildasamstæðan Þvinga reitaaðgang';
+        ForceNextStepTxt: Label 'Ask an administrator to assign the Force Field Access permission set to your user, then call again.', Comment = 'is-IS=Biddu kerfisstjóra að úthluta notandanum þínum heimildasamstæðunni Þvinga reitaaðgang og kallaðu svo aftur.';
         InvalidRunModeErr: Label 'The parameter ''runMode'' must be either ''foreground'' or ''background'', not ''%1''.', Comment = '%1 = the supplied run mode||is-IS=Færibreytan ''runMode'' verður að vera annaðhvort ''foreground'' eða ''background'', ekki ''%1''.';
         JobDescriptionTxt: Label 'Bifrost: update Subscription Line term dates', Comment = 'is-IS=Bifröst: uppfæra samningstímadagsetningar áskriftarlína';
-        DescriptionLbl: Label 'Closes ended Subscription Lines and their contract lines and rolls term dates forward for every Subscription, through a Job Queue Entry. Needs BIFROST Force ori.', MaxLength = 250, Comment = 'is-IS=Lokar áskriftarlínum sem er lokið og samningslínum þeirra og færir samningstímadagsetningar fram fyrir allar áskriftir með verkraðarfærslu. Krefst BIFROST Force ori.';
+        DescriptionLbl: Label 'Closes ended subscription lines and advances term dates company-wide through the job queue. Requires Force Field Access.', MaxLength = 250, Comment = 'is-IS=Lokar áskriftarlínum sem er lokið og færir samningstíma fram fyrir allt fyrirtækið í verkröð. Krefst heimildasamstæðunnar Þvinga reitaaðgang.';
         ForegroundTok: Label 'foreground', Locked = true;
         BackgroundTok: Label 'background', Locked = true;
 
@@ -55,7 +55,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the BIFROST Force ori permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar BIFROST Force ori. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
+        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the Force Field Access permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar Þvinga reitaaðgang. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
     begin
         exit(SelectionLbl);
     end;
@@ -226,7 +226,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     /// <summary>
     /// The force check Foundation applies to a forced Job Queue Entry write: write permission on its
-    /// "Force Access ori" gate table, which only BIFROST Force ori grants. The table is internal to
+    /// "Force Access ori" gate table, which only Force Field Access grants. The table is internal to
     /// Foundation, so it is opened by number.
     /// </summary>
     local procedure HasForcePermission(): Boolean
