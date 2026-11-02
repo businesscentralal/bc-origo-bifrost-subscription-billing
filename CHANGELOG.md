@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-02) - irreversible confirmation on the CI Foundation (#63)
+
+- Test dispatchers `Sub Test Lib ori` (95710) and `Sub PU Test Lib ori` (95740) repeat one call when Foundation answers `ConfirmationRequired`. The repeat sends the preview `expected` value as `expectedCount` and leaves a caller-supplied count unchanged. Business success and refusal assertions stay the same. Foundation 28.0.11 enables this gate by default; 28.0.10 did not ask.
+
 ### Fixed (2026-10-27) - analysis partner ambiguity (#63)
 
 - `Sub Ana Recalc Impl ori` (10035056) refuses a number shared by customer and vendor contracts with `AmbiguousRecord` before writes. A unique number filters the report and both counts by partner as well as contract number. `Sub Data Safety Tst ori` (95722) covers both languages using independent inserted headers (Microsoft forbids renaming vendor contracts). Fresh C fixture families isolate the final-candidate live checks. Live MCP exposed this collision; the original failed evidence remains retained. No new request parameter is added.
