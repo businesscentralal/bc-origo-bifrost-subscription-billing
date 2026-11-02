@@ -6,7 +6,7 @@ using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
 
 /// <summary>Explicit test-only seed operation for issue 63. Never runs at install and never changes licensing, consent or write guards.</summary>
-codeunit 95728 "Sub MCP Seed ori"
+codeunit 95730 "Sub MCP Seed ori"
 {
     trigger OnRun()
     var

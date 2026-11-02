@@ -8,7 +8,7 @@
 
 ### Added (2026-10-26) - explicit live MCP fixture seed (#63)
 
-- Test-only table/page `Sub MCP Fixture ori` and codeunit `Sub MCP Seed ori` (95728) create independent owned fixture families for both languages through the existing test library. The explicit Web Client seed action resets record variables between independent subscriptions and refuses replay and runs only in CRONUS; it is never an installer, message type, consent, licence or write-guard override. Actual acceptance calls still run over the shipping MCP path. Final owned-container deletion removes all seeded business and fixture state.
+- Test-only table/page `Sub MCP Fixture ori` (95728) and codeunit `Sub MCP Seed ori` (95730) create independent owned fixture families for both languages through the existing test library. Main keeps codeunit `Sub LicAdm Setup Tst ori` at 95728; the seed codeunit moved so the two codeunits no longer share one ID. The explicit Web Client seed action resets record variables between independent subscriptions and refuses replay and runs only in CRONUS; it is never an installer, message type, consent, licence or write-guard override. Actual acceptance calls still run over the shipping MCP path. Final owned-container deletion removes all seeded business and fixture state.
 
 ### Fixed (2026-10-23) - scoped operations and recoverable failures (#63)
 
