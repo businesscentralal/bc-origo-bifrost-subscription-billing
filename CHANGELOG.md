@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-02) - setup wizard delegation (#69)
+
+- `SubBil Setup Wizard ori` (10035035) delegates the HTTP setup permission check and Foundation navigation to `SubBil Wizard Mgt ori` (10035062), retaining the administrator guidance and read-only HTTP status refresh.
+
 ### Fixed (2026-10-26) - wizard context help (#69)
 
 - `app/app.json` uses the page-help URL for setup wizard 10035035 and operations host 10035036. English and Icelandic `subscription-billing-setup.md` handoff content is included under `app/docs/help/`; publication in the documentation repository remains a separate dependency.

@@ -1,5 +1,6 @@
 namespace Origo.Bifrost.SubscriptionBilling;
 
+using Origo.Bifrost;
 using System.Apps;
 using System.Environment.Configuration;
 
@@ -26,6 +27,18 @@ codeunit 10035062 "SubBil Wizard Mgt ori"
         AppSetting: Record "NAV App Setting";
     begin
         exit(AppSetting.WritePermission());
+    end;
+
+    /// <summary>Opens Foundation's HTTP setup for an authorized administrator without changing settings here.</summary>
+    internal procedure OpenHttpSetup()
+    var
+        AskAdministratorTxt: Label 'HTTP could not be enabled here. Ask an administrator to enable it in Bifrost Setup, then choose Verify.', Comment = 'is-IS=Ekki var hægt að virkja HTTP hér. Biddu stjórnanda um að virkja það í uppsetningu Bifröst og veldu síðan Staðfesta.';
+    begin
+        if not CanEnableHttp() then begin
+            Message(AskAdministratorTxt);
+            exit;
+        end;
+        Page.RunModal(Page::"Setup Wizard ori");
     end;
 
     /// <summary>Returns exactly the assignable permission sets this app supplies.</summary>

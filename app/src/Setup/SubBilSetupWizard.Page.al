@@ -142,11 +142,7 @@ page 10035035 "SubBil Setup Wizard ori"
                 Image = Setup;
                 trigger OnAction()
                 begin
-                    if not CanWriteAppSetting then begin
-                        Message(AskAdministratorTxt);
-                        exit;
-                    end;
-                    Page.RunModal(Page::"Setup Wizard ori");
+                    WizardMgt.OpenHttpSetup();
                     RefreshStatus();
                 end;
             }
@@ -230,5 +226,4 @@ page 10035035 "SubBil Setup Wizard ori"
         HttpSummary: Text;
         DoneTxt: Label 'Done', Comment = 'is-IS=Lokið';
         NeedsAdministratorTxt: Label 'Needs an administrator', Comment = 'is-IS=Þarfnast stjórnanda';
-        AskAdministratorTxt: Label 'HTTP could not be enabled here. Ask an administrator to enable it in Bifrost Setup, then choose Verify.', Comment = 'is-IS=Ekki var hægt að virkja HTTP hér. Biddu stjórnanda um að virkja það í uppsetningu Bifröst og veldu síðan Staðfesta.';
 }

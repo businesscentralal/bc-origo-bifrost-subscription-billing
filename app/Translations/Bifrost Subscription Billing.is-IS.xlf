@@ -1575,6 +1575,12 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Uppsetningarskrefið er ógilt. Lokaðu leiðsögninni og opnaðu hana aftur úr Leiðsögn um uppsetningu.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit SubBil Wizard Mgt ori - Method NextStep - NamedType InvalidStepErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 3747124654 - Method 548845437 - NamedType 3741120694" size-unit="char" translate="yes" xml:space="preserve">
+          <source>HTTP could not be enabled here. Ask an administrator to enable it in Bifrost Setup, then choose Verify.</source>
+          <target>Ekki var hægt að virkja HTTP hér. Biddu stjórnanda um að virkja það í uppsetningu Bifröst og veldu síðan Staðfesta.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Ekki var hægt að virkja HTTP hér. Biddu stjórnanda um að virkja það í uppsetningu Bifröst og veldu síðan Staðfesta.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit SubBil Wizard Mgt ori - Method OpenHttpSetup - NamedType AskAdministratorTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 439973510 - Method 550388558 - NamedType 3683717780" size-unit="char" translate="yes" xml:space="preserve">
           <source>Set up Bifrost Subscription Billing</source>
           <target>Setja upp Bifröst áskriftareikningagerð</target>
@@ -1604,12 +1610,6 @@
           <target>Setja upp Bifröst áskriftareikningagerð</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Setja upp Bifröst áskriftareikningagerð</note>
           <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - Property Caption</note>
-        </trans-unit>
-        <trans-unit id="Page 667072733 - NamedType 3741120694" size-unit="char" translate="yes" xml:space="preserve">
-          <source>HTTP could not be enabled here. Ask an administrator to enable it in Bifrost Setup, then choose Verify.</source>
-          <target>Ekki var hægt að virkja HTTP hér. Biddu stjórnanda um að virkja það í uppsetningu Bifröst og veldu síðan Staðfesta.</target>
-          <note from="Developer" annotates="general" priority="2">is-IS=Ekki var hægt að virkja HTTP hér. Biddu stjórnanda um að virkja það í uppsetningu Bifröst og veldu síðan Staðfesta.</note>
-          <note from="Xliff Generator" annotates="general" priority="3">Page SubBil Setup Wizard ori - NamedType AskAdministratorTxt</note>
         </trans-unit>
         <trans-unit id="Page 667072733 - NamedType 797954468" size-unit="char" translate="yes" xml:space="preserve">
           <source>Done</source>

@@ -1,5 +1,6 @@
 namespace Origo.Bifrost.SubscriptionBilling.Test;
 
+using Origo.Bifrost;
 using Origo.Bifrost.SubscriptionBilling;
 using System.Apps;
 using System.Environment.Configuration;
@@ -15,6 +16,7 @@ codeunit 95721 "SubBil Setup Wizard Tests"
         Assert: Codeunit "Library Assert";
         WizardMgt: Codeunit "SubBil Wizard Mgt ori";
         OperationsOpened: Boolean;
+        FoundationSetupOpened: Boolean;
 
     [Test]
     procedure Scenario_AC01_AssistedSetup_RegistersWizard()
@@ -54,6 +56,29 @@ codeunit 95721 "SubBil Setup Wizard Tests"
         Wizard.Verify.Invoke();
         Assert.IsTrue(Wizard.Verify.Visible(), 'Verify remains available on the HTTP step.');
         Wizard.Close();
+    end;
+
+    [Test]
+    [HandlerFunctions('FoundationSetupHandler')]
+    procedure Scenario_AC03_HttpSetup_OpensFoundationWithoutWritingSettings()
+    var
+        WasHttpEnabled: Boolean;
+    begin
+        // The test administrator may open Foundation, but never accepts consent or enables HTTP.
+        Assert.IsTrue(WizardMgt.CanEnableHttp(), 'The test administrator must be able to open Foundation setup.');
+        WasHttpEnabled := WizardMgt.IsHttpEnabled();
+        FoundationSetupOpened := false;
+        WizardMgt.OpenHttpSetup();
+        Assert.IsTrue(FoundationSetupOpened, 'HTTP setup must open Foundation rather than writing settings in this app.');
+        Assert.AreEqual(WasHttpEnabled, WizardMgt.IsHttpEnabled(), 'Closing Foundation without choosing an action must preserve the app HTTP setting.');
+    end;
+
+    [ModalPageHandler]
+    procedure FoundationSetupHandler(var FoundationSetup: TestPage "Setup Wizard ori")
+    begin
+        FoundationSetupOpened := true;
+        Assert.IsTrue(FoundationSetup.ActionNext.Visible(), 'Foundation setup must expose its guided navigation.');
+        // Returning closes the modal page without invoking any setup action.
     end;
 
     [Test]
