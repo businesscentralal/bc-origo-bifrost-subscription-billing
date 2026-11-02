@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-02) - current Foundation test confirmations (#69 CI)
+
+- Shared test helpers `Sub Test Lib ori` (95710) and `Sub PU Test Lib ori` (95740) supply Foundation 28.0.11's explicit single-subject `expectedCount` for the eight irreversible fixture operations. Existing caller confirmations and all business-effect/refusal assertions are preserved; older Foundation versions receive the unchanged request.
+
 ### Fixed (2026-11-02) - setup wizard delegation (#69)
 
 - `SubBil Setup Wizard ori` (10035035) delegates the HTTP setup permission check and Foundation navigation to `SubBil Wizard Mgt ori` (10035062), retaining the administrator guidance and read-only HTTP status refresh.
