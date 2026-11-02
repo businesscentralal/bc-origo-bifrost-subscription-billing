@@ -19,7 +19,7 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
         ContractParts: Codeunit "Sub Contract Parts ori";
         Helper: Codeunit "Sub Helper ori";
         ContractNotFoundErr: Label 'The Vendor Subscription Contract ''%1'' does not exist.', Comment = '%1 = contract number||is-IS=Áskriftarsamningur lánardrottins ''%1'' er ekki til.';
-        DescriptionLbl: Label 'Attaches unassigned Subscription Lines to a vendor subscription contract, creating a Vend. Sub. Contract Line for each one. Returns how many lines were attached.', MaxLength = 250, Comment = 'is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning lánardrottins og býr til samningslínu lánardrottins fyrir hverja línu. Skilar fjölda tengdra lína.';
+        DescriptionLbl: Label 'Attaches unassigned Subscription Lines to a vendor subscription contract, creating a vendor contract line for each one. Returns how many lines were attached.', MaxLength = 250, Comment = 'is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning lánardrottins og býr til samningslínu lánardrottins fyrir hverja línu. Skilar fjölda tengdra lína.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -115,7 +115,7 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
 
     procedure GetOverview(var Overview: Text): Boolean
     begin
-        Overview := 'Attaches Subscription Lines that are on no contract yet to a Vendor Subscription Contract, creating a Vend. Sub. Contract Line for each. Microsoft ' +
+        Overview := 'Attaches Subscription Lines that are on no contract yet to a Vendor Subscription Contract, creating a vendor contract line for each. Microsoft ' +
             'attaches one line at a time, so the call attaches the candidate lines one by one.';
         exit(true);
     end;
