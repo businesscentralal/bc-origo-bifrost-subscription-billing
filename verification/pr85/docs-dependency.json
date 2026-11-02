@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-11-02T15:32:37.983Z",
+  "docsSha": "fc9f97148cdbd4510cbf36f1ff3ec21ca874752a",
+  "guardExitCode": 1,
+  "error": "Help folder not found: help/subscription-billing",
+  "missingPaths": [
+    "help/subscription-billing/subscription-billing-setup.md",
+    "i18n/is-IS/docusaurus-plugin-content-docs-help-subscription-billing/current/subscription-billing-setup.md"
+  ],
+  "owner": "Architect / Claude Code documentation owner",
+  "readyHandoff": "/workspace/subscription85-worker4/app/docs/help/HANDOFF.md",
+  "scope": "Read-only inspection; other-repository source not edited",
+  "remoteHeadRecheckedAt": "2026-11-02T16:40:11.706Z",
+  "remoteHeadUnchanged": "fc9f97148cdbd4510cbf36f1ff3ec21ca874752a",
+  "noUnchangedGuardRetry": true
+}

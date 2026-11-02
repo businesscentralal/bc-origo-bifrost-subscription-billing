@@ -1,0 +1,56 @@
+{
+  "sha": "a2af96062a4c5bbc7867d2b4f89c18347186b8bc",
+  "workingTree": false,
+  "startedAt": "2026-11-02T16:22:33.418907+00:00",
+  "analyzers": [
+    "CodeCop",
+    "UICop",
+    "AppSourceCop"
+  ],
+  "sourceAppVersion": "28.0.2.0",
+  "artifactAppVersion": "28.0.2.286",
+  "baseline": {
+    "version": "28.0.1.47",
+    "sourceSha": "0ad486ce4fc21e20a8a29addd7ef3d61b46be985",
+    "assetId": 674886629
+  },
+  "dependency": {
+    "Foundation": "28.0.11.658",
+    "Subscription Billing": "downloaded Microsoft28.5 symbol satisfying28.3 minimum"
+  },
+  "app": {
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 0,
+    "invocation": [
+      "/workspace/tools/dotnet/dotnet",
+      "/workspace/tools/warehouse-23-worker4/al18/extension/bin/alc.dll",
+      "/project:/workspace/evidence/tasks/sb85-worker4-20261102/compile-source/app",
+      "/packagecachepath:/workspace/evidence/tasks/sb85-worker4-20261102/symbols",
+      "/out:/workspace/evidence/tasks/sb85-worker4-20261102/build/SubscriptionBilling.app",
+      "/errorlog:/workspace/evidence/tasks/sb85-worker4-20261102/build/app-diagnostics.json",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.CodeCop.dll",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.UICop.dll",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.AppSourceCop.dll"
+    ],
+    "sha256": "ca16f97d013eadd12c4a677ca746201f828b752a80bc8f00a9795bcacfa3e59a"
+  },
+  "test": {
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 0,
+    "invocation": [
+      "/workspace/tools/dotnet/dotnet",
+      "/workspace/tools/warehouse-23-worker4/al18/extension/bin/alc.dll",
+      "/project:/workspace/evidence/tasks/sb85-worker4-20261102/compile-source/test",
+      "/packagecachepath:/workspace/evidence/tasks/sb85-worker4-20261102/symbols",
+      "/out:/workspace/evidence/tasks/sb85-worker4-20261102/build/SubscriptionBillingTests.app",
+      "/errorlog:/workspace/evidence/tasks/sb85-worker4-20261102/build/test-diagnostics.json",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.CodeCop.dll",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.UICop.dll",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.AppSourceCop.dll"
+    ],
+    "sha256": "526cafe58e5df2019d2977967cdbdcc6eec1308c61e7eb2e027abfa3ae2ab96a"
+  },
+  "finishedAt": "2026-11-02T16:23:12.450395+00:00"
+}

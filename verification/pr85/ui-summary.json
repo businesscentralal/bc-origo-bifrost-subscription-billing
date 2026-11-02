@@ -1,0 +1,117 @@
+{
+  "sha": "a2af96062a4c5bbc7867d2b4f89c18347186b8bc",
+  "containerId": "f03aa2fc558a",
+  "artifactVersion": "28.0.2.286",
+  "foundationVersion": "28.0.11.658",
+  "tool": "Playwright MCP isolated Chromium",
+  "startedAt": "2026-11-02T16:37:15.762Z",
+  "scenarios": [
+    {
+      "lcid": 1033,
+      "id": "registration-welcome",
+      "passed": true,
+      "evidence": "final-ui-1033-welcome.png"
+    },
+    {
+      "lcid": 1033,
+      "id": "operations-documentation",
+      "passed": true,
+      "evidence": "final-ui-1033-operations.png"
+    },
+    {
+      "lcid": 1033,
+      "id": "http-enabled-verify",
+      "passed": true,
+      "evidence": "final-ui-1033-http.png"
+    },
+    {
+      "lcid": 1033,
+      "id": "access-content-navigation",
+      "passed": true,
+      "evidence": "final-ui-1033-access.png"
+    },
+    {
+      "lcid": 1033,
+      "id": "finish",
+      "passed": true,
+      "evidence": "final-ui-1033-finish.png"
+    },
+    {
+      "lcid": 1033,
+      "id": "cancel-repeat",
+      "passed": true,
+      "evidence": "final-ui-1033-cancel.png"
+    },
+    {
+      "lcid": 1039,
+      "id": "registration-welcome",
+      "passed": true,
+      "evidence": "final-ui-1039-welcome.png"
+    },
+    {
+      "lcid": 1039,
+      "id": "operations-documentation",
+      "passed": true,
+      "evidence": "final-ui-1039-operations.png"
+    },
+    {
+      "lcid": 1039,
+      "id": "http-enabled-verify",
+      "passed": true,
+      "evidence": "final-ui-1039-http.png"
+    },
+    {
+      "lcid": 1039,
+      "id": "access-content-navigation",
+      "passed": true,
+      "evidence": "final-ui-1039-access.png"
+    },
+    {
+      "lcid": 1039,
+      "id": "finish",
+      "passed": true,
+      "evidence": "final-ui-1039-finish.png"
+    },
+    {
+      "lcid": 1039,
+      "id": "cancel-repeat",
+      "passed": true,
+      "evidence": "final-ui-1039-cancel.png"
+    },
+    {
+      "lcid": 1033,
+      "id": "http-disabled-own-standard-extension-setting",
+      "passed": true,
+      "evidence": "final-ui-1033-http-disabled.png"
+    },
+    {
+      "lcid": 1033,
+      "id": "foundation-http-handoff-enable-return-verify",
+      "passed": true,
+      "evidence": "final-ui-1033-http-enabled-after-return.png",
+      "detail": "Standard Extension Settings disabled own app HTTP; feature wizard showed disabled. Foundation Step2 explicitly enabled1app; returned and Verify read true. No EULA/trial/licence operation."
+    }
+  ],
+  "executed": 14,
+  "passed": 14,
+  "failed": 0,
+  "skipped": 0,
+  "cleanup": {
+    "languageRestored": true,
+    "businessRecordsCreated": 0,
+    "languageRestorationEvidence": "final-ui-language-restored.png and fresh PlaywrightMCP readback"
+  },
+  "initialState": "Owned existing assisted-setup fixture is completed and HTTP enabled by previous intended UI. New head does not claim fresh-install or disabled-HTTP UI using older evidence; current native registration/no-HTTP-write/delegation tests execute separately. Current-head follow-up explicitly exercised own app HTTP disabled and Foundation enabled/return/Verify.",
+  "status": "PASSED_AFTER_INDEPENDENT_LANGUAGE_READBACK",
+  "finishedAt": "2026-11-02T16:50:08Z",
+  "previousAutomationStatus": {
+    "failed": 1,
+    "error": "browser_run_code_unsafe failed: ### Error\nTimeoutError: locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n  - waiting for getByTitle('Settings', { exact: true }) to be visible\n",
+    "evidence": "ui-a2-before-language-cleanup.json"
+  },
+  "automationRecoveries": [
+    "OriginalEnglishfivecase evidence retained at same a2candidate/deployment; cancellationwait fixed and rerun at samehead.",
+    "Language change applied but same-tab rootselector stayed stale afterreload; independentfreshlogin readback shows SettingsEnglish, AssistedSetupEnglish andIcelandicSettingsabsent."
+  ],
+  "verified": true
+}

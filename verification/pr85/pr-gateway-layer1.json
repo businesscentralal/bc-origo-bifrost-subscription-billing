@@ -1,0 +1,112 @@
+{
+  "publisher": "Origo",
+  "checks": {
+    "set_load_fields": {
+      "advisory": "Loops without SetLoadFields - consider it only for wide tables; not a gate failure",
+      "findings": [],
+      "pass": true
+    },
+    "app_json": {
+      "findings": [],
+      "pass": true
+    },
+    "object_naming": {
+      "findings": [],
+      "pass": true
+    },
+    "reserved_var_names": {
+      "findings": [],
+      "pass": true
+    },
+    "format_evaluate_enum": {
+      "findings": [],
+      "pass": true
+    },
+    "xml_doc_comments": {
+      "findings": [],
+      "pass": true
+    },
+    "commit_in_loop": {
+      "findings": [],
+      "pass": true
+    },
+    "namespace": {
+      "findings": [],
+      "pass": true
+    },
+    "try_prefix_convention": {
+      "findings": [],
+      "pass": true
+    },
+    "changelog": {
+      "findings": [
+        "No entry for version 28.0.2.0"
+      ],
+      "pass": false
+    },
+    "global_variables": {
+      "findings": [],
+      "pass": true
+    },
+    "page_code_minimal": {
+      "findings": [],
+      "pass": true
+    },
+    "today_vs_workdate": {
+      "findings": [],
+      "pass": true
+    },
+    "modernization": {
+      "findings": [],
+      "pass": true
+    },
+    "event_subscriber_placement": {
+      "findings": [],
+      "pass": true
+    },
+    "caption_translation": {
+      "findings": [],
+      "pass": true,
+      "skipped": null
+    },
+    "read_isolation": {
+      "findings": [],
+      "pass": true
+    },
+    "with_statements": {
+      "findings": [],
+      "pass": true
+    },
+    "hardcoded_values": {
+      "findings": [],
+      "pass": true
+    },
+    "format_guid": {
+      "findings": [],
+      "pass": true
+    },
+    "data_classification": {
+      "findings": [],
+      "pass": true
+    },
+    "one_statement_per_line": {
+      "findings": [],
+      "pass": true
+    },
+    "confirm_in_page": {
+      "findings": [],
+      "pass": true
+    }
+  },
+  "mode": "diff (vs origin/main)",
+  "project": "Bifrost Subscription Billing",
+  "files_scanned": 6,
+  "version": "28.0.2.0",
+  "total_al_files": 56,
+  "summary": {
+    "passed": 22,
+    "failed": 2,
+    "total": 23,
+    "ready": false
+  }
+}

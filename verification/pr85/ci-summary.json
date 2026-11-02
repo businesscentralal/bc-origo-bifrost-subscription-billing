@@ -1,0 +1,17 @@
+{
+  "sha": "a2af96062a4c5bbc7867d2b4f89c18347186b8bc",
+  "runId": 41481136791,
+  "status": "completed",
+  "conclusion": "success",
+  "url": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/actions/runs/41481136791",
+  "checkedAt": "2026-11-02T16:45:49.940Z",
+  "summary": "**CI paired run41481136791: success** at thishead. [Run](https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/actions/runs/41481136791). Test job125404927914: **210executed/210passed/0failed/0skipped**.",
+  "tests": {
+    "executed": 210,
+    "passed": 210,
+    "failed": 0,
+    "skipped": 0,
+    "jobId": 125404927914,
+    "logSummary": "1 TestApps, 210 tests, 0 failed, 0 skipped; Bifrost Subscription Billing - Tests, 210 tests, 210 passed, 0 failed, 0 skipped, 82.126 seconds"
+  }
+}

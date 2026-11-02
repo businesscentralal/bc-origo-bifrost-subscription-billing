@@ -1,0 +1,19 @@
+{
+  "sha": "a2af96062a4c5bbc7867d2b4f89c18347186b8bc",
+  "containerId": "f03aa2fc558a",
+  "fullSuite": true,
+  "startedAt": "2026-11-02T16:26:24.574Z",
+  "finishedAt": "2026-11-02T16:27:33.218Z",
+  "executed": 210,
+  "total": 210,
+  "passed": 210,
+  "failed": 0,
+  "skipped": 0,
+  "configuredCodeunits": 33,
+  "configuredMethods": 210,
+  "missingSourceMethods": [],
+  "failures": [],
+  "ok": true,
+  "runner": "Microsoft PsTestFunctions full extension via verified bundled helper/Windows PowerShell; original origo MCP startup failure preserved separately",
+  "evidence": "full-suite.junit.xml"
+}

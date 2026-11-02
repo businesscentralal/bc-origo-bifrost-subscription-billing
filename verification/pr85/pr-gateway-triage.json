@@ -1,0 +1,29 @@
+{
+  "standardsSnapshot": "52ba4754cfd614e4a7c50af87b30149b18b313e3",
+  "layer1Invocation": "USERPROFILE=/home/node (Linux portability; no script edit)",
+  "findings": [
+    {
+      "check": "page_code_minimal",
+      "status": "source-fixed-and-compiled-native-regression-passed",
+      "action": "Moved HTTP permission guard and Foundation modal navigation into existing internal wizard management codeunit; page retains status refresh. Added modal delegation/no HTTP-write regression.",
+      "evidence": "Current-tip full suite210/210 including codeunit95721; changed page action no longer reported by gateway."
+    },
+    {
+      "check": "changelog",
+      "status": "project-convention-false-positive",
+      "reason": "Repository records new implementation under Unreleased; tool requires literal current version header[28.0.2.0]. Meaningful issue69 Added and focused repair Fixed entries are present; no release claimed to satisfy version check."
+    }
+  ],
+  "actualCheckMap": {
+    "total": 23,
+    "passed": 22,
+    "failed": 1
+  },
+  "rawSummary": {
+    "ready": false,
+    "total": 23,
+    "failed": 2,
+    "passed": 22
+  },
+  "summaryCounterDiscrepancy": "Raw scanner reports failed2 while its23-entry checks map has22pass/1false. The one remaining false check is literal current-version changelog heading; retained as a convention mismatch, not silently made green."
+}

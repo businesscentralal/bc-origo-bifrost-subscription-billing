@@ -1,0 +1,71 @@
+{
+  "sha": "a2af96062a4c5bbc7867d2b4f89c18347186b8bc",
+  "issue": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/issues/69",
+  "criteria": [
+    {
+      "id": "AC01",
+      "implemented": true,
+      "verification": "Current native95721freshregistration/notcompletedpassed; currentUIexistingcompletedentry/re-entryvisible in1033/1039.",
+      "complete": true
+    },
+    {
+      "id": "AC02",
+      "implemented": true,
+      "verification": "CurrentUI businessintroduction,operationshostanddocumentationURLpassed; hostedFoundationbufferhasnoapp/domainfield; page-contexthelp livepublicationstillblocked.",
+      "complete": false,
+      "pending": "Separate documentation help-instance publication."
+    },
+    {
+      "id": "AC03",
+      "implemented": true,
+      "verification": "Current native delegation/no-direct-write tests passed; current UI own-app disabled status, Foundation explicit enable1app and return/Verify true passed. Enabled/Verify also1039.",
+      "complete": true
+    },
+    {
+      "id": "AC04",
+      "implemented": true,
+      "verification": "Currentnativeexact2assignablesetlist andcurrentUIaccessguidance+Users9800/PermissionSets9802navigation inbothlanguagespassed.",
+      "complete": true
+    },
+    {
+      "id": "AC5",
+      "implemented": true,
+      "verification": "Currentnativecancel/Finish tests pass; currentUIexplicitFinish andcancelrepeat preservescompletion inbothlanguagespassed.",
+      "complete": true
+    },
+    {
+      "id": "AC6",
+      "implemented": true,
+      "verification": "CurrentcompiledXLF312translatedtargets0missing; currentactual1039wizardcaptions/instructions/actions/summaryverified; machinepermission-setnamesremainliteral.",
+      "complete": true
+    },
+    {
+      "id": "AC7",
+      "implemented": true,
+      "verification": "Bothapps3cops0/0+noIVT0/0+releasedbaselinecompile andsourcePermissionCoveragepass; current paired CI41481136791 succeeded at exact a2af960 head.",
+      "complete": false,
+      "pending": "Independent Claude/Grok clearance and eligible non-author approval."
+    },
+    {
+      "id": "AC8",
+      "implemented": true,
+      "verification": "Unreleasedchangelog,READMEwizardsectionandbilingualapp/docs/help contentpresent. Actualdocsfc9f971lackshelp/subscription-billing;HelpLinksfails.",
+      "complete": false,
+      "pending": "Architect/Claude documentation owner publishes/registers EN/ISpagehelp."
+    }
+  ],
+  "deliveryComplete": false,
+  "native": {
+    "executed": 210,
+    "passed": 210,
+    "failed": 0,
+    "skipped": 0
+  },
+  "remainingRoles": [
+    "Claude independentexact-headverification",
+    "Grok exact-headclearance",
+    "Eligiblenon-authorapproval",
+    "Architectmerge+sameSHAdeployment",
+    "PostdeployUAT/issueclosure"
+  ]
+}

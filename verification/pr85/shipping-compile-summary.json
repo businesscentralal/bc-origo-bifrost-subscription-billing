@@ -1,0 +1,18 @@
+{
+  "sha": "a2af96062a4c5bbc7867d2b4f89c18347186b8bc",
+  "internalsVisibleTo": false,
+  "exitCode": 0,
+  "errors": 0,
+  "warnings": 0,
+  "invocation": [
+    "/workspace/tools/dotnet/dotnet",
+    "/workspace/tools/warehouse-23-worker4/al18/extension/bin/alc.dll",
+    "/project:/workspace/evidence/tasks/sb85-worker4-20261102/shipping-source",
+    "/packagecachepath:/workspace/evidence/tasks/sb85-worker4-20261102/symbols",
+    "/out:/workspace/evidence/tasks/sb85-worker4-20261102/build/SubscriptionBilling-shipping.app",
+    "/errorlog:/workspace/evidence/tasks/sb85-worker4-20261102/build/shipping-diagnostics.json",
+    "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.CodeCop.dll",
+    "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.UICop.dll",
+    "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.AppSourceCop.dll"
+  ]
+}

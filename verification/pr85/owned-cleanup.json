@@ -1,0 +1,18 @@
+{
+  "sha": "a2af96062a4c5bbc7867d2b4f89c18347186b8bc",
+  "containerId": "f03aa2fc558a",
+  "owner": "worker-4",
+  "displayName": "alviss-worker4-subscription85-20261102",
+  "startedAt": "2026-11-02T16:49:59.817Z",
+  "scope": "Only own task container and its local native/UI fixtures/HTTP settings/setup completion; no foreign/shared/customer/CI/UAT resource.",
+  "businessRecordsCreatedByMcp": 0,
+  "businessRecordsRemainingByMcp": 0,
+  "nativeFixtures": "Full isolated native suite, and all remaining task fixture state removed by whole owned environment deletion.",
+  "deleteAttempted": true,
+  "priorStatus": 200,
+  "deleteStatus": 204,
+  "readbackStatus": 404,
+  "verified": true,
+  "finishedAt": "2026-11-02T16:50:00.537Z",
+  "previousClientConfigurationRestored": true
+}
