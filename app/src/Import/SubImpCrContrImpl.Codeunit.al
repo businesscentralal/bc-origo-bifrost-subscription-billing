@@ -159,6 +159,8 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
             exit;
@@ -214,7 +216,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
                     SubscriptionHeadersTok, CustomerContractsTok, SubscriptionLinesTok, ContractLinesTok:
                         RequestedStages.Add(StageName);
                     else
-                        Error(UnknownStageErr, StageName);
+                        Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(UnknownStageErr, StageName), 'stages', Format(StageName, 0, 9));
                 end;
             end;
             exit;

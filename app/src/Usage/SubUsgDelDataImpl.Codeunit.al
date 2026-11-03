@@ -161,6 +161,8 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -186,17 +188,17 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
         EntryNo := 0;
         if Argument.Subject <> '' then
             if not Evaluate(EntryNo, Argument.Subject, 9) then
-                Error(InvalidSubjectErr, Argument.Subject);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidSubjectErr, Argument.Subject), 'usageDataImportEntryNo', Format(Argument.Subject, 0, 9));
         if EntryNo = 0 then
             EntryNo := Helper.GetInteger(RequestJson, 'usageDataImportEntryNo', true);
         Mode := LowerCase(Helper.GetText(RequestJson, 'mode', false));
         if Mode = '' then
             Mode := ResetLinesTok;
         if not (Mode in [ResetLinesTok, DeleteImportTok]) then
-            Error(InvalidModeErr, Helper.GetText(RequestJson, 'mode', false));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidModeErr, Helper.GetText(RequestJson, 'mode', false)), 'mode', Format(Helper.GetText(RequestJson, 'mode', false), 0, 9));
 
         if not UsageDataImport.Get(EntryNo) then
-            Error(NotFoundErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotFoundErr, EntryNo), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
         CheckNotBilled(EntryNo);
 
         UsageDataBilling.SetRange("Usage Data Import Entry No.", EntryNo);
@@ -231,12 +233,12 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
         UsageDataBilling.SetFilter("Document No.", '<>%1', '');
         UsageDataBilling.SetLoadFields("Usage Data Import Entry No.", "Document No.");
         if UsageDataBilling.FindFirst() then
-            Error(InvoicedErr, EntryNo, UsageDataBilling."Document No.");
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(InvoicedErr, EntryNo, UsageDataBilling."Document No."), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
         UsageDataBilling.SetRange("Document No.");
         UsageDataBilling.SetFilter("Billing Line Entry No.", '<>0');
         UsageDataBilling.SetLoadFields("Usage Data Import Entry No.", "Billing Line Entry No.");
         if UsageDataBilling.FindFirst() then
-            Error(InBillingErr, EntryNo, UsageDataBilling."Billing Line Entry No.");
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(InBillingErr, EntryNo, UsageDataBilling."Billing Line Entry No."), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
     end;
 
     /// <summary>

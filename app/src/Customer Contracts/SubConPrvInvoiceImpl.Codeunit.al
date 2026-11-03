@@ -158,6 +158,8 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -218,7 +220,7 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
         ForeignCount: Integer;
     begin
         if not CustomerSubscriptionContract.Get(ContractNo) then
-            Error(ContractNotFoundErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(ContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
 
         BillingLine.SetRange("Billing Template Code", '');
         BillingLine.SetFilter("Subscription Contract No.", '<>%1', ContractNo);
@@ -227,7 +229,7 @@ codeunit 10035039 "Sub Con PrvInvoice Impl ori" implements "Msg Interface ori", 
         ForeignCount := BillingLine.Count();
         if ForeignCount > 0 then begin
             BillingLine.FindFirst();
-            Error(ForeignPendingErr, BillingLine."Subscription Contract No.", ForeignCount);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingErr, BillingLine."Subscription Contract No.", ForeignCount), 'contractNo', Format(ContractNo, 0, 9));
         end;
 
         SubscriptionLine.SetRange(Partner, Enum::"Service Partner"::Customer);

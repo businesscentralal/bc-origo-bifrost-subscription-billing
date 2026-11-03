@@ -19,6 +19,7 @@ permissionset 10035062 "BIFROST SubBil ori"
         codeunit "SubBil Wizard Mgt ori" = X,
         codeunit "SubBil Wizard Reg. ori" = X,
         codeunit "Sub Helper ori" = X,
+        codeunit "Sub Posting Context ori" = X,
         codeunit "Sub Line Create Impl ori" = X,
         codeunit "Sub Con GetLines Impl ori" = X,
         codeunit "Sub Con CrInvoice Impl ori" = X,

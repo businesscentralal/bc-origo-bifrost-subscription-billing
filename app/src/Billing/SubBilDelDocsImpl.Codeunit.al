@@ -162,6 +162,8 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -199,10 +201,10 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
 
         if BillingTemplateCode = '' then begin
             if (ContractNo = '') and (DocumentNo = '') then
-                Error(TemplateOrContractErr);
+                Helper.RaiseError("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'billingTemplateCode', '', TemplateOrContractErr);
         end else
             if not BillingTemplate.Get(BillingTemplateCode) then
-                Error(TemplateNotFoundErr, BillingTemplateCode);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
         Helper.AssertMayClearBillingProposal();
 
         BillingLine.SetRange("Billing Template Code", BillingTemplateCode);
@@ -215,8 +217,8 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
         BillingLine.SetCurrentKey("Document Type", "Document No.");
         if BillingLine.IsEmpty() and (DocumentNo <> '') then begin
             if IsPostedDocument(DocumentNo) then
-                Error(PostedDocumentErr, DocumentNo);
-            Error(DocumentNotFoundErr, BillingTemplateCode, DocumentNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(PostedDocumentErr, DocumentNo), 'documentNo', Format(DocumentNo, 0, 9));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(DocumentNotFoundErr, BillingTemplateCode, DocumentNo), 'documentNo', Format(DocumentNo, 0, 9));
         end;
 
         // Read the documents first: deleting one changes the billing lines the filter selects.

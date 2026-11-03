@@ -15,5 +15,6 @@ permissionsetextension 10035064 "BIFROST SubBRead ori" extends "BIFROST Read ori
         page "SubBil Operations ori" = X,
         codeunit "SubBil Wizard Mgt ori" = X,
         codeunit "SubBil Wizard Reg. ori" = X,
-        codeunit "Sub Helper ori" = X;
+        codeunit "Sub Helper ori" = X,
+        codeunit "Sub Posting Context ori" = X;
 }
