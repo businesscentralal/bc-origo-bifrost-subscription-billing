@@ -1,0 +1,12 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "containerId": "f0ab81e9488d",
+  "attempt": "native-preflight-1",
+  "executed": 0,
+  "passed": 0,
+  "failedTests": 0,
+  "skippedTests": 0,
+  "harnessFailure": "SSH endpoint did not provide an IP address/private key; preflight assertion failed before test invocation.",
+  "nextAction": "Enable SSH on own environment with approved ensureCosmoSsh, then one changed-condition full-suite invocation. No test pass claimed.",
+  "at": "2026-11-03T18:50:54.629539+00:00"
+}

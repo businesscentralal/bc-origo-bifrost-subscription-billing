@@ -1,0 +1,312 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites>
+  <testsuite name="95701 Sub Msg Type Tst ori" timestamp="2026-11-03T18:53:22" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="1.681" tests="7" errors="0" failures="0" skipped="0">
+    <testcase classname="95701 Sub Msg Type Tst ori" name="AllTypes_AreRegistered_WithAnImplementation" time="0.897" />
+    <testcase classname="95701 Sub Msg Type Tst ori" name="AllTypes_AreEnabled" time="0.094" />
+    <testcase classname="95701 Sub Msg Type Tst ori" name="AllTypes_HaveADescription" time="0.05" />
+    <testcase classname="95701 Sub Msg Type Tst ori" name="AllTypes_AreInbound" time="0.047" />
+    <testcase classname="95701 Sub Msg Type Tst ori" name="AllTypes_HaveDistinctDiscoveryText" time="0.053" />
+    <testcase classname="95701 Sub Msg Type Tst ori" name="AllTypes_HaveAnOverviewAndNotes" time="0.513" />
+    <testcase classname="95701 Sub Msg Type Tst ori" name="AllTypes_ContractDocumentsTheRequestAndResponse" time="0.027" />
+  </testsuite>
+  <testsuite name="95702 Sub Helper Tst ori" timestamp="2026-11-03T18:53:28" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.269" tests="17" errors="0" failures="0" skipped="0">
+    <testcase classname="95702 Sub Helper Tst ori" name="TryGetArray_ReturnsTheArray_WhenOneIsSupplied" time="0.014" />
+    <testcase classname="95702 Sub Helper Tst ori" name="TryGetArray_ReportsAbsent_WhenThePropertyIsMissing" time="0.007" />
+    <testcase classname="95702 Sub Helper Tst ori" name="TryGetArray_ReportsAbsent_WhenThePropertyIsNull" time="0.01" />
+    <testcase classname="95702 Sub Helper Tst ori" name="TryGetArray_Errors_WhenThePropertyIsNotAnArray" time="0.064" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetEntryNoSelection_BuildsAFilterOverTheDistinctEntryNos" time="0.013" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetEntryNoSelection_SelectsEverything_WhenThePropertyIsMissing" time="0.01" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetEntryNoSelection_Errors_OnAnElementThatIsNotANumber" time="0.013" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetEntryNoSelection_Errors_OnANestedElement" time="0.01" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetEntryNoSelection_DropsTheFilter_WhenTheListIsTooLongForOneExpression" time="0.01" />
+    <testcase classname="95702 Sub Helper Tst ori" name="FormatDocumentType_ReturnsAStableToken" time="0.024" />
+    <testcase classname="95702 Sub Helper Tst ori" name="FormatProcessingStatus_ReturnsAStableToken" time="0.02" />
+    <testcase classname="95702 Sub Helper Tst ori" name="FormatDate_UsesTheIsoFormat" time="0.01" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetDate_ReadsTheIsoFormat" time="0.01" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetDate_Errors_OnAnUnparseableDate" time="0.01" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetDecimal_ReadsACultureInvariantNumber" time="0.014" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetServicePartner_AcceptsEitherPartnerInAnyCasing" time="0.02" />
+    <testcase classname="95702 Sub Helper Tst ori" name="GetServicePartner_Errors_OnAnUnknownPartner" time="0.01" />
+  </testsuite>
+  <testsuite name="95704 Sub Registration Tst ori" timestamp="2026-11-03T18:53:28" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.03" tests="1" errors="0" failures="0" skipped="0">
+    <testcase classname="95704 Sub Registration Tst ori" name="GetApps_ListsSubscriptionBilling" time="0.03" />
+  </testsuite>
+  <testsuite name="95705 Sub Imp CrContr Tst ori" timestamp="2026-11-03T18:53:53" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="23.395" tests="6" errors="0" failures="0" skipped="0">
+    <testcase classname="95705 Sub Imp CrContr Tst ori" name="Scenario_AC02_OmittedLineType_FailsSubscriptionLinesStage" time="2.69" />
+    <testcase classname="95705 Sub Imp CrContr Tst ori" name="Scenario_AC02_DefaultCall_CreatesNoContractLineForOmittedType" time="10.083" />
+    <testcase classname="95705 Sub Imp CrContr Tst ori" name="Scenario_AC02_ContractLinesOnly_RefusesCommentWithoutOptIn" time="0.283" />
+    <testcase classname="95705 Sub Imp CrContr Tst ori" name="Scenario_AC01_CommentWithOptIn_CreatesContractCommentLine" time="0.243" />
+    <testcase classname="95705 Sub Imp CrContr Tst ori" name="Scenario_AC04_ExplicitItemLine_CreatesSubscriptionLine" time="9.833" />
+    <testcase classname="95705 Sub Imp CrContr Tst ori" name="Scenario_AC03_Contract_DocumentsAllowCommentLines" time="0.263" />
+  </testsuite>
+  <testsuite name="95706 Sub Contract Batch1 Tst ori" timestamp="2026-11-03T18:53:53" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.1" tests="3" errors="0" failures="0" skipped="0">
+    <testcase classname="95706 Sub Contract Batch1 Tst ori" name="Batch1_AllTypes_HaveRequiredChapters" time="0.047" />
+    <testcase classname="95706 Sub Contract Batch1 Tst ori" name="Batch1_Effects_MatchOperation" time="0.03" />
+    <testcase classname="95706 Sub Contract Batch1 Tst ori" name="CommittingTypes_AreIrreversible_WriteTypesStayWrite" time="0.023" />
+  </testsuite>
+  <testsuite name="95707 Sub Contract Batch2 Tst ori" timestamp="2026-11-03T18:53:54" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.044" tests="2" errors="0" failures="0" skipped="0">
+    <testcase classname="95707 Sub Contract Batch2 Tst ori" name="Batch2_AllTypes_HaveRequiredChapters" time="0.024" />
+    <testcase classname="95707 Sub Contract Batch2 Tst ori" name="Batch2_Effects_MatchOperation" time="0.02" />
+  </testsuite>
+  <testsuite name="95708 Sub PU Filter Tst ori" timestamp="2026-11-03T18:53:58" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="3.139" tests="10" errors="0" failures="0" skipped="0">
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_ValidCustomerContract_PersistsOnlyMatchingView" time="1.903" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_ValidVendorContract_PersistsVendorView" time="0.847" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_ValidSubscriptionAndLine_ChangesOnlySelectedBlob" time="0.103" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_UnknownWhereField_ReturnsErrorAndPreservesState" time="0.053" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_UnknownSortingField_ReturnsErrorAndPreservesState" time="0.027" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_UnbalancedView_ReturnsErrorAndPreservesState" time="0.03" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_NotAView_ReturnsErrorAndPreservesState" time="0.03" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_EmptyClearsAndMissingRequiredValue_DoesNotWrite" time="0.056" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_ViewWithoutFilters_ClearsSelectedBlob" time="0.04" />
+    <testcase classname="95708 Sub PU Filter Tst ori" name="Filter_FieldTokenInValue_IsPreservedInReadableResponse" time="0.05" />
+  </testsuite>
+  <testsuite name="95709 Sub Bil PrvDocs SkipTst ori" timestamp="2026-11-03T18:53:59" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.743" tests="6" errors="0" failures="0" skipped="0">
+    <testcase classname="95709 Sub Bil PrvDocs SkipTst ori" name="AC01_OmittedSkipTake_DefaultsTo0And100_AndPagesGroups" time="0.447" />
+    <testcase classname="95709 Sub Bil PrvDocs SkipTst ori" name="AC02_NegativeSkip_FailsWithFoundationError" time="0.103" />
+    <testcase classname="95709 Sub Bil PrvDocs SkipTst ori" name="AC03_NegativeTake_FailsWithFoundationError" time="0.08" />
+    <testcase classname="95709 Sub Bil PrvDocs SkipTst ori" name="AC04_TakeAbove1000_IsClampedTo1000" time="0.077" />
+    <testcase classname="95709 Sub Bil PrvDocs SkipTst ori" name="AC05_ContractDocumentsPaginationLimits1000" time="0.016" />
+    <testcase classname="95709 Sub Bil PrvDocs SkipTst ori" name="DocumentCountDivergesFromPage_WhenTakeIsSmaller" time="0.02" />
+  </testsuite>
+  <testsuite name="95711 Sub Con UpdDates Tst ori" timestamp="2026-11-03T18:54:04" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="3.936" tests="4" errors="0" failures="0" skipped="0">
+    <testcase classname="95711 Sub Con UpdDates Tst ori" name="UpdateLineDates_EndedLine_ClosesLineAndContractLines" time="1.35" />
+    <testcase classname="95711 Sub Con UpdDates Tst ori" name="UpdateLineDates_WithoutForce_IsRefused" time="2.473" />
+    <testcase classname="95711 Sub Con UpdDates Tst ori" name="UpdateLineDates_PendingEntry_ReturnsExistingEntry" time="0.093" />
+    <testcase classname="95711 Sub Con UpdDates Tst ori" name="UpdateLineDates_UnknownRunMode_IsRefused" time="0.02" />
+  </testsuite>
+  <testsuite name="95712 Sub Bil Undo Tst ori" timestamp="2026-11-03T18:54:08" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="4.087" tests="6" errors="0" failures="0" skipped="0">
+    <testcase classname="95712 Sub Bil Undo Tst ori" name="ClearProposal_DeletesLinesAndRestoresNextBillingDate" time="0.6" />
+    <testcase classname="95712 Sub Bil Undo Tst ori" name="ClearProposal_LineOnDocument_IsRefused" time="0.063" />
+    <testcase classname="95712 Sub Bil Undo Tst ori" name="ClearProposal_NoSelectionOrUnknownTemplate_IsRefused" time="0.04" />
+    <testcase classname="95712 Sub Bil Undo Tst ori" name="DeleteDocuments_ReturnsBillingLineToProposal" time="3.207" />
+    <testcase classname="95712 Sub Bil Undo Tst ori" name="DeleteDocuments_PostedDocument_IsRefused" time="0.15" />
+    <testcase classname="95712 Sub Bil Undo Tst ori" name="DeleteDocuments_NoDocuments_SucceedsWithZero" time="0.027" />
+  </testsuite>
+  <testsuite name="95713 Sub Usg Connect Tst ori" timestamp="2026-11-03T18:54:11" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="2.757" tests="7" errors="0" failures="0" skipped="0">
+    <testcase classname="95713 Sub Usg Connect Tst ori" name="Connect_ExistingLines_ConnectsEntry" time="0.96" />
+    <testcase classname="95713 Sub Usg Connect Tst ori" name="Connect_ThenProcess_CreatesUsageBilling" time="1.393" />
+    <testcase classname="95713 Sub Usg Connect Tst ori" name="Connect_NoUsageBasedLine_IsSkippedWithReason" time="0.127" />
+    <testcase classname="95713 Sub Usg Connect Tst ori" name="Connect_EntryWithoutMethod_IsRefused" time="0.04" />
+    <testcase classname="95713 Sub Usg Connect Tst ori" name="Connect_AlreadyConnectedOrUnknownSupplier_IsRefused" time="0.074" />
+    <testcase classname="95713 Sub Usg Connect Tst ori" name="Disconnect_ConnectedLine_RemovesLink" time="0.103" />
+    <testcase classname="95713 Sub Usg Connect Tst ori" name="Disconnect_NotConnectedOrNoParameter_IsRefused" time="0.06" />
+  </testsuite>
+  <testsuite name="95714 Sub Con UpdFCY Tst ori" timestamp="2026-11-03T18:54:12" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.32" tests="4" errors="0" failures="0" skipped="0">
+    <testcase classname="95714 Sub Con UpdFCY Tst ori" name="UpdateExchangeRates_DefaultRate_RecalculatesFromLocalCurrency" time="0.133" />
+    <testcase classname="95714 Sub Con UpdFCY Tst ori" name="UpdateExchangeRates_VendorWithFactor_UsesGivenFactor" time="0.083" />
+    <testcase classname="95714 Sub Con UpdFCY Tst ori" name="UpdateExchangeRates_LocalCurrencyOrZeroFactor_IsRefused" time="0.07" />
+    <testcase classname="95714 Sub Con UpdFCY Tst ori" name="UpdateExchangeRates_ClosedContractLine_IsSkipped" time="0.034" />
+  </testsuite>
+  <testsuite name="95715 Sub Should Have Tst ori" timestamp="2026-11-03T18:54:21" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="7.924" tests="8" errors="0" failures="0" skipped="0">
+    <testcase classname="95715 Sub Should Have Tst ori" name="AddLinesToInvoice_DueVendorLine_PersistsBilling" time="7.09" />
+    <testcase classname="95715 Sub Should Have Tst ori" name="AddLinesToInvoice_NoDueLines_SucceedsWithZero" time="0.13" />
+    <testcase classname="95715 Sub Should Have Tst ori" name="AddLinesToInvoice_PostedOrOtherVendor_IsRefused" time="0.217" />
+    <testcase classname="95715 Sub Should Have Tst ori" name="BillingSetTemplateFilter_ValidView_IsStored" time="0.07" />
+    <testcase classname="95715 Sub Should Have Tst ori" name="BillingSetTemplateFilter_UnknownField_IsRefusedAndNothingWritten" time="0.03" />
+    <testcase classname="95715 Sub Should Have Tst ori" name="RemoveLine_UnbilledLine_IsRemoved" time="0.23" />
+    <testcase classname="95715 Sub Should Have Tst ori" name="RemoveLine_InBillingClosedOrUnknown_IsRefused" time="0.09" />
+    <testcase classname="95715 Sub Should Have Tst ori" name="RemoveItemAssignment_RemovesAndRefusesUnknown" time="0.067" />
+  </testsuite>
+  <testsuite name="95716 Sub Usg DelData Tst ori" timestamp="2026-11-03T18:54:22" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.524" tests="5" errors="0" failures="0" skipped="0">
+    <testcase classname="95716 Sub Usg DelData Tst ori" name="DeleteData_ResetLines_DeletesProcessedDataAndKeepsImport" time="0.087" />
+    <testcase classname="95716 Sub Usg DelData Tst ori" name="DeleteData_DeleteImport_DeletesImport" time="0.153" />
+    <testcase classname="95716 Sub Usg DelData Tst ori" name="DeleteData_InvoicedOrUnknown_IsRefused" time="0.05" />
+    <testcase classname="95716 Sub Usg DelData Tst ori" name="RenewalCreateQuote_UnknownContractLine_IsRefused" time="0.17" />
+    <testcase classname="95716 Sub Usg DelData Tst ori" name="RenewalCreateQuote_ListedLineWithoutEndDate_IsRefused" time="0.064" />
+  </testsuite>
+  <testsuite name="95717 Sub Con Ccy Tst ori" timestamp="2026-11-03T18:54:23" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.72" tests="5" errors="0" failures="0" skipped="0">
+    <testcase classname="95717 Sub Con Ccy Tst ori" name="Scenario_AC01_CustomerCurrencyDataRecordsSet_IsRefusedWithHint" time="0.35" />
+    <testcase classname="95717 Sub Con Ccy Tst ori" name="Scenario_AC01_VendorCurrencyDataRecordsSet_IsRefusedWithHint" time="0.08" />
+    <testcase classname="95717 Sub Con Ccy Tst ori" name="Scenario_AC02_CurrencyRefusal_IsLocalizedInIcelandic" time="0.09" />
+    <testcase classname="95717 Sub Con Ccy Tst ori" name="Scenario_AC01_OnlyCurrencyCodeIsRestricted" time="0.134" />
+    <testcase classname="95717 Sub Con Ccy Tst ori" name="Scenario_AC01_DirectValidateWithoutLines_StillSetsCurrency" time="0.066" />
+  </testsuite>
+  <testsuite name="95718 Sub PostDocs Tst ori" timestamp="2026-11-03T18:54:54" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="31.059" tests="9" errors="0" failures="0" skipped="0">
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_65AC02_ForeignVendor_UsesRegisteredType_EN" time="0.093" />
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_65AC02_ForeignVendor_UsesRegisteredType_IS" time="0.023" />
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_AC03_PostDocuments_PostsBillingInvoice_AndRefusesItAgain" time="24.28" />
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_AC03_PostDocuments_RefusesForeignSalesInvoice" time="2.2" />
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_AC01_PostDocuments_PostsVendorInvoiceWithVendorInvoiceNo" time="3.537" />
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_AC01_PostDocuments_TopLevelVendorInvoiceNo_PostsSingleVendorInvoice" time="0.33" />
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_AC02_PostDocuments_VendorWithoutVendorInvoiceNo_IsRefused" time="0.193" />
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_AC02_PostDocuments_VendorWithoutVendorInvoiceNo_IsRefusedInIcelandic" time="0.193" />
+    <testcase classname="95718 Sub PostDocs Tst ori" name="Scenario_AC02_PostDocuments_VendorInvoiceNoOnCustomerEntry_IsRefused" time="0.21" />
+  </testsuite>
+  <testsuite name="95719 Sub Post Gate Tst ori" timestamp="2026-11-03T18:54:55" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.023" tests="1" errors="0" failures="0" skipped="0">
+    <testcase classname="95719 Sub Post Gate Tst ori" name="Scenario_AC02_WithoutSubPost_PostingIsDenied" time="0.023" />
+  </testsuite>
+  <testsuite name="95720 Sub Con Merge Tst ori" timestamp="2026-11-03T18:54:58" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="2.387" tests="10" errors="0" failures="0" skipped="0">
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC01_MergeLines_ClosesTheSelectedLines_AndOpensOneMergedLine" time="0.404" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC01_MergeLines_ResultMatchesMicrosoftMerge" time="0.18" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC02_MergeLines_RefusesDifferentNextBillingDate" time="0.164" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC02_MergeLines_RefusesDifferentDimensions" time="0.78" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC02_MergeLines_RefusesExistingBillingLines" time="0.14" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC02_MergeLines_RefusesSerialNo" time="0.17" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC02_MergeLines_RefusesDifferentCustomerReference" time="0.137" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC02_MergeLines_RefusesASingleLine" time="0.106" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC02_MergeLines_RefusesACommentLine" time="0.103" />
+    <testcase classname="95720 Sub Con Merge Tst ori" name="Scenario_AC02_MergeLines_RefusesLinesFromDifferentContracts" time="0.203" />
+  </testsuite>
+  <testsuite name="95721 SubBil Setup Wizard Tests" timestamp="2026-11-03T18:55:03" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="5.055" tests="10" errors="0" failures="0" skipped="0">
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC01_AssistedSetup_RegistersWizard" time="1.46" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC03_HttpRead_NeverCreatesASetting" time="0.017" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC03_Verify_StaysAvailable" time="0.187" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC03_HttpSetup_OpensFoundationWithoutWritingSettings" time="1.383" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC04_Access_ListsOnlyAssignableSets" time="0.007" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC05_CloseEarly_DoesNotCompleteSetup" time="0.094" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC05_Finish_CompletesSetup" time="0.1" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC05_InvalidStep_ExplainsRecovery" time="0.01" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC05_StepBoundaries_StayInRange" time="0.01" />
+    <testcase classname="95721 SubBil Setup Wizard Tests" name="Scenario_AC02_ShowOperations_OpensUsableHostPage" time="1.787" />
+  </testsuite>
+  <testsuite name="95723 Sub Refusal Tst ori" timestamp="2026-11-03T18:55:05" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="1.456" tests="31" errors="0" failures="0" skipped="0">
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_MissingValues_Aggregate_EN" time="0.016" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_MissingValues_Aggregate_IS" time="0.007" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC01_OneMissingValue_SingleError_EN" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC01_OneMissingValue_SingleError_IS" time="0.006" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_BadDateAndPartner_Aggregate" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_BadDateAndPartner_Aggregate_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC03_InvalidBase64_IsSanitized_EN" time="0.25" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC03_InvalidBase64_IsSanitized_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_SubjectFallback_IsAccepted" time="0.007" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_EmptyFilter_StillClearsFilter" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_UnknownTemplateAndBadDate_Aggregate" time="0.013" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_UnknownTemplateAndBadDate_Aggregate_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC01_RecordNotFound_Context_EN" time="0.02" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC01_RecordNotFound_Context_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues" time="0.017" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_ObjectInsteadOfScalar_IsStructuredBeforeLookup" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_SelectionArray_CollectsEachBadEntry" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_SelectionArray_CollectsEachBadEntry_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_EN" time="0.35" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_IS" time="0.347" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC04_RequiredUsageEntry_HelpListsRealPreflightCodes" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_ContextFields_EN" time="0.063" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_ContextFields_IS" time="0.02" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_LengthAndNestedShape_EN" time="0.033" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_LengthAndNestedShape_IS" time="0.016" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_UnknownEnumValue_IsStructured" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_DomainSelections_EN" time="0.097" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_DomainSelections_IS" time="0.04" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_MissingAlternatives_AggregatesBeforeLookup_EN" time="0.014" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_MissingAlternatives_AggregatesBeforeLookup_IS" time="0.01" />
+  </testsuite>
+  <testsuite name="95727 Sub Help Wording Tst ori" timestamp="2026-11-03T18:55:07" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="1.673" tests="5" errors="0" failures="0" skipped="0">
+    <testcase classname="95727 Sub Help Wording Tst ori" name="Scenario_64AC06_RefusalCaptions_EN" time="0.027" />
+    <testcase classname="95727 Sub Help Wording Tst ori" name="Scenario_64AC06_RefusalCaptions_IS" time="0.016" />
+    <testcase classname="95727 Sub Help Wording Tst ori" name="Scenario_64AC02_PreviewDescriptions_EN" time="0.01" />
+    <testcase classname="95727 Sub Help Wording Tst ori" name="Scenario_64AC02_PreviewDescriptions_IS" time="0.006" />
+    <testcase classname="95727 Sub Help Wording Tst ori" name="Scenario_64_ForceName_MatchesInstalledCaption" time="1.614" />
+  </testsuite>
+  <testsuite name="95728 Sub LicAdm Setup Tst ori" timestamp="2026-11-03T18:55:09" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="1.3" tests="2" errors="0" failures="0" skipped="0">
+    <testcase classname="95728 Sub LicAdm Setup Tst ori" name="Scenario_AC03_LicenceAdmin_OpensReadOnlySetupEnglish" time="1.184" />
+    <testcase classname="95728 Sub LicAdm Setup Tst ori" name="Scenario_AC03_LicenceAdmin_OpensReadOnlySetupIcelandic" time="0.116" />
+  </testsuite>
+  <testsuite name="95741 Sub PU Oracle Tst ori" timestamp="2026-11-03T18:55:13" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="3.295" tests="6" errors="0" failures="0" skipped="0">
+    <testcase classname="95741 Sub PU Oracle Tst ori" name="Oracle_CreateProposal_CalculationBaseByPct_MatchesMicrosoft" time="0.947" />
+    <testcase classname="95741 Sub PU Oracle Tst ori" name="Oracle_CreateProposal_PriceByPct_MatchesMicrosoft" time="0.29" />
+    <testcase classname="95741 Sub PU Oracle Tst ori" name="Oracle_CreateProposal_RecentItemPrices_MatchesMicrosoft" time="0.804" />
+    <testcase classname="95741 Sub PU Oracle Tst ori" name="Oracle_CreateProposal_VendorRecentItemPrices_MatchesMicrosoft" time="0.56" />
+    <testcase classname="95741 Sub PU Oracle Tst ori" name="Oracle_CreateProposal_TemplateFilters_MatchMicrosoft" time="0.237" />
+    <testcase classname="95741 Sub PU Oracle Tst ori" name="Oracle_Perform_UpdatesAndPlansLikeMicrosoft" time="0.457" />
+  </testsuite>
+  <testsuite name="95742 Sub PU Proposal Tst ori" timestamp="2026-11-03T18:55:17" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="3.5" tests="14" errors="0" failures="0" skipped="0">
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_CalculationBaseByPercentage" time="0.134" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_PriceByPercentage" time="0.074" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_RecentItemPrices" time="0.11" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_TemplateFilters" time="0.5" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_LineWithoutNextPriceUpdate_IsIncluded" time="0.08" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_ClosedLine_IsNotIncluded" time="0.073" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="UT_UpdatePerformUpdateOn_TakesLatestDate" time="0.01" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_RecentItemPrices_UsesPriceOfSubscriptionUnitOfMeasure" time="2.08" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_Response_ReportsCreatedLinesAndDates" time="0.076" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_SecondRun_SkipsLinesAlreadyProposed" time="0.11" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_ZeroItemPrice_CountsLineNotCreated" time="0.16" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_UnknownTemplate_IsRefused" time="0.04" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_NoIncludeDate_IsRefusedWithMicrosoftMessage" time="0.033" />
+    <testcase classname="95742 Sub PU Proposal Tst ori" name="CreateProposal_InvalidDate_IsRefused" time="0.02" />
+  </testsuite>
+  <testsuite name="95743 Sub PU Perform Tst ori" timestamp="2026-11-03T18:55:18" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.933" tests="9" errors="0" failures="0" skipped="0">
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_DeletesTheProposalLines" time="0.186" />
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_FuturePerformDate_WritesPlannedSubscriptionLines" time="0.114" />
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_LineBilledUpToTheUpdate_UpdatesSubscriptionLineAndArchives" time="0.087" />
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_LineWithPlannedLine_IsSkippedAndDeleted" time="0.13" />
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_WithTemplate_LeavesOtherTemplatesLines" time="0.15" />
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_CommittingRun_KeepsAFailedLineAndAnswersError" time="0.123" />
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_EmptyProposal_IsRefused" time="0.03" />
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_TemplateWithoutLines_IsRefused" time="0.083" />
+    <testcase classname="95743 Sub PU Perform Tst ori" name="Perform_UnknownTemplate_IsRefused" time="0.03" />
+  </testsuite>
+  <testsuite name="95771 Sub Perm Full Tst ori" timestamp="2026-11-03T18:55:19" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.024" tests="2" errors="0" failures="0" skipped="0">
+    <testcase classname="95771 Sub Perm Full Tst ori" name="Scenario_AC03_FullSetOnly_ReadsContractOfContractPartsTypes" time="0.014" />
+    <testcase classname="95771 Sub Perm Full Tst ori" name="Scenario_AC03_FullSetOnly_RunsImplementationChapters" time="0.01" />
+  </testsuite>
+  <testsuite name="95772 Sub Help Accuracy Tst ori" timestamp="2026-11-03T18:55:19" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.07" tests="5" errors="0" failures="0" skipped="0">
+    <testcase classname="95772 Sub Help Accuracy Tst ori" name="Scenario_AC02_TypesReadingSetupRecords_StateWriteGuardPrecondition" time="0.02" />
+    <testcase classname="95772 Sub Help Accuracy Tst ori" name="Scenario_AC02_TypesWithoutSetupRecords_OmitWriteGuardPrecondition" time="0.01" />
+    <testcase classname="95772 Sub Help Accuracy Tst ori" name="Scenario_AC02_SetupPrecondition_AgreesInNumber" time="0.01" />
+    <testcase classname="95772 Sub Help Accuracy Tst ori" name="Scenario_AC06_ImportProcessedCount_LeavesSkippedRowsOut" time="0.01" />
+    <testcase classname="95772 Sub Help Accuracy Tst ori" name="Scenario_AC01_Contracts_MakeNoEndToEndOrVersionClaims" time="0.02" />
+  </testsuite>
+  <testsuite name="95773 Sub Line GetLines Tst ori" timestamp="2026-11-03T18:55:20" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.861" tests="8" errors="0" failures="0" skipped="0">
+    <testcase classname="95773 Sub Line GetLines Tst ori" name="Scenario_AC01_PackageApplied_CreatesLinesWithRequestedDates" time="0.184" />
+    <testcase classname="95773 Sub Line GetLines Tst ori" name="Scenario_AC01_UnknownPackage_IsRefused" time="0.064" />
+    <testcase classname="95773 Sub Line GetLines Tst ori" name="Scenario_AC01_UsageBasedOnly_SkipsOtherPackageLines" time="0.087" />
+    <testcase classname="95773 Sub Line GetLines Tst ori" name="Scenario_AC02_ContractGetLines_AttachesAllCandidates" time="0.13" />
+    <testcase classname="95773 Sub Line GetLines Tst ori" name="Scenario_AC02_ContractGetLines_AttachesOnlySelectedLines" time="0.116" />
+    <testcase classname="95773 Sub Line GetLines Tst ori" name="Scenario_AC02_ContractGetLines_SkipsOtherCustomersLines" time="0.107" />
+    <testcase classname="95773 Sub Line GetLines Tst ori" name="Scenario_AC02_VendorContractGetLines_AttachesAllCandidates" time="0.08" />
+    <testcase classname="95773 Sub Line GetLines Tst ori" name="Scenario_AC02_VendorContractGetLines_AttachesOnlySelectedLines" time="0.093" />
+  </testsuite>
+  <testsuite name="95774 Sub Invoice Tst ori" timestamp="2026-11-03T18:55:22" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.934" tests="6" errors="0" failures="0" skipped="0">
+    <testcase classname="95774 Sub Invoice Tst ori" name="Scenario_AC03_ContractCreateInvoice_CreatesLinkedSalesInvoice" time="0.36" />
+    <testcase classname="95774 Sub Invoice Tst ori" name="Scenario_AC03_ContractCreateInvoice_NothingDue_CreatesNothing" time="0.1" />
+    <testcase classname="95774 Sub Invoice Tst ori" name="Scenario_AC03_ContractCreateInvoice_UnknownContract_IsRefused" time="0.017" />
+    <testcase classname="95774 Sub Invoice Tst ori" name="Scenario_AC03_VendorContractCreateInvoice_CreatesLinkedPurchaseInvoice" time="0.217" />
+    <testcase classname="95774 Sub Invoice Tst ori" name="Scenario_AC04_ContractPreviewInvoice_LeavesNothingBehind" time="0.15" />
+    <testcase classname="95774 Sub Invoice Tst ori" name="Scenario_AC04_VendorContractPreviewInvoice_LeavesNothingBehind" time="0.09" />
+  </testsuite>
+  <testsuite name="95775 Sub Billing Run Tst ori" timestamp="2026-11-03T18:55:23" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.799" tests="5" errors="0" failures="0" skipped="0">
+    <testcase classname="95775 Sub Billing Run Tst ori" name="Scenario_AC05_CreateProposal_AddsLinesForTemplateContract" time="0.173" />
+    <testcase classname="95775 Sub Billing Run Tst ori" name="Scenario_AC05_CreateProposal_UnknownTemplate_IsRefused" time="0.013" />
+    <testcase classname="95775 Sub Billing Run Tst ori" name="Scenario_AC05_CreateDocumentsPosted_PostsSalesInvoice" time="0.45" />
+    <testcase classname="95775 Sub Billing Run Tst ori" name="Scenario_AC05_CreateDocumentsPosted_LeavesPurchaseInvoiceUnposted" time="0.15" />
+    <testcase classname="95775 Sub Billing Run Tst ori" name="Scenario_AC05_CreateDocuments_NoProposal_AnswersNothingPending" time="0.013" />
+  </testsuite>
+  <testsuite name="95776 Sub Renewal Tst ori" timestamp="2026-11-03T18:55:25" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="1.37" tests="5" errors="0" failures="0" skipped="0">
+    <testcase classname="95776 Sub Renewal Tst ori" name="CreateQuote_SelectedLines_ExcludesOtherRenewableLines" time="0.704" />
+    <testcase classname="95776 Sub Renewal Tst ori" name="Scenario_AC06_Extend_AddsPackageLinesOntoContract" time="0.22" />
+    <testcase classname="95776 Sub Renewal Tst ori" name="Scenario_AC06_Extend_WithoutContract_IsRefused" time="0.213" />
+    <testcase classname="95776 Sub Renewal Tst ori" name="Scenario_AC07_CreateQuote_CreatesRenewalSalesQuote" time="0.15" />
+    <testcase classname="95776 Sub Renewal Tst ori" name="Scenario_AC07_CreateQuote_OpenEndedLines_IsRefused" time="0.083" />
+  </testsuite>
+  <testsuite name="95777 Sub Usage Tst ori" timestamp="2026-11-03T18:55:27" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="2.279" tests="6" errors="0" failures="0" skipped="0">
+    <testcase classname="95777 Sub Usage Tst ori" name="ImportData_TextAndBase64_PersistParsedRows" time="1.373" />
+    <testcase classname="95777 Sub Usage Tst ori" name="ImportData_UnknownSupplier_IsRefused" time="0.017" />
+    <testcase classname="95777 Sub Usage Tst ori" name="Scenario_AC08_ImportAndProcess_CreatesUsageDataBilling" time="0.306" />
+    <testcase classname="95777 Sub Usage Tst ori" name="Scenario_AC08_ImportData_WithoutContent_IsRefused" time="0.04" />
+    <testcase classname="95777 Sub Usage Tst ori" name="Scenario_AC08_Process_UnknownStep_IsRefused" time="0.113" />
+    <testcase classname="95777 Sub Usage Tst ori" name="Scenario_38AC04_ConnectProcessPropose_LinksUsageToBillingLine" time="0.43" />
+  </testsuite>
+  <testsuite name="95778 Sub Deferral Analysis Tst ori" timestamp="2026-11-03T18:55:29" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="1.548" tests="5" errors="0" failures="0" skipped="0">
+    <testcase classname="95778 Sub Deferral Analysis Tst ori" name="Scenario_AC09_Release_ReleasesDeferralAndPostsToGL" time="1.113" />
+    <testcase classname="95778 Sub Deferral Analysis Tst ori" name="Scenario_AC09_Release_OtherPostingDate_IsRefused" time="0.013" />
+    <testcase classname="95778 Sub Deferral Analysis Tst ori" name="Scenario_AC09_Release_PostUntilAfterPostingDate_IsRefused" time="0.013" />
+    <testcase classname="95778 Sub Deferral Analysis Tst ori" name="Scenario_AC10_Recalculate_AddsAnalysisEntriesForContract" time="0.313" />
+    <testcase classname="95778 Sub Deferral Analysis Tst ori" name="Scenario_AC10_RecalculateTwice_AddsNothingTheSecondTime" time="0.096" />
+  </testsuite>
+  <testsuite name="95780 Sub Contract Complete Tst ori" timestamp="2026-11-03T18:55:31" hostname="f0ab81e9488d-business-central-5bd554f7bb-xxj4c" time="0.821" tests="11" errors="0" failures="0" skipped="0">
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_DeclareTheChaptersACallerNeeds" time="0.03" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_ErrorEntriesCarryACodeOrTextWithAConditionAndANextStep" time="0.027" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_EffectAgreesWithTheMessageDirection" time="0.027" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_ParametersAndResponseAreWellFormed" time="0.033" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_ExamplesAreRealRequestAndResponsePairs" time="0.026" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_WorkflowAndRelatedNameRealTypes" time="0.03" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="Scenario_64AC01_AllTypes_DeclareWorkflow" time="0.023" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_ContractTextNamesNoAlObjectOrInternalProcedure" time="0.523" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_DiscoveryTextsAreCompleteAndSeparateTheTypeFromItsSiblings" time="0.074" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="AllTypes_DiscoveryTextsHaveAnIcelandicTranslation" time="0.014" />
+    <testcase classname="95780 Sub Contract Complete Tst ori" name="BillingWorkflow_StartsWithTheTemplateFilter_AndUsageWorkflowCoversTheReset" time="0.014" />
+  </testsuite>
+</testsuites>

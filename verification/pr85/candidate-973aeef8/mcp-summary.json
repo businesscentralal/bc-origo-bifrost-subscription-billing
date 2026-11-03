@@ -1,0 +1,467 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "containerId": "f0ab81e9488d",
+  "touchedMessageTypes": [],
+  "notApplicableReason": "No production message handler/contract changed; shared test fixtures now send an explicit Foundation confirmation. Supplementary confirmation regressions below cover all8fixture operations.",
+  "regressionMessageTypes": [
+    "Subscription.Contract.UpdateLineDates",
+    "Subscription.Billing.ClearProposal",
+    "Subscription.Billing.DeleteDocuments",
+    "Subscription.Usage.ConnectSubscriptions",
+    "Subscription.Usage.Process",
+    "Subscription.Usage.DeleteData",
+    "Subscription.Renewal.CreateQuote",
+    "Subscription.PriceUpdate.Perform"
+  ],
+  "createsOwnData": true,
+  "dataSetup": "All negative request data is constructed here with task-unique nonexistent identifiers/invalid mode. No customer/shared fixture records. No successful business writes; expectedCount0 must refuse at generic gate, expectedCount1 must reach a domain error on nonexistent/invalid own payload. Native210suite separately seeds and tests real business effects.",
+  "businessRecordsCreated": 0,
+  "businessRecordsRemaining": 0,
+  "scenarios": [
+    {
+      "type": "Help.MessageTypes.Get",
+      "lcid": 1033,
+      "passed": true
+    },
+    {
+      "type": "Subscription.Contract.UpdateLineDates",
+      "subject": "",
+      "data": {
+        "runMode": "XSB85_INVALID",
+        "expectedCount": 0
+      },
+      "lcid": 1033,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Contract.UpdateLineDates",
+      "subject": "",
+      "data": {
+        "runMode": "XSB85_INVALID",
+        "expectedCount": 1
+      },
+      "lcid": 1033,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "InvalidParameter",
+      "expectedCode": "InvalidParameter",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Billing.ClearProposal",
+      "subject": "",
+      "data": {
+        "billingTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 0
+      },
+      "lcid": 1033,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Billing.ClearProposal",
+      "subject": "",
+      "data": {
+        "billingTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 1
+      },
+      "lcid": 1033,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Billing.DeleteDocuments",
+      "subject": "",
+      "data": {
+        "billingTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 0
+      },
+      "lcid": 1033,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Billing.DeleteDocuments",
+      "subject": "",
+      "data": {
+        "billingTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 1
+      },
+      "lcid": 1033,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.ConnectSubscriptions",
+      "subject": "XSB85-NO-SUPPLIER",
+      "data": {
+        "expectedCount": 0
+      },
+      "lcid": 1033,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.ConnectSubscriptions",
+      "subject": "XSB85-NO-SUPPLIER",
+      "data": {
+        "expectedCount": 1
+      },
+      "lcid": 1033,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.Process",
+      "subject": "",
+      "data": {
+        "usageDataImportEntryNo": 2147483000,
+        "expectedCount": 0
+      },
+      "lcid": 1033,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.Process",
+      "subject": "",
+      "data": {
+        "usageDataImportEntryNo": 2147483000,
+        "expectedCount": 1
+      },
+      "lcid": 1033,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.DeleteData",
+      "subject": "",
+      "data": {
+        "usageDataImportEntryNo": 2147483000,
+        "mode": "resetLines",
+        "expectedCount": 0
+      },
+      "lcid": 1033,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.DeleteData",
+      "subject": "",
+      "data": {
+        "usageDataImportEntryNo": 2147483000,
+        "mode": "resetLines",
+        "expectedCount": 1
+      },
+      "lcid": 1033,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Renewal.CreateQuote",
+      "subject": "",
+      "data": {
+        "contractNo": "XSB85-NO-CONTRACT",
+        "contractLineNos": [
+          2147483000
+        ],
+        "expectedCount": 0
+      },
+      "lcid": 1033,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Renewal.CreateQuote",
+      "subject": "",
+      "data": {
+        "contractNo": "XSB85-NO-CONTRACT",
+        "contractLineNos": [
+          2147483000
+        ],
+        "expectedCount": 1
+      },
+      "lcid": 1033,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.PriceUpdate.Perform",
+      "subject": "",
+      "data": {
+        "priceUpdateTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 0
+      },
+      "lcid": 1033,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.PriceUpdate.Perform",
+      "subject": "",
+      "data": {
+        "priceUpdateTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 1
+      },
+      "lcid": 1033,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Help.MessageTypes.Get",
+      "lcid": 1039,
+      "passed": true
+    },
+    {
+      "type": "Subscription.Contract.UpdateLineDates",
+      "subject": "",
+      "data": {
+        "runMode": "XSB85_INVALID",
+        "expectedCount": 0
+      },
+      "lcid": 1039,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Contract.UpdateLineDates",
+      "subject": "",
+      "data": {
+        "runMode": "XSB85_INVALID",
+        "expectedCount": 1
+      },
+      "lcid": 1039,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "InvalidParameter",
+      "expectedCode": "InvalidParameter",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Billing.ClearProposal",
+      "subject": "",
+      "data": {
+        "billingTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 0
+      },
+      "lcid": 1039,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Billing.ClearProposal",
+      "subject": "",
+      "data": {
+        "billingTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 1
+      },
+      "lcid": 1039,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Billing.DeleteDocuments",
+      "subject": "",
+      "data": {
+        "billingTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 0
+      },
+      "lcid": 1039,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Billing.DeleteDocuments",
+      "subject": "",
+      "data": {
+        "billingTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 1
+      },
+      "lcid": 1039,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.ConnectSubscriptions",
+      "subject": "XSB85-NO-SUPPLIER",
+      "data": {
+        "expectedCount": 0
+      },
+      "lcid": 1039,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.ConnectSubscriptions",
+      "subject": "XSB85-NO-SUPPLIER",
+      "data": {
+        "expectedCount": 1
+      },
+      "lcid": 1039,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.Process",
+      "subject": "",
+      "data": {
+        "usageDataImportEntryNo": 2147483000,
+        "expectedCount": 0
+      },
+      "lcid": 1039,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.Process",
+      "subject": "",
+      "data": {
+        "usageDataImportEntryNo": 2147483000,
+        "expectedCount": 1
+      },
+      "lcid": 1039,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.DeleteData",
+      "subject": "",
+      "data": {
+        "usageDataImportEntryNo": 2147483000,
+        "mode": "resetLines",
+        "expectedCount": 0
+      },
+      "lcid": 1039,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Usage.DeleteData",
+      "subject": "",
+      "data": {
+        "usageDataImportEntryNo": 2147483000,
+        "mode": "resetLines",
+        "expectedCount": 1
+      },
+      "lcid": 1039,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Renewal.CreateQuote",
+      "subject": "",
+      "data": {
+        "contractNo": "XSB85-NO-CONTRACT",
+        "contractLineNos": [
+          2147483000
+        ],
+        "expectedCount": 0
+      },
+      "lcid": 1039,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.Renewal.CreateQuote",
+      "subject": "",
+      "data": {
+        "contractNo": "XSB85-NO-CONTRACT",
+        "contractLineNos": [
+          2147483000
+        ],
+        "expectedCount": 1
+      },
+      "lcid": 1039,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    },
+    {
+      "type": "Subscription.PriceUpdate.Perform",
+      "subject": "",
+      "data": {
+        "priceUpdateTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 0
+      },
+      "lcid": 1039,
+      "expected": "ConfirmationMismatch",
+      "actualCode": "ConfirmationMismatch",
+      "expectedCode": "ConfirmationMismatch",
+      "passed": true
+    },
+    {
+      "type": "Subscription.PriceUpdate.Perform",
+      "subject": "",
+      "data": {
+        "priceUpdateTemplateCode": "XSB85-NO-TEMPLATE",
+        "expectedCount": 1
+      },
+      "lcid": 1039,
+      "expected": "domain refusal after matching confirmation",
+      "actualCode": "RecordNotFound",
+      "expectedCode": "RecordNotFound",
+      "passed": true
+    }
+  ],
+  "executed": 34,
+  "passed": 34,
+  "failed": 0,
+  "skipped": 0,
+  "startedAt": "2026-11-03T18:56:30.673Z",
+  "verified": true,
+  "finishedAt": "2026-11-03T18:56:49.323Z"
+}

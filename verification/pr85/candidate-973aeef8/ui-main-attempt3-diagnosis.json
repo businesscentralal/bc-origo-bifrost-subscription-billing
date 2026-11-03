@@ -1,0 +1,8 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "failure": "Locale detection ran before the shell Settings/Stillingar control was rendered, read false and tried the English settings title in an Icelandic session.",
+  "productFailureEstablished": false,
+  "writesOccurred": false,
+  "correction": "Wait for either actual locale settings control before deciding which language is active; preserve successful language change and do not reapply it.",
+  "evidence": "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/ui-main-attempt3-locale-readiness"
+}

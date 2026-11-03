@@ -1,0 +1,37 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "checks": [
+    {
+      "name": "Test-ObjectIdsUnique",
+      "exitCode": 0
+    },
+    {
+      "name": "Test-PermissionCoverage",
+      "exitCode": 0
+    },
+    {
+      "name": "Test-NoObsolete",
+      "exitCode": 0
+    },
+    {
+      "name": "Test-NoClientCallstack",
+      "exitCode": 0
+    },
+    {
+      "name": "Test-ValidatedTableView",
+      "exitCode": 0
+    },
+    {
+      "name": "Test-IcelandicKeywordCounts",
+      "exitCode": 0
+    },
+    {
+      "name": "Test-MixedLanguageLabels",
+      "exitCode": 0
+    },
+    {
+      "name": "Test-ContractParameterKeys",
+      "exitCode": 1
+    }
+  ]
+}

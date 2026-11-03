@@ -1,0 +1,56 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "workingTree": false,
+  "startedAt": "2026-11-03T18:48:55.670050+00:00",
+  "analyzers": [
+    "CodeCop",
+    "UICop",
+    "AppSourceCop"
+  ],
+  "sourceAppVersion": "28.0.2.0",
+  "artifactAppVersion": "28.0.2.287",
+  "baseline": {
+    "version": "28.0.1.47",
+    "sourceSha": "0ad486ce4fc21e20a8a29addd7ef3d61b46be985",
+    "assetId": 674886629
+  },
+  "dependency": {
+    "Foundation": "28.0.11.664",
+    "Subscription Billing": "downloaded Microsoft28.5 symbol satisfying28.3 minimum"
+  },
+  "app": {
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 0,
+    "invocation": [
+      "/workspace/tools/dotnet/dotnet",
+      "/workspace/tools/warehouse-23-worker4/al18/extension/bin/alc.dll",
+      "/project:/workspace/evidence/tasks/sb85-handoff-worker4-20261103/compile-source/app",
+      "/packagecachepath:/workspace/evidence/tasks/sb85-handoff-worker4-20261103/symbols",
+      "/out:/workspace/evidence/tasks/sb85-handoff-worker4-20261103/build/SubscriptionBilling.app",
+      "/errorlog:/workspace/evidence/tasks/sb85-handoff-worker4-20261103/build/app-diagnostics.json",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.CodeCop.dll",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.UICop.dll",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.AppSourceCop.dll"
+    ],
+    "sha256": "6f382425c0a2b2e20cf19e55c27e3e8c288a82a45d98746da5edd093705ecbe7"
+  },
+  "test": {
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 0,
+    "invocation": [
+      "/workspace/tools/dotnet/dotnet",
+      "/workspace/tools/warehouse-23-worker4/al18/extension/bin/alc.dll",
+      "/project:/workspace/evidence/tasks/sb85-handoff-worker4-20261103/compile-source/test",
+      "/packagecachepath:/workspace/evidence/tasks/sb85-handoff-worker4-20261103/symbols",
+      "/out:/workspace/evidence/tasks/sb85-handoff-worker4-20261103/build/SubscriptionBillingTests.app",
+      "/errorlog:/workspace/evidence/tasks/sb85-handoff-worker4-20261103/build/test-diagnostics.json",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.CodeCop.dll",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.UICop.dll",
+      "/analyzer:/workspace/tools/warehouse-23-worker4/al18/extension/bin/Microsoft.Dynamics.Nav.AppSourceCop.dll"
+    ],
+    "sha256": "7b6ffe4a9c0fe4fbf78f9fb7598d1bccfb35f54401444c198c77dc28f9f26617"
+  },
+  "finishedAt": "2026-11-03T18:49:36.533797+00:00"
+}

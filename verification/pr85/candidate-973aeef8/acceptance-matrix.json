@@ -1,0 +1,148 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "issue": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/issues/69",
+  "pr": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/pull/85",
+  "criteria": [
+    {
+      "id": "AC01",
+      "implemented": true,
+      "developerVerified": true,
+      "verification": "Native95721fresh registration/incomplete; actual1033fresh UI incomplete and early cancel preserved false; registration group Extensions checked in source.",
+      "evidence": [
+        "full-suite.json",
+        "ui-main-attempt1-finish-readiness/final-browser-step-04.json",
+        "initial-cancel-1033.png"
+      ]
+    },
+    {
+      "id": "AC02",
+      "implemented": true,
+      "developerVerified": true,
+      "verification": "Both-language business introduction, usable installed-operations host and docs link; supplied bilingual help published verbatim and live routes validated200.",
+      "evidence": [
+        "ui-all-summary.json",
+        "help-live-routes.json",
+        "docs-verbatim-readback.json"
+      ]
+    },
+    {
+      "id": "AC03",
+      "implemented": true,
+      "developerVerified": true,
+      "verification": "Native read-only/no-direct-write and Foundation modal tests; UI own HTTP=false, explicit Foundation Step2 enable2registered apps, return/Verify=true. No consent/trial/licence action.",
+      "evidence": [
+        "full-suite.json",
+        "ui-http-summary.json",
+        "ui-http-disabled-wizard.png",
+        "final-ui-1033-http.png"
+      ]
+    },
+    {
+      "id": "AC04",
+      "implemented": true,
+      "developerVerified": true,
+      "verification": "Native exact2assignable permission sets; actual Users9800/PermissionSets9802 navigation in1033/1039.",
+      "evidence": [
+        "full-suite.json",
+        "ui-all-summary.json",
+        "final-ui-1039-access.png"
+      ]
+    },
+    {
+      "id": "AC5",
+      "implemented": true,
+      "developerVerified": true,
+      "verification": "Fresh English early-cancel preserved incomplete; EnglishFinish persisted true in independent session;1039Finish returned then independent true readback; repeat cancellation preserved completion in both languages.",
+      "evidence": [
+        "ui-all-summary.json",
+        "finish-fresh-readback.png",
+        "finish-fresh-readback-1039.png"
+      ]
+    },
+    {
+      "id": "AC6",
+      "implemented": true,
+      "developerVerified": true,
+      "verification": "335generated English source units match335translated is-IS targets:0missing/stale/source mismatches. Actual new wizard text/actions/summary inspected in1033/1039; own user restored1033.",
+      "evidence": [
+        "xlf-generated-sync.json",
+        "xlf-targets.json",
+        "final-ui-1039-welcome.png",
+        "language-restoration-readback.json"
+      ]
+    },
+    {
+      "id": "AC7",
+      "implemented": true,
+      "developerVerified": true,
+      "verification": "Current source both apps CodeCop/UICop/AppSourceCop0errors0warnings against released28.0.1.47 baseline. Exact own deployment664/287 full241/241/0/0. CI241/241/0/0 at identical synthetic merge tree. PermissionCoverage passes; no existing public API removals in PR diff.",
+      "evidence": [
+        "compile-summary.json",
+        "deployed-provenance.json",
+        "ci-summary.json",
+        "source-guards.json"
+      ]
+    },
+    {
+      "id": "AC8",
+      "implemented": true,
+      "developerVerified": true,
+      "verification": "Both CHANGELOG parents preserved under one Unreleased heading; README wizard section and byte-identical merged/live bilingual help confirmed.",
+      "evidence": [
+        "merge-provenance.json",
+        "help-links.log",
+        "docs-verbatim-readback.json"
+      ]
+    }
+  ],
+  "deliveryComplete": false,
+  "independentClaudeVerified": false,
+  "remainingRoles": [
+    "Claude Code trusted exact-head verification/no amendments",
+    "Canonical guarded Grok PR Reviewer handoff only after Claude receipt",
+    "Grok exact-head clearance",
+    "Architect-routed eligible approval",
+    "Architect merge and same-SHA deployment",
+    "Postdeployment UAT and issue closure"
+  ],
+  "widerFindings": {
+    "contractGuard": "302findings identical to actual main, introduced0; Architect assigns follow-up; no suppression.",
+    "gateway": "Scoped6file scan22/23check-map pass, literal version-heading convention mismatch disclosed; raw scanner failed counter2 vs actual map1 retained."
+  },
+  "runtime": {
+    "nativeExecuted": 241,
+    "nativePassed": 241,
+    "nativeFailed": 0,
+    "nativeSkipped": 0,
+    "mcpExecuted": 34,
+    "mcpPassed": 34,
+    "mcpFailed": 0,
+    "mcpSkipped": 0,
+    "uiScenarioGroups": 14,
+    "uiPassed": 14,
+    "uiFailed": 0,
+    "uiSkipped": 0,
+    "lcids": [
+      1033,
+      1039
+    ]
+  },
+  "cleanup": {
+    "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+    "containerId": "f0ab81e9488d",
+    "owner": "worker-4",
+    "displayName": "alviss-worker4-subscription85-20261103",
+    "startedAt": "2026-11-03T19:06:45.337Z",
+    "scope": "Only this execution owned environment and its native/UI/MCP task state; no foreign/shared/customer/CI/UAT resource.",
+    "businessRecordsCreatedByMcp": 0,
+    "businessRecordsRemainingByMcp": 0,
+    "nativeFixtures": "Isolated own suite; any remaining task data/setup/language/HTTP fixture state removed with whole owned environment.",
+    "deleteAttempted": true,
+    "priorStatus": 200,
+    "deleteStatus": 204,
+    "readbackStatus": 404,
+    "verified": true,
+    "previousClientConfigurationRestored": true,
+    "finishedAt": "2026-11-03T19:06:46.316Z"
+  }
+}

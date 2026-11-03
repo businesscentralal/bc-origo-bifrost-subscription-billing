@@ -1,0 +1,8 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "file": "/workspace/subscription85-merge-readback-worker4/app/Translations/Bifrost Subscription Billing.is-IS.xlf",
+  "units": 335,
+  "translated": 335,
+  "missing": [],
+  "evidenceScope": "Structural target presence only; actual1039 captions checked separately in WebClient."
+}

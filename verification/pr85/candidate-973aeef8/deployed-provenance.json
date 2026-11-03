@@ -1,0 +1,18 @@
+{
+  "candidateSha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "containerId": "f0ab81e9488d",
+  "owner": "worker-4",
+  "sourceClean": true,
+  "artifactVersion": "28.0.2.287",
+  "foundation": "28.0.11.664",
+  "foundationSourceSha": "b7f1636f1cdda34480ae0645b46547ac09ea9748",
+  "appSha256": "6f382425c0a2b2e20cf19e55c27e3e8c288a82a45d98746da5edd093705ecbe7",
+  "testAppSha256": "7b6ffe4a9c0fe4fbf78f9fb7598d1bccfb35f54401444c198c77dc28f9f26617",
+  "publishHashesMatch": true,
+  "versionReadback": "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/versions-deployed.json",
+  "deploymentEvidence": [
+    "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/publish-Foundation.json",
+    "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/publish-app.json",
+    "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/publish-test.json"
+  ]
+}

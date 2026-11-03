@@ -1,0 +1,12 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "source": "final-browser-step-208.json",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "### Result\n{\"locale\":1033,\"title\":\"Assisted Setup\"}\n### Ran Playwright code\n```js\nawait (async(page)=>{await page.getByTitle(\"Settings\",{exact:true}).waitFor({state:'visible',timeout:60000});let f=page.frames().find(f=>f!==page.mainFrame());await f.getByText(\"Set up Bifrost Subscription Billing\",{exact:true}).first().waitFor({state:'visible'});return {locale:1033,title:await page.title()};})(page);\n```"
+      }
+    ]
+  }
+}

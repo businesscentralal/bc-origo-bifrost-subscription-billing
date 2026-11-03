@@ -1,0 +1,12 @@
+{
+  "en-US": {
+    "identical": true,
+    "sha256": "1ac736aeefb06bccae6d340c5bb29ae829efc1295f79d618d6900a1cb3d67e08",
+    "docsPath": "help/subscription-billing/subscription-billing-setup.md"
+  },
+  "is-IS": {
+    "identical": true,
+    "sha256": "8083c71f82724aee1d199867f600a9c8ec79c3e30b501260abbdf9e53ccf9bbe",
+    "docsPath": "i18n/is-IS/docusaurus-plugin-content-docs-help-subscription-billing/current/subscription-billing-setup.md"
+  }
+}

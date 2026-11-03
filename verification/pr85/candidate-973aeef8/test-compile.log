@@ -1,0 +1,9 @@
+Microsoft (R) AL Compiler version 18.0.41.62505
+Copyright (C) Microsoft Corporation. All rights reserved
+
+Compilation started for project 'Bifrost Subscription Billing - Tests' containing '41' files at '18:49:22.925'.
+
+evidence/tasks/sb85-handoff-worker4-20261103/compile-source/test/src/SubUsageTst.Codeunit.al(7,1): info AA0477: The using statements are not in a sorted order.
+
+Compilation ended at '18:49:36.427'.
+

@@ -1,0 +1,9 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "productFailureEstablished": false,
+  "diagnosis": "Fresh-session completed cell has aria-label=(Autt), unlike focused-cell Loki\u00f0. Actual DOM readback shows input-wrapper boolean checked=true and separate row-selection checkbox checked=false.",
+  "actualCurrentState": "Locale1039, setup completed=true, independently read without replaying Finish.",
+  "correction": "Use unique boolean field .input-wrapper[role=checkbox] rather than the row-selection checkbox or unstable accessible label; retain exact true assertion.",
+  "evidence": "completion-readback-step-3.json",
+  "priorAttempt": "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/ui-main-attempt4-fresh-cell-name"
+}

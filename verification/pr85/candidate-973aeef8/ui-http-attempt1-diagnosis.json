@@ -1,0 +1,7 @@
+{
+  "candidateSha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "failure": "New document not yet initialized after browser_navigate; frame lookup undefined. UI harness readiness issue, no product failure established.",
+  "actualState": "Standard extension page303 read wasEnabled=false and nowEnabled=false. Its conditional toggle did not execute. No wizard/Foundation action or HTTP mutation occurred in this attempt.",
+  "recovery": "New isolated UI session reads current own setting; conditional toggle runs only if true. Wait for iframe after navigation before locators. No already-proved write is replayed.",
+  "priorEvidence": "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/ui-http-attempt1-navigation-frame"
+}

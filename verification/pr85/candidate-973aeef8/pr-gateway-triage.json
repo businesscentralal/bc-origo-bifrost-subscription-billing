@@ -1,0 +1,22 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "standardsSnapshot": "52ba4754cfd614e4a7c50af87b30149b18b313e3",
+  "scope": "Six changed production AL files vs current main; detached HEAD scan originally fell back to full repo, corrected by local verification branch without source change. Full scan remains separate wider evidence.",
+  "checkMap": {
+    "passed": 22,
+    "failed": 1
+  },
+  "rawSummary": {
+    "total": 23,
+    "passed": 22,
+    "failed": 2,
+    "ready": false
+  },
+  "findings": [
+    {
+      "check": "changelog",
+      "disposition": "Known literal-version-heading mismatch; repository uses Unreleased. Both parents blocks preserved. No invented release header."
+    }
+  ],
+  "widerContractGuard": "302 findings identical in actual main and candidate; no introduced offenders; Architect assigns follow-up; not suppressed or claimed passing."
+}

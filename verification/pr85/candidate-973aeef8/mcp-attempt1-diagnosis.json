@@ -1,0 +1,13 @@
+{
+  "candidateSha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "attempt1": {
+    "executed": 3,
+    "passed": 2,
+    "failed": 1,
+    "skipped": 0
+  },
+  "diagnosis": "The old658expectation BusinessCentralError was too specific for main62 structured refusals. Actual InvalidParameter includes parameter=runMode, received=XSB85_INVALID and nextStep. Product is correct; no source change.",
+  "correction": "Read actual merged handlers; exact expected domain code InvalidParameter for invalidrunMode and RecordNotFound for self-constructed nonexistent identifiers. Require parameter and nextStep as well. ConfirmationMismatch remains exact for expectedCount0. Licence/permission refusals cannot pass.",
+  "originalEvidence": "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/mcp-attempt1-code-expectation",
+  "nextAction": "One full34scenario verification with source-backed exact structured code assertions; no business writes to replay."
+}

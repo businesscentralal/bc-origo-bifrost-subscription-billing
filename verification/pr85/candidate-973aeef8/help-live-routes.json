@@ -1,0 +1,20 @@
+[
+  {
+    "lang": "en-us",
+    "url": "https://docs.bifrost.origo.is/en-us/help/subscription-billing/subscription-billing-setup/",
+    "status": 200,
+    "titlePresent": true,
+    "specificContentPresent": true,
+    "sha256": "81dc3b7e8e82a2c6514feb1eaaf4747bf554ad3b57a30ba442eefc68bfe143c5",
+    "bytes": 15895
+  },
+  {
+    "lang": "is-is",
+    "url": "https://docs.bifrost.origo.is/is-is/help/subscription-billing/subscription-billing-setup/",
+    "status": 200,
+    "titlePresent": true,
+    "specificContentPresent": true,
+    "sha256": "5d0f0f5314db466bff67c5b0c4b981e304030b33dfb950e0ad4c72a6abba6ea9",
+    "bytes": 16768
+  }
+]

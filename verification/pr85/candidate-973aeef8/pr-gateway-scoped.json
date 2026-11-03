@@ -1,0 +1,108 @@
+{
+  "mode": "diff (vs origin/main)",
+  "project": "Bifrost Subscription Billing",
+  "publisher": "Origo",
+  "total_al_files": 57,
+  "summary": {
+    "total": 23,
+    "passed": 22,
+    "failed": 2,
+    "ready": false
+  },
+  "checks": {
+    "confirm_in_page": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "format_evaluate_enum": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "page_code_minimal": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "caption_translation": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "with_statements": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "today_vs_workdate": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "set_load_fields": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "modernization": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "xml_doc_comments": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "data_classification": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "app_json": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "reserved_var_names": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "commit_in_loop": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "try_prefix_convention": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "global_variables": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "namespace": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "read_isolation": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "object_naming": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "format_guid": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "one_statement_per_line": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "hardcoded_values": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "event_subscriber_placement": {
+      "pass": true,
+      "findings_count": 0
+    },
+    "changelog": {
+      "pass": false,
+      "findings_count": 1
+    }
+  },
+  "files_scanned": 6,
+  "version": "28.0.2.0"
+}

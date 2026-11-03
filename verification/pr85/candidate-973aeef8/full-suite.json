@@ -1,0 +1,21 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "containerId": "f0ab81e9488d",
+  "fullSuite": true,
+  "startedAt": "2026-11-03T18:51:26.430Z",
+  "finishedAt": "2026-11-03T18:55:10.025Z",
+  "executed": 241,
+  "total": 241,
+  "passed": 241,
+  "failed": 0,
+  "skipped": 0,
+  "configuredCodeunits": 34,
+  "configuredMethods": 241,
+  "missingSourceMethods": [],
+  "unexpectedMethods": [],
+  "duplicateResults": 0,
+  "failures": [],
+  "ok": true,
+  "runner": "Microsoft PsTestFunctions full extension via verified bundled helper/Windows PowerShell; bundled helper execution; no current-task startup failure assumed",
+  "evidence": "full-suite.junit.xml"
+}

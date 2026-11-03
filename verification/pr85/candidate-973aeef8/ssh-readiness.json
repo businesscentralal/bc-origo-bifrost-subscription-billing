@@ -1,0 +1,27 @@
+{
+  "ready": true,
+  "containerId": "f0ab81e9488d",
+  "ipAddress": "74.178.155.30",
+  "port": "22",
+  "available": true,
+  "privateKeyPresent": true,
+  "containerState": "Running",
+  "steps": [
+    {
+      "atMs": 503,
+      "action": "notReady",
+      "detail": "ip=false key=false state=Running"
+    },
+    {
+      "atMs": 594,
+      "action": "enableSsh",
+      "detail": "PATCH sshEnabled=true → HTTP 204"
+    },
+    {
+      "atMs": 21508,
+      "action": "ready",
+      "detail": "SSH endpoint usable after enabling"
+    }
+  ],
+  "elapsedMs": 21508
+}

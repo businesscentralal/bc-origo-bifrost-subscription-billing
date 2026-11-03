@@ -1,0 +1,11 @@
+{
+  "candidateSha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "mainSha": "5946dc30832bd1048d16c3de63f505bdf35f866c",
+  "candidateOffenders": 302,
+  "mainOffenders": 302,
+  "identical": true,
+  "introducedOffenders": [],
+  "resolvedOffenders": [],
+  "scope": "No message handlers/contracts or guard changes in PR85 vs actual main; merge-only assignment does not authorize a wider repair. Findings disclosed to Architect/Reviewer, no new exclusions.",
+  "followupOwner": "Architect assigns source/tooling follow-up"
+}

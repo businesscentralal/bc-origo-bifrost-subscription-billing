@@ -1,0 +1,18 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "productFailureEstablished": false,
+  "failure": "Immediate aria-checked read raced asynchronous Finish/list refresh.",
+  "earlierEnglishChecks": [
+    "Fresh registration incomplete and early cancel preserved false",
+    "Welcome and installed operations/documentation",
+    "HTTP enabled Verify",
+    "Access/Users/Permission Sets navigation"
+  ],
+  "actualFinishReadback": {
+    "completed": true,
+    "independentNewSession": true,
+    "evidence": "browser-isolated-step-03.json",
+    "screenshot": "finish-fresh-readback.png"
+  },
+  "recovery": "Retain already-executed English checks and successful EnglishFinish; do not replay Finish. Resume English cancellation, then full1039 path. Add dialog-close and completed-checkbox waits for future Finish assertions."
+}

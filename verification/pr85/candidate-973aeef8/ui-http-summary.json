@@ -1,0 +1,28 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "containerId": "f0ab81e9488d",
+  "lcid": 1033,
+  "tool": "Playwright MCP isolated Chromium",
+  "scenarios": [
+    {
+      "id": "own-http-disabled-read",
+      "lcid": 1033,
+      "passed": true,
+      "evidence": "ui-http-disabled-wizard.png"
+    },
+    {
+      "id": "foundation-http-delegate-enable-return-verify",
+      "lcid": 1033,
+      "passed": true,
+      "evidence": "ui-http-enabled-return.png"
+    }
+  ],
+  "executed": 2,
+  "passed": 2,
+  "failed": 0,
+  "skipped": 0,
+  "startedAt": "2026-11-03T18:57:55.604Z",
+  "scope": "Own app HTTP setting via standard BC UI and intended Foundation Step2 action only. No EULA/trial/licence/counter/backend writes.",
+  "verified": true,
+  "finishedAt": "2026-11-03T18:58:12.253Z"
+}

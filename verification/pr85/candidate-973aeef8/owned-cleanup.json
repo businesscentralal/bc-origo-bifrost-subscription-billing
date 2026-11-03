@@ -1,0 +1,18 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "containerId": "f0ab81e9488d",
+  "owner": "worker-4",
+  "displayName": "alviss-worker4-subscription85-20261103",
+  "startedAt": "2026-11-03T19:06:45.337Z",
+  "scope": "Only this execution owned environment and its native/UI/MCP task state; no foreign/shared/customer/CI/UAT resource.",
+  "businessRecordsCreatedByMcp": 0,
+  "businessRecordsRemainingByMcp": 0,
+  "nativeFixtures": "Isolated own suite; any remaining task data/setup/language/HTTP fixture state removed with whole owned environment.",
+  "deleteAttempted": true,
+  "priorStatus": 200,
+  "deleteStatus": 204,
+  "readbackStatus": 404,
+  "verified": true,
+  "previousClientConfigurationRestored": true,
+  "finishedAt": "2026-11-03T19:06:46.316Z"
+}

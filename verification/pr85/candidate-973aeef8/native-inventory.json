@@ -1,0 +1,486 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "codeunits": 34,
+  "testMethods": 241,
+  "inventory": [
+    {
+      "codeunit": 95775,
+      "name": "Sub Billing Run Tst ori",
+      "methods": [
+        "Scenario_AC05_CreateProposal_AddsLinesForTemplateContract",
+        "Scenario_AC05_CreateProposal_UnknownTemplate_IsRefused",
+        "Scenario_AC05_CreateDocumentsPosted_PostsSalesInvoice",
+        "Scenario_AC05_CreateDocumentsPosted_LeavesPurchaseInvoiceUnposted",
+        "Scenario_AC05_CreateDocuments_NoProposal_AnswersNothingPending"
+      ],
+      "count": 5
+    },
+    {
+      "codeunit": 95709,
+      "name": "Sub Bil PrvDocs SkipTst ori",
+      "methods": [
+        "AC01_OmittedSkipTake_DefaultsTo0And100_AndPagesGroups",
+        "AC02_NegativeSkip_FailsWithFoundationError",
+        "AC03_NegativeTake_FailsWithFoundationError",
+        "AC04_TakeAbove1000_IsClampedTo1000",
+        "AC05_ContractDocumentsPaginationLimits1000",
+        "DocumentCountDivergesFromPage_WhenTakeIsSmaller"
+      ],
+      "count": 6
+    },
+    {
+      "codeunit": 95721,
+      "name": "SubBil Setup Wizard Tests",
+      "methods": [
+        "Scenario_AC01_AssistedSetup_RegistersWizard",
+        "Scenario_AC03_HttpRead_NeverCreatesASetting",
+        "Scenario_AC03_Verify_StaysAvailable",
+        "Scenario_AC03_HttpSetup_OpensFoundationWithoutWritingSettings",
+        "Scenario_AC04_Access_ListsOnlyAssignableSets",
+        "Scenario_AC05_CloseEarly_DoesNotCompleteSetup",
+        "Scenario_AC05_Finish_CompletesSetup",
+        "Scenario_AC05_InvalidStep_ExplainsRecovery",
+        "Scenario_AC05_StepBoundaries_StayInRange",
+        "Scenario_AC02_ShowOperations_OpensUsableHostPage"
+      ],
+      "count": 10
+    },
+    {
+      "codeunit": 95712,
+      "name": "Sub Bil Undo Tst ori",
+      "methods": [
+        "ClearProposal_DeletesLinesAndRestoresNextBillingDate",
+        "ClearProposal_LineOnDocument_IsRefused",
+        "ClearProposal_NoSelectionOrUnknownTemplate_IsRefused",
+        "DeleteDocuments_ReturnsBillingLineToProposal",
+        "DeleteDocuments_PostedDocument_IsRefused",
+        "DeleteDocuments_NoDocuments_SucceedsWithZero"
+      ],
+      "count": 6
+    },
+    {
+      "codeunit": 95717,
+      "name": "Sub Con Ccy Tst ori",
+      "methods": [
+        "Scenario_AC01_CustomerCurrencyDataRecordsSet_IsRefusedWithHint",
+        "Scenario_AC01_VendorCurrencyDataRecordsSet_IsRefusedWithHint",
+        "Scenario_AC02_CurrencyRefusal_IsLocalizedInIcelandic",
+        "Scenario_AC01_OnlyCurrencyCodeIsRestricted",
+        "Scenario_AC01_DirectValidateWithoutLines_StillSetsCurrency"
+      ],
+      "count": 5
+    },
+    {
+      "codeunit": 95720,
+      "name": "Sub Con Merge Tst ori",
+      "methods": [
+        "Scenario_AC01_MergeLines_ClosesTheSelectedLines_AndOpensOneMergedLine",
+        "Scenario_AC01_MergeLines_ResultMatchesMicrosoftMerge",
+        "Scenario_AC02_MergeLines_RefusesDifferentNextBillingDate",
+        "Scenario_AC02_MergeLines_RefusesDifferentDimensions",
+        "Scenario_AC02_MergeLines_RefusesExistingBillingLines",
+        "Scenario_AC02_MergeLines_RefusesSerialNo",
+        "Scenario_AC02_MergeLines_RefusesDifferentCustomerReference",
+        "Scenario_AC02_MergeLines_RefusesASingleLine",
+        "Scenario_AC02_MergeLines_RefusesACommentLine",
+        "Scenario_AC02_MergeLines_RefusesLinesFromDifferentContracts"
+      ],
+      "count": 10
+    },
+    {
+      "codeunit": 95706,
+      "name": "Sub Contract Batch1 Tst ori",
+      "methods": [
+        "Batch1_AllTypes_HaveRequiredChapters",
+        "Batch1_Effects_MatchOperation",
+        "CommittingTypes_AreIrreversible_WriteTypesStayWrite"
+      ],
+      "count": 3
+    },
+    {
+      "codeunit": 95707,
+      "name": "Sub Contract Batch2 Tst ori",
+      "methods": [
+        "Batch2_AllTypes_HaveRequiredChapters",
+        "Batch2_Effects_MatchOperation"
+      ],
+      "count": 2
+    },
+    {
+      "codeunit": 95780,
+      "name": "Sub Contract Complete Tst ori",
+      "methods": [
+        "AllTypes_DeclareTheChaptersACallerNeeds",
+        "AllTypes_ErrorEntriesCarryACodeOrTextWithAConditionAndANextStep",
+        "AllTypes_EffectAgreesWithTheMessageDirection",
+        "AllTypes_ParametersAndResponseAreWellFormed",
+        "AllTypes_ExamplesAreRealRequestAndResponsePairs",
+        "AllTypes_WorkflowAndRelatedNameRealTypes",
+        "Scenario_64AC01_AllTypes_DeclareWorkflow",
+        "AllTypes_ContractTextNamesNoAlObjectOrInternalProcedure",
+        "AllTypes_DiscoveryTextsAreCompleteAndSeparateTheTypeFromItsSiblings",
+        "AllTypes_DiscoveryTextsHaveAnIcelandicTranslation",
+        "BillingWorkflow_StartsWithTheTemplateFilter_AndUsageWorkflowCoversTheReset"
+      ],
+      "count": 11
+    },
+    {
+      "codeunit": 95711,
+      "name": "Sub Con UpdDates Tst ori",
+      "methods": [
+        "UpdateLineDates_EndedLine_ClosesLineAndContractLines",
+        "UpdateLineDates_WithoutForce_IsRefused",
+        "UpdateLineDates_PendingEntry_ReturnsExistingEntry",
+        "UpdateLineDates_UnknownRunMode_IsRefused"
+      ],
+      "count": 4
+    },
+    {
+      "codeunit": 95714,
+      "name": "Sub Con UpdFCY Tst ori",
+      "methods": [
+        "UpdateExchangeRates_DefaultRate_RecalculatesFromLocalCurrency",
+        "UpdateExchangeRates_VendorWithFactor_UsesGivenFactor",
+        "UpdateExchangeRates_LocalCurrencyOrZeroFactor_IsRefused",
+        "UpdateExchangeRates_ClosedContractLine_IsSkipped"
+      ],
+      "count": 4
+    },
+    {
+      "codeunit": 95778,
+      "name": "Sub Deferral Analysis Tst ori",
+      "methods": [
+        "Scenario_AC09_Release_ReleasesDeferralAndPostsToGL",
+        "Scenario_AC09_Release_OtherPostingDate_IsRefused",
+        "Scenario_AC09_Release_PostUntilAfterPostingDate_IsRefused",
+        "Scenario_AC10_Recalculate_AddsAnalysisEntriesForContract",
+        "Scenario_AC10_RecalculateTwice_AddsNothingTheSecondTime"
+      ],
+      "count": 5
+    },
+    {
+      "codeunit": 95772,
+      "name": "Sub Help Accuracy Tst ori",
+      "methods": [
+        "Scenario_AC02_TypesReadingSetupRecords_StateWriteGuardPrecondition",
+        "Scenario_AC02_TypesWithoutSetupRecords_OmitWriteGuardPrecondition",
+        "Scenario_AC02_SetupPrecondition_AgreesInNumber",
+        "Scenario_AC06_ImportProcessedCount_LeavesSkippedRowsOut",
+        "Scenario_AC01_Contracts_MakeNoEndToEndOrVersionClaims"
+      ],
+      "count": 5
+    },
+    {
+      "codeunit": 95702,
+      "name": "Sub Helper Tst ori",
+      "methods": [
+        "TryGetArray_ReturnsTheArray_WhenOneIsSupplied",
+        "TryGetArray_ReportsAbsent_WhenThePropertyIsMissing",
+        "TryGetArray_ReportsAbsent_WhenThePropertyIsNull",
+        "TryGetArray_Errors_WhenThePropertyIsNotAnArray",
+        "GetEntryNoSelection_BuildsAFilterOverTheDistinctEntryNos",
+        "GetEntryNoSelection_SelectsEverything_WhenThePropertyIsMissing",
+        "GetEntryNoSelection_Errors_OnAnElementThatIsNotANumber",
+        "GetEntryNoSelection_Errors_OnANestedElement",
+        "GetEntryNoSelection_DropsTheFilter_WhenTheListIsTooLongForOneExpression",
+        "FormatDocumentType_ReturnsAStableToken",
+        "FormatProcessingStatus_ReturnsAStableToken",
+        "FormatDate_UsesTheIsoFormat",
+        "GetDate_ReadsTheIsoFormat",
+        "GetDate_Errors_OnAnUnparseableDate",
+        "GetDecimal_ReadsACultureInvariantNumber",
+        "GetServicePartner_AcceptsEitherPartnerInAnyCasing",
+        "GetServicePartner_Errors_OnAnUnknownPartner"
+      ],
+      "count": 17
+    },
+    {
+      "codeunit": 95727,
+      "name": "Sub Help Wording Tst ori",
+      "methods": [
+        "Scenario_64AC06_RefusalCaptions_EN",
+        "Scenario_64AC06_RefusalCaptions_IS",
+        "Scenario_64AC02_PreviewDescriptions_EN",
+        "Scenario_64AC02_PreviewDescriptions_IS",
+        "Scenario_64_ForceName_MatchesInstalledCaption"
+      ],
+      "count": 5
+    },
+    {
+      "codeunit": 95705,
+      "name": "Sub Imp CrContr Tst ori",
+      "methods": [
+        "Scenario_AC02_OmittedLineType_FailsSubscriptionLinesStage",
+        "Scenario_AC02_DefaultCall_CreatesNoContractLineForOmittedType",
+        "Scenario_AC02_ContractLinesOnly_RefusesCommentWithoutOptIn",
+        "Scenario_AC01_CommentWithOptIn_CreatesContractCommentLine",
+        "Scenario_AC04_ExplicitItemLine_CreatesSubscriptionLine",
+        "Scenario_AC03_Contract_DocumentsAllowCommentLines"
+      ],
+      "count": 6
+    },
+    {
+      "codeunit": 95774,
+      "name": "Sub Invoice Tst ori",
+      "methods": [
+        "Scenario_AC03_ContractCreateInvoice_CreatesLinkedSalesInvoice",
+        "Scenario_AC03_ContractCreateInvoice_NothingDue_CreatesNothing",
+        "Scenario_AC03_ContractCreateInvoice_UnknownContract_IsRefused",
+        "Scenario_AC03_VendorContractCreateInvoice_CreatesLinkedPurchaseInvoice",
+        "Scenario_AC04_ContractPreviewInvoice_LeavesNothingBehind",
+        "Scenario_AC04_VendorContractPreviewInvoice_LeavesNothingBehind"
+      ],
+      "count": 6
+    },
+    {
+      "codeunit": 95728,
+      "name": "Sub LicAdm Setup Tst ori",
+      "methods": [
+        "Scenario_AC03_LicenceAdmin_OpensReadOnlySetupEnglish",
+        "Scenario_AC03_LicenceAdmin_OpensReadOnlySetupIcelandic"
+      ],
+      "count": 2
+    },
+    {
+      "codeunit": 95773,
+      "name": "Sub Line GetLines Tst ori",
+      "methods": [
+        "Scenario_AC01_PackageApplied_CreatesLinesWithRequestedDates",
+        "Scenario_AC01_UnknownPackage_IsRefused",
+        "Scenario_AC01_UsageBasedOnly_SkipsOtherPackageLines",
+        "Scenario_AC02_ContractGetLines_AttachesAllCandidates",
+        "Scenario_AC02_ContractGetLines_AttachesOnlySelectedLines",
+        "Scenario_AC02_ContractGetLines_SkipsOtherCustomersLines",
+        "Scenario_AC02_VendorContractGetLines_AttachesAllCandidates",
+        "Scenario_AC02_VendorContractGetLines_AttachesOnlySelectedLines"
+      ],
+      "count": 8
+    },
+    {
+      "codeunit": 95701,
+      "name": "Sub Msg Type Tst ori",
+      "methods": [
+        "AllTypes_AreRegistered_WithAnImplementation",
+        "AllTypes_AreEnabled",
+        "AllTypes_HaveADescription",
+        "AllTypes_AreInbound",
+        "AllTypes_HaveDistinctDiscoveryText",
+        "AllTypes_HaveAnOverviewAndNotes",
+        "AllTypes_ContractDocumentsTheRequestAndResponse"
+      ],
+      "count": 7
+    },
+    {
+      "codeunit": 95771,
+      "name": "Sub Perm Full Tst ori",
+      "methods": [
+        "Scenario_AC03_FullSetOnly_ReadsContractOfContractPartsTypes",
+        "Scenario_AC03_FullSetOnly_RunsImplementationChapters"
+      ],
+      "count": 2
+    },
+    {
+      "codeunit": 95718,
+      "name": "Sub PostDocs Tst ori",
+      "methods": [
+        "Scenario_65AC02_ForeignVendor_UsesRegisteredType_EN",
+        "Scenario_65AC02_ForeignVendor_UsesRegisteredType_IS",
+        "Scenario_AC03_PostDocuments_PostsBillingInvoice_AndRefusesItAgain",
+        "Scenario_AC03_PostDocuments_RefusesForeignSalesInvoice",
+        "Scenario_AC01_PostDocuments_PostsVendorInvoiceWithVendorInvoiceNo",
+        "Scenario_AC01_PostDocuments_TopLevelVendorInvoiceNo_PostsSingleVendorInvoice",
+        "Scenario_AC02_PostDocuments_VendorWithoutVendorInvoiceNo_IsRefused",
+        "Scenario_AC02_PostDocuments_VendorWithoutVendorInvoiceNo_IsRefusedInIcelandic",
+        "Scenario_AC02_PostDocuments_VendorInvoiceNoOnCustomerEntry_IsRefused"
+      ],
+      "count": 9
+    },
+    {
+      "codeunit": 95719,
+      "name": "Sub Post Gate Tst ori",
+      "methods": [
+        "Scenario_AC02_WithoutSubPost_PostingIsDenied"
+      ],
+      "count": 1
+    },
+    {
+      "codeunit": 95708,
+      "name": "Sub PU Filter Tst ori",
+      "methods": [
+        "Filter_ValidCustomerContract_PersistsOnlyMatchingView",
+        "Filter_ValidVendorContract_PersistsVendorView",
+        "Filter_ValidSubscriptionAndLine_ChangesOnlySelectedBlob",
+        "Filter_UnknownWhereField_ReturnsErrorAndPreservesState",
+        "Filter_UnknownSortingField_ReturnsErrorAndPreservesState",
+        "Filter_UnbalancedView_ReturnsErrorAndPreservesState",
+        "Filter_NotAView_ReturnsErrorAndPreservesState",
+        "Filter_EmptyClearsAndMissingRequiredValue_DoesNotWrite",
+        "Filter_ViewWithoutFilters_ClearsSelectedBlob",
+        "Filter_FieldTokenInValue_IsPreservedInReadableResponse"
+      ],
+      "count": 10
+    },
+    {
+      "codeunit": 95741,
+      "name": "Sub PU Oracle Tst ori",
+      "methods": [
+        "Oracle_CreateProposal_CalculationBaseByPct_MatchesMicrosoft",
+        "Oracle_CreateProposal_PriceByPct_MatchesMicrosoft",
+        "Oracle_CreateProposal_RecentItemPrices_MatchesMicrosoft",
+        "Oracle_CreateProposal_VendorRecentItemPrices_MatchesMicrosoft",
+        "Oracle_CreateProposal_TemplateFilters_MatchMicrosoft",
+        "Oracle_Perform_UpdatesAndPlansLikeMicrosoft"
+      ],
+      "count": 6
+    },
+    {
+      "codeunit": 95743,
+      "name": "Sub PU Perform Tst ori",
+      "methods": [
+        "Perform_DeletesTheProposalLines",
+        "Perform_FuturePerformDate_WritesPlannedSubscriptionLines",
+        "Perform_LineBilledUpToTheUpdate_UpdatesSubscriptionLineAndArchives",
+        "Perform_LineWithPlannedLine_IsSkippedAndDeleted",
+        "Perform_WithTemplate_LeavesOtherTemplatesLines",
+        "Perform_CommittingRun_KeepsAFailedLineAndAnswersError",
+        "Perform_EmptyProposal_IsRefused",
+        "Perform_TemplateWithoutLines_IsRefused",
+        "Perform_UnknownTemplate_IsRefused"
+      ],
+      "count": 9
+    },
+    {
+      "codeunit": 95742,
+      "name": "Sub PU Proposal Tst ori",
+      "methods": [
+        "CreateProposal_CalculationBaseByPercentage",
+        "CreateProposal_PriceByPercentage",
+        "CreateProposal_RecentItemPrices",
+        "CreateProposal_TemplateFilters",
+        "CreateProposal_LineWithoutNextPriceUpdate_IsIncluded",
+        "CreateProposal_ClosedLine_IsNotIncluded",
+        "UT_UpdatePerformUpdateOn_TakesLatestDate",
+        "CreateProposal_RecentItemPrices_UsesPriceOfSubscriptionUnitOfMeasure",
+        "CreateProposal_Response_ReportsCreatedLinesAndDates",
+        "CreateProposal_SecondRun_SkipsLinesAlreadyProposed",
+        "CreateProposal_ZeroItemPrice_CountsLineNotCreated",
+        "CreateProposal_UnknownTemplate_IsRefused",
+        "CreateProposal_NoIncludeDate_IsRefusedWithMicrosoftMessage",
+        "CreateProposal_InvalidDate_IsRefused"
+      ],
+      "count": 14
+    },
+    {
+      "codeunit": 95723,
+      "name": "Sub Refusal Tst ori",
+      "methods": [
+        "Scenario_AC02_MissingValues_Aggregate_EN",
+        "Scenario_AC02_MissingValues_Aggregate_IS",
+        "Scenario_AC01_OneMissingValue_SingleError_EN",
+        "Scenario_AC01_OneMissingValue_SingleError_IS",
+        "Scenario_AC02_BadDateAndPartner_Aggregate",
+        "Scenario_AC02_BadDateAndPartner_Aggregate_IS",
+        "Scenario_AC03_InvalidBase64_IsSanitized_EN",
+        "Scenario_AC03_InvalidBase64_IsSanitized_IS",
+        "Scenario_AC02_SubjectFallback_IsAccepted",
+        "Scenario_AC02_EmptyFilter_StillClearsFilter",
+        "Scenario_AC02_UnknownTemplateAndBadDate_Aggregate",
+        "Scenario_AC02_UnknownTemplateAndBadDate_Aggregate_IS",
+        "Scenario_AC01_RecordNotFound_Context_EN",
+        "Scenario_AC01_RecordNotFound_Context_IS",
+        "Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues",
+        "Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues_IS",
+        "Scenario_AC02_ObjectInsteadOfScalar_IsStructuredBeforeLookup",
+        "Scenario_AC02_SelectionArray_CollectsEachBadEntry",
+        "Scenario_AC02_SelectionArray_CollectsEachBadEntry_IS",
+        "Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_EN",
+        "Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_IS",
+        "Scenario_AC04_RequiredUsageEntry_HelpListsRealPreflightCodes",
+        "Review_ContextFields_EN",
+        "Review_ContextFields_IS",
+        "Review_LengthAndNestedShape_EN",
+        "Review_LengthAndNestedShape_IS",
+        "Review_UnknownEnumValue_IsStructured",
+        "Review_DomainSelections_EN",
+        "Review_DomainSelections_IS",
+        "Review_MissingAlternatives_AggregatesBeforeLookup_EN",
+        "Review_MissingAlternatives_AggregatesBeforeLookup_IS"
+      ],
+      "count": 31
+    },
+    {
+      "codeunit": 95704,
+      "name": "Sub Registration Tst ori",
+      "methods": [
+        "GetApps_ListsSubscriptionBilling"
+      ],
+      "count": 1
+    },
+    {
+      "codeunit": 95776,
+      "name": "Sub Renewal Tst ori",
+      "methods": [
+        "CreateQuote_SelectedLines_ExcludesOtherRenewableLines",
+        "Scenario_AC06_Extend_AddsPackageLinesOntoContract",
+        "Scenario_AC06_Extend_WithoutContract_IsRefused",
+        "Scenario_AC07_CreateQuote_CreatesRenewalSalesQuote",
+        "Scenario_AC07_CreateQuote_OpenEndedLines_IsRefused"
+      ],
+      "count": 5
+    },
+    {
+      "codeunit": 95715,
+      "name": "Sub Should Have Tst ori",
+      "methods": [
+        "AddLinesToInvoice_DueVendorLine_PersistsBilling",
+        "AddLinesToInvoice_NoDueLines_SucceedsWithZero",
+        "AddLinesToInvoice_PostedOrOtherVendor_IsRefused",
+        "BillingSetTemplateFilter_ValidView_IsStored",
+        "BillingSetTemplateFilter_UnknownField_IsRefusedAndNothingWritten",
+        "RemoveLine_UnbilledLine_IsRemoved",
+        "RemoveLine_InBillingClosedOrUnknown_IsRefused",
+        "RemoveItemAssignment_RemovesAndRefusesUnknown"
+      ],
+      "count": 8
+    },
+    {
+      "codeunit": 95777,
+      "name": "Sub Usage Tst ori",
+      "methods": [
+        "ImportData_TextAndBase64_PersistParsedRows",
+        "ImportData_UnknownSupplier_IsRefused",
+        "Scenario_AC08_ImportAndProcess_CreatesUsageDataBilling",
+        "Scenario_AC08_ImportData_WithoutContent_IsRefused",
+        "Scenario_AC08_Process_UnknownStep_IsRefused",
+        "Scenario_38AC04_ConnectProcessPropose_LinksUsageToBillingLine"
+      ],
+      "count": 6
+    },
+    {
+      "codeunit": 95713,
+      "name": "Sub Usg Connect Tst ori",
+      "methods": [
+        "Connect_ExistingLines_ConnectsEntry",
+        "Connect_ThenProcess_CreatesUsageBilling",
+        "Connect_NoUsageBasedLine_IsSkippedWithReason",
+        "Connect_EntryWithoutMethod_IsRefused",
+        "Connect_AlreadyConnectedOrUnknownSupplier_IsRefused",
+        "Disconnect_ConnectedLine_RemovesLink",
+        "Disconnect_NotConnectedOrNoParameter_IsRefused"
+      ],
+      "count": 7
+    },
+    {
+      "codeunit": 95716,
+      "name": "Sub Usg DelData Tst ori",
+      "methods": [
+        "DeleteData_ResetLines_DeletesProcessedDataAndKeepsImport",
+        "DeleteData_DeleteImport_DeletesImport",
+        "DeleteData_InvoicedOrUnknown_IsRefused",
+        "RenewalCreateQuote_UnknownContractLine_IsRefused",
+        "RenewalCreateQuote_ListedLineWithoutEndDate_IsRefused"
+      ],
+      "count": 5
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "ciRun": 41692100461,
+  "headSha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "sourceCommit": "a7c81091cf33fde72f06577d6a84f1ac94cc62d2",
+  "sourceCommitTree": "8f8914ef4430eb4df06a9d8dbd2f30d9914f2d3c",
+  "candidateTree": "8f8914ef4430eb4df06a9d8dbd2f30d9914f2d3c",
+  "identicalTrees": true,
+  "dependency": "Foundation28.0.11.664",
+  "executed": 241,
+  "passed": 241,
+  "failed": 0,
+  "skipped": 0,
+  "seconds": 105.699,
+  "cleanup": {
+    "containerId": "f0b298d4106f",
+    "deleted": true
+  },
+  "fullSuite": true,
+  "note": "CI runs on a synthetic PR merge commit; verified identical tree to candidate. Local exact-head three-analyzer compile658 remained separate; owned runtime now being aligned to CI dependency664 before testing."
+}

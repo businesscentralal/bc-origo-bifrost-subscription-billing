@@ -1,0 +1,8 @@
+{
+  "sha": "973aeef8adba2674196915a33da4c2d943d18e64",
+  "failure": "Completion locator also matched the visible row-selection checkbox after Finish, causing Playwright strict-mode failure.",
+  "productFailureEstablished": false,
+  "actualChecks": "English cancellation and Icelandic language/welcome/operations/docs/HTTP/access navigation passed. IcelandicFinish action clicked and modal closed before locator failure.",
+  "correction": "Select the actual Completed/Loki\u00f0 checkbox by exact accessible name. Fresh-session1039 state readback before cancellation; retain earlier same-head checks and do not replay Finish.",
+  "evidence": "/workspace/evidence/tasks/sb85-handoff-worker4-20261103/ui-main-attempt2-completion-locator"
+}
