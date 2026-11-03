@@ -145,6 +145,8 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -170,7 +172,7 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
         PackageCode := Helper.GetCode20(RequestJson, 'subscriptionPackageCode', true);
 
         if not ItemSubscriptionPackage.Get(ItemNo, PackageCode) then
-            Error(AssignmentNotFoundErr, PackageCode, ItemNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(AssignmentNotFoundErr, PackageCode, ItemNo), 'subscriptionPackageCode', Format(PackageCode, 0, 9));
         WasStandard := ItemSubscriptionPackage.Standard;
         ItemSubscriptionPackage.Delete(true);
 

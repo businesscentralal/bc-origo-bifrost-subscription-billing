@@ -147,6 +147,8 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -183,11 +185,11 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori", "Ms
         UsageBasedOnly := Helper.GetBoolean(RequestJson, 'usageBasedBillingPackageLinesOnly', false);
 
         if not SubscriptionHeader.Get(SubscriptionHeaderNo) then
-            Error(HeaderNotFoundErr, SubscriptionHeaderNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(HeaderNotFoundErr, SubscriptionHeaderNo), 'subscriptionHeaderNo', Format(SubscriptionHeaderNo, 0, 9));
         SubscriptionHeader.TestField("Source No.");
 
         if not SubscriptionPackage.Get(SubscriptionPackageCode) then
-            Error(PackageNotFoundErr, SubscriptionPackageCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(PackageNotFoundErr, SubscriptionPackageCode), 'subscriptionPackageCode', Format(SubscriptionPackageCode, 0, 9));
         SubscriptionPackage.SetRange(Code, SubscriptionPackageCode);
 
         SubscriptionLine.SetRange("Subscription Header No.", SubscriptionHeaderNo);
