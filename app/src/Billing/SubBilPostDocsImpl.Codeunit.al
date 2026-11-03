@@ -179,6 +179,8 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
         if not PostingGate.AssertCanPost(Argument) then
             exit;
 
@@ -217,9 +219,9 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
         RequestJson := Argument.GetRequestJson();
         if not Helper.TryGetArray(RequestJson, 'documents', Documents) then
-            Error(MissingDocumentsErr, 'documents');
+            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingDocumentsErr, 'documents'), 'documents', '');
         if Documents.Count() = 0 then
-            Error(EmptyDocumentsErr);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, EmptyDocumentsErr, 'documents', '');
         SharedVendorInvoiceNo := ReadVendorInvoiceNo(RequestJson);
 
         Pending := ValidateDocuments(Documents, SharedVendorInvoiceNo);
@@ -281,20 +283,20 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         foreach DocumentToken in Documents do begin
             if not DocumentToken.IsObject() then
-                Error(DocumentShapeErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, DocumentShapeErr, 'documents', '');
             DocumentJson := DocumentToken.AsObject();
             PartnerText := NormalizePartner(Helper.GetText(DocumentJson, 'partner', true));
             DocumentTypeText := NormalizeDocumentType(Helper.GetText(DocumentJson, 'documentType', true));
             DocumentNoText := Helper.GetText(DocumentJson, 'documentNo', true);
             if DocumentNoText = '' then
-                Error(MissingDocumentsErr, 'documentNo');
+                Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingDocumentsErr, 'documentNo'), 'documentNo', DocumentNoText);
             if StrLen(DocumentNoText) > MaxStrLen(DocumentNo) then
-                Error(ValueTooLongErr, 'documentNo', MaxStrLen(DocumentNo));
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(ValueTooLongErr, 'documentNo', MaxStrLen(DocumentNo)), 'documentNo', DocumentNoText);
             DocumentNo := CopyStr(DocumentNoText, 1, MaxStrLen(DocumentNo));
 
             SeenKey := PartnerText + '|' + DocumentTypeText + '|' + DocumentNo;
             if Seen.ContainsKey(SeenKey) then
-                Error(DuplicateDocumentErr, DocumentNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(DuplicateDocumentErr, DocumentNo), 'documentNo', DocumentNo);
             Seen.Add(SeenKey, true);
 
             Partner := PartnerFromText(PartnerText);
@@ -303,7 +305,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
             VendorInvoiceNo := ReadVendorInvoiceNo(DocumentJson);
             if (VendorInvoiceNo <> '') and (Partner = Enum::"Service Partner"::Customer) then
-                Error(VendorInvoiceNoForCustomerErr, DocumentNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(VendorInvoiceNoForCustomerErr, DocumentNo), 'documentNo', DocumentNo);
             if Partner = Enum::"Service Partner"::Vendor then
                 if VendorInvoiceNo = '' then
                     if StoredVendorDocumentNo(DocumentTypeText, DocumentNo) = '' then
@@ -314,7 +316,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             Pending.Add(PendingDocument(PartnerText, DocumentTypeText, DocumentNo, VendorInvoiceNo));
         end;
         if SharedUseCount > 1 then
-            Error(SharedVendorInvoiceNoErr, SharedUseCount);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(SharedVendorInvoiceNoErr, SharedUseCount), 'documents', Format(SharedUseCount, 0, 9));
     end;
 
     local procedure ReadVendorInvoiceNo(Json: JsonObject) VendorInvoiceNo: Text
@@ -323,7 +325,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         VendorInvoiceNo := Helper.GetText(Json, 'vendorInvoiceNo', false).Trim();
         if StrLen(VendorInvoiceNo) > MaxStrLen(PurchaseHeader."Vendor Invoice No.") then
-            Error(ValueTooLongErr, 'vendorInvoiceNo', MaxStrLen(PurchaseHeader."Vendor Invoice No."));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(ValueTooLongErr, 'vendorInvoiceNo', MaxStrLen(PurchaseHeader."Vendor Invoice No.")), 'vendorInvoiceNo', VendorInvoiceNo);
     end;
 
     /// <summary>The vendor document number already on the open purchase document: Vendor Invoice No. on an invoice, Vendor Cr. Memo No. on a credit memo.</summary>
@@ -379,15 +381,15 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
         if (not OnBillingLine) and (not OnArchive) then
             if Partner = Enum::"Service Partner"::Customer then
-                Error(ForeignCustomerErr, DocumentTypeCaption(DocumentTypeText), DocumentNo)
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignCustomerErr, DocumentTypeCaption(DocumentTypeText), DocumentNo), 'documentNo', DocumentNo)
             else
-                Error(ForeignVendorErr, DocumentTypeCaption(DocumentTypeText), DocumentNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignVendorErr, DocumentTypeCaption(DocumentTypeText), DocumentNo), 'documentNo', DocumentNo);
 
         if OpenHeader then
             exit;
         if (PostedNo <> '') or OnArchive then
-            Error(AlreadyPostedErr, DocumentTypeCaption(DocumentTypeText), DocumentNo);
-        Error(NotOpenErr, DocumentTypeCaption(DocumentTypeText), DocumentNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(AlreadyPostedErr, DocumentTypeCaption(DocumentTypeText), DocumentNo), 'documentNo', DocumentNo);
+        Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotOpenErr, DocumentTypeCaption(DocumentTypeText), DocumentNo), 'documentNo', DocumentNo);
     end;
 
     local procedure PostedNoOf(Partner: Enum "Service Partner"; BillingDocumentType: Enum "Rec. Billing Document Type"; DocumentNo: Code[20]): Code[20]
@@ -595,7 +597,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             'VENDOR':
                 exit(VendorTok);
             else
-                Error(InvalidPartnerErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidPartnerErr, 'partner', PartnerText);
         end;
     end;
 
@@ -607,7 +609,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             'CREDIT MEMO':
                 exit(CreditMemoTok);
             else
-                Error(InvalidDocumentTypeErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidDocumentTypeErr, 'documentType', DocumentTypeText);
         end;
     end;
 

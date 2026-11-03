@@ -152,6 +152,8 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -201,26 +203,27 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         UsageBasedBillingPackageLinesOnly := Helper.GetBoolean(RequestJson, 'usageBasedBillingPackageLinesOnly', false);
         SupplierReferenceEntryNo := Helper.GetInteger(RequestJson, 'supplierReferenceEntryNo', false);
 
-        if not SubscriptionHeader.Get(SubscriptionHeaderNo) then
-            Error(SubscriptionHeaderNotFoundErr, SubscriptionHeaderNo);
-
         ExtendCustomerContract := CustomerContractNo <> '';
         ExtendVendorContract := VendorContractNo <> '';
         if not ExtendCustomerContract and not ExtendVendorContract then
-            Error(NeitherContractErr);
+            Helper.RaiseError("Bifrost Error Code ori"::MissingParameter, NeitherContractErr, 'customerContractNo', '', NeitherContractErr);
+
+        if not SubscriptionHeader.Get(SubscriptionHeaderNo) then
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(SubscriptionHeaderNotFoundErr, SubscriptionHeaderNo), 'subscriptionHeaderNo', Format(SubscriptionHeaderNo, 0, 9));
+
 
         if ExtendCustomerContract then
             if not CustomerSubscriptionContract.Get(CustomerContractNo) then
-                Error(CustomerContractNotFoundErr, CustomerContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(CustomerContractNotFoundErr, CustomerContractNo), 'customerContractNo', Format(CustomerContractNo, 0, 9));
         if ExtendVendorContract then
             if not VendorSubscriptionContract.Get(VendorContractNo) then
-                Error(VendorContractNotFoundErr, VendorContractNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(VendorContractNotFoundErr, VendorContractNo), 'vendorContractNo', Format(VendorContractNo, 0, 9));
 
         if Helper.TryGetArray(RequestJson, 'subscriptionPackageCodes', PackagesJsonArray) then
             foreach PackageJToken in PackagesJsonArray do begin
                 PackageCode := CopyStr(PackageJToken.AsValue().AsText(), 1, MaxStrLen(PackageCode));
                 if not SubscriptionPackage.Get(PackageCode) then
-                    Error(PackageNotFoundErr, PackageCode);
+                    Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(PackageNotFoundErr, PackageCode), 'subscriptionPackageCode', Format(PackageCode, 0, 9));
                 TempSubscriptionPackage := SubscriptionPackage;
                 TempSubscriptionPackage.Selected := true;
                 TempSubscriptionPackage.Insert(false);

@@ -48,6 +48,7 @@ codeunit 95710 "Sub Test Lib ori"
         ResponseText: Text;
         ResponseContentType: Text[100];
     begin
+        AddFixtureConfirmation(MessageType, RequestJson);
         RequestJson.WriteTo(RequestText);
         RequestContent.AddText(RequestText);
         Dispatcher.Execute(MessageType, Enum::"Message Version ori"::"1.0", Subject, 'XSBA', 'application/json',
@@ -68,6 +69,36 @@ codeunit 95710 "Sub Test Lib ori"
         if not ResponseJson.Get('expected', Token) then
             exit(false);
         exit(Evaluate(ExpectedCount, Token.AsValue().AsText()));
+    end;
+
+    /// <summary>Adds the explicit single-subject confirmation supported by Foundation 28.0.11 and later.</summary>
+    /// <param name="MessageType">The fixture operation whose original assertions must execute.</param>
+    /// <param name="RequestJson">Receives the confirmation only when the caller has not supplied one.</param>
+    procedure AddFixtureConfirmation(MessageType: Enum "Message Type ori"; var RequestJson: JsonObject)
+    var
+        FoundationInfo: ModuleInfo;
+        FoundationAppId: Guid;
+    begin
+        if RequestJson.Contains('expectedCount') then
+            exit;
+        FoundationAppId := '7505e808-6e52-4b96-a328-82573391297a';
+        if not NavApp.GetModuleInfo(FoundationAppId, FoundationInfo) then
+            exit;
+        if FoundationInfo.AppVersion() < Version.Create(28, 0, 11, 0) then
+            exit;
+        // These feature types use Foundation's default counter: one request subject, not business rows.
+        // Explicit confirmation keeps the existing business-effect and refusal assertions reachable.
+        case MessageType of
+            MessageType::"Subscription.Contract.UpdateLineDates",
+            MessageType::"Subscription.Billing.ClearProposal",
+            MessageType::"Subscription.Billing.DeleteDocuments",
+            MessageType::"Subscription.Usage.ConnectSubscriptions",
+            MessageType::"Subscription.Usage.Process",
+            MessageType::"Subscription.Usage.DeleteData",
+            MessageType::"Subscription.Renewal.CreateQuote",
+            MessageType::"Subscription.PriceUpdate.Perform":
+                RequestJson.Add('expectedCount', 1);
+        end;
     end;
 
     /// <summary>Reads a text property of a response; fails when it is missing.</summary>
