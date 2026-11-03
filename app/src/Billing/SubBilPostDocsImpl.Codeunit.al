@@ -32,8 +32,8 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         InvalidDocumentTypeErr: Label 'The parameter ''documentType'' must be either ''Invoice'' or ''Credit Memo''.', Comment = 'is-IS=Færibreytan ''documentType'' verður að vera annaðhvort ''Invoice'' eða ''Credit Memo''.';
         ValueTooLongErr: Label 'The parameter ''%1'' is longer than the %2 characters allowed.', Comment = '%1 = parameter name, %2 = maximum length||is-IS=Færibreytan ''%1'' er lengri en leyfilegur hámarksfjöldi stafa, %2.';
         DuplicateDocumentErr: Label 'Document %1 is listed more than once. Nothing was posted.', Comment = '%1 = document number||is-IS=Skjal %1 er tilgreint oftar en einu sinni. Ekkert var bókað.';
-        ForeignCustomerErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Sales.Document.Post.';
-        ForeignVendorErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Purchase.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftareikningagerð. Bókaðu það með Purchase.Document.Post.';
+        ForeignCustomerErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Sales.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Sales.Document.Post.';
+        ForeignVendorErr: Label 'Document %1 %2 was not created by Subscription Billing. Post it with Purchase.Document.Post.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 var ekki búið til af áskriftarreikningagerð. Bókaðu það með Purchase.Document.Post.';
         AlreadyPostedErr: Label 'Document %1 %2 is already posted.', Comment = '%1 = document type, %2 = document number||is-IS=Skjal %1 %2 er þegar bókað.';
         NotOpenErr: Label 'Billing document %1 %2 is not an open sales or purchase document.', Comment = '%1 = document type, %2 = document number||is-IS=Reikningsskjalið %1 %2 er ekki opið sölu- eða innkaupaskjal.';
         PostFailedErr: Label 'Posting document %1 failed. Documents this call already posted stay posted. %2', Comment = '%1 = document number, %2 = the underlying error||is-IS=Bókun skjals %1 mistókst. Skjöl sem þetta kall hefur þegar bókað standa áfram bókuð. %2';
@@ -65,14 +65,14 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'post billing documents, post subscription invoices, post unposted billing invoices, post purchase documents from billing, book the invoices, post the billing run, post vendor invoices from contracts, post sales invoices from contracts', Comment = 'is-IS=bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningakeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum';
+        KeywordsLbl: Label 'post billing documents, post subscription invoices, post unposted billing invoices, post purchase documents from billing, book the invoices, post the billing run, post vendor invoices from contracts, post sales invoices from contracts', Comment = 'is-IS=bóka reikningsskjöl, bóka áskriftarreikninga, bóka óbókaða reikninga úr reikningagerð, bóka innkaupaskjöl úr reikningagerð, bóka reikningana, bóka reikningskeyrsluna, bóka lánardrottnareikninga af samningum, bóka sölureikninga af samningum';
     begin
         exit(KeywordsLbl);
     end;
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purchase.Document.Post instead.', Comment = 'is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningakeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.';
+        SelectionLbl: Label 'Post billing documents: posts unposted sales or purchase documents that a Subscription Billing run created. Irreversible, and it always commits. Create the documents first with Subscription.Billing.CreateDocuments, which can post sales documents itself but never purchase documents. A document that billing did not create is posted with Sales.Document.Post or Purchase.Document.Post instead.', Comment = 'is-IS=Bóka reikningsskjöl: bókar óbókuð sölu- eða innkaupaskjöl sem reikningskeyrsla áskrifta bjó til. Óafturkræf aðgerð og hún staðfestir alltaf. Fyrst þarf að stofna skjölin með Subscription.Billing.CreateDocuments, sem getur sjálf bókað söluskjöl en aldrei innkaupaskjöl. Skjal sem reikningagerðin bjó ekki til er bókað með Sales.Document.Post eða Purchase.Document.Post.';
     begin
         exit(SelectionLbl);
     end;
@@ -179,6 +179,8 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
         if not PostingGate.AssertCanPost(Argument) then
             exit;
 
@@ -209,9 +211,9 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
         RequestJson := Argument.GetRequestJson();
         if not Helper.TryGetArray(RequestJson, 'documents', Documents) then
-            Error(MissingDocumentsErr, 'documents');
+            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingDocumentsErr, 'documents'), 'documents', '');
         if Documents.Count() = 0 then
-            Error(EmptyDocumentsErr);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, EmptyDocumentsErr, 'documents', '');
         SharedVendorInvoiceNo := ReadVendorInvoiceNo(RequestJson);
 
         Pending := ValidateDocuments(Documents, SharedVendorInvoiceNo);
@@ -251,20 +253,20 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         foreach DocumentToken in Documents do begin
             if not DocumentToken.IsObject() then
-                Error(DocumentShapeErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, DocumentShapeErr, 'documents', '');
             DocumentJson := DocumentToken.AsObject();
             PartnerText := NormalizePartner(Helper.GetText(DocumentJson, 'partner', true));
             DocumentTypeText := NormalizeDocumentType(Helper.GetText(DocumentJson, 'documentType', true));
             DocumentNoText := Helper.GetText(DocumentJson, 'documentNo', true);
             if DocumentNoText = '' then
-                Error(MissingDocumentsErr, 'documentNo');
+                Helper.RaiseRefusal("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingDocumentsErr, 'documentNo'), 'documentNo', DocumentNoText);
             if StrLen(DocumentNoText) > MaxStrLen(DocumentNo) then
-                Error(ValueTooLongErr, 'documentNo', MaxStrLen(DocumentNo));
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(ValueTooLongErr, 'documentNo', MaxStrLen(DocumentNo)), 'documentNo', DocumentNoText);
             DocumentNo := CopyStr(DocumentNoText, 1, MaxStrLen(DocumentNo));
 
             SeenKey := PartnerText + '|' + DocumentTypeText + '|' + DocumentNo;
             if Seen.ContainsKey(SeenKey) then
-                Error(DuplicateDocumentErr, DocumentNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(DuplicateDocumentErr, DocumentNo), 'documentNo', DocumentNo);
             Seen.Add(SeenKey, true);
 
             Partner := PartnerFromText(PartnerText);
@@ -273,7 +275,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
             VendorInvoiceNo := ReadVendorInvoiceNo(DocumentJson);
             if (VendorInvoiceNo <> '') and (Partner = Enum::"Service Partner"::Customer) then
-                Error(VendorInvoiceNoForCustomerErr, DocumentNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(VendorInvoiceNoForCustomerErr, DocumentNo), 'documentNo', DocumentNo);
             if Partner = Enum::"Service Partner"::Vendor then
                 if VendorInvoiceNo = '' then
                     if StoredVendorDocumentNo(DocumentTypeText, DocumentNo) = '' then
@@ -284,7 +286,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             Pending.Add(PendingDocument(PartnerText, DocumentTypeText, DocumentNo, VendorInvoiceNo));
         end;
         if SharedUseCount > 1 then
-            Error(SharedVendorInvoiceNoErr, SharedUseCount);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::ConflictingIdentifiers, StrSubstNo(SharedVendorInvoiceNoErr, SharedUseCount), 'documents', Format(SharedUseCount, 0, 9));
     end;
 
     local procedure ReadVendorInvoiceNo(Json: JsonObject) VendorInvoiceNo: Text
@@ -293,7 +295,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     begin
         VendorInvoiceNo := Helper.GetText(Json, 'vendorInvoiceNo', false).Trim();
         if StrLen(VendorInvoiceNo) > MaxStrLen(PurchaseHeader."Vendor Invoice No.") then
-            Error(ValueTooLongErr, 'vendorInvoiceNo', MaxStrLen(PurchaseHeader."Vendor Invoice No."));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(ValueTooLongErr, 'vendorInvoiceNo', MaxStrLen(PurchaseHeader."Vendor Invoice No.")), 'vendorInvoiceNo', VendorInvoiceNo);
     end;
 
     /// <summary>The vendor document number already on the open purchase document: Vendor Invoice No. on an invoice, Vendor Cr. Memo No. on a credit memo.</summary>
@@ -349,15 +351,15 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
 
         if (not OnBillingLine) and (not OnArchive) then
             if Partner = Enum::"Service Partner"::Customer then
-                Error(ForeignCustomerErr, DocumentTypeText, DocumentNo)
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignCustomerErr, DocumentTypeCaption(DocumentTypeText), DocumentNo), 'documentNo', DocumentNo)
             else
-                Error(ForeignVendorErr, DocumentTypeText, DocumentNo);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignVendorErr, DocumentTypeCaption(DocumentTypeText), DocumentNo), 'documentNo', DocumentNo);
 
         if OpenHeader then
             exit;
         if (PostedNo <> '') or OnArchive then
-            Error(AlreadyPostedErr, DocumentTypeText, DocumentNo);
-        Error(NotOpenErr, DocumentTypeText, DocumentNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(AlreadyPostedErr, DocumentTypeCaption(DocumentTypeText), DocumentNo), 'documentNo', DocumentNo);
+        Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotOpenErr, DocumentTypeCaption(DocumentTypeText), DocumentNo), 'documentNo', DocumentNo);
     end;
 
     local procedure PostedNoOf(Partner: Enum "Service Partner"; BillingDocumentType: Enum "Rec. Billing Document Type"; DocumentNo: Code[20]): Code[20]
@@ -410,11 +412,11 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         ClearLastError();
         if not Codeunit.Run(Codeunit::"Sales-Post", SalesHeader) then begin
             Failure := GetLastErrorText();
-            Error(PostFailedErr, DocumentNo, Failure);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::BusinessCentralError, StrSubstNo(PostFailedErr, DocumentNo, Failure), 'documentNo', DocumentNo);
         end;
         PostedNo := PostedSalesNo(SalesDocumentType, DocumentNo, SalesHeader."Last Posting No.");
         if PostedNo = '' then
-            Error(PostedNoMissingErr, DocumentNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::BusinessCentralError, StrSubstNo(PostedNoMissingErr, DocumentNo), 'documentNo', DocumentNo);
     end;
 
     local procedure PostPurchaseDocument(DocumentTypeText: Text; DocumentNo: Code[20]; var VendorInvoiceNo: Code[35]) PostedNo: Code[20]
@@ -444,11 +446,11 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         ClearLastError();
         if not Codeunit.Run(Codeunit::"Purch.-Post", PurchaseHeader) then begin
             Failure := GetLastErrorText();
-            Error(PostFailedErr, DocumentNo, Failure);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::BusinessCentralError, StrSubstNo(PostFailedErr, DocumentNo, Failure), 'documentNo', DocumentNo);
         end;
         PostedNo := PostedPurchaseNo(PurchaseDocumentType, DocumentNo, PurchaseHeader."Last Posting No.");
         if PostedNo = '' then
-            Error(PostedNoMissingErr, DocumentNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::BusinessCentralError, StrSubstNo(PostedNoMissingErr, DocumentNo), 'documentNo', DocumentNo);
     end;
 
     local procedure BillingLineExists(Partner: Enum "Service Partner"; BillingDocumentType: Enum "Rec. Billing Document Type"; DocumentNo: Code[20]): Boolean
@@ -540,6 +542,16 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         PendingJson.Add('vendorInvoiceNo', VendorInvoiceNo);
     end;
 
+    local procedure DocumentTypeCaption(DocumentTypeText: Text): Text
+    var
+        InvoiceTxt: Label 'Invoice', Comment = 'is-IS=Reikningur';
+        CreditMemoTxt: Label 'Credit Memo', Comment = 'is-IS=Kreditreikningur';
+    begin
+        if DocumentTypeText = CreditMemoTok then
+            exit(CreditMemoTxt);
+        exit(InvoiceTxt);
+    end;
+
     local procedure NormalizePartner(PartnerText: Text): Text
     begin
         case UpperCase(PartnerText) of
@@ -548,7 +560,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             'VENDOR':
                 exit(VendorTok);
             else
-                Error(InvalidPartnerErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidPartnerErr, 'partner', PartnerText);
         end;
     end;
 
@@ -560,7 +572,7 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
             'CREDIT MEMO':
                 exit(CreditMemoTok);
             else
-                Error(InvalidDocumentTypeErr);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, InvalidDocumentTypeErr, 'documentType', DocumentTypeText);
         end;
     end;
 

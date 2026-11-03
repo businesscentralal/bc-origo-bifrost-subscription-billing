@@ -24,7 +24,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
         ForeignPendingProposalErr: Label 'There are %1 pending billing proposal line(s) left over for a different subscription contract (''%2''). Clear or process that proposal before previewing ''%3''.', Comment = '%1 = row count, %2 = the other contract number, %3 = this contract number||is-IS=Það eru %1 óafgreiddar tillögulínur í reikningstillögu fyrir annan áskriftarsamning (''%2''). Hreinsaðu eða vinndu úr þeirri tillögu áður en samningur ''%3'' er forskoðaður.';
         NothingDueMsg: Label 'No Subscription Lines were due for billing on or before %1 for contract %2.', Comment = '%1 = billing date, %2 = contract no.||is-IS=Engar áskriftarlínur voru komnar á gjalddaga til reikningsfærslu á eða fyrir %1 fyrir samning %2.';
         NothingNewMsg: Label 'Nothing new could be proposed for contract %1. Its due Subscription Lines are already covered by pending billing proposal lines - bill or clear those first.', Comment = '%1 = contract number||is-IS=Ekkert nýtt var hægt að leggja til fyrir samning %1. Áskriftarlínur hans eru þegar með reikningstillögulínur - ljúktu við þær eða hreinsaðu þær fyrst.';
-        DescriptionLbl: Label 'Previews the billing proposal lines that Subscription.VendorContract.CreateInvoice would build for a vendor subscription contract. Nothing is written and no document is ever created.', MaxLength = 250, Comment = 'is-IS=Forskoðar reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi útbúa fyrir áskriftarsamning lánardrottins. Engu er skrifað og ekkert skjal er nokkurn tímann búið til.';
+        DescriptionLbl: Label 'Previews invoice lines for a vendor subscription contract. Temporary proposal writes are removed; no changes remain and no document is created.', MaxLength = 250, Comment = 'is-IS=Forskoðar reikningslínur fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -50,7 +50,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Preview a vendor contract invoice: builds the billing proposal lines Subscription.VendorContract.CreateInvoice would use, reads them back and removes them again. Read-only in effect: nothing is left behind and no document is created. For a customer contract use Subscription.Contract.PreviewInvoice.', Comment = 'is-IS=Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Lesaðgerð í áhrifum: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.';
+        SelectionLbl: Label 'Preview a vendor contract invoice: builds the billing proposal lines Subscription.VendorContract.CreateInvoice would use, reads them back and removes them again. Temporary proposal writes are removed: nothing remains and no document is created. For a customer contract use Subscription.Contract.PreviewInvoice.', Comment = 'is-IS=Forskoða reikning samnings lánardrottins: býr til þær reikningstillögulínur sem Subscription.VendorContract.CreateInvoice myndi nota, les þær til baka og fjarlægir þær aftur. Tímabundnar tillögulínur eru fjarlægðar: ekkert verður eftir og ekkert skjal er stofnað. Fyrir samning viðskiptamanns skal nota Subscription.Contract.PreviewInvoice.';
     begin
         exit(SelectionLbl);
     end;
@@ -157,6 +157,8 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -221,7 +223,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
         ForeignContractNo: Code[20];
     begin
         if not VendorSubscriptionContract.Get(ContractNo) then
-            Error(ContractNotFoundErr, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(ContractNotFoundErr, ContractNo), 'contractNo', Format(ContractNo, 0, 9));
 
         BillingLine.SetRange("Billing Template Code", '');
         BillingLine.SetFilter("Subscription Contract No.", '<>%1', ContractNo);
@@ -231,7 +233,7 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
             ForeignLineCount := BillingLine.Count();
             BillingLine.FindFirst();
             ForeignContractNo := BillingLine."Subscription Contract No.";
-            Error(ForeignPendingProposalErr, ForeignLineCount, ForeignContractNo, ContractNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(ForeignPendingProposalErr, ForeignLineCount, ForeignContractNo, ContractNo), 'contractNo', ContractNo);
         end;
 
         SubscriptionLine.SetRange(Partner, Enum::"Service Partner"::Vendor);

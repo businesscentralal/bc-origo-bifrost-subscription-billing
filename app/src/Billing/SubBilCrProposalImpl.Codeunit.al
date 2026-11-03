@@ -122,7 +122,7 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
     procedure GetNotes(var Notes: Text): Boolean
     begin
         Notes := ('proposalLinesCreated counts what this call added; proposalLineCount and contracts cover every proposal line now standing for the template, including ' +
-            'earlier runs. The run is not one transaction: Microsoft commits the proposal lines every CommitBatchSize (50) contracts, also under Omit Commit, ' +
+            'earlier runs. The run is not one transaction: Microsoft commits the proposal lines every batch of 50 contracts, also under Omit Commit, ' +
             'so an error after such a commit leaves those lines in place. Subscription.Billing.ClearProposal undoes a proposal, also a partial one. ' +
             ContractParts.BooleanNote()).TrimEnd();
         exit(true);
@@ -147,6 +147,8 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -180,7 +182,7 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
         BillingToDate := Helper.GetDate(RequestJson, 'billingToDate', false);
 
         if not BillingTemplate.Get(BillingTemplateCode) then
-            Error(TemplateNotFoundErr, BillingTemplateCode);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
 
         BillingLine.SetRange("Billing Template Code", BillingTemplateCode);
         LinesBefore := BillingLine.Count();

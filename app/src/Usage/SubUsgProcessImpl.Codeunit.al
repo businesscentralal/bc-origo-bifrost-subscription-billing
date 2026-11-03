@@ -26,7 +26,7 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
         ProcessImportedLinesTok: Label 'ProcessImportedLines', Locked = true;
         CreateUsageDataBillingTok: Label 'CreateUsageDataBilling', Locked = true;
         ProcessUsageDataBillingTok: Label 'ProcessUsageDataBilling', Locked = true;
-        DescriptionLbl: Label 'Runs the usage data processing stages (Process Imported Lines, Create Usage Data Billing, Process Usage Data Billing) over an existing Usage Data Import entry and reports the outcome of each stage.', MaxLength = 250, Comment = 'is-IS=Keyrir vinnsluskref notkunargagna (Process Imported Lines, Create Usage Data Billing, Process Usage Data Billing) á fyrirliggjandi innflutningsfærslu fyrir notkunargögn og skilar niðurstöðu hvers skrefs.';
+        DescriptionLbl: Label 'Runs the usage data processing stages (Process Imported Lines, Create Usage Data Billing, Process Usage Data Billing) over an existing Usage Data Import entry and reports the outcome of each stage.', MaxLength = 250, Comment = 'is-IS=Keyrir vinnsluskref notkunargagna (vinnsla innfluttra lína, stofnun og vinnsla reikningsgerðar fyrir notkunargögn) á fyrirliggjandi innflutningsfærslu fyrir notkunargögn og skilar niðurstöðu hvers skrefs.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -45,7 +45,7 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetKeywords(): Text
     var
-        KeywordsLbl: Label 'process usage data, process imported usage, create usage billing, process usage import, calculate billable usage, run usage processing steps, process imported lines, turn usage into billing lines', Comment = 'is-IS=vinna notkunargögn, vinna innflutta notkun, stofna notkunarreikningagerð, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur';
+        KeywordsLbl: Label 'process usage data, process imported usage, create usage billing, process usage import, calculate billable usage, run usage processing steps, process imported lines, turn usage into billing lines', Comment = 'is-IS=vinna notkunargögn, vinna innflutta notkun, stofna reikningsgerð fyrir notkunargögn, vinna innflutning notkunar, reikna reikningshæfa notkun, keyra vinnsluskref notkunar, vinna innfluttar línur, breyta notkun í reikningslínur';
     begin
         exit(KeywordsLbl);
     end;
@@ -159,6 +159,8 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -188,18 +190,18 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
         EntryNo := 0;
         if Argument.Subject <> '' then
             if not Evaluate(EntryNo, Argument.Subject, 9) then
-                Error(InvalidSubjectErr, Argument.Subject);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidSubjectErr, Argument.Subject), 'usageDataImportEntryNo', Format(Argument.Subject, 0, 9));
         if EntryNo = 0 then
             EntryNo := Helper.GetInteger(RequestJson, 'usageDataImportEntryNo', true);
 
         if not UsageDataImport.Get(EntryNo) then
-            Error(NotFoundErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotFoundErr, EntryNo), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
         // Microsoft's Create Usage Data Billing copies this record's filters and iterates them.
         // Get alone leaves the record unfiltered, so another open import could be processed and
         // returned to the next stage. Keep every stage scoped to the requested entry.
         UsageDataImport.SetRecFilter();
         if UsageDataImport."Processing Status" = UsageDataImport."Processing Status"::Closed then
-            Error(AlreadyClosedErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(AlreadyClosedErr, EntryNo), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
 
         GetRequestedSteps(RequestJson, StepNames);
 
@@ -280,7 +282,7 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
                     StepOk := Codeunit.Run(Codeunit::"Process Usage Data Billing", UsageDataImport);
                 end;
             else
-                Error(UnknownStepErr, StepName);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(UnknownStepErr, StepName), 'steps', Format(StepName, 0, 9));
         end;
 
         UsageDataImport.Get(UsageDataImport."Entry No.");

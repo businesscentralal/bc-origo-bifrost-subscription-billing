@@ -27,11 +27,11 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
         InvalidSubjectErr: Label 'The subject ''%1'' is not a Usage Data Import entry number. Send the entry number as a whole number.', Comment = '%1 = the subject||is-IS=Efnið ''%1'' er ekki færslunúmer innflutnings notkunargagna. Sendu færslunúmerið sem heila tölu.';
         NotFoundErr: Label 'The Usage Data Import entry %1 does not exist.', Comment = '%1 = entry number||is-IS=Færsla %1 í innflutningi notkunargagna er ekki til.';
         InvalidModeErr: Label 'The parameter ''mode'' must be either ''resetLines'' or ''deleteImport'', not ''%1''.', Comment = '%1 = the supplied mode||is-IS=Færibreytan ''mode'' verður að vera annaðhvort ''resetLines'' eða ''deleteImport'', ekki ''%1''.';
-        InvoicedErr: Label 'Usage Data Import entry %1 has usage billing on document %2. Delete or cancel that document first; usage that is posted cannot be imported again.', Comment = '%1 = entry number, %2 = document number||is-IS=Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.';
-        InBillingErr: Label 'Usage Data Import entry %1 has usage billing on billing line %2. Clear that billing proposal first with Subscription.Billing.ClearProposal.', Comment = '%1 = entry number, %2 = billing line entry number||is-IS=Færsla %1 í innflutningi notkunargagna hefur notkunarreikningagerð á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.';
+        InvoicedErr: Label 'Usage Data Import entry %1 has usage billing on document %2. Delete or cancel that document first; usage that is posted cannot be imported again.', Comment = '%1 = entry number, %2 = document number||is-IS=Færsla %1 í innflutningi notkunargagna hefur reikningsgerð fyrir notkunargögn á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.';
+        InBillingErr: Label 'Usage Data Import entry %1 has usage billing on billing line %2. Clear that billing proposal first with Subscription.Billing.ClearProposal.', Comment = '%1 = entry number, %2 = billing line entry number||is-IS=Færsla %1 í innflutningi notkunargagna hefur reikningsgerð fyrir notkunargögn á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.';
         ResetLinesTok: Label 'resetlines', Locked = true;
         DeleteImportTok: Label 'deleteimport', Locked = true;
-        DescriptionLbl: Label 'Deletes the imported lines and usage billing of a usage import so it can be processed again, or deletes the whole import. Refuses imports already on a billing line or document.', MaxLength = 250, Comment = 'is-IS=Eyðir innfluttum línum og notkunarreikningagerð innflutnings svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.';
+        DescriptionLbl: Label 'Deletes the imported lines and usage billing of a usage import so it can be processed again, or deletes the whole import. Refuses imports already on a billing line or document.', MaxLength = 250, Comment = 'is-IS=Eyðir innfluttum línum og reikningsgerð fyrir innflutt notkunargögn svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.';
 
     procedure IsEnabled(): Boolean
     begin
@@ -57,7 +57,7 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Delete usage data: deletes the imported lines and usage billing of one Usage Data Import so it can be processed again (resetLines), or deletes the whole import (deleteImport). Irreversible, and imports already on a billing line or document are refused. To process the import again use Subscription.Usage.Process.', Comment = 'is-IS=Eyða notkunargögnum: eyðir innfluttum línum og notkunarreikningagerð eins innflutnings notkunargagna svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Óafturkræf aðgerð og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.';
+        SelectionLbl: Label 'Delete usage data: deletes the imported lines and usage billing of one Usage Data Import so it can be processed again (resetLines), or deletes the whole import (deleteImport). Irreversible, and imports already on a billing line or document are refused. To process the import again use Subscription.Usage.Process.', Comment = 'is-IS=Eyða notkunargögnum: eyðir innfluttum línum og reikningsgerð fyrir gögn eins notkunarinnflutnings svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Óafturkræf aðgerð og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.';
     begin
         exit(SelectionLbl);
     end;
@@ -161,6 +161,8 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
+        if not Helper.ValidateRequest(Argument) then
+            exit;
 
         if Argument."Omit Commit" then begin
             PerformWrite(Argument);
@@ -186,17 +188,17 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
         EntryNo := 0;
         if Argument.Subject <> '' then
             if not Evaluate(EntryNo, Argument.Subject, 9) then
-                Error(InvalidSubjectErr, Argument.Subject);
+                Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidSubjectErr, Argument.Subject), 'usageDataImportEntryNo', Format(Argument.Subject, 0, 9));
         if EntryNo = 0 then
             EntryNo := Helper.GetInteger(RequestJson, 'usageDataImportEntryNo', true);
         Mode := LowerCase(Helper.GetText(RequestJson, 'mode', false));
         if Mode = '' then
             Mode := ResetLinesTok;
         if not (Mode in [ResetLinesTok, DeleteImportTok]) then
-            Error(InvalidModeErr, Helper.GetText(RequestJson, 'mode', false));
+            Helper.RaiseRefusal("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidModeErr, Helper.GetText(RequestJson, 'mode', false)), 'mode', Format(Helper.GetText(RequestJson, 'mode', false), 0, 9));
 
         if not UsageDataImport.Get(EntryNo) then
-            Error(NotFoundErr, EntryNo);
+            Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(NotFoundErr, EntryNo), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
         CheckNotBilled(EntryNo);
 
         UsageDataBilling.SetRange("Usage Data Import Entry No.", EntryNo);
@@ -231,12 +233,12 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
         UsageDataBilling.SetFilter("Document No.", '<>%1', '');
         UsageDataBilling.SetLoadFields("Usage Data Import Entry No.", "Document No.");
         if UsageDataBilling.FindFirst() then
-            Error(InvoicedErr, EntryNo, UsageDataBilling."Document No.");
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(InvoicedErr, EntryNo, UsageDataBilling."Document No."), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
         UsageDataBilling.SetRange("Document No.");
         UsageDataBilling.SetFilter("Billing Line Entry No.", '<>0');
         UsageDataBilling.SetLoadFields("Usage Data Import Entry No.", "Billing Line Entry No.");
         if UsageDataBilling.FindFirst() then
-            Error(InBillingErr, EntryNo, UsageDataBilling."Billing Line Entry No.");
+            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(InBillingErr, EntryNo, UsageDataBilling."Billing Line Entry No."), 'usageDataImportEntryNo', Format(EntryNo, 0, 9));
     end;
 
     /// <summary>

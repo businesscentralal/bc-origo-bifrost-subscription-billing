@@ -2,12 +2,77 @@
 
 ## [Unreleased]
 
+### Fixed (2026-10-27) - refusal review follow-ups (#62)
+
+- 10035058 distinguishes nested missing values, wrong shapes and overlong scalars, avoids doubled expected-text punctuation, collects zero-valued missing selections with other request problems, derives template bounds from the field and translates nested JSON/partner/entry-array expectations.
+- 95723 asserts exact expected values and missing/shape/length codes in both languages, including zero-selection aggregation. PR70 retains its runtime posting-name integration dependency.
+
+### Fixed (2026-10-26) - refusal context review amendments (#62)
+
+- 10035058 guards an unknown enum ordinal before list access, uses consistent InvalidParameterFormat for overlong identifiers with identifier-derived bounds, and gives nested shape/length errors a nonempty expected value.
+- Refusal context in 10035065, 10035055, 10035041, 10035067, 10035052, 10035051, 10035039, 10035061 and 10035068 names the actual request selection and received input; one-of requirements name their accepted alternatives. 10035075 includes PR70's Purchase.Document.Post help correction; PR70 still owns the 10035085 runtime/XLF correction, which must be preserved during ordered integration.
+- 95723 pairs mixed aggregate scenarios in 1033/1039 and asserts each problem's structured fields; targeted guards cover the corrected contexts. Vendor CreateDocuments posting failures use billingTemplateCode when no sales posting event supplies a document number; the native event capture is sales-only, matching the existing sales-only posting path.
+
+### Fixed (2026-10-23) - structured refusals and request validation (#62)
+
+- Foundation minimum dependency is 28.0.8.617 in product and test apps, providing the public rollback-safe error context API used by this change.
+- `Sub Helper ori` (10035058) collects missing, malformed, bounded and allowed-value request problems before business lookups/writes; billing template existence joins other collected problems. Shared readers raise Foundation's structured errors. `Sub Contract Parts ori` (10035075) exposes the existing subject-key contract internally so each subject keeps its actual parameter name.
+- All Subscription Billing message entrypoints invoke the shared preflight (codeunits 10035036, 10035037, 10035038, 10035039, 10035040, 10035041, 10035042, 10035043, 10035044, 10035045, 10035046, 10035047, 10035048, 10035049, 10035050, 10035051, 10035052, 10035053, 10035054, 10035055, 10035056, 10035057, 10035061, 10035065, 10035066, 10035067, 10035068, 10035069, 10035070, 10035071, 10035072, 10035073, 10035085). `Sub Usg Import Impl ori` (10035053) decodes base64 into memory before any persisted import write and returns InvalidParameterFormat instead of raw decoder details.
+- `Sub Refusal Tst ori` (95723) covers single/aggregate errors, localized base64 refusal, subject fallback, empty filter compatibility and the unknown-template/bad-date combination. Domain refusals now use stable shared codes and translated recovery fields; error chapters identify those actual codes. `Sub Posting Context ori` (10035063) scopes a read-only posting subscriber to capture the actual sales document when CreateDocuments posting fails. Positive live MCP, full native/UI and independent verification remain required.
+
+- Permission coverage: `BIFROST SubBil ori` (10035062) and `BIFROST SubBRead ori` (10035064). Additional regressions: `Sub PU Filter Tst ori` (95708) and scoped posting fault helper `Sub Posting Failure Test ori` (95724).
+
+### Fixed (2026-10-29) - licence-administrator setup access (#80)
+
+- `Sub Registration ori` (10035060) has inherent execute permission and entitlement so Foundation can collect installed apps when a restricted licence administrator opens Bifrost Setup.
+- `Sub LicAdm Setup Tst ori` (95728) opens the real setup page under the licence-administrator role in English and Icelandic, verifies the app is registered and the page remains read-only. The test-only platform baseline (95729) grants no Subscription Billing or Bifrost administrator permissions. Assertions run after restoring test permissions. `test/app.json` requires Foundation 28.0.10 or later for this regression.
+
+### Changed (2026-10-29) - Microsoft source link
+
+- README.md and AGENTS.md link the source of the Microsoft Subscription Billing app (docs only, no AL).
+
+
+### Fixed (2026-10-23) - permission test isolation (#73)
+
+- Tests `Sub Post Gate Tst ori` (95719) and `Sub Perm Full Tst ori` (95771) execute the product calls under exactly `BIFROST Full ori`, then restore test permissions before invoking Library Assert. Each contract read reapplies the restricted role. The tests require permission mocking to be active, so a runner cannot silently execute these scenarios with its ambient permissions.
+
+### Fixed (2026-10-27) - consistent Icelandic billing wording (#76)
+
+- 10035047, 10035054, 10035069, 10035070 and 10035085 use `reikningskeyrsla` consistently for billing runs and clearer wording for billing usage data. Canonical Icelandic label comments and the is-IS XLF stay synchronized.
+
+### Fixed (2026-10-27) - posting hint matches registered type (#64)
+
+- 10035085 names `Purchase.Document.Post` consistently in vendor refusals, selection text and notes, matching 10035075 help and Foundation registration. XLF is synchronized; 95718 exercises the real foreign-invoice refusal in English and Icelandic. The same retained-owner correction is already present in PR70; no preview effect decision is inferred.
+
+### Fixed (2026-10-26) - independent verification wording follow-up (#64)
+
+- 10035040 and 10035075 use Foundation's actual Force Field Access caption (Þvinga reitaaðgang); 95727 compares it with installed permission metadata and 95780 rejects the guessed old name. 95711 retains the real permission boundary.
+- 10035039, 10035044 and 10035054 improve Icelandic wording; 10035075 separates quote creation from direct renewal. 10035073 uses business wording in merge notes; 10035042 and 10035057 remove the remaining abbreviated contract-line table names from public descriptions; actual machine field names in runtime refusals remain documented truthfully.
+
+### Changed (2026-10-26) - accurate preview and permission contracts (#64)
+
+- The customer and vendor PreviewInvoice effects report temporary writes with no lasting changes; descriptions in 10035039 and 10035044 stay within 20–200 characters in both languages. Permission-set contract values use captions users can find.
+
+### Fixed (2026-10-26) - review amendments (#64)
+
+- 10035048 validates stored views through Foundation before display; numeric field tokens are named without changing filter values. Unknown fields are never silently applied. 10035075 removes internal staging, renewal and archive table names and retains PR70's `Purchase.Document.Post` correction.
+- 10035046 and 10035057 remove archive and staging table names from their help. 10035040 and 10035086 correct permission names and Icelandic spelling; 95708, 95727 and 95780 cover readable filters, discovery limits and public wording. XLF stays synchronized.
+
+### Fixed (2026-10-23) - operation help and workflow wording (#64)
+
+- `Sub Contract Parts ori` (10035075) describes temporary invoice previews as writes that leave no persistent changes, replaces posting/proposal implementation names and permission-set object names with business wording, and supplies workflows for every operation, including company-wide job-queue term updates and committed deferral posting.
+- Discovery labels remove Blob and update Icelandic terminology. Existing PR #68 wording/filter fixes are retained.
+- `Sub Contract Complete Tst ori` (95780) rejects the reported internal object/procedure names and permission-set suffix pattern in help, requires a workflow for all operations and checks the two temporary preview effects explicitly.
+- Additional touched objects: `Sub Bil CrProposal Impl ori` (10035045), `Sub Con RemoveLine Impl ori` (10035071), `Sub Con UpdDates Impl ori` (10035040), `Sub PU SetFilter Impl ori` (10035048), `Sub Usg Process Impl ori` (10035054), and `Sub Contract Batch1 Tst ori` (95706).
+- Refusal wording `Sub Bil PostDocs Impl ori` (10035085) uses translated document captions and corrected Icelandic spelling. Billing and price-update filter responses show field names; their refusals name `filter`, and PriceUpdate help lists InvalidFilterField.
+- Readable-filter and localized-refusal regressions: `Sub Bil SetFilter Impl ori` (10035070), `Sub PU Filter Tst ori` (95708), `Sub ShouldHave Tst ori` (95715), and `Sub Help Wording Tst ori` (95727).
+- Other touched acceptance objects: `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend PrvInv Impl ori` (10035044).
+
 ### Fixed (2026-10-23) - purchase posting guidance (#65)
 
 - `Sub Bil PostDocs Impl ori` (10035085) now directs foreign vendor documents to the registered `Purchase.Document.Post` message type in English and Icelandic. The selection text, help notes, shared errors and posting permission comment use the same name.
 - `Sub Contract Parts ori` (10035075) updates the help errors chapter, and `BIFROST SubPost ori` (10035086) updates the permission set documentation comment to name the same purchase posting type.
 - `Sub PostDocs Tst ori` (95718) checks the actual refusal and the suggested type's registration in both languages, and verifies the foreign invoice stays open.
-
 
 ### Changed (2026-10-21) - AppSource delivery
 
