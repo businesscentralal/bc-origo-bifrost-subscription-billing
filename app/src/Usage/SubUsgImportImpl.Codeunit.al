@@ -245,9 +245,9 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
 
         Commit();
         if not Codeunit.Run(Codeunit::"Import And Process Usage Data", UsageDataImport) then begin
-                RespondWithRetainedImport(Argument, UsageDataImport."Entry No.", GetLastErrorText());
-                exit;
-            end;
+            RespondWithRetainedImport(Argument, UsageDataImport."Entry No.", GetLastErrorText());
+            exit;
+        end;
 
         if RunProcessing then begin
             UsageDataImport.Get(UsageDataImport."Entry No.");
@@ -275,6 +275,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         ResponseJson.Add('importedLineCount', UsageDataGenericImport.Count());
         Helper.RespondWithSuccess(Argument, ResponseJson);
     end;
+
     local procedure RespondWithRetainedImport(var Argument: Record "Message Argument ori"; EntryNo: Integer; FailureText: Text)
     var
         ResponseJson: JsonObject;
