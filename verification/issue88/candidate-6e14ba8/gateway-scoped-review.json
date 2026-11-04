@@ -1,0 +1,273 @@
+{
+  "scanEvidence": "/workspace/evidence/sb88-worker3/gateway-tests-full.json",
+  "filesScanned": 41,
+  "summary": {
+    "total": 23,
+    "ready": false,
+    "failed": 9,
+    "passed": 14
+  },
+  "changedFileFindings": {
+    "xml_doc_comments": [
+      {
+        "procedure": "Filter_ValidCustomerContract_PersistsOnlyMatchingView",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 19
+      },
+      {
+        "procedure": "Filter_ValidVendorContract_PersistsVendorView",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 48
+      },
+      {
+        "procedure": "Filter_ValidSubscriptionAndLine_ChangesOnlySelectedBlob",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 82
+      },
+      {
+        "procedure": "Filter_UnknownWhereField_ReturnsErrorAndPreservesState",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 109
+      },
+      {
+        "procedure": "Filter_UnknownSortingField_ReturnsErrorAndPreservesState",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 118
+      },
+      {
+        "procedure": "Filter_UnbalancedView_ReturnsErrorAndPreservesState",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 127
+      },
+      {
+        "procedure": "Filter_NotAView_ReturnsErrorAndPreservesState",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 136
+      },
+      {
+        "procedure": "Filter_EmptyClearsAndMissingRequiredValue_DoesNotWrite",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 145
+      },
+      {
+        "procedure": "Filter_ViewWithoutFilters_ClearsSelectedBlob",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 171
+      },
+      {
+        "procedure": "Filter_FieldTokenInValue_IsPreservedInReadableResponse",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 190
+      },
+      {
+        "procedure": "Scenario_AC02_MissingValues_Aggregate_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 21
+      },
+      {
+        "procedure": "Scenario_AC02_MissingValues_Aggregate_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 27
+      },
+      {
+        "procedure": "Scenario_AC01_OneMissingValue_SingleError_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 55
+      },
+      {
+        "procedure": "Scenario_AC01_OneMissingValue_SingleError_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 61
+      },
+      {
+        "procedure": "Scenario_AC02_BadDateAndPartner_Aggregate",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 88
+      },
+      {
+        "procedure": "Scenario_AC02_BadDateAndPartner_Aggregate_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 94
+      },
+      {
+        "procedure": "Scenario_AC03_InvalidBase64_IsSanitized_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 123
+      },
+      {
+        "procedure": "Scenario_AC03_InvalidBase64_IsSanitized_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 129
+      },
+      {
+        "procedure": "Scenario_AC02_SubjectFallback_IsAccepted",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 158
+      },
+      {
+        "procedure": "Scenario_AC02_EmptyFilter_StillClearsFilter",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 170
+      },
+      {
+        "procedure": "Scenario_AC02_EmptyFilter_StillClearsFilter_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 178
+      },
+      {
+        "procedure": "Scenario_AC02_UnknownTemplateAndBadDate_Aggregate",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 207
+      },
+      {
+        "procedure": "Scenario_AC02_UnknownTemplateAndBadDate_Aggregate_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 213
+      },
+      {
+        "procedure": "Scenario_AC01_RecordNotFound_Context_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 241
+      },
+      {
+        "procedure": "Scenario_AC01_RecordNotFound_Context_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 247
+      },
+      {
+        "procedure": "Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 278
+      },
+      {
+        "procedure": "Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 284
+      },
+      {
+        "procedure": "Scenario_AC02_ObjectInsteadOfScalar_IsStructuredBeforeLookup",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 319
+      },
+      {
+        "procedure": "Scenario_AC02_SelectionArray_CollectsEachBadEntry",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 336
+      },
+      {
+        "procedure": "Scenario_AC02_SelectionArray_CollectsEachBadEntry_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 342
+      },
+      {
+        "procedure": "Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 373
+      },
+      {
+        "procedure": "Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 379
+      },
+      {
+        "procedure": "Scenario_AC04_RequiredUsageEntry_HelpListsRealPreflightCodes",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 416
+      },
+      {
+        "procedure": "Review_ContextFields_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 434
+      },
+      {
+        "procedure": "Review_ContextFields_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 440
+      },
+      {
+        "procedure": "Review_LengthAndNestedShape_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 483
+      },
+      {
+        "procedure": "Review_LengthAndNestedShape_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 489
+      },
+      {
+        "procedure": "Review_UnknownEnumValue_IsStructured",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 572
+      },
+      {
+        "procedure": "Review_DomainSelections_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 583
+      },
+      {
+        "procedure": "Review_DomainSelections_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 589
+      },
+      {
+        "procedure": "Review_MissingAlternatives_AggregatesBeforeLookup_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 707
+      },
+      {
+        "procedure": "Review_MissingAlternatives_AggregatesBeforeLookup_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 713
+      },
+      {
+        "procedure": "Issue75_UndeclaredContentBase64_IsNotDecodedForOtherTypes",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 795
+      },
+      {
+        "procedure": "Issue75_ImportData_MissingContent_IsReported_EN",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 808
+      },
+      {
+        "procedure": "Issue75_ImportData_MissingContent_IsReported_IS",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 814
+      }
+    ],
+    "one_statement_per_line": [
+      {
+        "text": "local procedure InvokeFilter(TargetName: Text; FilterText: Text; IncludeFilter: Boolean) ResponseJson: JsonObject",
+        "file": "SubPUFilterTst.Codeunit.al",
+        "line": 271
+      },
+      {
+        "text": "local procedure AssertNestedExpected(Response: JsonObject; LanguageId: Integer; IsLengthProblem: Boolean)",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 553
+      },
+      {
+        "text": "local procedure AssertRefusalFields(Response: JsonObject; ExpectedCode: Text; ExpectedParameter: Text; ExpectedReceived: Text)",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 695
+      },
+      {
+        "text": "local procedure AssertProblem(Response: JsonObject; ExpectedCode: Text; ExpectedParameter: Text; ExpectedReceived: Text)",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 755
+      },
+      {
+        "text": "local procedure Prepare(var TempArgument: Record \"Message Argument ori\" temporary; MessageType: Enum \"Message Type ori\"; Request: JsonObject)",
+        "file": "SubRefusalTst.Codeunit.al",
+        "line": 861
+      }
+    ]
+  },
+  "triage": {
+    "xmlDocumentation": "Existing methods have XML summaries separated from signature by [Test]; new Icelandic test has XML summary. Script reports an adjacency false positive. No new undocumented API.",
+    "legacyFindings": "Full scan finds pre-existing Today/read-isolation/format/XMLport and test-app metadata findings outside issue88. Not changed or suppressed.",
+    "changelog": "Existing Unreleased version convention retained; issue88 entry with95708/95723 added.",
+    "sourceDiff": "Only test95708/test95723, CHANGELOG and audit doc changed; no product API/schema/permissions/translations/pipeline modifications.",
+    "newScopedBlockingFindings": 0
+  }
+}

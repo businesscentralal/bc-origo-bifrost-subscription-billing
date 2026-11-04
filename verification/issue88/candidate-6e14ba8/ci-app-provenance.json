@@ -1,0 +1,120 @@
+[
+  {
+    "artifactId": 13330493850,
+    "file": "Origo_Bifrost Subscription Billing_28.0.2.57.app",
+    "sha256": "afbaa3286b7a414b6a3da682947058ad654ae3851a6741f06bc6e812f9738949",
+    "app": {
+      "Id": "dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d",
+      "Name": "Bifrost Subscription Billing",
+      "Publisher": "Origo",
+      "Brief": "Bifrost Subscription Billing - message types for Subscription Billing",
+      "Description": "Adds Bifrost message types for the Microsoft Dynamics 365 Business Central Subscription Billing app. Covers subscription lines, customer and vendor contracts, the billing pipeline, price updates and indexation, renewal, usage-based billing, deferrals, contract analysis and migration - so an agent can operate Subscription Billing end to end without manual UI steps.",
+      "Version": "28.0.2.57",
+      "CompatibilityId": "0.0.0.0",
+      "PrivacyStatement": "https://docs.bifrost.origo.is/en-us/licensing/privacy/",
+      "EULA": "https://docs.bifrost.origo.is/en-us/licensing/eula/",
+      "Help": "https://docs.bifrost.origo.is/en-us/subscription-billing/",
+      "HelpBaseUrl": "",
+      "ContextSensitiveHelpUrl": "https://docs.bifrost.origo.is/{0}/help/subscription-billing/",
+      "Url": "https://www.origo.is/",
+      "Logo": "/logo/Logo250x250.png",
+      "Platform": "28.0.0.0",
+      "Application": "28.3.0.0",
+      "Runtime": "17.0",
+      "Target": "Cloud",
+      "ShowMyCode": "False",
+      "ApplicationInsightsConnectionString": "InstrumentationKey=af411133-5e22-486f-b23a-081b79ed4168;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=c4476f32-5dfb-490a-8ad0-fb8ffad1c050"
+    },
+    "source": [
+      [
+        "{http://schemas.microsoft.com/navx/2015/manifest}InternalsVisibleTo",
+        {}
+      ],
+      [
+        "{http://schemas.microsoft.com/navx/2015/manifest}Source",
+        {
+          "RepositoryUrl": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing",
+          "Commit": "38bc69f15f69d4412850db35015f190b09daea3d"
+        }
+      ]
+    ]
+  },
+  {
+    "artifactId": 13331548685,
+    "file": "Origo_Bifrost Subscription Billing_28.0.2.57.app",
+    "sha256": "d5470634ca1676e0dd15c41ef40cdd943f36035687fe719527e2d40d59ea2c5d",
+    "app": {
+      "Id": "dd7b8bd8-f93e-4ac4-a251-1a132a14ef3d",
+      "Name": "Bifrost Subscription Billing",
+      "Publisher": "Origo",
+      "Brief": "Bifrost Subscription Billing - message types for Subscription Billing",
+      "Description": "Adds Bifrost message types for the Microsoft Dynamics 365 Business Central Subscription Billing app. Covers subscription lines, customer and vendor contracts, the billing pipeline, price updates and indexation, renewal, usage-based billing, deferrals, contract analysis and migration - so an agent can operate Subscription Billing end to end without manual UI steps.",
+      "Version": "28.0.2.57",
+      "CompatibilityId": "0.0.0.0",
+      "PrivacyStatement": "https://docs.bifrost.origo.is/en-us/licensing/privacy/",
+      "EULA": "https://docs.bifrost.origo.is/en-us/licensing/eula/",
+      "Help": "https://docs.bifrost.origo.is/en-us/subscription-billing/",
+      "HelpBaseUrl": "",
+      "ContextSensitiveHelpUrl": "https://docs.bifrost.origo.is/{0}/help/subscription-billing/",
+      "Url": "https://www.origo.is/",
+      "Logo": "/logo/Logo250x250.png",
+      "Platform": "28.0.0.0",
+      "Application": "28.3.0.0",
+      "Runtime": "17.0",
+      "Target": "Cloud",
+      "ShowMyCode": "False",
+      "ApplicationInsightsConnectionString": "InstrumentationKey=af411133-5e22-486f-b23a-081b79ed4168;IngestionEndpoint=https://northeurope-2.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/;ApplicationId=c4476f32-5dfb-490a-8ad0-fb8ffad1c050"
+    },
+    "source": [
+      [
+        "{http://schemas.microsoft.com/navx/2015/manifest}InternalsVisibleTo",
+        {}
+      ],
+      [
+        "{http://schemas.microsoft.com/navx/2015/manifest}Source",
+        {
+          "RepositoryUrl": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing",
+          "Commit": "38bc69f15f69d4412850db35015f190b09daea3d"
+        }
+      ]
+    ]
+  },
+  {
+    "artifactId": 13331493780,
+    "file": "Origo_Bifrost Subscription Billing - Tests_28.0.2147483647.147.app",
+    "sha256": "42e0a2ed48e7dc7a87a521af0192af985d2761928aeeb09a8f00ed93798a856a",
+    "app": {
+      "Id": "a621027d-6e47-4932-bc65-319b8b798bff",
+      "Name": "Bifrost Subscription Billing - Tests",
+      "Publisher": "Origo",
+      "Brief": "Bifrost Subscription Billing - Tests",
+      "Description": "Tests for Bifrost Subscription Billing.",
+      "Version": "28.0.2147483647.147",
+      "CompatibilityId": "0.0.0.0",
+      "PrivacyStatement": "https://www.origo.is/um-origo/stefnur/personuverndarstefna",
+      "EULA": "https://www.origo.is/skilmalar-og-oryggismal",
+      "Help": "https://www.origo.is/",
+      "HelpBaseUrl": "",
+      "Url": "https://www.origo.is/",
+      "Logo": "/logo/Logo250x250.png",
+      "Platform": "28.0.0.0",
+      "Application": "28.3.0.0",
+      "Runtime": "17.0",
+      "Target": "Cloud",
+      "ShowMyCode": "False"
+    },
+    "source": [
+      [
+        "{http://schemas.microsoft.com/navx/2015/manifest}InternalsVisibleTo",
+        {}
+      ],
+      [
+        "{http://schemas.microsoft.com/navx/2015/manifest}Source",
+        {
+          "RepositoryUrl": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing",
+          "Commit": "d767c3f976221d34d0d7fa5e6c8db04f3a9eab1d"
+        }
+      ]
+    ]
+  }
+]

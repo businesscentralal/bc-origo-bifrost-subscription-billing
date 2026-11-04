@@ -1,0 +1,74 @@
+{
+  "sha": "6e14ba8775c76b76094961d97e25905fe4b0c2ff",
+  "runId": 41845573546,
+  "runUrl": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/actions/runs/41845573546",
+  "status": "completed",
+  "conclusion": "success",
+  "executed": 245,
+  "passed": 245,
+  "failed": 0,
+  "skipped": 0,
+  "missing": [],
+  "unexpected": [],
+  "testMergeSha": "d767c3f976221d34d0d7fa5e6c8db04f3a9eab1d",
+  "parents": [
+    "38bc69f15f69d4412850db35015f190b09daea3d",
+    "6e14ba8775c76b76094961d97e25905fe4b0c2ff"
+  ],
+  "appVersion": "28.0.2.57",
+  "testAppVersion": "28.0.2147483647.147",
+  "defaultProductSourceSha": "38bc69f15f69d4412850db35015f190b09daea3d",
+  "productSourceUnchangedFromCandidate": true,
+  "productCompileAtCandidate": "Local product exact6e14ba8 compile0errors0warnings; CI reused unchanged main product package, not claimed as a fresh candidate compile",
+  "testCompile": {
+    "errors": 0,
+    "warnings": 0,
+    "evidence": "ci-build-output/BuildOutput.txt"
+  },
+  "junitSha256": "de8889ec11cc60307c3d5b63202a8353b516e1c90e6f23e2f1522127461d7b02",
+  "localCompileAnalyzers": [
+    "CodeCop",
+    "UICop",
+    "AppSourceCop"
+  ],
+  "ciProductWarningErrors": {
+    "errors": 0,
+    "warnings": 0,
+    "scope": "No compiler diagnostics in normal paired job logs; product artifact reused unchanged main package. Local exact-candidate compilation is the fresh full analyzer proof."
+  },
+  "sharedPhysicalContainer": "f07b8bedd121",
+  "ciCleanup": {
+    "deleted": 1,
+    "expected": 1,
+    "id": "f07b8bedd121",
+    "verifiedFromJob": 126638591056
+  },
+  "ivtReadback": [
+    {
+      "artifactId": 13330493850,
+      "ivtModules": [],
+      "source": [
+        {
+          "RepositoryUrl": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing",
+          "Commit": "38bc69f15f69d4412850db35015f190b09daea3d"
+        }
+      ]
+    },
+    {
+      "artifactId": 13331548685,
+      "ivtModules": [
+        {
+          "Id": "a621027d-6e47-4932-bc65-319b8b798bff",
+          "Name": "Bifrost Subscription Billing - Tests",
+          "Publisher": "Origo"
+        }
+      ],
+      "source": [
+        {
+          "RepositoryUrl": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing",
+          "Commit": "38bc69f15f69d4412850db35015f190b09daea3d"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="95723 Sub Refusal Tst ori" timestamp="2026-11-04T14:34:48" hostname="f071fd48c021-business-central-c984ddf-5fzxn" time="3.392" tests="0" failures="0" errors="0" skipped="0" total="35">
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_MissingValues_Aggregate_EN" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_MissingValues_Aggregate_IS" time="0.006" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC01_OneMissingValue_SingleError_EN" time="0.013" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC01_OneMissingValue_SingleError_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_BadDateAndPartner_Aggregate" time="0.007" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_BadDateAndPartner_Aggregate_IS" time="0.007" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC03_InvalidBase64_IsSanitized_EN" time="0.013" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC03_InvalidBase64_IsSanitized_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_SubjectFallback_IsAccepted" time="0.007" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_EmptyFilter_StillClearsFilter" time="0.014" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_EmptyFilter_StillClearsFilter_IS" time="0.013" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_UnknownTemplateAndBadDate_Aggregate" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_UnknownTemplateAndBadDate_Aggregate_IS" time="0.007" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC01_RecordNotFound_Context_EN" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC01_RecordNotFound_Context_IS" time="0.013" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues" time="0.013" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues_IS" time="0.013" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_ObjectInsteadOfScalar_IsStructuredBeforeLookup" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_SelectionArray_CollectsEachBadEntry" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC02_SelectionArray_CollectsEachBadEntry_IS" time="0.01" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_EN" time="0.46" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_IS" time="0.916" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Scenario_AC04_RequiredUsageEntry_HelpListsRealPreflightCodes" time="0.097" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_ContextFields_EN" time="0.596" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_ContextFields_IS" time="0.117" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_LengthAndNestedShape_EN" time="0.036" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_LengthAndNestedShape_IS" time="0.14" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_UnknownEnumValue_IsStructured" time="0.084" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_DomainSelections_EN" time="0.52" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_DomainSelections_IS" time="0.147" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_MissingAlternatives_AggregatesBeforeLookup_EN" time="0.017" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Review_MissingAlternatives_AggregatesBeforeLookup_IS" time="0.016" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Issue75_UndeclaredContentBase64_IsNotDecodedForOtherTypes" time="0.023" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Issue75_ImportData_MissingContent_IsReported_EN" time="0.007" />
+    <testcase classname="95723 Sub Refusal Tst ori" name="Issue75_ImportData_MissingContent_IsReported_IS" time="0.01" />
+  </testsuite>
+</testsuites>

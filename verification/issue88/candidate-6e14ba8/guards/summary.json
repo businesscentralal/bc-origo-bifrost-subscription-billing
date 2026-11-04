@@ -1,0 +1,54 @@
+[
+  {
+    "guard": "Test-ObjectIdsUnique",
+    "exitCode": 0,
+    "at": "2026-11-04T14:13:28.828289+00:00"
+  },
+  {
+    "guard": "Test-ContractParameterKeys",
+    "exitCode": 0,
+    "at": "2026-11-04T14:13:54.128313+00:00"
+  },
+  {
+    "guard": "Test-HelpLinks",
+    "exitCode": 0,
+    "at": "2026-11-04T14:13:57.866863+00:00",
+    "evidence": "Test-HelpLinks-current.log",
+    "retryReason": "Provided current docs checkout; initial invocation had missing required DocsPath"
+  },
+  {
+    "guard": "Test-NoClientCallstack",
+    "exitCode": 0,
+    "at": "2026-11-04T14:14:01.694100+00:00"
+  },
+  {
+    "guard": "Test-ValidatedTableView",
+    "exitCode": 0,
+    "at": "2026-11-04T14:14:05.688953+00:00"
+  },
+  {
+    "guard": "Test-NoObsolete",
+    "exitCode": 0,
+    "at": "2026-11-04T14:14:10.362215+00:00"
+  },
+  {
+    "guard": "Test-PermissionCoverage",
+    "exitCode": 0,
+    "at": "2026-11-04T14:14:14.387323+00:00"
+  },
+  {
+    "guard": "Test-IcelandicKeywordCounts",
+    "exitCode": 0,
+    "at": "2026-11-04T14:14:18.585284+00:00"
+  },
+  {
+    "guard": "Test-MixedLanguageLabels",
+    "exitCode": 0,
+    "at": "2026-11-04T14:14:31.719242+00:00"
+  },
+  {
+    "guard": "Test-IcelandicXlfInSync",
+    "exitCode": 0,
+    "at": "2026-11-04T14:14:34.028638+00:00"
+  }
+]

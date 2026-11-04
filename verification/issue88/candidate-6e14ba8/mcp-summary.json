@@ -1,0 +1,69 @@
+{
+  "sha": "6e14ba8775c76b76094961d97e25905fe4b0c2ff",
+  "containerId": "f071fd48c021",
+  "server": "origo-bc-mcp via canonical origo-call active owned-container connection",
+  "touchedMessageTypes": [],
+  "notApplicableReason": "Only tests95708/95723 and audit/CHANGELOG changed; no production message implementation, schema, contract, dispatcher or help changed. Native tests seeded their own fixtures. Additional origo Data.Records.Get readbacks verify absence of those reserved fixtures in bothLCIDs; no business mutation MCP pass is claimed.",
+  "executed": 8,
+  "passed": 8,
+  "failed": 0,
+  "skipped": 0,
+  "scenarios": [
+    {
+      "lcid": 1033,
+      "table": "Billing Template",
+      "filter": "WHERE(Code=FILTER(XS62-TEMPLATE|XPR25FILTER))",
+      "count": 0,
+      "passed": true
+    },
+    {
+      "lcid": 1033,
+      "table": "Customer Subscription Contract",
+      "filter": "WHERE(\"No.\"=FILTER(XPR25MATCH|XPR25OTHER))",
+      "count": 0,
+      "passed": true
+    },
+    {
+      "lcid": 1033,
+      "table": "Vendor Subscription Contract",
+      "filter": "WHERE(\"No.\"=FILTER(XPR25VENDOR|XPR25VOTHER))",
+      "count": 0,
+      "passed": true
+    },
+    {
+      "lcid": 1033,
+      "table": "Price Update Template",
+      "filter": "WHERE(Code=FILTER(XPR25FILTER))",
+      "count": 0,
+      "passed": true
+    },
+    {
+      "lcid": 1039,
+      "table": "Billing Template",
+      "filter": "WHERE(Code=FILTER(XS62-TEMPLATE|XPR25FILTER))",
+      "count": 0,
+      "passed": true
+    },
+    {
+      "lcid": 1039,
+      "table": "Customer Subscription Contract",
+      "filter": "WHERE(\"No.\"=FILTER(XPR25MATCH|XPR25OTHER))",
+      "count": 0,
+      "passed": true
+    },
+    {
+      "lcid": 1039,
+      "table": "Vendor Subscription Contract",
+      "filter": "WHERE(\"No.\"=FILTER(XPR25VENDOR|XPR25VOTHER))",
+      "count": 0,
+      "passed": true
+    },
+    {
+      "lcid": 1039,
+      "table": "Price Update Template",
+      "filter": "WHERE(Code=FILTER(XPR25FILTER))",
+      "count": 0,
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "sha": "6e14ba8775c76b76094961d97e25905fe4b0c2ff",
+  "containerId": "f071fd48c021",
+  "server": "Playwright MCP browser_run_code_unsafe",
+  "verified": true,
+  "executed": 3,
+  "passed": 3,
+  "failed": 0,
+  "skipped": 0,
+  "languages": [
+    1033,
+    1039
+  ],
+  "scenarios": [
+    {
+      "lcid": 1033,
+      "scenario": "AL Test Tool SUBSCRIPTI shows35successful/0failed/0skipped/0unexecuted with isolationDisabled",
+      "passed": true,
+      "evidence": [
+        "ui-accepted-1033.png",
+        "ui-final-english.txt"
+      ]
+    },
+    {
+      "lcid": 1039,
+      "scenario": "Actual My Settings Language=Icelandic(Iceland), confirmed through translated product operations page caption Skilaboðategundir Bifröst",
+      "passed": true,
+      "evidence": [
+        "ui-is-operations.png",
+        "ui-operations-1039.txt"
+      ]
+    },
+    {
+      "lcid": 1039,
+      "scenario": "AL Test Tool SUBSCRIPTI shows35successful/0failed/0skipped/0unexecuted with isolationDisabled in actual Icelandic-language session",
+      "passed": true,
+      "evidence": [
+        "ui-accepted-1039.png",
+        "ui-final-icelandic.txt"
+      ]
+    }
+  ],
+  "notes": "Microsoft test-tool captions fall back to English; actual1039session verified with product translation. No new AL tests were run from the UI; visual checks inspect the real completed own native repeat results. Earlier default-suite/URL-only/unsaved-loading attempts excluded.",
+  "finishedAt": "2026-11-04T14:57:50.935Z"
+}

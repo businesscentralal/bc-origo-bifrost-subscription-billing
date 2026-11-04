@@ -1,0 +1,598 @@
+
+AL Test Tool
+Vista...
+
+
+Suite Name
+Test Runner Codeunit
+130451 - Test Runner - Isol. Disabled
+Code Coverage Tracking
+Disabled
+Per Run
+Per Codeunit
+Per Test
+Code Coverage Track All Sessions
+Stjórna
+Run Tests
+Run Selected Tests
+Get Test Codeunits
+Get Test Codeunits by Range
+Update Test Methods
+Delete Lines
+
+
+
+		
+Line Type
+	
+	
+Codeunit ID
+	
+Name
+	
+Data Input
+	
+Run
+	
+Result
+	
+Error Message
+	
+Duration
+	
+			
+								
+		
+Codeunit
+	
+	
+95723
+	
+Sub Refusal Tst ori
+	
+	
+	
+Success
+	
+  
+	
+5 sekúndur 500 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_MissingValues_Aggregate_EN
+	
+	
+	
+Success
+	
+  
+	
+17 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_MissingValues_Aggregate_IS
+	
+	
+	
+Success
+	
+  
+	
+13 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC01_OneMissingValue_SingleError_EN
+	
+	
+	
+Success
+	
+  
+	
+13 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC01_OneMissingValue_SingleError_IS
+	
+	
+	
+Success
+	
+  
+	
+30 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_BadDateAndPartner_Aggregate
+	
+	
+	
+Success
+	
+  
+	
+20 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_BadDateAndPartner_Aggregate_IS
+	
+	
+	
+Success
+	
+  
+	
+20 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC03_InvalidBase64_IsSanitized_EN
+	
+	
+	
+Success
+	
+  
+	
+47 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC03_InvalidBase64_IsSanitized_IS
+	
+	
+	
+Success
+	
+  
+	
+60 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_SubjectFallback_IsAccepted
+	
+	
+	
+Success
+	
+  
+	
+130 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_EmptyFilter_StillClearsFilter
+	
+	
+	
+Success
+	
+  
+	
+76 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_EmptyFilter_StillClearsFilter_IS
+	
+	
+	
+Success
+	
+  
+	
+73 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_UnknownTemplateAndBadDate_Aggregate
+	
+	
+	
+Success
+	
+  
+	
+33 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_UnknownTemplateAndBadDate_Aggregate_IS
+	
+	
+	
+Success
+	
+  
+	
+10 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC01_RecordNotFound_Context_EN
+	
+	
+	
+Success
+	
+  
+	
+53 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC01_RecordNotFound_Context_IS
+	
+	
+	
+Success
+	
+  
+	
+13 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues
+	
+	
+	
+Success
+	
+  
+	
+30 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_TwoNestedDocuments_CollectAllMissingValues_IS
+	
+	
+	
+Success
+	
+  
+	
+24 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_ObjectInsteadOfScalar_IsStructuredBeforeLookup
+	
+	
+	
+Success
+	
+  
+	
+7 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_SelectionArray_CollectsEachBadEntry
+	
+	
+	
+Success
+	
+  
+	
+6 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC02_SelectionArray_CollectsEachBadEntry_IS
+	
+	
+	
+Success
+	
+  
+	
+10 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_EN
+	
+	
+	
+Success
+	
+  
+	
+1 sekúnda 203 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC03_CreateDocuments_PostingFailureNamesDocument_IS
+	
+	
+	
+Success
+	
+  
+	
+1 sekúnda 387 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Scenario_AC04_RequiredUsageEntry_HelpListsRealPreflightCodes
+	
+	
+	
+Success
+	
+  
+	
+26 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_ContextFields_EN
+	
+	
+	
+Success
+	
+  
+	
+27 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_ContextFields_IS
+	
+	
+	
+Success
+	
+  
+	
+106 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_LengthAndNestedShape_EN
+	
+	
+	
+Success
+	
+  
+	
+133 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_LengthAndNestedShape_IS
+	
+	
+	
+Success
+	
+  
+	
+24 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_UnknownEnumValue_IsStructured
+	
+	
+	
+Success
+	
+  
+	
+10 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_DomainSelections_EN
+	
+	
+	
+Success
+	
+  
+	
+207 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_DomainSelections_IS
+	
+	
+	
+Success
+	
+  
+	
+327 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_MissingAlternatives_AggregatesBeforeLookup_EN
+	
+	
+	
+Success
+	
+  
+	
+34 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Review_MissingAlternatives_AggregatesBeforeLookup_IS
+	
+	
+	
+Success
+	
+  
+	
+20 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Issue75_UndeclaredContentBase64_IsNotDecodedForOtherTypes
+	
+	
+	
+Success
+	
+  
+	
+37 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Issue75_ImportData_MissingContent_IsReported_EN
+	
+	
+	
+Success
+	
+  
+	
+80 millisekúndur
+	
+		
+Function
+		
+95723
+	
+Issue75_ImportData_MissingContent_IsReported_IS
+	
+	
+	
+Success
+	
+  
+	
+80 millisekúndur
+	
+Successful Tests
+35
+Failed Tests
+0
+Skipped Tests
+0
+Tests not Executed
+0
+Notaðu hægri og vinstri örvalyklana til að stilla stærðina. Notaðu Escape-lykilinn til að afturkalla eða Enter-lykilinn til að staðfesta.
+
+Listi með titilinn „AL Test Tool“ hefur nú 36 atriði
+
+Vista...

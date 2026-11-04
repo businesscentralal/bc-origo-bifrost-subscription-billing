@@ -1,0 +1,22 @@
+{
+  "sha": "6e14ba8775c76b76094961d97e25905fe4b0c2ff",
+  "id": "f071fd48c021",
+  "owner": "worker-3",
+  "displayName": "worker3-sb88-20261104-w1",
+  "startedAt": "2026-11-04T14:58:35.606Z",
+  "getBefore": 200,
+  "previousClientConfigurationRestored": true,
+  "deleteStatus": 204,
+  "getAfter": 404,
+  "listStatus": 200,
+  "presentInList": false,
+  "verified": true,
+  "getAttempts": [
+    {
+      "at": "2026-11-04T14:58:36.257Z",
+      "status": 404
+    }
+  ],
+  "finishedAt": "2026-11-04T14:58:38.074Z",
+  "scope": "Owned container deletion removes all self-seeded native fixtures, test runner scripts and local UI preference state. No customer/shared infrastructure or consent/licence/backend state writes."
+}

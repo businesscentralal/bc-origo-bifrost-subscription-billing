@@ -1,0 +1,39 @@
+{
+  "sha": "6e14ba8775c76b76094961d97e25905fe4b0c2ff",
+  "issue": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/issues/88",
+  "PR": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/pull/89",
+  "noProductBehaviorChanges": true,
+  "noTouchedMessageTypes": true,
+  "matrix": [
+    {
+      "AC": "AC01",
+      "status": "VERIFIED",
+      "description": "Unique X-prefixed GUID Billing Template; deletion and absence assertion; repeated EN/IS scenario",
+      "verification": "Full native245/245/0/0; both empty-filter tests repeat internally and assert deletion"
+    },
+    {
+      "AC": "AC02",
+      "status": "VERIFIED",
+      "description": "41-file audit; fixed-price-filter contract precleanup and per-test exact cleanup; unique domain-refusal keys",
+      "evidence": "docs/test-fixture-audit-88.md",
+      "verification": "41-file source audit plus full245/245 suite and8MCP readbacks ofreserved fixtures at0records"
+    },
+    {
+      "AC": "AC03",
+      "status": "VERIFIED",
+      "description": "Twice same container/no-isolation95723 for en-US1033 and is-IS1039",
+      "verification": "Same owned container, isolationDisabled,2consecutive runs per1033/1039,each35/35/0/0",
+      "evidence": "repeat-summary.json"
+    },
+    {
+      "AC": "AC04",
+      "status": "VERIFIED",
+      "run": "https://github.com/businesscentralal/bc-origo-bifrost-subscription-billing/actions/runs/41845573546",
+      "executed": 245,
+      "passed": 245,
+      "failed": 0,
+      "skipped": 0,
+      "evidence": "ci-summary.json"
+    }
+  ]
+}

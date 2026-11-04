@@ -1,0 +1,56 @@
+{
+  "sha": "6e14ba8775c76b76094961d97e25905fe4b0c2ff",
+  "containerId": "f071fd48c021",
+  "testCodeunit": 95723,
+  "testIsolation": "Disabled",
+  "runs": [
+    {
+      "lcid": 1033,
+      "culture": "en-US",
+      "run": 1,
+      "startedAt": "2026-11-04T14:33:39.249Z",
+      "finishedAt": "2026-11-04T14:34:30.148Z",
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "failures": []
+    },
+    {
+      "lcid": 1033,
+      "culture": "en-US",
+      "run": 2,
+      "startedAt": "2026-11-04T14:34:30.155Z",
+      "finishedAt": "2026-11-04T14:34:50.050Z",
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "failures": []
+    },
+    {
+      "lcid": 1039,
+      "culture": "is-IS",
+      "run": 1,
+      "startedAt": "2026-11-04T14:34:50.053Z",
+      "finishedAt": "2026-11-04T14:35:10.121Z",
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "failures": []
+    },
+    {
+      "lcid": 1039,
+      "culture": "is-IS",
+      "run": 2,
+      "startedAt": "2026-11-04T14:35:10.125Z",
+      "finishedAt": "2026-11-04T14:35:37.412Z",
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "failures": []
+    }
+  ]
+}

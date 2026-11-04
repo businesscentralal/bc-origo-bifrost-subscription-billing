@@ -1,0 +1,69 @@
+
+
+
+
+
+
+Skilaboðategundir Bifröst
+Skilaboðategundir Bifröst
+Sýna allt
+Hlaða niður hjálp
+Ný lína
+Eyða línu
+
+
+		
+Heiti
+	
+	
+Lýsing
+	
+Afmarkanir töflunúmer
+	
+Stefna
+	
+			
+				
+
+		Subscription.Analysis.Recalculate		Endurbyggir greiningarfærslur áskriftarsamnings miðað við daginn í dag með því að keyra skýrslu Microsoft, Create Contract Analysis, á allar áskriftarlínur með samningi.	8019	Innsent	
+		Subscription.Billing.ClearProposal		Eyðir línum reikningstillögu í reikningssniðmáti, eða eins samnings undir því, og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Hafnar línum sem eru þegar á skjali.	8061	Innsent	
+		Subscription.Billing.CreateDocuments		Umbreytir óreikningsfærðum reikningslínum undir reikningssniðmáti í sölu- eða innkaupaskjöl. Skilar þeim skjölum sem urðu til og fjölda tillögulína sem unnið var úr.	8060	Innsent	
+		Subscription.Billing.CreateProposal		Býr til reikningstillögulínur fyrir reikningssniðmát og reikningsdagsetningu. Skilar fjölda tillögulína sem urðu til og þeim samningum sem þær ná yfir.	8060	Innsent	
+		Subscription.Billing.DeleteDocuments		Eyðir óbókuðum reikningum og kreditreikningum sem urðu til úr reikningslínum reikningssniðmáts og setur línurnar aftur í tillöguna. Hafnar bókuðum skjölum.	8061	Innsent	
+		Subscription.Billing.PostDocuments	
+	Bókar óbókuð sölu- og innkaupaskjöl sem reikningskeyrsla áskrifta bjó til, með eigin bókunarleið Business Central. Hafnar skjali sem sú keyrsla bjó ekki til.	8061	Innsent	
+		Subscription.Billing.PreviewDocuments		Forskoðar þau skjöl sem Subscription.Billing.CreateDocuments myndi búa til fyrir reikningssniðmát, með því að lesa fyrirliggjandi tillögulínur. Les eingöngu; skrifar ekkert.	8060	Innsent	
+		Subscription.Billing.SetTemplateFilter		Skrifar samningssíu reikningssniðmáts eftir að hafa sannreynt hana sem sýn á samningatöflu sniðmátsins og skilar vistuðu síunni.	8060	Innsent	
+		Subscription.Contract.CreateInvoice		Reikningsfærir einn áskriftarsamning viðskiptamanns á óbókaðan sölureikning, eða kreditreikning þegar lína krefst þess. Skilar þeim skjölum sem urðu til.	8052	Innsent	
+		Subscription.Contract.GetLines		Tengir ótengdar áskriftarlínur við áskriftarsamning viðskiptamanns. Skilar tengdum línum og línum sem var sleppt.	8052	Innsent	
+		Subscription.Contract.MergeLines		Sameinar samningslínur viðskiptamanns eins og Microsoft sameinar þær, án þess að opna síðu. Tilvísunarlínan nefnir áskriftina sem er afrituð.	8052	Innsent	
+		Subscription.Contract.PreviewInvoice		Forskoðar reikningslínur fyrir áskriftarsamning viðskiptamanns. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.	8052	Innsent	
+		Subscription.Contract.RemoveLine		Fjarlægir línu úr áskriftarsamningi viðskiptamanns eða lánardrottins og losar áskriftarlínu hennar. Hafnar línum sem eru reikningsfærðar, í reikningagerð, frestaðar eða lokaðar.	8062	Innsent	
+		Subscription.Contract.UpdateExchangeRates		Endurreiknar gjaldmiðilsgögn áskriftarlína áskriftarsamnings með nýju gengi, eins og Uppfæra gengi, fyrir samninga viðskiptamanna eða lánardrottna.	8052	Innsent	
+		Subscription.Contract.UpdateLineDates		Lokar áskriftarlínum sem er lokið og færir samningstíma fram fyrir allt fyrirtækið í verkröð. Krefst heimildasamstæðunnar Þvinga reitaaðgang.	8057	Innsent	
+		Subscription.Deferral.Release		Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptamanna og lánardrottna fram að tilteknum degi og bókar losunina í fjárhagsbókhald.	8066	Innsent	
+		Subscription.Import.CreateContracts		Býr til áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur áskriftarsamnings viðskiptamanns út frá innfluttum bráðabirgðalínum, eitt skref í einu.	8008	Innsent	
+		Subscription.Line.Create		Beitir áskriftarpakka á áskriftarhaus og býr til áskriftarlínur út frá pakkanum. Skilar fjölda og færslunúmerum þeirra lína sem urðu til.	8057	Innsent	
+		Subscription.Package.RemoveItemAssignment		Fjarlægir úthlutun áskriftarpakka á vöru, svo varan fær ekki lengur pakkann. Fyrirliggjandi áskriftir halda línum sínum.	8058	Innsent	
+		Subscription.PriceUpdate.CreateProposal		Stofnar línur verðuppfærslu áskriftarsamnings fyrir sniðmát fyrir verðuppfærslu, eins og síðan Verðuppfærsla áskriftarsamnings gerir. Áskriftarlínum er ekki breytt.	8003	Innsent	
+		Subscription.PriceUpdate.Perform		Beitir línum verðuppfærslu áskriftarsamnings: uppfærir áskriftarlínur eða skrifar áætlaðar áskriftarlínur og eyðir hverri framkvæmdri línu. Ekkert er bókað.	8003	Innsent	
+		Subscription.PriceUpdate.SetTemplateFilter		Skrifar síu fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.	8003	Innsent	
+		Subscription.Renewal.CreateQuote		Býr til endurnýjunarlínur samnings út frá áskriftarlínum áskriftarsamnings viðskiptamanns og útbýr endurnýjunarsölutilboð út frá þeim.	8052	Innsent	
+		Subscription.Renewal.Extend		Framlengir fyrirliggjandi áskrift á áskriftarsamning viðskiptamanns, samning lánardrottins eða báða og beitir stöðluðum pökkum vörunnar auk aukapakka sem tilgreindir eru. Skilar fjölda samningslína sem urðu til.	8057	Innsent	
+		Subscription.Usage.ConnectSubscriptions		Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.	8016	Innsent	
+		Subscription.Usage.DeleteData		Eyðir innfluttum línum og reikningsgerð fyrir innflutt notkunargögn svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.	8013	Innsent	
+		Subscription.Usage.DisconnectSubscription		Aftengir áskriftarlínu frá áskrift birgis notkunargagna, eins og Aftengjast áskrift, og skilar tengingunni sem var fjarlægð.	8059	Innsent	
+		Subscription.Usage.ImportData		Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.	8013	Innsent	
+		Subscription.Usage.Process		Keyrir vinnsluskref notkunargagna (vinnsla innfluttra lína, stofnun og vinnsla reikningsgerðar fyrir notkunargögn) á fyrirliggjandi innflutningsfærslu fyrir notkunargögn og skilar niðurstöðu hvers skrefs.	8013	Innsent	
+		Subscription.VendorContract.AddLinesToInvoice		Bætir gjaldföllnum samningslínum lánardrottins reikningsins við óbókaðan innkaupareikning, eins og Sækja samningslínur lánardrottins, og skilar línunum sem bættust við.	38	Innsent	
+		Subscription.VendorContract.CreateInvoice		Býr til óbókaðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur áskriftarsamnings lánardrottins. Skjalið er aldrei bókað.	8063	Innsent	
+		Subscription.VendorContract.GetLines		Tengir ótengdar áskriftarlínur við áskriftarsamning lánardrottins og býr til samningslínu lánardrottins fyrir hverja línu. Skilar fjölda tengdra lína.	8063	Innsent	
+		Subscription.VendorContract.PreviewInvoice		Forskoðar reikningslínur fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.	8063	Innsent	
+		User.Notification.Count		Skilar fjölda tilkynninga fyrir núverandi notanda.	10077898	Útsent	
+		User.Notification.Get		Sækir tilkynningaathugasemdir fyrir núverandi notanda.	10077898	Útsent	
+		User.Notification.Read		Merkir tilkynningaathugasemdir sem lesnar eða ólesnar fyrir núverandi notanda.	10077898	Innsent	
+
+
+Heiti, raðað í pöntunina Hækkandi
+
+Notaðu hægri og vinstri örvalyklana til að stilla stærðina. Notaðu Escape-lykilinn til að afturkalla eða Enter-lykilinn til að staðfesta.

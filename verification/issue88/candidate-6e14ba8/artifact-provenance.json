@@ -1,0 +1,16 @@
+{
+  "sha": "6e14ba8775c76b76094961d97e25905fe4b0c2ff",
+  "containerId": "f071fd48c021",
+  "artifacts": {
+    "app": {
+      "compiledSha256": "2af206f58d6ca54eee79811fe26bc141719e3829c041049edb774e87f1390b68",
+      "deployedSha256": "2af206f58d6ca54eee79811fe26bc141719e3829c041049edb774e87f1390b68",
+      "byteIdentical": true
+    },
+    "test": {
+      "compiledSha256": "1e822c12b3e45d94cec1376e49ff0002a16c42f11e3b919673416d8bc6192cd6",
+      "deployedSha256": "1e822c12b3e45d94cec1376e49ff0002a16c42f11e3b919673416d8bc6192cd6",
+      "byteIdentical": true
+    }
+  }
+}
