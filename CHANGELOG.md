@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-04) - refusal text slips (#78)
+
+- Refusal messages: final full stops on date-format refusals, English-only 'Customer or Vendor', and both accepted parameters named (#78).
+- 95723 exercises the direct partner reader and ClearProposal/DeleteDocuments/DisconnectSubscription recovery text, plus their preflight alternatives, in English and Icelandic (#78, PR86 review).
+- Retain #75's type-specific validation phases and all alternative keys while routing value refusals through the single-stop formatter (10035058; PR86 amendment).
+
 ### Fixed
 
 - #88: make the refusal empty-filter fixture unique and explicitly cleaned up (95723), and make fixed price-update filter fixtures repeatable with owned cleanup (95708). Audit other test fixtures for repeated-run collisions.
