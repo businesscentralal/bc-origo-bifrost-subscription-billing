@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-04) - refusal text slips (#78)
+
+- Refusal messages: final full stops on date-format refusals, English-only 'Customer or Vendor', and both accepted parameters named (#78).
+
 ### Fixed (2026-10-27) - refusal review follow-ups (#62)
 
 - 10035058 distinguishes nested missing values, wrong shapes and overlong scalars, avoids doubled expected-text punctuation, collects zero-valued missing selections with other request problems, derives template bounds from the field and translates nested JSON/partner/entry-array expectations.

@@ -19,12 +19,12 @@ codeunit 10035058 "Sub Helper ori"
         CorrectParameterTxt: Label 'Correct %1 and resend the request.', Comment = '%1 = parameter||is-IS=Leiðréttu %1 og sendu beiðnina aftur.';
         MaximumLengthTxt: Label '%1 characters at most.', Comment = '%1 = maximum length||is-IS=Að hámarki %1 stafir.';
         ExpectedValueTxt: Label 'A valid value for %1.', Comment = '%1 = parameter||is-IS=Gilt gildi fyrir %1.';
-        InvalidValueErr: Label 'The parameter %1 has an invalid value. Expected %2', Comment = '%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2';
+        InvalidValueErr: Label 'The parameter %1 has an invalid value. Expected %2.', Comment = '%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.';
         TextValueTxt: Label 'A text value for %1.', Comment = '%1 = parameter||is-IS=Textagildi fyrir %1.';
         JsonObjectTxt: Label 'A JSON object.', Comment = 'is-IS=JSON-hlutur.';
         JsonArrayTxt: Label 'A JSON array.', Comment = 'is-IS=JSON-fylki.';
         IntegerArrayTxt: Label 'An array of whole numbers.', Comment = 'is-IS=Fylki af heilum tölum.';
-        PartnerValuesTxt: Label 'Customer or Vendor.', Comment = 'Customer and Vendor are request values||is-IS=Customer eða Vendor.';
+        PartnerValuesTxt: Label 'Customer or Vendor.', Comment = 'Customer and Vendor are request values||is-IS=Viðskiptamaður eða Lánardrottinn.';
         ProblemsErr: Label '%1 problems in the request. Nothing was written.', Comment = '%1 = problem count||is-IS=%1 vandamál í beiðninni. Ekkert var skrifað.';
         Base64ExpectedTxt: Label 'A valid base64-encoded file.', Comment = 'is-IS=Gild base64-kóðuð skrá.';
         TemplateNotFoundErr: Label 'The Billing Template %1 does not exist.', Comment = '%1 = template code||is-IS=Reikningssniðmátið %1 er ekki til.';
@@ -47,6 +47,21 @@ codeunit 10035058 "Sub Helper ori"
             Received := '<missing>';
         TempArgument.AddError(ErrorCode, MessageText, ParameterName, Received, Expected, StrSubstNo(CorrectParameterTxt, ParameterName));
         TempArgument.RaiseCollectedErrors("Bifrost Error Code ori"::MultipleErrors, MessageText);
+    end;
+
+    /// <summary>Raises a missing-parameter refusal for a request that must supply at least one of several parameters. The recovery step names every accepted parameter.</summary>
+    procedure RaiseMissingOneOf(MessageText: Text; ParameterName: Text; Alternatives: Text; Expected: Text)
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+    begin
+        TempArgument.AddError("Bifrost Error Code ori"::MissingParameter, MessageText, ParameterName, '<missing>', Expected, StrSubstNo(CorrectParameterTxt, Alternatives));
+        TempArgument.RaiseCollectedErrors("Bifrost Error Code ori"::MultipleErrors, MessageText);
+    end;
+
+    local procedure InvalidValueText(ParameterName: Text; Expected: Text): Text
+    begin
+        // The template ends in a full stop, so drop the one an expected text may already carry.
+        exit(StrSubstNo(InvalidValueErr, ParameterName, Expected.TrimEnd('.')));
     end;
 
     /// <summary>Raises an app-owned refusal with the stable shared code and translated recovery fields.</summary>
@@ -113,7 +128,7 @@ codeunit 10035058 "Sub Helper ori"
         Request := Argument.GetRequestJson();
         TypeIndex := Argument."Type".Ordinals().IndexOf(Argument."Type".AsInteger());
         if TypeIndex < 1 then begin
-            Argument.RespondWithError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidValueErr, 'type', StrSubstNo(ExpectedValueTxt, 'type')),
+            Argument.RespondWithError("Bifrost Error Code ori"::InvalidParameter, InvalidValueText('type', StrSubstNo(ExpectedValueTxt, 'type')),
                 'type', Format(Argument."Type".AsInteger(), 0, 9), StrSubstNo(ExpectedValueTxt, 'type'), StrSubstNo(CorrectParameterTxt, 'type'));
             exit(false);
         end;
@@ -156,7 +171,7 @@ codeunit 10035058 "Sub Helper ori"
                 if GetText(Definition, 'format', false) = 'date' then
                     Expected := 'YYYY-MM-DD';
                 if not ValidParameterValue(ValueToken, ParameterType, Expected) then begin
-                    Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, ParameterName, Expected), ParameterName, Received, Expected, StrSubstNo(CorrectParameterTxt, ParameterName));
+                    Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, InvalidValueText(ParameterName, Expected), ParameterName, Received, Expected, StrSubstNo(CorrectParameterTxt, ParameterName));
                     ProblemCount += 1;
                 end else
                     if IsCodeParameter(ParameterName) and (StrLen(Received) > MaxStrLen(Identifier)) then begin
@@ -164,7 +179,7 @@ codeunit 10035058 "Sub Helper ori"
                         ProblemCount += 1;
                     end else
                         if not AllowedParameterValue(Definition, ValueToken) then begin
-                            Argument.AddError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidValueErr, ParameterName, GetAllowedText(Definition)), ParameterName, Received, GetAllowedText(Definition), StrSubstNo(CorrectParameterTxt, ParameterName));
+                            Argument.AddError("Bifrost Error Code ori"::InvalidParameter, InvalidValueText(ParameterName, GetAllowedText(Definition)), ParameterName, Received, GetAllowedText(Definition), StrSubstNo(CorrectParameterTxt, ParameterName));
                             ProblemCount += 1;
                         end;
             end;
@@ -230,7 +245,7 @@ codeunit 10035058 "Sub Helper ori"
         end;
         if ParameterName = '' then
             exit;
-        Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(OneOfExpectedTxt, Alternatives), ParameterName, '<missing>', StrSubstNo(OneOfExpectedTxt, Alternatives), StrSubstNo(CorrectParameterTxt, ParameterName));
+        Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(OneOfExpectedTxt, Alternatives), ParameterName, '<missing>', StrSubstNo(OneOfExpectedTxt, Alternatives), StrSubstNo(CorrectParameterTxt, Alternatives));
         ProblemCount += 1;
     end;
 
@@ -278,7 +293,7 @@ codeunit 10035058 "Sub Helper ori"
                 Path := StrSubstNo(DocumentPathTxt, Index);
                 if not Entry.IsObject() then begin
                     Entry.WriteTo(Received);
-                    Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, Path, JsonObjectTxt), Path, Received, JsonObjectTxt, StrSubstNo(CorrectParameterTxt, Path));
+                    Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, InvalidValueText(Path, JsonObjectTxt), Path, Received, JsonObjectTxt, StrSubstNo(CorrectParameterTxt, Path));
                     ProblemCount += 1;
                 end else begin
                     Item := Entry.AsObject();
@@ -344,7 +359,7 @@ codeunit 10035058 "Sub Helper ori"
         if ErrorCode = "Bifrost Error Code ori"::MissingParameter then
             Argument.AddError(ErrorCode, StrSubstNo(MissingParameterErr, Path), Path, Received, Expected, StrSubstNo(CorrectParameterTxt, Path))
         else
-            Argument.AddError(ErrorCode, StrSubstNo(InvalidValueErr, Path, Expected), Path, Received, Expected, StrSubstNo(CorrectParameterTxt, Path));
+            Argument.AddError(ErrorCode, InvalidValueText(Path, Expected), Path, Received, Expected, StrSubstNo(CorrectParameterTxt, Path));
         ProblemCount += 1;
     end;
 
@@ -401,7 +416,7 @@ codeunit 10035058 "Sub Helper ori"
                             if Valid and (ParameterName <> 'subscriptionPackageCodes') then
                                 Received := Format(EntryNo, 0, 9);
                             if not Valid then begin
-                                Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, Path, ParameterName), Path, Received, StrSubstNo(ExpectedValueTxt, Path), StrSubstNo(CorrectParameterTxt, Path));
+                                Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, InvalidValueText(Path, ParameterName), Path, Received, StrSubstNo(ExpectedValueTxt, Path), StrSubstNo(CorrectParameterTxt, Path));
                                 ProblemCount += 1;
                             end;
                             Index += 1;

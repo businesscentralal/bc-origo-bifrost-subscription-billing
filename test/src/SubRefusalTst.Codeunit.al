@@ -612,6 +612,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         TempArgument.RespondWithLastError();
         AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'customerContractNo', '<missing>');
         Assert.IsTrue(TestLibrary.ReadText(TempArgument.GetResponseJson(), 'expected').Contains('customerContractNo') and TestLibrary.ReadText(TempArgument.GetResponseJson(), 'expected').Contains('vendorContractNo'), 'Expected must explain both accepted alternatives.');
+        Assert.IsTrue(TestLibrary.ReadText(TempArgument.GetResponseJson(), 'nextStep').Contains('customerContractNo') and TestLibrary.ReadText(TempArgument.GetResponseJson(), 'nextStep').Contains('vendorContractNo'), 'Recovery must name both accepted alternatives.');
 
         Clear(Request);
         // An expected error rolls back prior SQL fixtures; seed this independent scenario again.
@@ -745,6 +746,8 @@ codeunit 95723 "Sub Refusal Tst ori"
                 Assert.AreEqual(ExpectedReceived, TestLibrary.ReadText(Entry, 'received'), TestLibrary.AsText(Entry));
                 if ExpectedParameter in ['currencyFactorDate', 'billingDate'] then
                     Assert.AreEqual('YYYY-MM-DD', TestLibrary.ReadText(Entry, 'expected'), 'Date errors must name the accepted format.');
+                if ExpectedParameter in ['currencyFactorDate', 'billingDate'] then
+                    Assert.IsTrue(TestLibrary.ReadText(Entry, 'error').EndsWith('YYYY-MM-DD.'), 'Date errors must end with a full stop.');
                 exit;
             end;
         end;

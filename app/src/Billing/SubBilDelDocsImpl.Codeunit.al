@@ -201,7 +201,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
 
         if BillingTemplateCode = '' then begin
             if (ContractNo = '') and (DocumentNo = '') then
-                Helper.RaiseError("Bifrost Error Code ori"::MissingParameter, TemplateOrContractErr, 'billingTemplateCode', '', TemplateOrContractErr);
+                Helper.RaiseMissingOneOf(TemplateOrContractErr, 'billingTemplateCode', 'billingTemplateCode, contractNo, documentNo', TemplateOrContractErr);
         end else
             if not BillingTemplate.Get(BillingTemplateCode) then
                 Helper.RaiseRefusal("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, BillingTemplateCode), 'billingTemplateCode', Format(BillingTemplateCode, 0, 9));
