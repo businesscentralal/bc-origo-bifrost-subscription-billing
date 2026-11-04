@@ -780,7 +780,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'billingTemplateCode', '<missing>');
         AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'billingTemplateCode, contractNo', LanguageId);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.ClearProposal", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
+        Assert.IsFalse(ClearProposal.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
         AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'billingTemplateCode, subject, contractNo', LanguageId);
 
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.DeleteDocuments", Request);
@@ -789,7 +789,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'billingTemplateCode', '<missing>');
         AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'billingTemplateCode, contractNo, documentNo', LanguageId);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.DeleteDocuments", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
+        Assert.IsFalse(DeleteDocuments.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
         AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'billingTemplateCode, subject, contractNo, documentNo', LanguageId);
 
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
@@ -798,7 +798,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'usageDataSubscriptionEntryNo', '<missing>');
         AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo', LanguageId);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
+        Assert.IsFalse(Disconnect.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
         AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo', LanguageId);
         GlobalLanguage(PreviousLanguage);
     end;
