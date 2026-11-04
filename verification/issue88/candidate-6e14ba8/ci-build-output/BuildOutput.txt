@@ -1,0 +1,8 @@
+Microsoft (R) AL Compiler version 17.0.42.60745
+Copyright (C) Microsoft Corporation. All rights reserved
+
+Compilation started for project 'Bifrost Subscription Billing - Tests' containing '41' files at '14:25:29.893'.
+
+
+Compilation ended at '14:25:40.427'.
+
