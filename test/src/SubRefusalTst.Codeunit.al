@@ -168,18 +168,39 @@ codeunit 95723 "Sub Refusal Tst ori"
 
     [Test]
     procedure Scenario_AC02_EmptyFilter_StillClearsFilter()
+    begin
+        AssertEmptyFilterOwnsData();
+        AssertEmptyFilterOwnsData();
+    end;
+
+    /// <summary>Repeats the empty-filter preflight in Icelandic and verifies owned fixture cleanup.</summary>
+    [Test]
+    procedure Scenario_AC02_EmptyFilter_StillClearsFilter_IS()
+    var
+        PreviousLanguage: Integer;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(1039);
+        AssertEmptyFilterOwnsData();
+        AssertEmptyFilterOwnsData();
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    local procedure AssertEmptyFilterOwnsData()
     var
         BillingTemplate: Record "Billing Template";
         TempArgument: Record "Message Argument ori" temporary;
         Request: JsonObject;
     begin
         BillingTemplate.Init();
-        BillingTemplate.Code := 'XS62-TEMPLATE';
+        BillingTemplate.Code := CopyStr('X' + Format(CreateGuid(), 0, 4), 1, MaxStrLen(BillingTemplate.Code));
         BillingTemplate.Insert(false);
         Request.Add('billingTemplateCode', BillingTemplate.Code);
         Request.Add('filter', '');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.SetTemplateFilter", Request);
         Assert.IsTrue(ValidateRequest(TempArgument), 'An explicitly empty filter remains valid.');
+        BillingTemplate.Delete(false);
+        Assert.IsFalse(BillingTemplate.Get(BillingTemplate.Code), 'The test must remove its own template before another invocation.');
     end;
 
     [Test]
@@ -591,7 +612,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         PreviousLanguage := GlobalLanguage();
         GlobalLanguage(LanguageId);
         CustomerContract.Init();
-        CustomerContract."No." := 'ZZ62-OWN-CONTRACT';
+        CustomerContract."No." := CopyStr('X' + Format(CreateGuid(), 0, 4), 1, 20);
         CustomerContract."Currency Code" := 'USD';
         CustomerContract.Insert(false);
         Request.Add('contractNo', CustomerContract."No.");
@@ -603,7 +624,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'currencyFactorDate', Helper.FormatDate(WorkDate()));
 
         SubscriptionHeader.Init();
-        SubscriptionHeader."No." := 'ZZ62-OWN-HEADER';
+        SubscriptionHeader."No." := CopyStr('X' + Format(CreateGuid(), 0, 4), 1, 20);
         SubscriptionHeader.Insert(false);
         Clear(Request);
         Request.Add('subscriptionHeaderNo', SubscriptionHeader."No.");
@@ -616,7 +637,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Clear(Request);
         // An expected error rolls back prior SQL fixtures; seed this independent scenario again.
         CustomerContract.Init();
-        CustomerContract."No." := 'ZZ62-OWN-CONTRACT';
+        CustomerContract."No." := CopyStr('X' + Format(CreateGuid(), 0, 4), 1, 20);
         CustomerContract.Insert(false);
         LineNos.Add(2147483000);
         Request.Add('contractNo', CustomerContract."No.");
@@ -627,7 +648,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         AssertRefusalFields(TempArgument.GetResponseJson(), 'RecordNotFound', 'contractLineNos', '2147483000');
 
         BillingTemplate.Init();
-        BillingTemplate.Code := 'ZZ62-OWN-TEMPLATE';
+        BillingTemplate.Code := CopyStr('X' + Format(CreateGuid(), 0, 4), 1, 20);
         BillingTemplate.Insert(false);
         BillingLine.Init();
         BillingLine."Billing Template Code" := BillingTemplate.Code;
@@ -641,7 +662,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         AssertRefusalFields(TempArgument.GetResponseJson(), 'PreconditionFailed', 'billingTemplateCode', BillingTemplate.Code);
 
         CustomerContract.Init();
-        CustomerContract."No." := 'ZZ62-OWN-CONTRACT';
+        CustomerContract."No." := CopyStr('X' + Format(CreateGuid(), 0, 4), 1, 20);
         CustomerContract.Insert(false);
         Clear(BillingLine);
         BillingLine.Init();
@@ -660,7 +681,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         BillingLine.Insert(false);
         PurchaseHeader.Init();
         PurchaseHeader."Document Type" := PurchaseHeader."Document Type"::Invoice;
-        PurchaseHeader."No." := 'ZZ62-OWN-INVOICE';
+        PurchaseHeader."No." := CopyStr('X' + Format(CreateGuid(), 0, 4), 1, 20);
         PurchaseHeader.Insert(false);
         Clear(Request);
         Request.Add('purchaseInvoiceNo', PurchaseHeader."No.");
