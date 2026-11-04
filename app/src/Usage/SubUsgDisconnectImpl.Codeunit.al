@@ -198,7 +198,7 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
             SelectionReceived := SubscriptionEntryNo;
         end;
         if (LineEntryNo = 0) and (SubscriptionEntryNo = 0) then
-            Helper.RaiseError("Bifrost Error Code ori"::MissingParameter, MissingSelectionErr, 'usageDataSubscriptionEntryNo', '', MissingSelectionErr);
+            Helper.RaiseMissingOneOf(MissingSelectionErr, 'usageDataSubscriptionEntryNo', 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo', MissingSelectionErr);
 
         if LineEntryNo = 0 then begin
             if not UsageDataSubscription.Get(SubscriptionEntryNo) then
