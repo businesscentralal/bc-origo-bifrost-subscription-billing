@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- #88: make the refusal empty-filter fixture unique and explicitly cleaned up (95723), and make fixed price-update filter fixtures repeatable with owned cleanup (95708). Audit other test fixtures for repeated-run collisions.
+
 ### Fixed (2026-11-04) - contract parameter keys per message type (#75)
 
 - `Sub Helper ori` (10035058) splits the shared request preflight into ordered phases (`CollectParameterProblems`, `CollectSubjectProblems`, `CollectSelectionProblems`, `FinishValidation`). The shared phases read only the keys the calling type's contract declares. Type-specific rules no longer run from a `TypeName` switch inside the shared code, so a type no longer reads keys (`contentBase64`, `content`, `documents`, `customerContractNo`, `vendorContractNo`, `billingTemplateCode`, `contractNo`, `documentNo`, `subscriptionLineEntryNo`, `usageDataSubscriptionEntryNo`) that only another type declares. The shared preflight therefore no longer decodes `contentBase64` for a type that does not declare it. Callers through the Foundation envelope see no change: Foundation already refuses an undeclared key with `UnknownParameter` before the app runs (checked live over MCP in 1033/1039).
