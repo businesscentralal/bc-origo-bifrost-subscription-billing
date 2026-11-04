@@ -157,11 +157,27 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
         PerformWrite(Rec);
     end;
 
+    /// <summary>Collects every request problem, including the choice between subscriptionLineEntryNo and usageDataSubscriptionEntryNo, before any business lookup or write.</summary>
+    internal procedure ValidateRequest(var Argument: Record "Message Argument ori"): Boolean
+    var
+        Request: JsonObject;
+        ProblemCount: Integer;
+    begin
+        if not Helper.CollectParameterProblems(Argument, ProblemCount) then
+            exit(false);
+        Request := Argument.GetRequestJson();
+        if not Helper.HasSelectionInput(Request, 'subscriptionLineEntryNo') and not Helper.HasSelectionInput(Request, 'usageDataSubscriptionEntryNo') then
+            Helper.CollectAlternativeSelections(Argument, 'usageDataSubscriptionEntryNo', 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo', ProblemCount);
+        Helper.CollectSubjectProblems(Argument, ProblemCount);
+        Helper.CollectSelectionProblems(Argument, ProblemCount);
+        exit(Helper.FinishValidation(Argument, ProblemCount));
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-        if not Helper.ValidateRequest(Argument) then
+        if not ValidateRequest(Argument) then
             exit;
 
         if Argument."Omit Commit" then begin

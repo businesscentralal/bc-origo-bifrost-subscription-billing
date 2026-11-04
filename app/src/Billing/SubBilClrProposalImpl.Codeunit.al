@@ -154,11 +154,27 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
         PerformWrite(Rec);
     end;
 
+    /// <summary>Collects every request problem, including the choice between billingTemplateCode (or subject) and contractNo, before any business lookup or write.</summary>
+    internal procedure ValidateRequest(var Argument: Record "Message Argument ori"): Boolean
+    var
+        Request: JsonObject;
+        ProblemCount: Integer;
+    begin
+        if not Helper.CollectParameterProblems(Argument, ProblemCount) then
+            exit(false);
+        Request := Argument.GetRequestJson();
+        if (Argument.Subject = '') and not Helper.HasSelectionInput(Request, 'billingTemplateCode') and not Helper.HasSelectionInput(Request, 'contractNo') then
+            Helper.CollectAlternativeSelections(Argument, 'billingTemplateCode', 'billingTemplateCode, subject, contractNo', ProblemCount);
+        Helper.CollectSubjectProblems(Argument, ProblemCount);
+        Helper.CollectSelectionProblems(Argument, ProblemCount);
+        exit(Helper.FinishValidation(Argument, ProblemCount));
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-        if not Helper.ValidateRequest(Argument) then
+        if not ValidateRequest(Argument) then
             exit;
 
         if Argument."Omit Commit" then begin

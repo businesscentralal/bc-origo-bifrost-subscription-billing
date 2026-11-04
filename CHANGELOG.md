@@ -6,6 +6,14 @@
 
 - Refusal messages: final full stops on date-format refusals, English-only 'Customer or Vendor', and both accepted parameters named (#78).
 - 95723 exercises the direct partner reader and ClearProposal/DeleteDocuments/DisconnectSubscription recovery text, plus their preflight alternatives, in English and Icelandic (#78, PR86 review).
+- Retain #75's type-specific validation phases and all alternative keys while routing value refusals through the single-stop formatter (10035058; PR86 amendment).
+
+### Fixed (2026-11-04) - contract parameter keys per message type (#75)
+
+- `Sub Helper ori` (10035058) splits the shared request preflight into ordered phases (`CollectParameterProblems`, `CollectSubjectProblems`, `CollectSelectionProblems`, `FinishValidation`). The shared phases read only the keys the calling type's contract declares. Type-specific rules no longer run from a `TypeName` switch inside the shared code, so a type no longer reads keys (`contentBase64`, `content`, `documents`, `customerContractNo`, `vendorContractNo`, `billingTemplateCode`, `contractNo`, `documentNo`, `subscriptionLineEntryNo`, `usageDataSubscriptionEntryNo`) that only another type declares. The shared preflight therefore no longer decodes `contentBase64` for a type that does not declare it. Callers through the Foundation envelope see no change: Foundation already refuses an undeclared key with `UnknownParameter` before the app runs (checked live over MCP in 1033/1039).
+- The six types with rules of their own run them from their own `ValidateRequest`, in the same order as before: `Sub Ren Extend Impl ori` (10035051), `Sub Bil ClrProposal Impl ori` (10035061), `Sub Bil DelDocs Impl ori` (10035065) and `Sub Usg Disconnect Impl ori` (10035067) for the alternative-key choice, `Sub Bil PostDocs Impl ori` (10035085) for the nested documents, and `Sub Usg Import Impl ori` (10035053) for content/contentBase64.
+- The unmodified `tools/Test-ContractParameterKeys.ps1` goes from 302 read-not-declared findings on main 5946dc3 to 0, with an empty allow-list. The guard was not changed.
+- `Sub Refusal Tst ori` (95723) runs each type's own preflight. New regressions cover an undeclared `contentBase64` on `Subscription.Contract.GetLines` and the missing ImportData content in 1033/1039.
 
 ### Fixed (2026-11-02) - current Foundation test confirmations (#69 CI)
 
