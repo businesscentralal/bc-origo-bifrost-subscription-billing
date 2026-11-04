@@ -40,6 +40,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         CustomerContract.FindFirst();
         Assert.AreEqual('XPR25MATCH', CustomerContract."No.", 'Wrong contract selected.');
         AssertOtherFiltersUnchanged('contract');
+        CleanupFixture();
     end;
 
     /// <summary>Vendor templates validate against the vendor contract table.</summary>
@@ -52,6 +53,10 @@ codeunit 95708 "Sub PU Filter Tst ori"
         // PR #25 B2 | Time: no date dependence | Risk: None
         // [GIVEN] A vendor template and two vendor contracts.
         Initialize(true);
+        if VendorContract.Get('XPR25VENDOR') then
+            VendorContract.Delete(false);
+        if VendorContract.Get('XPR25VOTHER') then
+            VendorContract.Delete(false);
         VendorContract.Init();
         VendorContract."No." := 'XPR25VENDOR';
         VendorContract.Insert(false);
@@ -69,6 +74,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         VendorContract.FindFirst();
         Assert.AreEqual('XPR25VENDOR', VendorContract."No.", 'Wrong vendor contract selected.');
         AssertOtherFiltersUnchanged('contract');
+        CleanupFixture();
     end;
 
     /// <summary>Subscription and line targets persist independently.</summary>
@@ -95,6 +101,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         Assert.AreEqual('Success', ReadText(ResponseJson, 'status'), 'Line filter must succeed.');
         Assert.AreEqual(SubscriptionLine.GetView(false), ReadStoredFilter('line'), 'Wrong line view.');
         AssertOtherFiltersUnchanged('line');
+        CleanupFixture();
     end;
 
     /// <summary>Unknown WHERE fields fail closed, including when a valid filter precedes them.</summary>
@@ -103,6 +110,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
     begin
         // PR #25 B2 | Time: no date dependence | Risk: None
         AssertRejectedFilter('WHERE("No."=FILTER(XPR25MATCH),MistypedField=FILTER(1))');
+        CleanupFixture();
     end;
 
     /// <summary>Unknown SORTING fields cannot broaden the stored view.</summary>
@@ -111,6 +119,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
     begin
         // PR #25 B2 | Time: no date dependence | Risk: None
         AssertRejectedFilter('SORTING(MistypedField) WHERE("No."=FILTER(XPR25MATCH))');
+        CleanupFixture();
     end;
 
     /// <summary>Malformed parentheses produce a structured failure without a write.</summary>
@@ -119,6 +128,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
     begin
         // PR #25 B2 | Time: no date dependence | Risk: None
         AssertRejectedFilter('WHERE("No."=FILTER(XPR25MATCH)');
+        CleanupFixture();
     end;
 
     /// <summary>A non-view string cannot replace an existing filter.</summary>
@@ -127,6 +137,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
     begin
         // PR #25 B2 | Time: no date dependence | Risk: None
         AssertRejectedFilter('123');
+        CleanupFixture();
     end;
 
     /// <summary>An empty filter clears only the selected Blob; an absent required property fails without writing.</summary>
@@ -152,6 +163,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         Assert.AreEqual('filter', ReadText(ResponseJson, 'parameter'), 'The refusal must identify the missing filter.');
         Assert.AreNotEqual('', ReadText(ResponseJson, 'nextStep'), 'The refusal must explain recovery.');
         AssertAllFiltersUnchanged();
+        CleanupFixture();
     end;
 
     /// <summary>A valid view without filters explicitly clears only the selected Blob.</summary>
@@ -171,6 +183,7 @@ codeunit 95708 "Sub PU Filter Tst ori"
         Assert.AreEqual('contract', ReadText(ResponseJson, 'target'), 'Target casing must be normalized.');
         Assert.AreEqual('', ReadStoredFilter('contract'), 'Default view must clear the Blob.');
         AssertOtherFiltersUnchanged('contract');
+        CleanupFixture();
     end;
 
     [Test]
@@ -194,6 +207,21 @@ codeunit 95708 "Sub PU Filter Tst ori"
         Filters := FiltersToken.AsObject();
         Assert.AreEqual(CustomerContract.GetView(true), ReadText(Filters, 'contract'), 'Stored filters must display the same readable view.');
         AssertOtherFiltersUnchanged('contract');
+        CleanupFixture();
+    end;
+
+    local procedure CleanupFixture()
+    var
+        CustomerContract: Record "Customer Subscription Contract";
+        VendorContract: Record "Vendor Subscription Contract";
+        PriceUpdateTemplate: Record "Price Update Template";
+    begin
+        CustomerContract.SetFilter("No.", 'XPR25MATCH|XPR25OTHER');
+        CustomerContract.DeleteAll(false);
+        VendorContract.SetFilter("No.", 'XPR25VENDOR|XPR25VOTHER');
+        VendorContract.DeleteAll(false);
+        if PriceUpdateTemplate.Get(TemplateCodeTok) then
+            PriceUpdateTemplate.Delete(false);
     end;
 
     local procedure Initialize(VendorPartner: Boolean)
@@ -223,6 +251,8 @@ codeunit 95708 "Sub PU Filter Tst ori"
     var
         CustomerContract: Record "Customer Subscription Contract";
     begin
+        if CustomerContract.Get(ContractNo) then
+            CustomerContract.Delete(false);
         CustomerContract.Init();
         CustomerContract."No." := ContractNo;
         CustomerContract.Insert(false);
