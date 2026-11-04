@@ -2,6 +2,29 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-02) - current Foundation test confirmations (#69 CI)
+
+- Shared test helpers `Sub Test Lib ori` (95710) and `Sub PU Test Lib ori` (95740) supply Foundation 28.0.11's explicit single-subject `expectedCount` for the eight irreversible fixture operations. Existing caller confirmations and all business-effect/refusal assertions are preserved; older Foundation versions receive the unchanged request.
+
+### Fixed (2026-11-02) - setup wizard delegation (#69)
+
+- `SubBil Setup Wizard ori` (10035035) delegates the HTTP setup permission check and Foundation navigation to `SubBil Wizard Mgt ori` (10035062), retaining the administrator guidance and read-only HTTP status refresh.
+
+### Fixed (2026-10-26) - wizard context help (#69)
+
+- `app/app.json` uses the page-help URL for setup wizard 10035035 and operations host 10035036. English and Icelandic `subscription-billing-setup.md` handoff content is included under `app/docs/help/`; publication in the documentation repository remains a separate dependency.
+
+### Fixed (2026-10-26) - setup wizard test page lifecycle (#69)
+
+- `SubBil Setup Wizard Tests` (95721) leaves modal-page closure to the test framework and asserts that the operations host displays installed message types. The full-suite regression no longer closes the same modal page twice.
+
+### Added (2026-10-23) - Subscription Billing assisted setup (#69)
+
+- Pages `SubBil Setup Wizard ori` (10035035) and `SubBil Operations ori` (10035036), registration codeunit `SubBil Wizard Reg. ori` (10035035) and management codeunit `SubBil Wizard Mgt ori` (10035062): four steps introduce subscription operations, read this app's HTTP status, open Foundation for HTTP enablement, and explain the two assignable permission sets. The wizard never writes HTTP settings or assigns access; only explicit Finish completes Assisted Setup.
+- Full/read permission coverage, English and Icelandic wizard text, README setup guidance and codeunit `SubBil Setup Wizard Tests` (95721) cover registration, status, navigation, cancellation and completion.
+
+- Permission-set objects updated for both pages and management codeunits: `BIFROST SubBil ori` (10035062) and `BIFROST SubBRead ori` (10035064).
+
 ### Fixed (2026-10-27) - refusal review follow-ups (#62)
 
 - 10035058 distinguishes nested missing values, wrong shapes and overlong scalars, avoids doubled expected-text punctuation, collects zero-valued missing selections with other request problems, derives template bounds from the field and translates nested JSON/partner/entry-array expectations.
