@@ -271,12 +271,14 @@ codeunit 95740 "Sub PU Test Lib ori"
     local procedure Dispatch(MessageType: Enum "Message Type ori"; Subject: Text; RequestJson: JsonObject; OmitCommit: Boolean) ResponseJson: JsonObject
     var
         Dispatcher: Codeunit "Dispatcher ori";
+        TestLib: Codeunit "Sub Test Lib ori";
         RequestContent: BigText;
         ResponseContent: BigText;
         RequestText: Text;
         ResponseText: Text;
         ResponseContentType: Text[100];
     begin
+        TestLib.AddFixtureConfirmation(MessageType, RequestJson);
         RequestJson.WriteTo(RequestText);
         RequestContent.AddText(RequestText);
         Dispatcher.Execute(MessageType, Enum::"Message Version ori"::"1.0", CopyStr(Subject, 1, 250), 'XPU', 'application/json',
