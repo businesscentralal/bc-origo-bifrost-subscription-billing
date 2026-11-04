@@ -5,6 +5,7 @@
 ### Fixed (2026-11-04) - refusal text slips (#78)
 
 - Refusal messages: final full stops on date-format refusals, English-only 'Customer or Vendor', and both accepted parameters named (#78).
+- 95723 exercises the direct partner reader and ClearProposal/DeleteDocuments/DisconnectSubscription recovery text, plus their preflight alternatives, in English and Icelandic (#78, PR86 review).
 
 ### Fixed (2026-10-27) - refusal review follow-ups (#62)
 

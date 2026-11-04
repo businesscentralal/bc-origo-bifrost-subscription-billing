@@ -732,6 +732,88 @@ codeunit 95723 "Sub Refusal Tst ori"
         GlobalLanguage(PreviousLanguage);
     end;
 
+    /// <summary>Issue 78: direct reader and write-path refusals retain complete English recovery text.</summary>
+    [Test]
+    procedure Scenario_78_DirectTextPaths_EN()
+    begin
+        AssertDirectTextPaths(1033);
+    end;
+
+    /// <summary>Issue 78: direct reader and write-path refusals retain complete Icelandic recovery text.</summary>
+    [Test]
+    procedure Scenario_78_DirectTextPaths_IS()
+    begin
+        AssertDirectTextPaths(1039);
+    end;
+
+    local procedure AssertDirectTextPaths(LanguageId: Integer)
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        ClearProposal: Codeunit "Sub Bil ClrProposal Impl ori";
+        DeleteDocuments: Codeunit "Sub Bil DelDocs Impl ori";
+        Disconnect: Codeunit "Sub Usg Disconnect Impl ori";
+        Request: JsonObject;
+        ExpectedPartner: Text;
+        PreviousLanguage: Integer;
+    begin
+        // [GIVEN] Self-contained invalid requests that require no business records.
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        Request.Add('partner', 'Reseller');
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.UpdateExchangeRates", Request);
+
+        // [WHEN] The direct reader runs, without the API preflight masking its own label.
+        asserterror Helper.GetServicePartner(Request, 'partner', Enum::"Service Partner"::Customer);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameter', 'partner', 'Reseller');
+        if LanguageId = 1039 then
+            ExpectedPartner := 'Viðskiptamaður eða Lánardrottinn.'
+        else
+            ExpectedPartner := 'Customer or Vendor.';
+        // [THEN] The translated expected text is the complete label, with a final full stop.
+        Assert.AreEqual(ExpectedPartner, TestLibrary.ReadText(TempArgument.GetResponseJson(), 'expected'), 'Direct partner expectation must be translated.');
+
+        Clear(Request);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.ClearProposal", Request);
+        asserterror ClearProposal.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'billingTemplateCode', '<missing>');
+        AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'billingTemplateCode, contractNo', LanguageId);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.ClearProposal", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
+        AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'billingTemplateCode, subject, contractNo', LanguageId);
+
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.DeleteDocuments", Request);
+        asserterror DeleteDocuments.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'billingTemplateCode', '<missing>');
+        AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'billingTemplateCode, contractNo, documentNo', LanguageId);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.DeleteDocuments", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
+        AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'billingTemplateCode, subject, contractNo, documentNo', LanguageId);
+
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
+        asserterror Disconnect.PerformWrite(TempArgument);
+        TempArgument.RespondWithLastError();
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'usageDataSubscriptionEntryNo', '<missing>');
+        AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo', LanguageId);
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
+        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Missing alternatives must also fail preflight.');
+        AssertRecoveryAlternatives(TempArgument.GetResponseJson(), 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo', LanguageId);
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    local procedure AssertRecoveryAlternatives(Response: JsonObject; Alternatives: Text; LanguageId: Integer)
+    var
+        ExpectedRecovery: Text;
+    begin
+        if LanguageId = 1039 then
+            ExpectedRecovery := 'Leiðréttu ' + Alternatives + ' og sendu beiðnina aftur.'
+        else
+            ExpectedRecovery := 'Correct ' + Alternatives + ' and resend the request.';
+        Assert.AreEqual(ExpectedRecovery, TestLibrary.ReadText(Response, 'nextStep'), 'Recovery must name every alternative in the request language.');
+    end;
+
     local procedure AssertProblem(Response: JsonObject; ExpectedCode: Text; ExpectedParameter: Text; ExpectedReceived: Text)
     var
         Problems: JsonArray;
