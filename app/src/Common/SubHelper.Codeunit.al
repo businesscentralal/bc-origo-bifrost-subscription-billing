@@ -85,11 +85,28 @@ codeunit 10035058 "Sub Helper ori"
     end;
 
     /// <summary>Collects request-value problems before the implementation performs business lookups or writes.</summary>
+    /// <remarks>
+    /// A message type with request rules of its own (a choice between alternative keys, a nested array, an encoded file)
+    /// runs the same phases from its own ValidateRequest and adds those rules in between, in this order:
+    /// CollectParameterProblems, its alternative choice and encoding checks, CollectSubjectProblems, its nested checks,
+    /// CollectSelectionProblems, its remaining checks, then FinishValidation. The shared phases only read the keys the
+    /// contract of the calling type declares, so no type reads a key that only another type's contract declares (#75).
+    /// </remarks>
     procedure ValidateRequest(var Argument: Record "Message Argument ori"): Boolean
     var
-        BillingTemplate: Record "Billing Template";
+        ProblemCount: Integer;
+    begin
+        if not CollectParameterProblems(Argument, ProblemCount) then
+            exit(false);
+        CollectSubjectProblems(Argument, ProblemCount);
+        CollectSelectionProblems(Argument, ProblemCount);
+        exit(FinishValidation(Argument, ProblemCount));
+    end;
+
+    /// <summary>Checks presence, format, length and allowed values of every parameter the contract declares. Returns false, with the response already written, when the message type itself is not known.</summary>
+    procedure CollectParameterProblems(var Argument: Record "Message Argument ori"; var ProblemCount: Integer): Boolean
+    var
         Parts: Codeunit "Sub Contract Parts ori";
-        TempBlob: Codeunit "Temp Blob";
         Contract: Interface "Msg Contract ori";
         Request: JsonObject;
         Definition: JsonObject;
@@ -104,20 +121,17 @@ codeunit 10035058 "Sub Helper ori"
         ParameterType: Text;
         Received: Text;
         Expected: Text;
-        ProblemCount: Integer;
-        TypeIndex: Integer;
         Identifier: Code[20];
         Required: Boolean;
         Missing: Boolean;
     begin
         Request := Argument.GetRequestJson();
-        TypeIndex := Argument."Type".Ordinals().IndexOf(Argument."Type".AsInteger());
-        if TypeIndex < 1 then begin
+        TypeName := GetTypeName(Argument);
+        if TypeName = '' then begin
             Argument.RespondWithError("Bifrost Error Code ori"::InvalidParameter, StrSubstNo(InvalidValueErr, 'type', StrSubstNo(ExpectedValueTxt, 'type')),
                 'type', Format(Argument."Type".AsInteger(), 0, 9), StrSubstNo(ExpectedValueTxt, 'type'), StrSubstNo(CorrectParameterTxt, 'type'));
             exit(false);
         end;
-        TypeName := Argument."Type".Names().Get(TypeIndex);
         Parts.GetSubjectKey(TypeName, SubjectKey, SubjectForm);
         Contract := Argument."Type";
         Contract.GetParameters(Parameters);
@@ -169,79 +183,78 @@ codeunit 10035058 "Sub Helper ori"
                         end;
             end;
         end;
-        CollectAlternativeSelections(Argument, Request, TypeName, ProblemCount);
-        if HasValue(Request, 'contentBase64') then
-            if not TryDecodeBase64(GetText(Request, 'contentBase64', false), TempBlob) then begin
-                ClearLastError();
-                Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, Base64Err, 'contentBase64', '[omitted]', Base64ExpectedTxt, StrSubstNo(CorrectParameterTxt, 'contentBase64'));
+        exit(true);
+    end;
+
+    /// <summary>Checks that a well-formed billing template subject exists, even when another value (such as a date) is bad. All request values have been collected before this first business lookup.</summary>
+    procedure CollectSubjectProblems(var Argument: Record "Message Argument ori"; var ProblemCount: Integer)
+    var
+        BillingTemplate: Record "Billing Template";
+        Parts: Codeunit "Sub Contract Parts ori";
+        Request: JsonObject;
+        SubjectKey: Text;
+        SubjectForm: Text;
+        Received: Text;
+    begin
+        Parts.GetSubjectKey(GetTypeName(Argument), SubjectKey, SubjectForm);
+        if SubjectKey <> 'billingTemplateCode' then
+            exit;
+        Request := Argument.GetRequestJson();
+        Received := GetText(Request, SubjectKey, false);
+        if Argument.Subject <> '' then
+            Received := Argument.Subject;
+        if (Received <> '') and (StrLen(Received) <= MaxStrLen(BillingTemplate.Code)) then
+            if not BillingTemplate.Get(CopyStr(Received, 1, MaxStrLen(BillingTemplate.Code))) then begin
+                Argument.AddError("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, Received), SubjectKey, Received, ExistingTemplateTxt, StrSubstNo(CorrectParameterTxt, SubjectKey));
                 ProblemCount += 1;
             end;
-        // All request values have been collected before the first business lookup.
-        // A well-formed template key can be checked even when another value (such as a date) is bad.
-        if SubjectKey = 'billingTemplateCode' then begin
-            Received := GetText(Request, SubjectKey, false);
-            if Argument.Subject <> '' then
-                Received := Argument.Subject;
-            if (Received <> '') and (StrLen(Received) <= MaxStrLen(BillingTemplate.Code)) then
-                if not BillingTemplate.Get(CopyStr(Received, 1, MaxStrLen(BillingTemplate.Code))) then begin
-                    Argument.AddError("Bifrost Error Code ori"::RecordNotFound, StrSubstNo(TemplateNotFoundErr, Received), SubjectKey, Received, ExistingTemplateTxt, StrSubstNo(CorrectParameterTxt, SubjectKey));
-                    ProblemCount += 1;
-                end;
-        end;
-        CollectNestedProblems(Argument, Request, TypeName, ProblemCount);
-        CollectSelectionProblems(Argument, Request, TypeName, ProblemCount);
-        if (TypeName = 'Subscription.Usage.ImportData') and not HasValue(Request, 'content') and not HasValue(Request, 'contentBase64') then begin
-            Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'content'), 'content', '<missing>', Base64ExpectedTxt, StrSubstNo(CorrectParameterTxt, 'content'));
-            ProblemCount += 1;
-        end;
+    end;
+
+    /// <summary>Answers with every collected problem. Returns true when there was none.</summary>
+    procedure FinishValidation(var Argument: Record "Message Argument ori"; ProblemCount: Integer): Boolean
+    begin
         if ProblemCount = 0 then
             exit(true);
         Argument.RespondWithCollectedErrors("Bifrost Error Code ori"::MultipleErrors, StrSubstNo(ProblemsErr, ProblemCount));
         exit(false);
     end;
 
-    local procedure CollectAlternativeSelections(var Argument: Record "Message Argument ori"; Request: JsonObject; TypeName: Text; var ProblemCount: Integer)
+    /// <summary>Records that none of the alternative keys was supplied. The calling type reads its own alternatives with HasSelectionInput.</summary>
+    procedure CollectAlternativeSelections(var Argument: Record "Message Argument ori"; ParameterName: Text; Alternatives: Text; var ProblemCount: Integer)
     var
-        ParameterName: Text;
-        Alternatives: Text;
         OneOfExpectedTxt: Label 'Supply at least one of: %1.', Comment = '%1 = accepted parameter names||is-IS=Sendu a.m.k. eina af: %1.';
     begin
-        case TypeName of
-            'Subscription.Renewal.Extend':
-                if not HasSelectionInput(Request, 'customerContractNo') and not HasSelectionInput(Request, 'vendorContractNo') then begin
-                    ParameterName := 'customerContractNo';
-                    Alternatives := 'customerContractNo, vendorContractNo';
-                end;
-            'Subscription.Billing.ClearProposal':
-                if (Argument.Subject = '') and not HasSelectionInput(Request, 'billingTemplateCode') and not HasSelectionInput(Request, 'contractNo') then begin
-                    ParameterName := 'billingTemplateCode';
-                    Alternatives := 'billingTemplateCode, subject, contractNo';
-                end;
-            'Subscription.Billing.DeleteDocuments':
-                if (Argument.Subject = '') and not HasSelectionInput(Request, 'billingTemplateCode') and not HasSelectionInput(Request, 'contractNo') and not HasSelectionInput(Request, 'documentNo') then begin
-                    ParameterName := 'billingTemplateCode';
-                    Alternatives := 'billingTemplateCode, subject, contractNo, documentNo';
-                end;
-            'Subscription.Usage.DisconnectSubscription':
-                if not HasSelectionInput(Request, 'subscriptionLineEntryNo') and not HasSelectionInput(Request, 'usageDataSubscriptionEntryNo') then begin
-                    ParameterName := 'usageDataSubscriptionEntryNo';
-                    Alternatives := 'subscriptionLineEntryNo, usageDataSubscriptionEntryNo';
-                end;
-        end;
-        if ParameterName = '' then
-            exit;
         Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(OneOfExpectedTxt, Alternatives), ParameterName, '<missing>', StrSubstNo(OneOfExpectedTxt, Alternatives), StrSubstNo(CorrectParameterTxt, ParameterName));
         ProblemCount += 1;
     end;
 
-    local procedure HasSelectionInput(Request: JsonObject; ParameterName: Text): Boolean
+    /// <summary>Records a base64 value that does not decode. Only an in-memory blob is used; platform decode text never escapes.</summary>
+    procedure CollectBase64Problem(var Argument: Record "Message Argument ori"; ContentBase64: Text; var ProblemCount: Integer)
+    var
+        TempBlob: Codeunit "Temp Blob";
+    begin
+        if TryDecodeBase64(ContentBase64, TempBlob) then
+            exit;
+        ClearLastError();
+        Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, Base64Err, 'contentBase64', '[omitted]', Base64ExpectedTxt, StrSubstNo(CorrectParameterTxt, 'contentBase64'));
+        ProblemCount += 1;
+    end;
+
+    /// <summary>Records that neither content nor contentBase64 was supplied for a file.</summary>
+    procedure CollectMissingContentProblem(var Argument: Record "Message Argument ori"; var ProblemCount: Integer)
+    begin
+        Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'content'), 'content', '<missing>', Base64ExpectedTxt, StrSubstNo(CorrectParameterTxt, 'content'));
+        ProblemCount += 1;
+    end;
+
+    /// <summary>Returns true when the request supplies a usable value for one alternative key. A malformed supplied value already has its own format error, so it counts as supplied.</summary>
+    procedure HasSelectionInput(Request: JsonObject; ParameterName: Text): Boolean
     var
         Token: JsonToken;
         EntryNo: Integer;
     begin
         if not Request.Get(ParameterName, Token) then
             exit(false);
-        // A malformed supplied value already has its own format error; do not also report it missing.
         if not Token.IsValue() then
             exit(true);
         if Token.AsValue().IsNull() then
@@ -252,9 +265,9 @@ codeunit 10035058 "Sub Helper ori"
         exit(Token.AsValue().AsText() <> '');
     end;
 
-    local procedure CollectNestedProblems(var Argument: Record "Message Argument ori"; Request: JsonObject; TypeName: Text; var ProblemCount: Integer)
+    /// <summary>Checks every entry of a documents array (partner, documentType, documentNo, vendorInvoiceNo) before the first document is touched.</summary>
+    procedure CollectNestedProblems(var Argument: Record "Message Argument ori"; DocumentsToken: JsonToken; var ProblemCount: Integer)
     var
-        ArrayToken: JsonToken;
         Entry: JsonToken;
         Values: JsonArray;
         Item: JsonObject;
@@ -263,33 +276,39 @@ codeunit 10035058 "Sub Helper ori"
         Received: Text;
         DocumentPathTxt: Label 'documents[%1]', Locked = true;
     begin
-        Index := 0;
-        if TypeName = 'Subscription.Billing.PostDocuments' then begin
-            if not Request.Get('documents', ArrayToken) then
-                exit;
-            if not ArrayToken.IsArray() then
-                exit;
-            Values := ArrayToken.AsArray();
-            if Values.Count() = 0 then begin
-                Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'documents'), 'documents', '[]', JsonArrayTxt, StrSubstNo(CorrectParameterTxt, 'documents'));
-                ProblemCount += 1;
-            end;
-            foreach Entry in Values do begin
-                Path := StrSubstNo(DocumentPathTxt, Index);
-                if not Entry.IsObject() then begin
-                    Entry.WriteTo(Received);
-                    Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, Path, JsonObjectTxt), Path, Received, JsonObjectTxt, StrSubstNo(CorrectParameterTxt, Path));
-                    ProblemCount += 1;
-                end else begin
-                    Item := Entry.AsObject();
-                    CheckNestedProperty(Argument, Item, 'partner', Path + '.partner', true, 'Customer|Vendor', 0, ProblemCount);
-                    CheckNestedProperty(Argument, Item, 'documentType', Path + '.documentType', true, 'Invoice|Credit Memo', 0, ProblemCount);
-                    CheckNestedProperty(Argument, Item, 'documentNo', Path + '.documentNo', true, '', 20, ProblemCount);
-                    CheckNestedProperty(Argument, Item, 'vendorInvoiceNo', Path + '.vendorInvoiceNo', false, '', 35, ProblemCount);
-                end;
-                Index += 1;
-            end;
+        if not DocumentsToken.IsArray() then
+            exit;
+        Values := DocumentsToken.AsArray();
+        if Values.Count() = 0 then begin
+            Argument.AddError("Bifrost Error Code ori"::MissingParameter, StrSubstNo(MissingParameterErr, 'documents'), 'documents', '[]', JsonArrayTxt, StrSubstNo(CorrectParameterTxt, 'documents'));
+            ProblemCount += 1;
         end;
+        Index := 0;
+        foreach Entry in Values do begin
+            Path := StrSubstNo(DocumentPathTxt, Index);
+            if not Entry.IsObject() then begin
+                Entry.WriteTo(Received);
+                Argument.AddError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidValueErr, Path, JsonObjectTxt), Path, Received, JsonObjectTxt, StrSubstNo(CorrectParameterTxt, Path));
+                ProblemCount += 1;
+            end else begin
+                Item := Entry.AsObject();
+                CheckNestedProperty(Argument, Item, 'partner', Path + '.partner', true, 'Customer|Vendor', 0, ProblemCount);
+                CheckNestedProperty(Argument, Item, 'documentType', Path + '.documentType', true, 'Invoice|Credit Memo', 0, ProblemCount);
+                CheckNestedProperty(Argument, Item, 'documentNo', Path + '.documentNo', true, '', 20, ProblemCount);
+                CheckNestedProperty(Argument, Item, 'vendorInvoiceNo', Path + '.vendorInvoiceNo', false, '', 35, ProblemCount);
+            end;
+            Index += 1;
+        end;
+    end;
+
+    local procedure GetTypeName(var Argument: Record "Message Argument ori"): Text
+    var
+        TypeIndex: Integer;
+    begin
+        TypeIndex := Argument."Type".Ordinals().IndexOf(Argument."Type".AsInteger());
+        if TypeIndex < 1 then
+            exit('');
+        exit(Argument."Type".Names().Get(TypeIndex));
     end;
 
     local procedure CheckNestedProperty(var Argument: Record "Message Argument ori"; Item: JsonObject; PropertyName: Text; Path: Text; Required: Boolean; Allowed: Text; MaximumLength: Integer; var ProblemCount: Integer)
@@ -348,7 +367,8 @@ codeunit 10035058 "Sub Helper ori"
         ProblemCount += 1;
     end;
 
-    local procedure CollectSelectionProblems(var Argument: Record "Message Argument ori"; Request: JsonObject; TypeName: Text; var ProblemCount: Integer)
+    /// <summary>Checks every value of the selection arrays the contract declares (entry numbers, line numbers, package codes, merge lines).</summary>
+    procedure CollectSelectionProblems(var Argument: Record "Message Argument ori"; var ProblemCount: Integer)
     var
         Token: JsonToken;
         Entry: JsonToken;
@@ -358,6 +378,8 @@ codeunit 10035058 "Sub Helper ori"
         Definition: JsonObject;
         Definitions: JsonArray;
         Contract: Interface "Msg Contract ori";
+        Request: JsonObject;
+        TypeName: Text;
         ParameterName: Text;
         Path: Text;
         Received: Text;
@@ -366,6 +388,8 @@ codeunit 10035058 "Sub Helper ori"
         Valid: Boolean;
         PathTxt: Label '%1[%2]', Locked = true;
     begin
+        Request := Argument.GetRequestJson();
+        TypeName := GetTypeName(Argument);
         Contract := Argument."Type";
         Contract.GetParameters(Definitions);
         foreach Token in Definitions do begin

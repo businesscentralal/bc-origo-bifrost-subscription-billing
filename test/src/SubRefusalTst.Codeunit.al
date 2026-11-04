@@ -40,7 +40,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         PreviousLanguage := GlobalLanguage();
         GlobalLanguage(LanguageId);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Line.Create", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Missing required values must be refused before record lookup.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'Missing required values must be refused before record lookup.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Errors := TestLibrary.ReadArray(Response, 'errors');
@@ -74,7 +74,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         GlobalLanguage(LanguageId);
         Request.Add('subscriptionHeaderNo', 'XS62-OWN-IDENTIFIER');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Line.Create", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Missing package must be answered before looking up the header.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'Missing package must be answered before looking up the header.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MissingParameter', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual('subscriptionPackageCode', TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
@@ -109,7 +109,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Request.Add('currencyFactorDate', 'not-a-date');
         Request.Add('partner', 'unknown-partner');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.UpdateExchangeRates", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'All value problems are collected before contract lookup.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'All value problems are collected before contract lookup.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
@@ -144,7 +144,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Request.Add('supplierNo', 'XS62-NO-LOOKUP');
         Request.Add('contentBase64', '%%%');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.ImportData", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Bad base64 is rejected before supplier lookup or file writes.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'Bad base64 is rejected before supplier lookup or file writes.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('InvalidParameterFormat', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual('contentBase64', TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
@@ -163,7 +163,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Request.Add('subscriptionPackageCode', 'XS62-PACKAGE');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Line.Create", Request);
         TempArgument.Subject := 'XS62-SUBJECT';
-        Assert.IsTrue(Helper.ValidateRequest(TempArgument), 'A valid subject supplies the required header parameter.');
+        Assert.IsTrue(ValidateRequest(TempArgument), 'A valid subject supplies the required header parameter.');
     end;
 
     [Test]
@@ -179,7 +179,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Request.Add('billingTemplateCode', BillingTemplate.Code);
         Request.Add('filter', '');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.SetTemplateFilter", Request);
-        Assert.IsTrue(Helper.ValidateRequest(TempArgument), 'An explicitly empty filter remains valid.');
+        Assert.IsTrue(ValidateRequest(TempArgument), 'An explicitly empty filter remains valid.');
     end;
 
     [Test]
@@ -206,7 +206,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Request.Add('billingTemplateCode', 'XS62-UNKNOWN');
         Request.Add('billingDate', 'not-a-date');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'The template lookup must not hide a bad date, or vice versa.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'The template lookup must not hide a bad date, or vice versa.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
@@ -280,7 +280,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Documents.Add(Item.Clone());
         Request.Add('documents', Documents);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Both nested documents are validated before any lookup or post.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'Both nested documents are validated before any lookup or post.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(6, TestLibrary.ReadArray(Response, 'errors').Count(), 'All three required values on both documents must be reported.');
@@ -305,7 +305,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         InvalidValue.Add('ownMalformedValue', 'XS62');
         Request.Add('contractNo', InvalidValue);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Analysis.Recalculate", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'An object value is a structured request problem, never a runtime conversion error.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'An object value is a structured request problem, never a runtime conversion error.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('InvalidParameterFormat', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual('contractNo', TestLibrary.ReadText(Response, 'parameter'), TestLibrary.AsText(Response));
@@ -338,7 +338,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Request.Add('contractNo', 'XS62-NO-LOOKUP');
         Request.Add('subscriptionLineEntryNos', Entries);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.GetLines", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Every selection value is checked before the contract lookup.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'Every selection value is checked before the contract lookup.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual('MultipleErrors', TestLibrary.ReadText(Response, 'code'), TestLibrary.AsText(Response));
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), 'Both malformed entry numbers must be returned.');
@@ -485,7 +485,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         LongIdentifier := 'ZZ62-1234567890123456789';
         Request.Add('contractNo', LongIdentifier);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.GetLines", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Preflight must reject an overlong identifier.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'Preflight must reject an overlong identifier.');
         AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'contractNo', LongIdentifier);
         asserterror Helper.GetCode20(Request, 'contractNo', true);
         TempArgument.RespondWithLastError();
@@ -503,7 +503,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Documents.Add(Document);
         Request.Add('documents', Documents);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'A nested object cannot be a document number.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'A nested object cannot be a document number.');
         AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'documents[0].documentNo', '{}');
         AssertNestedExpected(TempArgument.GetResponseJson(), LanguageId, false);
 
@@ -513,7 +513,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Documents.Add(Document);
         Request.Replace('documents', Documents);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'An empty required nested value is missing.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'An empty required nested value is missing.');
         AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'documents[0].documentNo', '<missing>');
         AssertNestedExpected(TempArgument.GetResponseJson(), LanguageId, false);
 
@@ -523,7 +523,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Documents.Add(Document);
         Request.Replace('documents', Documents);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Billing.PostDocuments", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Only an overlong scalar should report the length bound.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'Only an overlong scalar should report the length bound.');
         AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'documents[0].documentNo', LongIdentifier);
         AssertNestedExpected(TempArgument.GetResponseJson(), LanguageId, true);
         GlobalLanguage(PreviousLanguage);
@@ -554,7 +554,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Request: JsonObject;
     begin
         Prepare(TempArgument, Enum::"Message Type ori".FromInteger(2147483000), Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'An unavailable enum ordinal must not access list item zero.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'An unavailable enum ordinal must not access list item zero.');
         AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameter', 'type', '2147483000');
     end;
 
@@ -704,7 +704,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         PreviousLanguage := GlobalLanguage();
         GlobalLanguage(LanguageId);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Renewal.Extend", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'The missing header and missing contract choice must both be collected before a lookup.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'The missing header and missing contract choice must both be collected before a lookup.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
         AssertProblem(Response, 'MissingParameter', 'subscriptionHeaderNo', '<missing>');
@@ -713,7 +713,7 @@ codeunit 95723 "Sub Refusal Tst ori"
         Clear(Request);
         Request.Add('customerContractNo', '');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Renewal.Extend", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'An empty contract choice is still missing.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'An empty contract choice is still missing.');
         Response := TempArgument.GetResponseJson();
         Assert.AreEqual(2, TestLibrary.ReadArray(Response, 'errors').Count(), TestLibrary.AsText(Response));
         AssertProblem(Response, 'MissingParameter', 'subscriptionHeaderNo', '<missing>');
@@ -722,11 +722,11 @@ codeunit 95723 "Sub Refusal Tst ori"
         Request.Add('subscriptionLineEntryNo', 0);
         Request.Add('usageDataSubscriptionEntryNo', 0);
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'Zero selections must be rejected as missing before lookup.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'Zero selections must be rejected as missing before lookup.');
         AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'usageDataSubscriptionEntryNo', '<missing>');
         Request.Replace('usageDataSubscriptionEntryNo', 'not-an-entry-number');
         Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription", Request);
-        Assert.IsFalse(Helper.ValidateRequest(TempArgument), 'A malformed supplied alternative has its own format error, without a duplicate missing error.');
+        Assert.IsFalse(ValidateRequest(TempArgument), 'A malformed supplied alternative has its own format error, without a duplicate missing error.');
         AssertRefusalFields(TempArgument.GetResponseJson(), 'InvalidParameterFormat', 'usageDataSubscriptionEntryNo', 'not-an-entry-number');
         GlobalLanguage(PreviousLanguage);
     end;
@@ -768,6 +768,73 @@ codeunit 95723 "Sub Refusal Tst ori"
             Assert.IsFalse(TestLibrary.ReadText(Entry, 'error').Contains('Expected .'), 'An empty allowed list must not become an empty expected clause.');
             Assert.IsFalse(TestLibrary.ReadText(Entry, 'error').Contains('Væntanlegt er .'), 'Icelandic expected text must not be empty.');
         end;
+    end;
+
+    [Test]
+    procedure Issue75_UndeclaredContentBase64_IsNotDecodedForOtherTypes()
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Request: JsonObject;
+    begin
+        // contentBase64 is declared only by Subscription.Usage.ImportData; the shared preflight of another type must not read it.
+        Request.Add('contractNo', 'XS75-NO-LOOKUP');
+        Request.Add('contentBase64', '%%%');
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Contract.GetLines", Request);
+        Assert.IsTrue(ValidateRequest(TempArgument), 'A key the contract does not declare is not validated by the shared preflight: ' + TestLibrary.AsText(TempArgument.GetResponseJson()));
+    end;
+
+    [Test]
+    procedure Issue75_ImportData_MissingContent_IsReported_EN()
+    begin
+        AssertMissingContent(1033);
+    end;
+
+    [Test]
+    procedure Issue75_ImportData_MissingContent_IsReported_IS()
+    begin
+        AssertMissingContent(1039);
+    end;
+
+    local procedure AssertMissingContent(LanguageId: Integer)
+    var
+        TempArgument: Record "Message Argument ori" temporary;
+        Request: JsonObject;
+        PreviousLanguage: Integer;
+    begin
+        PreviousLanguage := GlobalLanguage();
+        GlobalLanguage(LanguageId);
+        Request.Add('supplierNo', 'XS75-NO-LOOKUP');
+        Prepare(TempArgument, Enum::"Message Type ori"::"Subscription.Usage.ImportData", Request);
+        Assert.IsFalse(ValidateRequest(TempArgument), 'A usage file without content or contentBase64 is refused before supplier lookup.');
+        AssertRefusalFields(TempArgument.GetResponseJson(), 'MissingParameter', 'content', '<missing>');
+        GlobalLanguage(PreviousLanguage);
+    end;
+
+    /// <summary>Runs the preflight the message type itself runs from ExecuteBifrostTask (#75).</summary>
+    local procedure ValidateRequest(var TempArgument: Record "Message Argument ori" temporary): Boolean
+    var
+        Extend: Codeunit "Sub Ren Extend Impl ori";
+        ClearProposal: Codeunit "Sub Bil ClrProposal Impl ori";
+        DeleteDocuments: Codeunit "Sub Bil DelDocs Impl ori";
+        Disconnect: Codeunit "Sub Usg Disconnect Impl ori";
+        PostDocuments: Codeunit "Sub Bil PostDocs Impl ori";
+        UsageImport: Codeunit "Sub Usg Import Impl ori";
+    begin
+        case TempArgument."Type" of
+            Enum::"Message Type ori"::"Subscription.Renewal.Extend":
+                exit(Extend.ValidateRequest(TempArgument));
+            Enum::"Message Type ori"::"Subscription.Billing.ClearProposal":
+                exit(ClearProposal.ValidateRequest(TempArgument));
+            Enum::"Message Type ori"::"Subscription.Billing.DeleteDocuments":
+                exit(DeleteDocuments.ValidateRequest(TempArgument));
+            Enum::"Message Type ori"::"Subscription.Usage.DisconnectSubscription":
+                exit(Disconnect.ValidateRequest(TempArgument));
+            Enum::"Message Type ori"::"Subscription.Billing.PostDocuments":
+                exit(PostDocuments.ValidateRequest(TempArgument));
+            Enum::"Message Type ori"::"Subscription.Usage.ImportData":
+                exit(UsageImport.ValidateRequest(TempArgument));
+        end;
+        exit(Helper.ValidateRequest(TempArgument));
     end;
 
     local procedure Prepare(var TempArgument: Record "Message Argument ori" temporary; MessageType: Enum "Message Type ori"; Request: JsonObject)
