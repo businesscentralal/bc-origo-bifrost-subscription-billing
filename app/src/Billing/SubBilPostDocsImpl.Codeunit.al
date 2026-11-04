@@ -175,11 +175,28 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         PerformWrite(Rec);
     end;
 
+    /// <summary>Collects every request problem, including every entry of documents, before any business lookup or write.</summary>
+    internal procedure ValidateRequest(var Argument: Record "Message Argument ori"): Boolean
+    var
+        Request: JsonObject;
+        DocumentsToken: JsonToken;
+        ProblemCount: Integer;
+    begin
+        if not Helper.CollectParameterProblems(Argument, ProblemCount) then
+            exit(false);
+        Helper.CollectSubjectProblems(Argument, ProblemCount);
+        Request := Argument.GetRequestJson();
+        if Request.Get('documents', DocumentsToken) then
+            Helper.CollectNestedProblems(Argument, DocumentsToken, ProblemCount);
+        Helper.CollectSelectionProblems(Argument, ProblemCount);
+        exit(Helper.FinishValidation(Argument, ProblemCount));
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-        if not Helper.ValidateRequest(Argument) then
+        if not ValidateRequest(Argument) then
             exit;
         if not PostingGate.AssertCanPost(Argument) then
             exit;
