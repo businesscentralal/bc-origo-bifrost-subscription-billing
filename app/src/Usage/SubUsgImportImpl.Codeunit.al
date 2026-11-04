@@ -153,11 +153,29 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         PerformWrite(Rec);
     end;
 
+    /// <summary>Collects every request problem, including the file content (content or a decodable contentBase64), before any business lookup or write.</summary>
+    internal procedure ValidateRequest(var Argument: Record "Message Argument ori"): Boolean
+    var
+        Request: JsonObject;
+        ProblemCount: Integer;
+    begin
+        if not Helper.CollectParameterProblems(Argument, ProblemCount) then
+            exit(false);
+        Request := Argument.GetRequestJson();
+        if Helper.HasValue(Request, 'contentBase64') then
+            Helper.CollectBase64Problem(Argument, Helper.GetText(Request, 'contentBase64', false), ProblemCount);
+        Helper.CollectSubjectProblems(Argument, ProblemCount);
+        Helper.CollectSelectionProblems(Argument, ProblemCount);
+        if not Helper.HasValue(Request, 'content') and not Helper.HasValue(Request, 'contentBase64') then
+            Helper.CollectMissingContentProblem(Argument, ProblemCount);
+        exit(Helper.FinishValidation(Argument, ProblemCount));
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-        if not Helper.ValidateRequest(Argument) then
+        if not ValidateRequest(Argument) then
             exit;
 
         if Argument."Omit Commit" then begin

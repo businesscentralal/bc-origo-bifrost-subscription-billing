@@ -148,11 +148,27 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
         PerformWrite(Rec);
     end;
 
+    /// <summary>Collects every request problem, including the choice between customerContractNo and vendorContractNo, before any business lookup or write.</summary>
+    internal procedure ValidateRequest(var Argument: Record "Message Argument ori"): Boolean
+    var
+        Request: JsonObject;
+        ProblemCount: Integer;
+    begin
+        if not Helper.CollectParameterProblems(Argument, ProblemCount) then
+            exit(false);
+        Request := Argument.GetRequestJson();
+        if not Helper.HasSelectionInput(Request, 'customerContractNo') and not Helper.HasSelectionInput(Request, 'vendorContractNo') then
+            Helper.CollectAlternativeSelections(Argument, 'customerContractNo', 'customerContractNo, vendorContractNo', ProblemCount);
+        Helper.CollectSubjectProblems(Argument, ProblemCount);
+        Helper.CollectSelectionProblems(Argument, ProblemCount);
+        exit(Helper.FinishValidation(Argument, ProblemCount));
+    end;
+
     procedure ExecuteBifrostTask(var Argument: Record "Message Argument ori")
     begin
         Argument.AssertVersion1();
         Argument.AssertIsLicensed();
-        if not Helper.ValidateRequest(Argument) then
+        if not ValidateRequest(Argument) then
             exit;
 
         if Argument."Omit Commit" then begin
