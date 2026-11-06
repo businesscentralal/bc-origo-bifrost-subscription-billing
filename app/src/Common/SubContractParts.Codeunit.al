@@ -976,7 +976,7 @@ codeunit 10035075 "Sub Contract Parts ori"
             'Subscription.Renewal.CreateQuote':
                 begin
                     Steps.Add(ContractMgt.WorkflowStep(MessageType, 'Review the contract lines and renewal dates, then create a renewal sales quote.'));
-                    Workflow.Add('text', 'Creates a renewal quote for review. This call does not renew the subscriptions and posts nothing.');
+                    Workflow.Add('text', 'Creates a renewal quote for review. This call does not renew the subscriptions and posts nothing. Dates inside the quote text follow the Business Central session''s regional settings.');
                 end;
             'Subscription.Analysis.Recalculate':
                 begin
