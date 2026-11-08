@@ -24,6 +24,13 @@
 - Native regressions in `Sub Data Safety Tst ori` (95722), `Sub Renewal Tst ori` (95776), `Sub PostDocs Tst ori` (95718) and the vendor invoice test cover these boundaries in 1033 and 1039.
 
 - Shared response/help contract `Sub Contract Parts ori` (10035075) and existing should-have regressions `Sub ShouldHave Tst ori` (95715) are updated with the data-safety changes.
+### Changed (2026-11-06) - renewal quote help (#64)
+
+- `Sub Contract Parts ori`: the workflow text of Subscription.Renewal.CreateQuote now says that dates inside the quote text follow the Business Central session's regional settings (Microsoft builds the text; accepted as a Microsoft-side limitation by Claude Code, #64 item 7).
+
+### Fixed
+
+- #88: make the refusal empty-filter fixture unique and explicitly cleaned up (95723), and make fixed price-update filter fixtures repeatable with owned cleanup (95708). Audit other test fixtures for repeated-run collisions.
 
 ### Fixed (2026-11-04) - contract parameter keys per message type (#75)
 
