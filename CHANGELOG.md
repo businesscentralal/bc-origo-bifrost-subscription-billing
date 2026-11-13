@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-04) - refusal text slips (#78)
+
+- Refusal messages: final full stops on date-format refusals, English-only 'Customer or Vendor', and both accepted parameters named (#78).
+- 95723 exercises the direct partner reader and ClearProposal/DeleteDocuments/DisconnectSubscription recovery text, plus their preflight alternatives, in English and Icelandic (#78, PR86 review).
+- Retain #75's type-specific validation phases and all alternative keys while routing value refusals through the single-stop formatter (10035058; PR86 amendment).
 ### Fixed (2026-11-02) - irreversible confirmation on the CI Foundation (#63)
 
 - Test dispatchers `Sub Test Lib ori` (95710) and `Sub PU Test Lib ori` (95740) repeat one call when Foundation answers `ConfirmationRequired`. The repeat sends the preview `expected` value as `expectedCount` and leaves a caller-supplied count unchanged. Business success and refusal assertions stay the same. Foundation 28.0.11 enables this gate by default; 28.0.10 did not ask.
@@ -24,6 +29,7 @@
 - Native regressions in `Sub Data Safety Tst ori` (95722), `Sub Renewal Tst ori` (95776), `Sub PostDocs Tst ori` (95718) and the vendor invoice test cover these boundaries in 1033 and 1039.
 
 - Shared response/help contract `Sub Contract Parts ori` (10035075) and existing should-have regressions `Sub ShouldHave Tst ori` (95715) are updated with the data-safety changes.
+
 ### Changed (2026-11-06) - renewal quote help (#64)
 
 - `Sub Contract Parts ori`: the workflow text of Subscription.Renewal.CreateQuote now says that dates inside the quote text follow the Business Central session's regional settings (Microsoft builds the text; accepted as a Microsoft-side limitation by Claude Code, #64 item 7).

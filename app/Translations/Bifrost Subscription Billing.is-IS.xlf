@@ -946,9 +946,9 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidPartnerErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 2510853505" size-unit="char" translate="yes" xml:space="preserve">
-          <source>The parameter %1 has an invalid value. Expected %2</source>
-          <target>Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2</target>
-          <note from="Developer" annotates="general" priority="2">%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2</note>
+          <source>The parameter %1 has an invalid value. Expected %2.</source>
+          <target>Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter, %2 = expected format||is-IS=Færibreytan %1 hefur ógilt gildi. Væntanlegt er %2.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidValueErr</note>
         </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 806955483" size-unit="char" translate="yes" xml:space="preserve">
@@ -983,8 +983,8 @@
         </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 1874512770" size-unit="char" translate="yes" xml:space="preserve">
           <source>Customer or Vendor.</source>
-          <target>Customer eða Vendor.</target>
-          <note from="Developer" annotates="general" priority="2">Customer and Vendor are request values||is-IS=Customer eða Vendor.</note>
+          <target>Viðskiptamaður eða Lánardrottinn.</target>
+          <note from="Developer" annotates="general" priority="2">Customer and Vendor are request values||is-IS=Viðskiptamaður eða Lánardrottinn.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType PartnerValuesTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 494448295" size-unit="char" translate="yes" xml:space="preserve">
