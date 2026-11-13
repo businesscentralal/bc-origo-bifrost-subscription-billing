@@ -7,6 +7,28 @@
 - Refusal messages: final full stops on date-format refusals, English-only 'Customer or Vendor', and both accepted parameters named (#78).
 - 95723 exercises the direct partner reader and ClearProposal/DeleteDocuments/DisconnectSubscription recovery text, plus their preflight alternatives, in English and Icelandic (#78, PR86 review).
 - Retain #75's type-specific validation phases and all alternative keys while routing value refusals through the single-stop formatter (10035058; PR86 amendment).
+### Fixed (2026-11-02) - irreversible confirmation on the CI Foundation (#63)
+
+- Test dispatchers `Sub Test Lib ori` (95710) and `Sub PU Test Lib ori` (95740) repeat one call when Foundation answers `ConfirmationRequired`. The repeat sends the preview `expected` value as `expectedCount` and leaves a caller-supplied count unchanged. Business success and refusal assertions stay the same. Foundation 28.0.11 enables this gate by default; 28.0.10 did not ask.
+
+### Fixed (2026-10-27) - analysis partner ambiguity (#63)
+
+- `Sub Ana Recalc Impl ori` (10035056) refuses a number shared by customer and vendor contracts with `AmbiguousRecord` before writes. A unique number filters the report and both counts by partner as well as contract number. `Sub Data Safety Tst ori` (95722) covers both languages using independent inserted headers (Microsoft forbids renaming vendor contracts). Fresh C fixture families isolate the final-candidate live checks. Live MCP exposed this collision; the original failed evidence remains retained. No new request parameter is added.
+
+### Added (2026-10-26) - explicit live MCP fixture seed (#63)
+
+- Test-only table/page `Sub MCP Fixture ori` (95728) and codeunit `Sub MCP Seed ori` (95730) create independent owned fixture families for both languages through the existing test library. Main keeps codeunit `Sub LicAdm Setup Tst ori` at 95728; the seed codeunit moved so the two codeunits no longer share one ID. The explicit Web Client seed action resets record variables between independent subscriptions and refuses replay and runs only in CRONUS; it is never an installer, message type, consent, licence or write-guard override. Actual acceptance calls still run over the shipping MCP path. Final owned-container deletion removes all seeded business and fixture state.
+
+### Fixed (2026-10-23) - scoped operations and recoverable failures (#63)
+
+- `Sub Ana Recalc Impl ori` (10035056) limits both analysis writes and response counts to `contractNo`, and refuses unknown contracts before any write. The standard report runs with the contract in a separate filter group so its own nonblank filter cannot replace it.
+- `Sub Vend AddToInv Impl ori` (10035068) refuses a contract for another invoice vendor with `ConflictingIdentifiers`, checks unknown contracts, and excludes text lines from `linesAdded`.
+- `Sub Ren CrQuote Impl ori` (10035052) matches Microsoft's contract renewal selection: open item/account lines, no planned subscription line, and an end date. Closed lines from a prior merge are excluded.
+- `Sub Usg Import Impl ori` (10035053) retains the committed import and file on processing failure and returns `usageDataImportEntryNo`, `importRetained` and deletion/retry guidance. `Sub Usg Process Impl ori` (10035054) reports Error when its own imported or billing lines are in Error, even if the header says None.
+- `Sub Bil PostDocs Impl ori` (10035085) returns posted, failed and not-attempted documents after a posting failure. Earlier posted documents remain posted.
+- Native regressions in `Sub Data Safety Tst ori` (95722), `Sub Renewal Tst ori` (95776), `Sub PostDocs Tst ori` (95718) and the vendor invoice test cover these boundaries in 1033 and 1039.
+
+- Shared response/help contract `Sub Contract Parts ori` (10035075) and existing should-have regressions `Sub ShouldHave Tst ori` (95715) are updated with the data-safety changes.
 
 ### Changed (2026-11-06) - renewal quote help (#64)
 

@@ -63,6 +63,7 @@ codeunit 95715 "Sub Should Have Tst ori"
         Assert.IsTrue(TestLib.GetInteger(ResponseJson, 'linesAdded') > 0, 'The invoice must gain purchase lines.');
         PurchaseLine.SetRange("Document Type", PurchaseHeader."Document Type");
         PurchaseLine.SetRange("Document No.", PurchaseHeader."No.");
+        PurchaseLine.SetFilter(Type, '<>%1', PurchaseLine.Type::" ");
         Assert.AreEqual(PurchaseLine.Count(), TestLib.GetInteger(ResponseJson, 'linesAdded'), 'The response must count persisted lines.');
         PurchaseLine.CalcSums("Line Amount");
         Assert.AreNotEqual(0, PurchaseLine."Line Amount", 'The invoice must carry a billed amount.');
@@ -84,7 +85,6 @@ codeunit 95715 "Sub Should Have Tst ori"
         CreatePurchaseInvoice();
 
         // [WHEN] The due vendor contract lines are added
-        RequestJson.Add('contractNo', VendorContractNoTok);
         ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.VendorContract.AddLinesToInvoice", InvoiceNoTok, RequestJson, false);
 
         // [THEN] Nothing is added

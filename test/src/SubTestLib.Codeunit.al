@@ -24,6 +24,23 @@ codeunit 95710 "Sub Test Lib ori"
     /// <returns>The response JSON.</returns>
     procedure Invoke(MessageType: Enum "Message Type ori"; Subject: Text[250]; RequestJson: JsonObject; OmitCommit: Boolean) ResponseJson: JsonObject
     var
+        ConfirmedRequest: JsonObject;
+        RequestText: Text;
+        ExpectedCount: Integer;
+    begin
+        ResponseJson := Dispatch(MessageType, Subject, RequestJson, OmitCommit);
+        if RequestJson.Contains('expectedCount') then
+            exit;
+        if not PreviewExpectedCount(ResponseJson, ExpectedCount) then
+            exit;
+        RequestJson.WriteTo(RequestText);
+        Assert.IsTrue(ConfirmedRequest.ReadFrom(RequestText), 'The confirmed request must be readable JSON.');
+        ConfirmedRequest.Add('expectedCount', ExpectedCount);
+        ResponseJson := Dispatch(MessageType, Subject, ConfirmedRequest, OmitCommit);
+    end;
+
+    local procedure Dispatch(MessageType: Enum "Message Type ori"; Subject: Text[250]; RequestJson: JsonObject; OmitCommit: Boolean) ResponseJson: JsonObject
+    var
         Dispatcher: Codeunit "Dispatcher ori";
         RequestContent: BigText;
         ResponseContent: BigText;
@@ -38,6 +55,20 @@ codeunit 95710 "Sub Test Lib ori"
             RequestContent, ResponseContent, ResponseContentType, OmitCommit);
         ResponseContent.GetSubText(ResponseText, 1);
         Assert.IsTrue(ResponseJson.ReadFrom(ResponseText), 'The dispatcher must answer with JSON: ' + ResponseText);
+    end;
+
+    local procedure PreviewExpectedCount(ResponseJson: JsonObject; var ExpectedCount: Integer): Boolean
+    var
+        Token: JsonToken;
+    begin
+        ExpectedCount := 0;
+        if not ResponseJson.Get('code', Token) then
+            exit(false);
+        if Token.AsValue().AsText() <> 'ConfirmationRequired' then
+            exit(false);
+        if not ResponseJson.Get('expected', Token) then
+            exit(false);
+        exit(Evaluate(ExpectedCount, Token.AsValue().AsText()));
     end;
 
     /// <summary>Adds the explicit single-subject confirmation supported by Foundation 28.0.11 and later.</summary>
