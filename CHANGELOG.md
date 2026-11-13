@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-04) - refusal text slips (#78)
+
+- Refusal messages: final full stops on date-format refusals, English-only 'Customer or Vendor', and both accepted parameters named (#78).
+- 95723 exercises the direct partner reader and ClearProposal/DeleteDocuments/DisconnectSubscription recovery text, plus their preflight alternatives, in English and Icelandic (#78, PR86 review).
+- Retain #75's type-specific validation phases and all alternative keys while routing value refusals through the single-stop formatter (10035058; PR86 amendment).
+
 ### Changed (2026-11-06) - renewal quote help (#64)
 
 - `Sub Contract Parts ori`: the workflow text of Subscription.Renewal.CreateQuote now says that dates inside the quote text follow the Business Central session's regional settings (Microsoft builds the text; accepted as a Microsoft-side limitation by Claude Code, #64 item 7).
