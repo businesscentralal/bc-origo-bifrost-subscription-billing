@@ -112,6 +112,12 @@
 - Readable-filter and localized-refusal regressions: `Sub Bil SetFilter Impl ori` (10035070), `Sub PU Filter Tst ori` (95708), `Sub ShouldHave Tst ori` (95715), and `Sub Help Wording Tst ori` (95727).
 - Other touched acceptance objects: `Sub Con PrvInvoice Impl ori` (10035039), `Sub Vend PrvInv Impl ori` (10035044).
 
+### Fixed (2026-10-23) - purchase posting guidance (#65)
+
+- `Sub Bil PostDocs Impl ori` (10035085) now directs foreign vendor documents to the registered `Purchase.Document.Post` message type in English and Icelandic. The selection text, help notes, shared errors and posting permission comment use the same name.
+- `Sub Contract Parts ori` (10035075) updates the help errors chapter, and `BIFROST SubPost ori` (10035086) updates the permission set documentation comment to name the same purchase posting type.
+- `Sub PostDocs Tst ori` (95718) checks the actual refusal and the suggested type's registration in both languages, and verifies the foreign invoice stays open.
+
 ### Changed (2026-10-21) - AppSource delivery
 
 - `.AL-Go/settings.json`: `deliverToAppSource` names the Partner Center offer for Bifrost Subscription Billing (productId 38e354a0-cb89-4b45-81de-b3b69369627f, main app folder `app`, branch main, no continuous delivery), so the Publish To AppSource workflow can deliver new versions to the offer.
