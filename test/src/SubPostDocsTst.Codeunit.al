@@ -131,6 +131,7 @@ codeunit 95718 "Sub PostDocs Tst ori"
         Response: JsonObject;
         Token: JsonToken;
     begin
+        TestLibrary.AllowPostingOnWorkDate();
         TestLibrary.CreateBillableCustomerContract(Contract, Subscription, 0D);
         TestLibrary.CreateBillingTemplate(BillingSetup, Enum::"Service Partner"::Customer, Contract."No.");
         TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", TemplateRequest(BillingSetup.Code));
@@ -155,6 +156,7 @@ codeunit 95718 "Sub PostDocs Tst ori"
     begin
         // Issue #52, AC03 | Time: WorkDate() is the document and posting date | Risk: None
         // [GIVEN] An unposted sales invoice created by a billing run
+        TestLibrary.AllowPostingOnWorkDate();
         TestLibrary.CreateBillableCustomerContract(CustomerContract, SubscriptionHeader, 0D);
         TestLibrary.CreateBillingTemplate(BillingTemplate, Enum::"Service Partner"::Customer, CustomerContract."No.");
         TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", TemplateRequest(BillingTemplate.Code));
@@ -326,6 +328,7 @@ codeunit 95718 "Sub PostDocs Tst ori"
     begin
         // Issue #52, AC02 edge case | Time: WorkDate() | Risk: None
         // [GIVEN] An unposted sales invoice created by a billing run
+        TestLibrary.AllowPostingOnWorkDate();
         TestLibrary.CreateBillableCustomerContract(CustomerContract, SubscriptionHeader, 0D);
         TestLibrary.CreateBillingTemplate(BillingTemplate, Enum::"Service Partner"::Customer, CustomerContract."No.");
         TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", TemplateRequest(BillingTemplate.Code));
@@ -353,6 +356,7 @@ codeunit 95718 "Sub PostDocs Tst ori"
         ResponseJson: JsonObject;
         DocumentToken: JsonToken;
     begin
+        TestLibrary.AllowPostingOnWorkDate();
         TestLibrary.CreateBillableVendorContract(VendorContract, SubscriptionHeader);
         TestLibrary.CreateBillingTemplate(BillingTemplate, Enum::"Service Partner"::Vendor, VendorContract."No.");
         TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", TemplateRequest(BillingTemplate.Code));

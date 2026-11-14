@@ -7,6 +7,7 @@ using Microsoft.Inventory.Item;
 using Microsoft.Purchases.Vendor;
 using Microsoft.Sales.Customer;
 using Microsoft.SubscriptionBilling;
+using System.Security.User;
 using Origo.Bifrost;
 using Origo.Bifrost.SubscriptionBilling;
 
@@ -334,6 +335,28 @@ codeunit 95770 "Sub Test Library ori"
         Commit();
         PerformWrite(TempArgument);
         exit(TempArgument.GetResponseJson());
+    end;
+
+    /// <summary>
+    /// Opens the General Ledger Setup posting range (and the current user's User Setup range, if any) so a
+    /// test can post on WorkDate() on a company whose allowed posting dates exclude the work date. The
+    /// test's own isolation rolls the change back.
+    /// </summary>
+    procedure AllowPostingOnWorkDate()
+    var
+        GeneralLedgerSetup: Record "General Ledger Setup";
+        UserSetup: Record "User Setup";
+    begin
+        GeneralLedgerSetup.Get();
+        GeneralLedgerSetup."Allow Posting From" := 0D;
+        GeneralLedgerSetup."Allow Posting To" := 0D;
+        GeneralLedgerSetup.Modify(false);
+        UserSetup.SetLoadFields("Allow Posting From", "Allow Posting To");
+        if UserSetup.Get(CopyStr(UserId(), 1, MaxStrLen(UserSetup."User ID"))) then begin
+            UserSetup."Allow Posting From" := 0D;
+            UserSetup."Allow Posting To" := 0D;
+            UserSetup.Modify(false);
+        end;
     end;
 
     /// <summary>Reads an integer property of a response.</summary>
