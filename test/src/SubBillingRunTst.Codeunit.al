@@ -77,6 +77,7 @@ codeunit 95775 "Sub Billing Run Tst ori"
     begin
         // Issue #43, AC05 posted | Time: WorkDate() is the document and posting date | Risk: None
         // [GIVEN] A proposal for one customer contract
+        TestLibrary.AllowPostingOnWorkDate();
         TestLibrary.CreateBillableCustomerContract(CustomerContract, SubscriptionHeader, 0D);
         TestLibrary.CreateBillingTemplate(BillingTemplate, Enum::"Service Partner"::Customer, CustomerContract."No.");
         TestLibrary.Run(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", TemplateRequest(BillingTemplate.Code));

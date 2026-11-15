@@ -35,6 +35,7 @@ codeunit 95778 "Sub Deferral Analysis Tst ori"
     begin
         // Issue #43, AC09 | Time: postingDate is the work date, the only date the release report uses | Risk: releases nothing else, other deferrals are set aside first
         // [GIVEN] A posted contract invoice whose first deferral posts on the work date
+        TestLibrary.AllowPostingOnWorkDate();
         PostedInvoiceNo := PostContractInvoiceWithDeferrals();
         CustSubContractDeferral.SetRange("Document No.", PostedInvoiceNo);
         Assert.RecordIsNotEmpty(CustSubContractDeferral);
