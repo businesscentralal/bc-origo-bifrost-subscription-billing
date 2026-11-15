@@ -38,7 +38,8 @@ App:
 - 10035083 table `Sub Posting ori`, 10035084 codeunit `Sub Posting Gate ori` (#52)
 - 10035073 codeunit `Sub Con Merge Impl ori` and enum value `Subscription.Contract.MergeLines` (#50)
 - 10035074 codeunit `Sub Con Merge Mgt ori` (Microsoft merge copy, #50)
-- Free: 10035087-10035090
+- 10035087 codeunit `Sub PU Perform Confirm ori` (#91; the Msg Confirm ori counter of Subscription.PriceUpdate.Perform)
+- Free: 10035088-10035090
 
 Tests:
 - 95700 `Sub Test Install ori`, 95701 `Sub Msg Type Tst ori`, 95702 `Sub Helper Tst ori`,

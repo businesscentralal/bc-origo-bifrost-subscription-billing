@@ -64,8 +64,7 @@ codeunit 95710 "Sub Test Lib ori"
             MessageType::"Subscription.Usage.ConnectSubscriptions",
             MessageType::"Subscription.Usage.Process",
             MessageType::"Subscription.Usage.DeleteData",
-            MessageType::"Subscription.Renewal.CreateQuote",
-            MessageType::"Subscription.PriceUpdate.Perform":
+            MessageType::"Subscription.Renewal.CreateQuote":
                 RequestJson.Add('expectedCount', 1);
         end;
     end;
