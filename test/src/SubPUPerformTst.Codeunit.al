@@ -3,6 +3,7 @@ namespace Origo.Bifrost.SubscriptionBilling.Test;
 using Microsoft.Inventory.Item;
 using Microsoft.Sales.Customer;
 using Microsoft.SubscriptionBilling;
+using Origo.Bifrost;
 using System.TestLibraries.Utilities;
 
 /// <summary>
@@ -257,6 +258,136 @@ codeunit 95743 "Sub PU Perform Tst ori"
         ResponseJson := TestLib.InvokePerform('XPUNOSUCHTEMPLATE', false);
         Assert.AreEqual('Error', TestLib.ReadText(ResponseJson, 'status'), 'An unknown template must be refused.');
         Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('XPUNOSUCHTEMPLATE'), 'The error must name the template.');
+    end;
+
+    [Test]
+    procedure Perform_ExpectedCount_CountsProposalLinesOfTheTemplate()
+    var
+        CustomerContract: Record "Customer Subscription Contract";
+        ContractPriceUpdateLine: Record "Sub. Contr. Price Update Line";
+        PriceUpdateTemplate: Record "Price Update Template";
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+    begin
+        // #91 AC1 | Time: WorkDate-relative | Risk: None
+        // [GIVEN] A proposal of two lines under one template.
+        SeedAndPropose(CustomerContract, PriceUpdateTemplate, Enum::"Price Update Method"::"Price by %", 10, WorkDate(), CalcDate('<1M>', WorkDate()));
+        // [WHEN] The call is confirmed with the number of contracts (1) instead of the number of lines (2).
+        RequestJson.Add('priceUpdateTemplateCode', PriceUpdateTemplate.Code);
+        RequestJson.Add('expectedCount', 1);
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, true);
+        // [THEN] It is refused with the real count and nothing is performed.
+        Assert.AreEqual('ConfirmationMismatch', TestLib.ReadText(ResponseJson, 'code'), 'A count of 1 must not confirm two proposal lines.');
+        Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('2'), 'The refusal must name the real count of 2.');
+        ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplate.Code);
+        Assert.AreEqual(2, ContractPriceUpdateLine.Count(), 'A refused confirmation must leave the proposal untouched.');
+        // [WHEN] It is confirmed with the number of lines.
+        Clear(RequestJson);
+        RequestJson.Add('priceUpdateTemplateCode', PriceUpdateTemplate.Code);
+        RequestJson.Add('expectedCount', 2);
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, true);
+        // [THEN] Both lines are performed.
+        TestLib.AssertSuccess(ResponseJson, 'A count of 2 must confirm two proposal lines.');
+        Assert.RecordIsEmpty(ContractPriceUpdateLine);
+    end;
+
+    [Test]
+    procedure Perform_ExpectedCount_WithoutTemplateCountsEveryTemplatesLines()
+    var
+        FirstContract: Record "Customer Subscription Contract";
+        SecondContract: Record "Customer Subscription Contract";
+        ContractPriceUpdateLine: Record "Sub. Contr. Price Update Line";
+        FirstTemplate: Record "Price Update Template";
+        SecondTemplate: Record "Price Update Template";
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+        AllLines: Integer;
+    begin
+        // #91 AC1 edge case: no template named | Time: WorkDate-relative | Risk: None
+        // [GIVEN] Proposals under two templates.
+        SeedAndPropose(FirstContract, FirstTemplate, Enum::"Price Update Method"::"Price by %", 10, WorkDate(), CalcDate('<1M>', WorkDate()));
+        SeedContractAndProposeAgain(SecondContract, SecondTemplate);
+        AllLines := ContractPriceUpdateLine.Count();
+        Assert.IsTrue(AllLines >= 4, 'The fixture must hold at least four proposal lines.');
+        // [WHEN] The call names no template and is confirmed with the lines of one template.
+        RequestJson.Add('expectedCount', 2);
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, true);
+        // [THEN] It is refused, because it would perform every template's lines, and nothing is performed.
+        Assert.AreEqual('ConfirmationMismatch', TestLib.ReadText(ResponseJson, 'code'), 'A count of one template must not confirm every template.');
+        Assert.AreEqual(AllLines, ContractPriceUpdateLine.Count(), 'A refused confirmation must leave every line in place.');
+        // [WHEN] It is confirmed with the lines of every template.
+        Clear(RequestJson);
+        RequestJson.Add('expectedCount', AllLines);
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, true);
+        // [THEN] Every line is performed.
+        TestLib.AssertSuccess(ResponseJson, 'The count of every line must confirm the call.');
+        Assert.RecordIsEmpty(ContractPriceUpdateLine);
+    end;
+
+    [Test]
+    procedure Perform_ExpectedCount_UnknownTemplateIsStillRefusedByName()
+    var
+        RequestJson: JsonObject;
+        ResponseJson: JsonObject;
+    begin
+        // #91 AC1 invalid input | Time: none | Risk: None
+        TestLib.Initialize();
+        Commit();
+        // [WHEN] A confirmed call names a template that does not exist.
+        RequestJson.Add('priceUpdateTemplateCode', 'XPUNOSUCHTEMPLATE');
+        RequestJson.Add('expectedCount', 5);
+        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, false);
+        // [THEN] The type's own refusal names the template; the count is not what refuses it.
+        Assert.AreEqual('Error', TestLib.ReadText(ResponseJson, 'status'), 'An unknown template must be refused.');
+        Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('XPUNOSUCHTEMPLATE'), 'The error must name the template.');
+    end;
+
+    [Test]
+    procedure Perform_Help_DefinesWhatExpectedCountCounts()
+    var
+        SavedLanguage: Integer;
+    begin
+        // #91 AC1 and AC3 | Time: none | Risk: None
+        // [THEN] The irreversible type names its count in the effect and the parameter, in English and Icelandic (chapters stay English).
+        SavedLanguage := GlobalLanguage();
+        GlobalLanguage(1033);
+        AssertCountDefined();
+        GlobalLanguage(1039);
+        AssertCountDefined();
+        GlobalLanguage(SavedLanguage);
+    end;
+
+    local procedure AssertCountDefined()
+    var
+        ContractMgt: Codeunit "Msg Contract Mgt ori";
+        MessageType: Enum "Message Type ori";
+        Contract: JsonObject;
+        Token: JsonToken;
+        Entry: JsonToken;
+        EffectObject: JsonObject;
+        ChangesText: Text;
+        ParameterText: Text;
+    begin
+        MessageType := Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform";
+        Assert.IsTrue(ContractMgt.GetContract(MessageType, Contract), 'The type must declare a contract.');
+        Contract.Get('effect', Token);
+        EffectObject := Token.AsObject();
+        EffectObject.Get('effect', Token);
+        Assert.AreEqual('irreversible', Token.AsValue().AsText(), 'The type changes prices and deletes proposal lines, so it stays irreversible.');
+        EffectObject.Get('changes', Token);
+        ChangesText := Token.AsValue().AsText();
+        Assert.IsTrue(ChangesText.Contains('Contract Price Update Lines the call would perform'), 'effect.changes must name the unit that expectedCount counts.');
+        Assert.IsTrue(ChangesText.Contains('without expectedCount'), 'effect.changes must say how to read the count without a side effect.');
+        Contract.Get('parameters', Token);
+        foreach Entry in Token.AsArray() do begin
+            Entry.AsObject().Get('name', Token);
+            if Token.AsValue().AsText() = 'expectedCount' then begin
+                Entry.AsObject().Get('description', Token);
+                ParameterText := Token.AsValue().AsText();
+            end;
+        end;
+        Assert.IsTrue(ParameterText.Contains('Counts Contract Price Update Lines'), 'The expectedCount parameter must name its unit.');
+        Assert.IsTrue(ParameterText.Contains('without expectedCount and read expected'), 'The expectedCount parameter must say how to preview the count.');
     end;
 
     local procedure SeedAndPropose(var CustomerContract: Record "Customer Subscription Contract"; var PriceUpdateTemplate: Record "Price Update Template"; PriceUpdateMethod: Enum "Price Update Method"; UpdateValuePct: Decimal; PerformUpdateOnDate: Date; NextBillingDate: Date)

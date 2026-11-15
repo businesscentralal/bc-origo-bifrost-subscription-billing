@@ -113,7 +113,7 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
     value(10035050; "Subscription.PriceUpdate.Perform")
     {
         Caption = 'Subscription.PriceUpdate.Perform', Locked = true;
-        Implementation = "Msg Interface ori" = "Sub PU Perform Impl ori", "Msg Discovery ori" = "Sub PU Perform Impl ori", "Msg Contract ori" = "Sub PU Perform Impl ori";
+        Implementation = "Msg Interface ori" = "Sub PU Perform Impl ori", "Msg Discovery ori" = "Sub PU Perform Impl ori", "Msg Contract ori" = "Sub PU Perform Impl ori", "Msg Confirm ori" = "Sub PU Perform Confirm ori";
     }
 
     /// <summary>Extends a Subscription Contract term with additional package lines.</summary>

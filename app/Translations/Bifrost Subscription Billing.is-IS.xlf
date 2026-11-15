@@ -1179,6 +1179,18 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Stofna tillögu að verðuppfærslu: býr til línur verðuppfærslu með nýjum verðum fyrir þær áskriftarlínur sem verðuppfærslusniðmát nær yfir. Skrifar eingöngu tillögulínurnar; engin verð breytast enn. Fyrst er línum afmarkað með Subscription.PriceUpdate.SetTemplateFilter; tillagan er framkvæmd með Subscription.PriceUpdate.Perform.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU CrProposal Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 907505258 - Method 3507224617 - NamedType 813861734" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Contract Price Update Lines of every Price Update Template</source>
+          <target>línur verðuppfærslu áskriftarsamnings í öllum sniðmátum fyrir verðuppfærslu</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=línur verðuppfærslu áskriftarsamnings í öllum sniðmátum fyrir verðuppfærslu</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Confirm ori - Method GetConfirmCount - NamedType AllTemplatesTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 907505258 - Method 3507224617 - NamedType 3113974224" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Contract Price Update Lines of Price Update Template %1</source>
+          <target>línur verðuppfærslu áskriftarsamnings í sniðmáti fyrir verðuppfærslu %1</target>
+          <note from="Developer" annotates="general" priority="2">%1 = price update template code||is-IS=línur verðuppfærslu áskriftarsamnings í sniðmáti fyrir verðuppfærslu %1</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub PU Perform Confirm ori - Method GetConfirmCount - NamedType OneTemplateTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 4155906984 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Applies the Contract Price Update Lines: updates Subscription Lines or writes Planned Subscription Lines, and deletes each performed line. Nothing is posted.</source>
           <target>Beitir línum verðuppfærslu áskriftarsamnings: uppfærir áskriftarlínur eða skrifar áætlaðar áskriftarlínur og eyðir hverri framkvæmdri línu. Ekkert er bókað.</target>

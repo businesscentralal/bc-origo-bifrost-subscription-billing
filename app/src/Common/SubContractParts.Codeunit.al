@@ -250,6 +250,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     procedure PriceUpdatePerformParameters() Parameters: JsonArray
     begin
         Parameters.Add(ContractMgt.Parameter('priceUpdateTemplateCode', 'string', false, 'Performs only the lines of this Price Update Template. May be supplied as the subject instead. Omit it to perform every line of every template, as the Contract Price Update page does.'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, 'Counts Contract Price Update Lines: the proposal lines this call would perform (apply and delete) now, within priceUpdateTemplateCode or the subject when one is given, otherwise across every template. It is not a number of contracts, Subscription Lines or templates. To get the number without any change, send the same request without expectedCount and read expected in the ConfirmationRequired answer. Always checked when sent; required only when Require Confirmation for Irreversible Messages is enabled in Bifrost Setup.'));
     end;
 
     /// <summary>The parameters of Subscription.Renewal.Extend.</summary>
@@ -1113,7 +1114,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 exit('Inserts Contract Price Update Lines (the contract price update proposal) for the template''s matching Subscription Lines. Subscription Lines, contracts and prices are not changed, nothing is posted and nothing is committed.');
             'Subscription.PriceUpdate.Perform':
                 exit('Writes Subscription Lines: changes their prices, Next Price Update and Price Binding Period and archives the old values in the Subscription Line Archive, or inserts Planned Subscription Lines. ' +
-                    'Deletes each performed Contract Price Update Line and commits after each line. Nothing is posted.');
+                    'Deletes each performed Contract Price Update Line and commits after each line. Nothing is posted. Irreversible: the count that expectedCount confirms is the number of Contract Price Update Lines the call would perform, and the same request sent without expectedCount returns it as expected without changing anything.');
             'Subscription.Contract.UpdateExchangeRates':
                 exit('Writes Currency Code, Currency Factor and Currency Factor Date on every Subscription Line of the contract whose contract line is open, converts its Calculation Base Amount again from the local currency amount, which recalculates price and amount, flags its billing lines Update Required and archives the previous amounts. The contract itself is not changed.');
             'Subscription.Contract.UpdateLineDates':
