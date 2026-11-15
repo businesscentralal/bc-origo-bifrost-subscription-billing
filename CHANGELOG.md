@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-15) - Subscription.PriceUpdate.Perform says what expectedCount counts (#91, core #1365)
+
+- `Subscription.PriceUpdate.Perform` stays `irreversible`, and now states its count: the Contract Price Update Lines the call would perform (within the template or subject when one is given, otherwise every template's lines). `effect.changes` and a declared `expectedCount` parameter say so, and that the same request sent without `expectedCount` returns the number as `expected` without a side effect (chapters stay English).
+- New codeunit 10035087 `Sub PU Perform Confirm ori` implements Foundation's `Msg Confirm ori` for the type. Foundation's default counter counted one named template, and a call that named none performed every line with no confirmation. No update lock is taken, because a lock opens a write transaction that the committing path (`Codeunit.Run` per line) refuses.
+- Foundation dependency raised to 28.0.11.0 (app and tests), the version that carries the confirmation gate this relies on.
+- Tests (95743): the count is the number of lines (mismatch refuses, nothing performed), no template counts every template's lines, an unknown template is still refused by name, and the help defines the count in 1033 and 1039. is-IS translations in sync.
+- Other irreversible Subscription Billing types still use Foundation's single-subject count; they are outside #91.
+
 ### Fixed (2026-11-04) - refusal text slips (#78)
 
 - Refusal messages: final full stops on date-format refusals, English-only 'Customer or Vendor', and both accepted parameters named (#78).
