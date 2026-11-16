@@ -386,8 +386,11 @@ codeunit 95731 "Sub Effect Count Tst ori"
         Counter: Interface "Msg Confirm ori";
         Summary: Text;
     begin
+        TempArgument.Init();
         TempArgument.Type := MessageType;
         TempArgument.Subject := Subject;
+        // GetRequestJson reloads the request BLOB from the temporary row.
+        TempArgument.Insert(true);
         TempArgument.SetRequestJson(Request);
         Counter := MessageType;
         Assert.IsTrue(Counter.GetConfirmCount(TempArgument, Count, Summary), 'The counter must answer.');

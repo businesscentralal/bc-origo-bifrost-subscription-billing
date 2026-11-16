@@ -8,6 +8,7 @@
 - Eighteen audited types define their count unit, the non-writing confirmation preview and the Orchestrator `@preview` Max Count requirement in `effect.changes` and `expectedCount`. The labels include is-IS translations. Foundation continues to render contract chapters in English in either session language; localized confirmation summaries use the caller's language.
 - Six existing implementation codeunits now supply read-only counters: 10035040 (Subscription Headers scanned by term-date processing; zero for an already pending job), 10035055 (due unreleased deferrals), 10035057 (distinct staging rows selected by the requested import stages), 10035061 (selected billing proposal lines), 10035065 (distinct documents referenced by selected billing lines), and 10035085 (requested posting entries). Valid subject-less requests and contract/document alternatives no longer bypass confirmation.
 - Adds test codeunit 95731 `Sub Effect Count Tst ori` for bilingual help, deletion preview/confirmation, explicit mismatches and invalid counts, selection boundaries, distinct document/staging counts and no-write previews. Existing business-effect tests retain their assertions and obtain changed counts through the preview protocol. No product object ID was added.
+- Import confirmation help describes a staged subscription line without exposing the internal table name; the count unit is unchanged.
 
 ### Fixed (2026-11-15) - Subscription.PriceUpdate.Perform says what expectedCount counts (#91, core #1365)
 

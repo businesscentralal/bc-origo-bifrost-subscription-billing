@@ -904,7 +904,7 @@
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType DeferralsTxt</note>
         </trans-unit>
         <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 3206957491" size-unit="char" translate="yes" xml:space="preserve">
-          <source>Counts staging rows eligible for at least one requested stage at preview time. An Imported Subscription Line counts once even when both line stages select it; rows later skipped or failed still count.</source>
+          <source>Counts staging rows eligible for at least one requested stage at preview time. A staged subscription line counts once even when both line stages select it; rows later skipped or failed still count.</source>
           <target>Telur bráðabirgðalínur sem koma til greina í að minnsta kosti einu umbeðnu skrefi við forskoðun. Innflutt áskriftarlína er talin einu sinni þótt bæði línuskref velji hana; línur sem síðar er sleppt eða mistakast teljast með.</target>
           <note from="Developer" annotates="general" priority="2">is-IS=Telur bráðabirgðalínur sem koma til greina í að minnsta kosti einu umbeðnu skrefi við forskoðun. Innflutt áskriftarlína er talin einu sinni þótt bæði línuskref velji hana; línur sem síðar er sleppt eða mistakast teljast með.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType StagingTxt</note>
