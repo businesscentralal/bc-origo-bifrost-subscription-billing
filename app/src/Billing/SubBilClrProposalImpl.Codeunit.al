@@ -12,7 +12,7 @@ using Origo.Bifrost;
 /// OnDelete trigger resets the Next Billing Date of each Subscription Line and recalculates the
 /// harmonized billing fields of the contract. A line already on a document is refused.
 /// </summary>
-codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
+codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori", "Msg Confirm ori"
 {
     TableNo = "Message Argument ori";
 
@@ -86,6 +86,54 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
     procedure GetEffect(var Effect: JsonObject): Boolean
     begin
         Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    /// <summary>Counts the documented confirmation unit without writing business data.</summary>
+    /// <param name="Argument">The request to preview.</param>
+    /// <param name="Count">Receives the number of units currently in scope.</param>
+    /// <param name="Summary">Receives the localized definition of the count.</param>
+    /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
+    var
+        DefaultConfirm: Codeunit "Default Confirm ori";
+        Counted: Boolean;
+    begin
+        Count := 0;
+        if not TryCountConfirmation(Argument, Count, Counted) then begin
+            Argument.RespondWithLastError();
+            exit(false);
+        end;
+        if Counted then
+            Summary := ContractParts.GetConfirmationHelp(ContractType())
+        else begin
+            Count := 0;
+            Summary := DefaultConfirm.NoSubjectText();
+        end;
+        exit(true);
+    end;
+
+    [TryFunction]
+    local procedure TryCountConfirmation(var Argument: Record "Message Argument ori"; var Count: Integer; var Counted: Boolean)
+    begin
+        Counted := CountConfirmation(Argument, Count);
+    end;
+
+    local procedure CountConfirmation(var Argument: Record "Message Argument ori"; var Count: Integer): Boolean
+    var
+        BillingLine: Record "Billing Line";
+        RequestJson: JsonObject;
+        TemplateCode: Code[20];
+        ContractNo: Code[20];
+    begin
+        BillingLine.ReadIsolation := IsolationLevel::ReadCommitted;
+        RequestJson := Argument.GetRequestJson();
+        TemplateCode := Helper.GetSubjectOr(RequestJson, 'billingTemplateCode', Argument, false);
+        ContractNo := Helper.GetCode20(RequestJson, 'contractNo', false);
+        if (TemplateCode = '') and (ContractNo = '') then
+            exit(false);
+        FilterProposal(BillingLine, TemplateCode, ContractNo);
+        Count := BillingLine.Count();
         exit(true);
     end;
 

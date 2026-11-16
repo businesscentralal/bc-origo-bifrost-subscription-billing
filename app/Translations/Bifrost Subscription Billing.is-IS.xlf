@@ -843,6 +843,102 @@
           <note from="Developer" annotates="general" priority="2">is-IS=Uppfæra gengi á samningi: vistar nýjan gengisstuðul á áskriftarlínum eins samnings viðskiptamanns eða lánardrottins í erlendum gjaldmiðli og endurreiknar verð þeirra og upphæðir, og geymir gömlu gildin í safni. Skrifar gögn; ekkert er reikningsfært. Reikningurinn er stofnaður á eftir með Subscription.Contract.CreateInvoice eða Subscription.VendorContract.CreateInvoice.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Con UpdFCY Impl ori - Method GetSelectionDescription - NamedType SelectionLbl</note>
         </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 2560209068 - NamedType 2994457118" size-unit="char" translate="yes" xml:space="preserve">
+          <source>expectedCount: %1 With Require Confirmation for Irreversible Messages enabled in Bifrost Setup, send the same request without expectedCount and read expected in ConfirmationRequired; this preview changes no business data. A supplied expectedCount is always checked. In an Orchestrator step, "@preview" requires an author-set Max Count cap.</source>
+          <target>expectedCount: %1 Þegar staðfesting óafturkræfra skilaboða er virk í uppsetningu Bifrastar skal senda sömu beiðni án expectedCount og lesa expected í ConfirmationRequired; þessi forskoðun breytir engum viðskiptagögnum. Sent expectedCount er alltaf sannprófað. Í Orchestrator-skrefi þarf "@preview" hámarkið Max Count sem höfundur stillir.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = count unit||is-IS=expectedCount: %1 Þegar staðfesting óafturkræfra skilaboða er virk í uppsetningu Bifrastar skal senda sömu beiðni án expectedCount og lesa expected í ConfirmationRequired; þessi forskoðun breytir engum viðskiptagögnum. Sent expectedCount er alltaf sannprófað. Í Orchestrator-skrefi þarf "@preview" hámarkið Max Count sem höfundur stillir.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetConfirmationHelp - NamedType PreviewTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 3906913554" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one named Customer Subscription Contract, not its lines or resulting invoices.</source>
+          <target>Telur einn tilgreindan áskriftarsamning viðskiptamanns, ekki línur hans eða reikninga sem verða til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur einn tilgreindan áskriftarsamning viðskiptamanns, ekki línur hans eða reikninga sem verða til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType CustomerContractTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 373588426" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one named Vendor Subscription Contract, not its lines or resulting invoices.</source>
+          <target>Telur einn tilgreindan áskriftarsamning lánardrottins, ekki línur hans eða reikninga sem verða til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur einn tilgreindan áskriftarsamning lánardrottins, ekki línur hans eða reikninga sem verða til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType VendorContractTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 2913075299" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts all Subscription Headers in the company that the term-date job scans. An already pending job counts zero new work. In background mode this is the count when the job is queued; it is not a count of lines that will close.</source>
+          <target>Telur alla áskriftarhausa í fyrirtækinu sem keyrslan fer yfir. Verk sem þegar bíður telur ekkert nýtt verk. Í bakgrunnsham er þetta fjöldinn þegar verkið er sett í biðröð; þetta er ekki fjöldi lína sem verður lokað.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur alla áskriftarhausa í fyrirtækinu sem keyrslan fer yfir. Verk sem þegar bíður telur ekkert nýtt verk. Í bakgrunnsham er þetta fjöldinn þegar verkið er sett í biðröð; þetta er ekki fjöldi lína sem verður lokað.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType TermDatesTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 100043948" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one named Billing Template, not the contracts or proposal lines selected by its filters.</source>
+          <target>Telur eitt tilgreint reikningssniðmát, ekki samninga eða tillögulínur sem síur þess velja.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur eitt tilgreint reikningssniðmát, ekki samninga eða tillögulínur sem síur þess velja.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType TemplateTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 50779701" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one named Subscription Header, not the package lines or contract lines created.</source>
+          <target>Telur einn tilgreindan áskriftarhaus, ekki pakkalínur eða samningslínur sem verða til.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur einn tilgreindan áskriftarhaus, ekki pakkalínur eða samningslínur sem verða til.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType SubscriptionTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 3413589372" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one named Customer Subscription Contract, not its selected lines or the renewal quote lines.</source>
+          <target>Telur einn tilgreindan áskriftarsamning viðskiptamanns, ekki valdar línur hans eða línur endurnýjunartilboðs.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur einn tilgreindan áskriftarsamning viðskiptamanns, ekki valdar línur hans eða línur endurnýjunartilboðs.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType QuoteContractTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 3299643584" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one named Usage Data Supplier, not the imported usage rows or connected subscriptions.</source>
+          <target>Telur einn tilgreindan birgja notkunargagna, ekki innfluttar notkunarlínur eða tengdar áskriftir.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur einn tilgreindan birgja notkunargagna, ekki innfluttar notkunarlínur eða tengdar áskriftir.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType SupplierTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 3777830815" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one named Usage Data Import entry, not its imported lines, billing rows or processing steps.</source>
+          <target>Telur eina tilgreinda innflutningsfærslu notkunargagna, ekki innfluttar línur hennar, reikningslínur eða vinnsluskref.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur eina tilgreinda innflutningsfærslu notkunargagna, ekki innfluttar línur hennar, reikningslínur eða vinnsluskref.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType ImportTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 1993549648" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts unreleased customer and vendor contract deferral entries with Posting Date up to the session work date, across every contract.</source>
+          <target>Telur óútleystar frestunarfærslur samninga viðskiptamanna og lánardrottna með bókunardagsetningu fram að vinnudagsetningu setunnar, á öllum samningum.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur óútleystar frestunarfærslur samninga viðskiptamanna og lánardrottna með bókunardagsetningu fram að vinnudagsetningu setunnar, á öllum samningum.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType DeferralsTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 3206957491" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts staging rows eligible for at least one requested stage at preview time. An Imported Subscription Line counts once even when both line stages select it; rows later skipped or failed still count.</source>
+          <target>Telur bráðabirgðalínur sem koma til greina í að minnsta kosti einu umbeðnu skrefi við forskoðun. Innflutt áskriftarlína er talin einu sinni þótt bæði línuskref velji hana; línur sem síðar er sleppt eða mistakast teljast með.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur bráðabirgðalínur sem koma til greina í að minnsta kosti einu umbeðnu skrefi við forskoðun. Innflutt áskriftarlína er talin einu sinni þótt bæði línuskref velji hana; línur sem síðar er sleppt eða mistakast teljast með.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType StagingTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 688836528" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts Billing Line rows selected by billingTemplateCode or subject and the optional contractNo, including rows whose document link will cause validation to refuse the call.</source>
+          <target>Telur reikningslínur sem billingTemplateCode eða subject og valfrjálst contractNo velja, þar með taldar línur sem valda höfnun við sannprófun vegna skjalatengingar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur reikningslínur sem billingTemplateCode eða subject og valfrjálst contractNo velja, þar með taldar línur sem valda höfnun við sannprófun vegna skjalatengingar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType ProposalTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 808261048" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts distinct documents referenced by the selected Billing Lines, using partner, document type and document number as the key. It is not a count of billing lines.</source>
+          <target>Telur aðgreind skjöl sem valdar reikningslínur vísa á, með aðila, skjalategund og skjalanúmer sem lykil. Þetta er ekki fjöldi reikningslína.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur aðgreind skjöl sem valdar reikningslínur vísa á, með aðila, skjalategund og skjalanúmer sem lykil. Þetta er ekki fjöldi reikningslína.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType DocumentsTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 2948923292" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts entries in the documents array. Each entry requests one sales or purchase document posting; duplicate or invalid entries still have to pass the posting validation.</source>
+          <target>Telur stök í documents-fylkinu. Hvert stak biður um bókun eins sölu- eða innkaupaskjals; tvítekin eða ógild stök þurfa samt að standast sannprófun bókunar.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur stök í documents-fylkinu. Hvert stak biður um bókun eins sölu- eða innkaupaskjals; tvítekin eða ógild stök þurfa samt að standast sannprófun bókunar.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType PostingTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 3420432232" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one contract line named by contractNo or subject, partner and lineNo. The Subscription Line is detached, not deleted.</source>
+          <target>Telur eina samningslínu sem contractNo eða subject, partner og lineNo tilgreina. Áskriftarlínan er aftengd en ekki eytt.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur eina samningslínu sem contractNo eða subject, partner og lineNo tilgreina. Áskriftarlínan er aftengd en ekki eytt.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType ContractLineTxt</note>
+        </trans-unit>
+        <trans-unit id="Codeunit 1237026466 - Method 3454185309 - NamedType 944294117" size-unit="char" translate="yes" xml:space="preserve">
+          <source>Counts the one Item Subscription Package assignment named by itemNo or subject and subscriptionPackageCode.</source>
+          <target>Telur eina úthlutun áskriftarpakka á vöru sem itemNo eða subject og subscriptionPackageCode tilgreina.</target>
+          <note from="Developer" annotates="general" priority="2">is-IS=Telur eina úthlutun áskriftarpakka á vöru sem itemNo eða subject og subscriptionPackageCode tilgreina.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Contract Parts ori - Method GetCountUnit - NamedType AssignmentTxt</note>
+        </trans-unit>
         <trans-unit id="Codeunit 3806649106 - NamedType 3569966352" maxwidth="250" size-unit="char" translate="yes" xml:space="preserve">
           <source>Releases deferred revenue and cost for customer and vendor Subscription Contracts up to a date, posting the release to the general ledger.</source>
           <target>Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptamanna og lánardrottna fram að tilteknum degi og bókar losunina í fjárhagsbókhald.</target>

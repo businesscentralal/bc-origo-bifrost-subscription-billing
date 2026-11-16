@@ -62,7 +62,9 @@ Tests:
   (behaviour tests that drive Microsoft Subscription Billing, #43)
 - 95717 `Sub Con Ccy Tst ori` (#51), 95718 `Sub PostDocs Tst ori`, 95719 `Sub Post Gate Tst ori` (#52)
 - 95720 `Sub Con Merge Tst ori` (#50)
-- Free: 95721-95739, 95744-95769, 95779-95799
+- 95731 `Sub Effect Count Tst ori` (#93; effects, bilingual count help and confirmation regressions)
+- Other main allocations include 95721-95724, 95727-95728, 95730 and 95780; check source before allocating.
+- Free: 95725-95726, 95729, 95732-95739, 95744-95769, 95779, 95781-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**

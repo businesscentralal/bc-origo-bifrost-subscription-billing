@@ -43,7 +43,7 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
     value(10035040; "Subscription.Contract.UpdateLineDates")
     {
         Caption = 'Subscription.Contract.UpdateLineDates', Locked = true;
-        Implementation = "Msg Interface ori" = "Sub Con UpdDates Impl ori", "Msg Discovery ori" = "Sub Con UpdDates Impl ori", "Msg Contract ori" = "Sub Con UpdDates Impl ori";
+        Implementation = "Msg Interface ori" = "Sub Con UpdDates Impl ori", "Msg Discovery ori" = "Sub Con UpdDates Impl ori", "Msg Contract ori" = "Sub Con UpdDates Impl ori", "Msg Confirm ori" = "Sub Con UpdDates Impl ori";
     }
 
     /// <summary>Recalculates the Subscription Lines of a foreign-currency customer or vendor Subscription Contract with a new exchange rate.</summary>
@@ -148,7 +148,7 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
     value(10035055; "Subscription.Deferral.Release")
     {
         Caption = 'Subscription.Deferral.Release', Locked = true;
-        Implementation = "Msg Interface ori" = "Sub Def Release Impl ori", "Msg Discovery ori" = "Sub Def Release Impl ori", "Msg Contract ori" = "Sub Def Release Impl ori";
+        Implementation = "Msg Interface ori" = "Sub Def Release Impl ori", "Msg Discovery ori" = "Sub Def Release Impl ori", "Msg Contract ori" = "Sub Def Release Impl ori", "Msg Confirm ori" = "Sub Def Release Impl ori";
     }
 
     /// <summary>Rebuilds the Subscription Contract analysis entries.</summary>
@@ -162,21 +162,21 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
     value(10035057; "Subscription.Import.CreateContracts")
     {
         Caption = 'Subscription.Import.CreateContracts', Locked = true;
-        Implementation = "Msg Interface ori" = "Sub Imp CrContr Impl ori", "Msg Discovery ori" = "Sub Imp CrContr Impl ori", "Msg Contract ori" = "Sub Imp CrContr Impl ori";
+        Implementation = "Msg Interface ori" = "Sub Imp CrContr Impl ori", "Msg Discovery ori" = "Sub Imp CrContr Impl ori", "Msg Contract ori" = "Sub Imp CrContr Impl ori", "Msg Confirm ori" = "Sub Imp CrContr Impl ori";
     }
 
     /// <summary>Deletes a Billing Template's billing proposal lines and resets the Next Billing Date of their Subscription Lines.</summary>
     value(10035061; "Subscription.Billing.ClearProposal")
     {
         Caption = 'Subscription.Billing.ClearProposal', Locked = true;
-        Implementation = "Msg Interface ori" = "Sub Bil ClrProposal Impl ori", "Msg Discovery ori" = "Sub Bil ClrProposal Impl ori", "Msg Contract ori" = "Sub Bil ClrProposal Impl ori";
+        Implementation = "Msg Interface ori" = "Sub Bil ClrProposal Impl ori", "Msg Discovery ori" = "Sub Bil ClrProposal Impl ori", "Msg Contract ori" = "Sub Bil ClrProposal Impl ori", "Msg Confirm ori" = "Sub Bil ClrProposal Impl ori";
     }
 
     /// <summary>Deletes the unposted documents created from billing lines and returns the lines to the billing proposal.</summary>
     value(10035065; "Subscription.Billing.DeleteDocuments")
     {
         Caption = 'Subscription.Billing.DeleteDocuments', Locked = true;
-        Implementation = "Msg Interface ori" = "Sub Bil DelDocs Impl ori", "Msg Discovery ori" = "Sub Bil DelDocs Impl ori", "Msg Contract ori" = "Sub Bil DelDocs Impl ori";
+        Implementation = "Msg Interface ori" = "Sub Bil DelDocs Impl ori", "Msg Discovery ori" = "Sub Bil DelDocs Impl ori", "Msg Contract ori" = "Sub Bil DelDocs Impl ori", "Msg Confirm ori" = "Sub Bil DelDocs Impl ori";
     }
 
     /// <summary>Connects a usage data supplier's subscriptions to Subscriptions through Microsoft's Connect to Subscription.</summary>
@@ -239,6 +239,6 @@ enumextension 10035035 "Sub Msg Type ori" extends "Message Type ori"
     value(10035085; "Subscription.Billing.PostDocuments")
     {
         Caption = 'Subscription.Billing.PostDocuments', Locked = true;
-        Implementation = "Msg Interface ori" = "Sub Bil PostDocs Impl ori", "Msg Discovery ori" = "Sub Bil PostDocs Impl ori", "Msg Contract ori" = "Sub Bil PostDocs Impl ori";
+        Implementation = "Msg Interface ori" = "Sub Bil PostDocs Impl ori", "Msg Discovery ori" = "Sub Bil PostDocs Impl ori", "Msg Contract ori" = "Sub Bil PostDocs Impl ori", "Msg Confirm ori" = "Sub Bil PostDocs Impl ori";
     }
 }

@@ -10,7 +10,7 @@ using Origo.Bifrost;
 /// procedures are internal, so this runs the report object itself with request page parameters
 /// built as XML - a plain Data.Records.Set cannot post G/L entries.
 /// </summary>
-codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
+codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori", "Msg Confirm ori"
 {
     TableNo = "Message Argument ori";
 
@@ -85,6 +85,42 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
     procedure GetEffect(var Effect: JsonObject): Boolean
     begin
         Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    /// <summary>Counts the documented confirmation unit without writing business data.</summary>
+    /// <param name="Argument">The request to preview.</param>
+    /// <param name="Count">Receives the number of units currently in scope.</param>
+    /// <param name="Summary">Receives the localized definition of the count.</param>
+    /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
+    var
+        DefaultConfirm: Codeunit "Default Confirm ori";
+        Counted: Boolean;
+    begin
+        Count := 0;
+        if not TryCountConfirmation(Count, Counted) then begin
+            Argument.RespondWithLastError();
+            exit(false);
+        end;
+        if Counted then
+            Summary := ContractParts.GetConfirmationHelp(ContractType())
+        else begin
+            Count := 0;
+            Summary := DefaultConfirm.NoSubjectText();
+        end;
+        exit(true);
+    end;
+
+    [TryFunction]
+    local procedure TryCountConfirmation(var Count: Integer; var Counted: Boolean)
+    begin
+        Counted := CountConfirmation(Count);
+    end;
+
+    local procedure CountConfirmation(var Count: Integer): Boolean
+    begin
+        Count := CountUnreleasedCustomerDeferrals(WorkDate()) + CountUnreleasedVendorDeferrals(WorkDate());
         exit(true);
     end;
 

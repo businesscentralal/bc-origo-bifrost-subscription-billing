@@ -89,9 +89,6 @@ codeunit 95710 "Sub Test Lib ori"
         // These feature types use Foundation's default counter: one request subject, not business rows.
         // Explicit confirmation keeps the existing business-effect and refusal assertions reachable.
         case MessageType of
-            MessageType::"Subscription.Contract.UpdateLineDates",
-            MessageType::"Subscription.Billing.ClearProposal",
-            MessageType::"Subscription.Billing.DeleteDocuments",
             MessageType::"Subscription.Usage.ConnectSubscriptions",
             MessageType::"Subscription.Usage.Process",
             MessageType::"Subscription.Usage.DeleteData",

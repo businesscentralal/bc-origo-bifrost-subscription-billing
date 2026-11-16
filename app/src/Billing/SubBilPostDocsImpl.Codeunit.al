@@ -16,7 +16,7 @@ using Origo.Bifrost;
 /// documents, and the purchase documents CreateDocuments never posts, through Microsoft's own
 /// Sales-Post and Purch.-Post. It refuses a document Subscription Billing did not create.
 /// </summary>
-codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
+codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori", "Msg Confirm ori"
 {
     TableNo = "Message Argument ori";
 
@@ -110,6 +110,50 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
     procedure GetEffect(var Effect: JsonObject): Boolean
     begin
         Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    /// <summary>Counts the documented confirmation unit without writing business data.</summary>
+    /// <param name="Argument">The request to preview.</param>
+    /// <param name="Count">Receives the number of units currently in scope.</param>
+    /// <param name="Summary">Receives the localized definition of the count.</param>
+    /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
+    var
+        DefaultConfirm: Codeunit "Default Confirm ori";
+        Counted: Boolean;
+    begin
+        Count := 0;
+        if not TryCountConfirmation(Argument, Count, Counted) then begin
+            Argument.RespondWithLastError();
+            exit(false);
+        end;
+        if Counted then
+            Summary := ContractParts.GetConfirmationHelp(ContractType())
+        else begin
+            Count := 0;
+            Summary := DefaultConfirm.NoSubjectText();
+        end;
+        exit(true);
+    end;
+
+    [TryFunction]
+    local procedure TryCountConfirmation(var Argument: Record "Message Argument ori"; var Count: Integer; var Counted: Boolean)
+    begin
+        Counted := CountConfirmation(Argument, Count);
+    end;
+
+    local procedure CountConfirmation(var Argument: Record "Message Argument ori"; var Count: Integer): Boolean
+    var
+        RequestJson: JsonObject;
+        Documents: JsonArray;
+    begin
+        RequestJson := Argument.GetRequestJson();
+        if not Helper.TryGetArray(RequestJson, 'documents', Documents) then
+            exit(false);
+        Count := Documents.Count();
+        if Count = 0 then
+            exit(false);
         exit(true);
     end;
 
