@@ -58,6 +58,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', false, 'The Billing Template whose proposal is cleared. May be supplied as the subject instead. Omit it to clear the billing lines without a Billing Template, which contractNo then has to narrow.'));
         Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Clears only the proposal lines of this Customer or Vendor Subscription Contract. Required when billingTemplateCode is omitted.'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Billing.ClearProposal')));
     end;
 
     /// <summary>The parameters of Subscription.Billing.DeleteDocuments.</summary>
@@ -66,6 +67,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Parameters.Add(ContractMgt.Parameter('billingTemplateCode', 'string', false, 'The Billing Template whose billing documents are deleted. May be supplied as the subject instead. Omit it for the documents made from billing lines without a Billing Template, which contractNo or documentNo then has to narrow.'));
         Parameters.Add(ContractMgt.Parameter('contractNo', 'string', false, 'Deletes only the documents of this Customer or Vendor Subscription Contract.'));
         Parameters.Add(ContractMgt.Parameter('documentNo', 'string', false, 'Deletes only this unposted invoice or credit memo. A posted document number is refused by name.'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Billing.DeleteDocuments')));
     end;
 
     /// <summary>The parameters of Subscription.Billing.SetTemplateFilter.</summary>
@@ -80,6 +82,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         Parameters.Add(ContractMgt.Parameter('itemNo', 'string', true, 'The item. May be supplied as the subject instead.'));
         Parameters.Add(ContractMgt.Parameter('subscriptionPackageCode', 'string', true, 'The Subscription Package to remove from the item.'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Package.RemoveItemAssignment')));
     end;
 
     /// <summary>The parameters of Subscription.Contract.RemoveLine.</summary>
@@ -92,6 +95,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Entry := WithAllowed(ContractMgt.Parameter('partner', 'string', false, 'Customer for a Customer Subscription Contract, Vendor for a Vendor Subscription Contract. Any casing.'), 'Customer,Vendor');
         Entry.Add('default', 'Customer');
         Parameters.Add(Entry);
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Contract.RemoveLine')));
     end;
 
     /// <summary>The parameters of Subscription.Contract.UpdateLineDates.</summary>
@@ -102,6 +106,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Entry := WithAllowed(ContractMgt.Parameter('runMode', 'string', false, 'foreground runs the Job Queue Entry in this call and reports what it closed; background hands it to the job queue and returns at once. Any casing.'), 'foreground,background');
         Entry.Add('default', 'foreground');
         Parameters.Add(Entry);
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Contract.UpdateLineDates')));
     end;
 
     /// <summary>The parameters of Subscription.Contract.UpdateExchangeRates.</summary>
@@ -122,6 +127,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         Parameters.Add(ContractMgt.Parameter('supplierNo', 'string', true, 'The Usage Data Supplier whose subscriptions are connected. May be supplied as the subject instead.'));
         Parameters.Add(ContractMgt.Parameter('entryNos', 'array', false, 'Connects only these Usage Data Supp. Subscription entries, written as whole numbers. Each must belong to the supplier, have a Connect to Subscription Method and not be connected yet. Omit it to connect every such entry of the supplier.'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Usage.ConnectSubscriptions')));
     end;
 
     /// <summary>The parameters of Subscription.Usage.DeleteData.</summary>
@@ -133,6 +139,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Entry := WithAllowed(ContractMgt.Parameter('mode', 'string', false, 'resetLines deletes the imported lines and usage billing and keeps the file, so the import can be processed again; deleteImport deletes the import with its file. Any casing.'), 'resetLines,deleteImport');
         Entry.Add('default', 'resetLines');
         Parameters.Add(Entry);
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Usage.DeleteData')));
     end;
 
     /// <summary>The parameters of Subscription.Usage.DisconnectSubscription.</summary>
@@ -193,6 +200,11 @@ codeunit 10035075 "Sub Contract Parts ori"
         end;
         if WithVendorInvoiceNo then
             Parameters.Add(ContractMgt.Parameter('vendorInvoiceNo', 'string', false, 'Validated into Vendor Invoice No. on every document this call creates, so the vendor''s duplicate invoice number check applies. Text past 35 characters is cut off.'));
+        if WithDocumentDates then
+            if WithVendorInvoiceNo then
+                Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.VendorContract.CreateInvoice')))
+            else
+                Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Contract.CreateInvoice')));
     end;
 
     /// <summary>The parameters of Subscription.Billing.CreateProposal.</summary>
@@ -202,6 +214,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Parameters.Add(AsDate(ContractMgt.Parameter('billingDate', 'string', false, 'Subscription Lines due on or before this date are proposed. Defaults to the work date.')));
         Parameters.Add(AsDate(ContractMgt.Parameter('billingToDate', 'string', false, 'Bills complete periods up to this date. Omit to bill each line by its own billing rhythm.')));
         Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('automatedBilling', 'boolean', false, 'Passed to Microsoft''s billing proposal as its automated billing flag. Leave it at the default for an unattended run.'), true));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Billing.CreateProposal')));
     end;
 
     /// <summary>The parameters of Subscription.Billing.CreateDocuments.</summary>
@@ -212,6 +225,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Parameters.Add(AsDate(ContractMgt.Parameter('postingDate', 'string', false, 'Posting date of the created documents. Defaults to the work date.')));
         Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('postDocuments', 'boolean', false, 'When true, the created sales documents are posted. Purchase documents are never posted; post them with Subscription.Billing.PostDocuments.'), false));
         Parameters.Add(AsGroupBy(ContractMgt.Parameter('groupBy', 'string', false, 'Contract creates one document per contract; Customer creates one document per Bill-to Customer No. and needs customer proposal lines. Any casing.')));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Billing.CreateDocuments')));
     end;
 
     /// <summary>The parameters of Subscription.Billing.PostDocuments.</summary>
@@ -219,6 +233,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         Parameters.Add(ContractMgt.Parameter('documents', 'array', true, 'The documents to post. Each entry is an object with partner (Customer or Vendor), documentType (Invoice or Credit Memo), documentNo and, for a Vendor document, vendorInvoiceNo: the vendor''s own invoice or credit memo number, at most 35 characters, validated into Vendor Invoice No. or Vendor Cr. Memo No. Every entry is checked before the first document is posted.'));
         Parameters.Add(ContractMgt.Parameter('vendorInvoiceNo', 'string', false, 'The vendor''s document number for the one purchase document in the request that has none and no vendorInvoiceNo on its entry. More than one such document is refused; send vendorInvoiceNo on each entry instead.'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Billing.PostDocuments')));
     end;
 
     /// <summary>The parameters of Subscription.Billing.PreviewDocuments.</summary>
@@ -262,6 +277,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Parameters.Add(ContractMgt.Parameter('subscriptionPackageCodes', 'array', false, 'Subscription Package codes to apply in addition to the item''s standard packages, which Microsoft always applies.'));
         Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('usageBasedBillingPackageLinesOnly', 'boolean', false, 'When true, only usage-based package lines are added.'), false));
         Parameters.Add(WithIntegerDefault(ContractMgt.Parameter('supplierReferenceEntryNo', 'integer', false, 'Links the extension to a supplier reference entry.'), 0));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Renewal.Extend')));
     end;
 
     /// <summary>The parameters of Subscription.Renewal.CreateQuote.</summary>
@@ -269,6 +285,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         Parameters.Add(ContractMgt.Parameter('contractNo', 'string', true, 'The Customer Subscription Contract to renew. May be supplied as the subject instead.'));
         Parameters.Add(ContractMgt.Parameter('contractLineNos', 'array', false, 'Renews only these contract lines, by their Line No., written as whole numbers. Every number must be a line of the contract. Omit it to renew every line with an end date.'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Renewal.CreateQuote')));
     end;
 
     /// <summary>The parameters of Subscription.Usage.ImportData.</summary>
@@ -279,6 +296,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         Parameters.Add(ContractMgt.Parameter('content', 'string', false, 'The file content as text, for example a CSV payload. Required unless contentBase64 is given.'));
         Parameters.Add(ContractMgt.Parameter('contentBase64', 'string', false, 'The file content, base64 encoded, for payloads that are not plain text. Required unless content is given; when both are given, contentBase64 is used.'));
         Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('runProcessing', 'boolean', false, 'When true, the Process Imported Lines step runs right after the import.'), false));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Usage.ImportData')));
     end;
 
     /// <summary>The parameters of Subscription.Usage.Process.</summary>
@@ -286,6 +304,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         Parameters.Add(ContractMgt.Parameter('usageDataImportEntryNo', 'integer', true, 'The Usage Data Import entry to process. May be supplied as the subject instead.'));
         Parameters.Add(WithAllowed(ContractMgt.Parameter('steps', 'array', false, 'The processing steps to run, in the order given. Defaults to ProcessImportedLines, CreateUsageDataBilling, ProcessUsageDataBilling. CreateImportedLines parses the stored file again and is never run by default.'), 'CreateImportedLines,ProcessImportedLines,CreateUsageDataBilling,ProcessUsageDataBilling'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Usage.Process')));
     end;
 
     /// <summary>The parameters of Subscription.Deferral.Release.</summary>
@@ -293,6 +312,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         Parameters.Add(AsDate(ContractMgt.Parameter('postingDate', 'string', false, 'The date the caller expects the release to post under. Must equal the work date, the only date Business Central uses. Defaults to the work date.')));
         Parameters.Add(AsDate(ContractMgt.Parameter('postUntilDate', 'string', false, 'The latest deferral posting date the caller accepts to release. The call is refused when the release would go past it. Must not be later than postingDate; defaults to postingDate.')));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Deferral.Release')));
     end;
 
     /// <summary>The parameters of Subscription.Analysis.Recalculate.</summary>
@@ -306,6 +326,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     begin
         Parameters.Add(WithAllowed(ContractMgt.Parameter('stages', 'array', false, 'The import stages to run. Defaults to all four. They always run in the fixed order SubscriptionHeaders, CustomerContracts, SubscriptionLines, ContractLines, whatever order is given.'), 'SubscriptionHeaders,CustomerContracts,SubscriptionLines,ContractLines'));
         Parameters.Add(WithBooleanDefault(ContractMgt.Parameter('allowCommentLines', 'boolean', false, 'When true, staged lines whose contract line type is Comment become contract comment lines in the ContractLines stage. When false, such a row fails with the line type error, because Comment is also the value of a row whose line type was never set.'), false));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.Import.CreateContracts')));
     end;
 
     /// <summary>Builds the fields of the Success answer.</summary>
@@ -682,11 +703,14 @@ codeunit 10035075 "Sub Contract Parts ori"
         if MessageType = 'Subscription.Billing.PreviewDocuments' then
             Effect.Add('effect', 'read')
         else
-            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PostDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Usage.DeleteData'] then
+            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PostDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Usage.DeleteData', 'Subscription.Contract.RemoveLine', 'Subscription.Package.RemoveItemAssignment'] then
                 Effect.Add('effect', 'irreversible')
             else
                 Effect.Add('effect', 'write');
-        Effect.Add('changes', GetChanges(MessageType));
+        if GetCountUnit(MessageType) = '' then
+            Effect.Add('changes', GetChanges(MessageType))
+        else
+            Effect.Add('changes', GetChanges(MessageType) + ' ' + GetConfirmationHelp(MessageType));
         Effect.Add('idempotent', MessageType in ['Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.PreviewDocuments', 'Subscription.Analysis.Recalculate']);
         if MessageType = 'Subscription.Billing.PostDocuments' then
             Effect.Add('permissionSet', 'Sub. Billing Posting')
@@ -1079,6 +1103,75 @@ codeunit 10035075 "Sub Contract Parts ori"
         Preconditions.Add(Subject + ' must already exist; this call does not create ' + Pronoun + '. Writing ' + Pronoun + ' with Data.Records.Set needs the Bifrost Setup write guard set to Open, or Change Log coverage on those Subscription Billing tables, because the guard is Blocked by default.');
     end;
 
+
+    /// <summary>Names the exact confirmation unit and the side-effect-free preview protocol.</summary>
+    /// <param name="MessageType">The audited message type.</param>
+    /// <returns>The localized count definition and preview instructions.</returns>
+    internal procedure GetConfirmationHelp(MessageType: Text): Text
+    var
+        PreviewTxt: Label 'expectedCount: %1 With Require Confirmation for Irreversible Messages enabled in Bifrost Setup, send the same request without expectedCount and read expected in ConfirmationRequired; this preview changes no business data. A supplied expectedCount is always checked. In an Orchestrator step, "@preview" requires an author-set Max Count cap.', Comment = '%1 = count unit||is-IS=expectedCount: %1 Þegar staðfesting óafturkræfra skilaboða er virk í uppsetningu Bifrastar skal senda sömu beiðni án expectedCount og lesa expected í ConfirmationRequired; þessi forskoðun breytir engum viðskiptagögnum. Sent expectedCount er alltaf sannprófað. Í Orchestrator-skrefi þarf "@preview" hámarkið Max Count sem höfundur stillir.';
+    begin
+        exit(StrSubstNo(PreviewTxt, GetCountUnit(MessageType)));
+    end;
+
+    local procedure GetCountUnit(MessageType: Text): Text
+    var
+        CustomerContractTxt: Label 'Counts the one named Customer Subscription Contract, not its lines or resulting invoices.', Comment = 'is-IS=Telur einn tilgreindan áskriftarsamning viðskiptamanns, ekki línur hans eða reikninga sem verða til.';
+        VendorContractTxt: Label 'Counts the one named Vendor Subscription Contract, not its lines or resulting invoices.', Comment = 'is-IS=Telur einn tilgreindan áskriftarsamning lánardrottins, ekki línur hans eða reikninga sem verða til.';
+        TermDatesTxt: Label 'Counts all Subscription Headers in the company that the term-date job scans. An already pending job counts zero new work. In background mode this is the count when the job is queued; it is not a count of lines that will close.', Comment = 'is-IS=Telur alla áskriftarhausa í fyrirtækinu sem keyrslan fer yfir. Verk sem þegar bíður telur ekkert nýtt verk. Í bakgrunnsham er þetta fjöldinn þegar verkið er sett í biðröð; þetta er ekki fjöldi lína sem verður lokað.';
+        TemplateTxt: Label 'Counts the one named Billing Template, not the contracts or proposal lines selected by its filters.', Comment = 'is-IS=Telur eitt tilgreint reikningssniðmát, ekki samninga eða tillögulínur sem síur þess velja.';
+        SubscriptionTxt: Label 'Counts the one named Subscription Header, not the package lines or contract lines created.', Comment = 'is-IS=Telur einn tilgreindan áskriftarhaus, ekki pakkalínur eða samningslínur sem verða til.';
+        QuoteContractTxt: Label 'Counts the one named Customer Subscription Contract, not its selected lines or the renewal quote lines.', Comment = 'is-IS=Telur einn tilgreindan áskriftarsamning viðskiptamanns, ekki valdar línur hans eða línur endurnýjunartilboðs.';
+        SupplierTxt: Label 'Counts the one named Usage Data Supplier, not the imported usage rows or connected subscriptions.', Comment = 'is-IS=Telur einn tilgreindan birgja notkunargagna, ekki innfluttar notkunarlínur eða tengdar áskriftir.';
+        ImportTxt: Label 'Counts the one named Usage Data Import entry, not its imported lines, billing rows or processing steps.', Comment = 'is-IS=Telur eina tilgreinda innflutningsfærslu notkunargagna, ekki innfluttar línur hennar, reikningslínur eða vinnsluskref.';
+        DeferralsTxt: Label 'Counts unreleased customer and vendor contract deferral entries with Posting Date up to the session work date, across every contract.', Comment = 'is-IS=Telur óútleystar frestunarfærslur samninga viðskiptamanna og lánardrottna með bókunardagsetningu fram að vinnudagsetningu setunnar, á öllum samningum.';
+        StagingTxt: Label 'Counts staging rows eligible for at least one requested stage at preview time. A staged subscription line counts once even when both line stages select it; rows later skipped or failed still count.', Comment = 'is-IS=Telur bráðabirgðalínur sem koma til greina í að minnsta kosti einu umbeðnu skrefi við forskoðun. Innflutt áskriftarlína er talin einu sinni þótt bæði línuskref velji hana; línur sem síðar er sleppt eða mistakast teljast með.';
+        ProposalTxt: Label 'Counts Billing Line rows selected by billingTemplateCode or subject and the optional contractNo, including rows whose document link will cause validation to refuse the call.', Comment = 'is-IS=Telur reikningslínur sem billingTemplateCode eða subject og valfrjálst contractNo velja, þar með taldar línur sem valda höfnun við sannprófun vegna skjalatengingar.';
+        DocumentsTxt: Label 'Counts distinct documents referenced by the selected Billing Lines, using partner, document type and document number as the key. It is not a count of billing lines.', Comment = 'is-IS=Telur aðgreind skjöl sem valdar reikningslínur vísa á, með aðila, skjalategund og skjalanúmer sem lykil. Þetta er ekki fjöldi reikningslína.';
+        PostingTxt: Label 'Counts entries in the documents array. Each entry requests one sales or purchase document posting; duplicate or invalid entries still have to pass the posting validation.', Comment = 'is-IS=Telur stök í documents-fylkinu. Hvert stak biður um bókun eins sölu- eða innkaupaskjals; tvítekin eða ógild stök þurfa samt að standast sannprófun bókunar.';
+        ContractLineTxt: Label 'Counts the one contract line named by contractNo or subject, partner and lineNo. The Subscription Line is detached, not deleted.', Comment = 'is-IS=Telur eina samningslínu sem contractNo eða subject, partner og lineNo tilgreina. Áskriftarlínan er aftengd en ekki eytt.';
+        AssignmentTxt: Label 'Counts the one Item Subscription Package assignment named by itemNo or subject and subscriptionPackageCode.', Comment = 'is-IS=Telur eina úthlutun áskriftarpakka á vöru sem itemNo eða subject og subscriptionPackageCode tilgreina.';
+    begin
+        case MessageType of
+            'Subscription.Contract.CreateInvoice':
+                exit(CustomerContractTxt);
+            'Subscription.VendorContract.CreateInvoice':
+                exit(VendorContractTxt);
+            'Subscription.Contract.UpdateLineDates':
+                exit(TermDatesTxt);
+            'Subscription.Billing.CreateProposal':
+                exit(TemplateTxt);
+            'Subscription.Billing.CreateDocuments':
+                exit(TemplateTxt);
+            'Subscription.Renewal.Extend':
+                exit(SubscriptionTxt);
+            'Subscription.Renewal.CreateQuote':
+                exit(QuoteContractTxt);
+            'Subscription.Usage.ImportData':
+                exit(SupplierTxt);
+            'Subscription.Usage.Process':
+                exit(ImportTxt);
+            'Subscription.Deferral.Release':
+                exit(DeferralsTxt);
+            'Subscription.Import.CreateContracts':
+                exit(StagingTxt);
+            'Subscription.Billing.ClearProposal':
+                exit(ProposalTxt);
+            'Subscription.Billing.DeleteDocuments':
+                exit(DocumentsTxt);
+            'Subscription.Usage.ConnectSubscriptions':
+                exit(SupplierTxt);
+            'Subscription.Usage.DeleteData':
+                exit(ImportTxt);
+            'Subscription.Billing.PostDocuments':
+                exit(PostingTxt);
+            'Subscription.Contract.RemoveLine':
+                exit(ContractLineTxt);
+            'Subscription.Package.RemoveItemAssignment':
+                exit(AssignmentTxt);
+        end;
+        exit('');
+    end;
 
     local procedure GetChanges(MessageType: Text): Text
     begin

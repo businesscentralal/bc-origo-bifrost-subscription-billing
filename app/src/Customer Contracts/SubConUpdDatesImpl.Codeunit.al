@@ -15,7 +15,7 @@ using System.Threading;
 /// does, or hands it to the job queue. Scheduling work through the job queue is reserved for holders
 /// of Force Field Access, as it is for a forced Job Queue Entry write through Data.Records.Set.
 /// </summary>
-codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
+codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori", "Msg Confirm ori"
 {
     TableNo = "Message Argument ori";
 
@@ -93,6 +93,52 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
     procedure GetEffect(var Effect: JsonObject): Boolean
     begin
         Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    /// <summary>Counts the documented confirmation unit without writing business data.</summary>
+    /// <param name="Argument">The request to preview.</param>
+    /// <param name="Count">Receives the number of units currently in scope.</param>
+    /// <param name="Summary">Receives the localized definition of the count.</param>
+    /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
+    var
+        DefaultConfirm: Codeunit "Default Confirm ori";
+        Counted: Boolean;
+    begin
+        Count := 0;
+        if not TryCountConfirmation(Count, Counted) then begin
+            Argument.RespondWithLastError();
+            exit(false);
+        end;
+        if Counted then
+            Summary := ContractParts.GetConfirmationHelp(ContractType())
+        else begin
+            Count := 0;
+            Summary := DefaultConfirm.NoSubjectText();
+        end;
+        exit(true);
+    end;
+
+    [TryFunction]
+    local procedure TryCountConfirmation(var Count: Integer; var Counted: Boolean)
+    begin
+        Counted := CountConfirmation(Count);
+    end;
+
+    local procedure CountConfirmation(var Count: Integer): Boolean
+    var
+        SubscriptionHeader: Record "Subscription Header";
+        JobQueueEntry: Record "Job Queue Entry";
+    begin
+        SubscriptionHeader.ReadIsolation := IsolationLevel::ReadCommitted;
+        if not HasForcePermission() then
+            exit(false);
+        if FindPendingEntry(JobQueueEntry) then begin
+            Count := 0;
+            exit(true);
+        end;
+        Count := SubscriptionHeader.Count();
         exit(true);
     end;
 

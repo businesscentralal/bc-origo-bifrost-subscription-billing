@@ -186,6 +186,14 @@ Subscription Billing permission sets, and the app is ready. Posting through
 `Subscription.Billing.PostDocuments` also needs `BIFROST SubPost ori`, which is assigned on its own
 and is not part of any other set.
 
+## Confirming irreversible operations
+
+For an irreversible operation, read its `effect.changes` and `expectedCount` help before confirming. Each type names its count unit: it may be one named contract, template, supplier or import, or a count of selected lines, documents, deferrals, staging rows or Subscription Headers. A count of one template does not bound the number of invoices it can create.
+
+With **Require Confirmation for Irreversible Messages** enabled in Bifrost Setup, send the same request without `expectedCount`. The `ConfirmationRequired` response returns `expected` before business writes. Review that count and resend with `expectedCount` set to it. An explicit count is checked even when the setting is disabled. For an Orchestrator step using `"expectedCount": "@preview"`, the author must set the step's **Max Count** cap.
+
+Removing a contract line or an item/package assignment is irreversible and uses this protocol. Previewing invoice creation or billing documents keeps its existing effect and does not acquire a confirmation parameter.
+
 ## Known issues
 
 No message type is blocked. Where Microsoft keeps the logic internal, the app runs a referenced copy

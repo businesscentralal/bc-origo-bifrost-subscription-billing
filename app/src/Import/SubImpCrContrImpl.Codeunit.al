@@ -6,7 +6,7 @@ using Origo.Bifrost;
 /// <summary>
 /// Implements the <c>Subscription.Import.CreateContracts</c> Bifrost message type.
 /// </summary>
-codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori"
+codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Msg Discovery ori", "Msg Contract ori", "Msg Confirm ori"
 {
     TableNo = "Message Argument ori";
 
@@ -86,6 +86,75 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
     procedure GetEffect(var Effect: JsonObject): Boolean
     begin
         Effect := ContractParts.GetEffect(ContractType());
+        exit(true);
+    end;
+
+    /// <summary>Counts the documented confirmation unit without writing business data.</summary>
+    /// <param name="Argument">The request to preview.</param>
+    /// <param name="Count">Receives the number of units currently in scope.</param>
+    /// <param name="Summary">Receives the localized definition of the count.</param>
+    /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
+    var
+        DefaultConfirm: Codeunit "Default Confirm ori";
+        Counted: Boolean;
+    begin
+        Count := 0;
+        if not TryCountConfirmation(Argument, Count, Counted) then begin
+            Argument.RespondWithLastError();
+            exit(false);
+        end;
+        if Counted then
+            Summary := ContractParts.GetConfirmationHelp(ContractType())
+        else begin
+            Count := 0;
+            Summary := DefaultConfirm.NoSubjectText();
+        end;
+        exit(true);
+    end;
+
+    [TryFunction]
+    local procedure TryCountConfirmation(var Argument: Record "Message Argument ori"; var Count: Integer; var Counted: Boolean)
+    begin
+        Counted := CountConfirmation(Argument, Count);
+    end;
+
+    local procedure CountConfirmation(var Argument: Record "Message Argument ori"; var Count: Integer): Boolean
+    var
+        ImportedSubscriptionHeader: Record "Imported Subscription Header";
+        ImportedCustSubContract: Record "Imported Cust. Sub. Contract";
+        ImportedSubscriptionLine: Record "Imported Subscription Line";
+        RequestedStages: List of [Text];
+        RequestJson: JsonObject;
+        SubscriptionLinesRequested: Boolean;
+        ContractLinesRequested: Boolean;
+    begin
+        ImportedSubscriptionHeader.ReadIsolation := IsolationLevel::ReadCommitted;
+        ImportedCustSubContract.ReadIsolation := IsolationLevel::ReadCommitted;
+        ImportedSubscriptionLine.ReadIsolation := IsolationLevel::ReadCommitted;
+        RequestJson := Argument.GetRequestJson();
+        GetRequestedStages(RequestJson, RequestedStages);
+        Count := 0;
+        if RequestedStages.Contains(SubscriptionHeadersTok) then begin
+            ImportedSubscriptionHeader.SetRange("Subscription Header created", false);
+            Count += ImportedSubscriptionHeader.Count();
+        end;
+        if RequestedStages.Contains(CustomerContractsTok) then begin
+            ImportedCustSubContract.SetRange("Contract created", false);
+            Count += ImportedCustSubContract.Count();
+        end;
+        SubscriptionLinesRequested := RequestedStages.Contains(SubscriptionLinesTok);
+        ContractLinesRequested := RequestedStages.Contains(ContractLinesTok);
+        if SubscriptionLinesRequested or ContractLinesRequested then begin
+            ImportedSubscriptionLine.SetLoadFields("Subscription Line created", "Sub. Contract Line created");
+            if ImportedSubscriptionLine.FindSet() then
+                repeat
+                    if (SubscriptionLinesRequested and not ImportedSubscriptionLine."Subscription Line created") or
+                       (ContractLinesRequested and not ImportedSubscriptionLine."Sub. Contract Line created")
+                    then
+                        Count += 1;
+                until ImportedSubscriptionLine.Next() = 0;
+        end;
         exit(true);
     end;
 
