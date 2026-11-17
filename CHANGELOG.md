@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-17) - Subscription.PriceUpdate.Perform carries the expectedCount marker (#95, core #1378)
+
+- `effect.changes` and the `expectedCount` parameter of `Subscription.PriceUpdate.Perform` now contain `expectedCount counts Contract Price Update Lines`, the marker the core#1378 allow-list checks. The type stays `irreversible`. Contract chapters stay English in 1033 and 1039, so the English marker applies to both.
+- Test `Perform_Help_DefinesWhatExpectedCountCounts` (95743) now fails when either place omits the marker, in 1033 and 1039. No object ID added.
+
 ### Fixed (2026-11-16) - effects and confirmation counts (#93)
 
 - `Subscription.Contract.RemoveLine` and `Subscription.Package.RemoveItemAssignment` are irreversible deletions and now require confirmation when the company setting is enabled. Explicit counts remain checked when the setting is off.

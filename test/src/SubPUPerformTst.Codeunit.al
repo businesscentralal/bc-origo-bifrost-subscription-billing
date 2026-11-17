@@ -376,7 +376,7 @@ codeunit 95743 "Sub PU Perform Tst ori"
         Assert.AreEqual('irreversible', Token.AsValue().AsText(), 'The type changes prices and deletes proposal lines, so it stays irreversible.');
         EffectObject.Get('changes', Token);
         ChangesText := Token.AsValue().AsText();
-        Assert.IsTrue(ChangesText.Contains('Contract Price Update Lines the call would perform'), 'effect.changes must name the unit that expectedCount counts.');
+        Assert.IsTrue(ChangesText.Contains('expectedCount counts Contract Price Update Lines'), 'effect.changes must carry the marker "expectedCount counts " (#95).');
         Assert.IsTrue(ChangesText.Contains('without expectedCount'), 'effect.changes must say how to read the count without a side effect.');
         Contract.Get('parameters', Token);
         foreach Entry in Token.AsArray() do begin
@@ -386,7 +386,7 @@ codeunit 95743 "Sub PU Perform Tst ori"
                 ParameterText := Token.AsValue().AsText();
             end;
         end;
-        Assert.IsTrue(ParameterText.Contains('Counts Contract Price Update Lines'), 'The expectedCount parameter must name its unit.');
+        Assert.IsTrue(ParameterText.Contains('expectedCount counts Contract Price Update Lines'), 'The expectedCount parameter must carry the marker "expectedCount counts " (#95).');
         Assert.IsTrue(ParameterText.Contains('without expectedCount and read expected'), 'The expectedCount parameter must say how to preview the count.');
     end;
 
