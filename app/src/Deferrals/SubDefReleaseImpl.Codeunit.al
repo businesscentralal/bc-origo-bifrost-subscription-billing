@@ -24,8 +24,10 @@ codeunit 10035055 "Sub Def Release Impl ori" implements "Msg Interface ori", "Ms
         DescriptionLbl: Label 'Releases deferred revenue and cost for customer and vendor Subscription Contracts up to a date, posting the release to the general ledger.', MaxLength = 250, Comment = 'is-IS=Losar frestaðar tekjur og kostnað fyrir áskriftarsamninga viðskiptamanna og lánardrottna fram að tilteknum degi og bókar losunina í fjárhagsbókhald.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

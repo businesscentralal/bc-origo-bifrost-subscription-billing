@@ -21,8 +21,10 @@ codeunit 10035045 "Sub Bil CrProposal Impl ori" implements "Msg Interface ori", 
         DescriptionLbl: Label 'Creates billing proposal lines for a Billing Template and a billing date. Returns the number of proposal lines created and the contracts they cover.', MaxLength = 250, Comment = 'is-IS=Býr til reikningstillögulínur fyrir reikningssniðmát og reikningsdagsetningu. Skilar fjölda tillögulína sem urðu til og þeim samningum sem þær ná yfir.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

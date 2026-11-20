@@ -30,8 +30,10 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
         DescriptionLbl: Label 'Imports a usage data file (as raw text or base64) for metered Subscription Lines and creates the imported usage data lines. Optionally also processes those lines into billable quantities.', MaxLength = 250, Comment = 'is-IS=Flytur inn skrá með notkunargögnum (sem hreinan texta eða base64) fyrir mældar áskriftarlínur og býr til innfluttar notkunargagnalínur. Einnig er hægt að vinna úr þessum línum og breyta þeim í reikningshæft magn.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

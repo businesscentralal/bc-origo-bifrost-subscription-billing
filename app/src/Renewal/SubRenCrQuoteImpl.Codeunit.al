@@ -27,8 +27,10 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
         UnknownContractLineErr: Label 'Line %1 of contractLineNos is not a line of Customer Subscription Contract ''%2''.', Comment = '%1 = contract line number, %2 = customer contract no.||is-IS=Lína %1 í contractLineNos er ekki lína í áskriftarsamningi viðskiptamanns ''%2''.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

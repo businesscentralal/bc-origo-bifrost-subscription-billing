@@ -22,8 +22,10 @@ codeunit 10035036 "Sub Line Create Impl ori" implements "Msg Interface ori", "Ms
         DescriptionLbl: Label 'Applies a Subscription Package to a Subscription Header, creating Subscription Lines from the package. Returns the number and entry numbers of the lines created.', MaxLength = 250, Comment = 'is-IS=Beitir áskriftarpakka á áskriftarhaus og býr til áskriftarlínur út frá pakkanum. Skilar fjölda og færslunúmerum þeirra lína sem urðu til.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

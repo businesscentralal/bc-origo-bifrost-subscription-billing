@@ -26,8 +26,10 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
         DescriptionLbl: Label 'Applies the Contract Price Update Lines: updates Subscription Lines or writes Planned Subscription Lines, and deletes each performed line. Nothing is posted.', MaxLength = 250, Comment = 'is-IS=Beitir línum verðuppfærslu áskriftarsamnings: uppfærir áskriftarlínur eða skrifar áætlaðar áskriftarlínur og eyðir hverri framkvæmdri línu. Ekkert er bókað.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

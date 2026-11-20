@@ -20,8 +20,10 @@ codeunit 10035072 "Sub Pkg RemoveItem Impl ori" implements "Msg Interface ori", 
         DescriptionLbl: Label 'Removes the assignment of a Subscription Package to an item, so the item no longer gets the package. Existing Subscriptions keep their lines.', MaxLength = 250, Comment = 'is-IS=Fjarlægir úthlutun áskriftarpakka á vöru, svo varan fær ekki lengur pakkann. Fyrirliggjandi áskriftir halda línum sínum.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

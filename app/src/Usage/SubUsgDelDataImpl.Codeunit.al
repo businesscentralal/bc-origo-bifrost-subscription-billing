@@ -34,8 +34,10 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
         DescriptionLbl: Label 'Deletes the imported lines and usage billing of a usage import so it can be processed again, or deletes the whole import. Refuses imports already on a billing line or document.', MaxLength = 250, Comment = 'is-IS=Eyðir innfluttum línum og reikningsgerð fyrir innflutt notkunargögn svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

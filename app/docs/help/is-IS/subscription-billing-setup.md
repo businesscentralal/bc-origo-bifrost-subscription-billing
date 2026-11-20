@@ -9,4 +9,6 @@ Opnaðu **Leiðsögn um uppsetningu** og veldu **Setja upp Bifröst áskriftarei
 3. Farðu yfir aðgang. `BIFROST SubBil ori` leyfir aðgerðir innan núverandi aðgangs notandans að viðskiptagögnum. Úthlutaðu `BIFROST SubPost ori` sérstaklega fyrir bókun. Notendur þurfa einnig viðeigandi heimildir Foundation. **Opna notendur** og **Opna heimildasamstæður** opna stöðluðu síðurnar; leiðsögnin úthlutar engum heimildum.
 4. Farðu yfir samantektina og veldu **Ljúka** til að merkja uppsetningunni lokið. Ef leiðsögninni er lokað fyrr helst fyrri lokastaða óbreytt. Hægt er að keyra hana aftur síðar.
 
+Aðgerðalistinn sýnir skilaboðategundir áskriftareikningagerðar í þessu fyrirtæki aðeins þegar **uppsetning áskriftarsamninga** hefur að minnsta kosti eina númeraröð: **Subscription Nos.** (Subscription Header No.), **Customer Subscription Contract Nos.** eða **Vendor Subscription Contract Nos.**. Uppsetningarfærsla sem verður til við uppsetningu, með þessum þremur auðum, sýnir ekki aðgerðirnar. Ef síðasta númeraröðin er hreinsuð hverfa þær við næsta kall, án þess að endurræsa Business Central. `Subscription.Billing.PostDocuments` krefst einnig heimildasamstæðunnar `BIFROST SubPost ori`.
+
 Aðgerðalistinn sýnir uppsettar skilaboðategundir og lýsingar þeirra. Lestu hjálp skilaboðategundar áður en þú kallar á hana. Engin viðskiptaaðgerð er framkvæmd þegar listinn er opnaður.

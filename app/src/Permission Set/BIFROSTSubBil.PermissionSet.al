@@ -63,5 +63,6 @@ permissionset 10035062 "BIFROST SubBil ori"
         codeunit "Sub Usg DelData Impl ori" = X,
         codeunit "Sub Bil SetFilter Impl ori" = X,
         codeunit "Sub Con RemoveLine Impl ori" = X,
-        codeunit "Sub Pkg RemoveItem Impl ori" = X;
+        codeunit "Sub Pkg RemoveItem Impl ori" = X,
+        codeunit "Sub Configured ori" = X;
 }

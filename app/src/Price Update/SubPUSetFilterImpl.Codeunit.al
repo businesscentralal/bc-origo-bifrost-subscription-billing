@@ -29,8 +29,10 @@ codeunit 10035048 "Sub PU SetFilter Impl ori" implements "Msg Interface ori", "M
         DescriptionLbl: Label 'Writes the contract, subscription or line view filter on a Price Update Template and returns the current value of all three filters.', MaxLength = 250, Comment = 'is-IS=Skrifar síu fyrir samnings-, áskriftar- eða línusýn á verðuppfærslusniðmát og skilar núgildandi gildi allra þriggja sía.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

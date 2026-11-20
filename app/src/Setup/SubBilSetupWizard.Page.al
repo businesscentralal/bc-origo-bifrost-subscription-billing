@@ -29,6 +29,11 @@ page 10035035 "SubBil Setup Wizard ori"
                     ShowCaption = false;
                     InstructionalText = 'AI assistants and other systems use these operations through Bifrost as the signed-in user and within that user''s permissions. See the installed operations on the Bifrost Message Types page or open the app documentation.', Comment = 'is-IS=Gervigreindaraðstoð og önnur kerfi nota þessar aðgerðir í gegnum Bifröst sem innskráður notandi og innan heimilda hans. Skoðaðu uppsettar aðgerðir á síðunni Skilaboðategundir Bifröst eða opnaðu skjölun forritsins.';
                 }
+                group(CompanyAvailability)
+                {
+                    ShowCaption = false;
+                    InstructionalText = 'Subscription Billing operations appear in this company only when Subscription Contract Setup has at least one of Subscription Nos. (Subscription Header No.), Customer Subscription Contract Nos. or Vendor Subscription Contract Nos. set. Clearing all three hides them on the next call, with no restart. Posting still needs BIFROST SubPost ori.', Comment = 'is-IS=Aðgerðir áskriftareikningagerðar birtast í þessu fyrirtæki aðeins þegar uppsetning áskriftarsamninga hefur að minnsta kosti eitt af Subscription Nos. (Subscription Header No.), Customer Subscription Contract Nos. eða Vendor Subscription Contract Nos. skráð. Ef öll þrjú eru auð hverfa þær við næsta kall, án endurræsingar. Bókun þarf áfram BIFROST SubPost ori.';
+                }
             }
             group(Http)
             {

@@ -1,5 +1,6 @@
 namespace Origo.Bifrost.SubscriptionBilling.Test;
 
+using Microsoft.SubscriptionBilling;
 using Origo.Bifrost;
 using Origo.Bifrost.SubscriptionBilling;
 using System.TestLibraries.Utilities;
@@ -8,8 +9,8 @@ using System.TestLibraries.Utilities;
 /// Contract tests over every Subscription Billing message type. They assert the registration
 /// itself: that each type resolves to an implementation, describes itself, and answers
 /// Help.Implementation.Get with contract chapters. These are the guarantees the Bifrost
-/// discovery surface depends on, and they hold without any Subscription Billing master data
-/// in the company.
+/// discovery surface depends on, and they hold without subscription contracts in the company.
+/// The enabled check seeds one number series, because an unconfigured company hides the types (#98).
 /// </summary>
 codeunit 95701 "Sub Msg Type Tst ori"
 {
@@ -56,8 +57,9 @@ codeunit 95701 "Sub Msg Type Tst ori"
         MessageType: Enum "Message Type ori";
         Ordinal: Integer;
     begin
-        // [GIVEN] The registered Subscription Billing message types
+        // [GIVEN] The registered types in a company with at least one Subscription Billing number series
         Initialize();
+        EnsureConfiguredForDiscovery();
 
         foreach Ordinal in Enum::"Message Type ori".Ordinals() do
             if IsSubscriptionBillingType(Ordinal) then begin
@@ -66,7 +68,7 @@ codeunit 95701 "Sub Msg Type Tst ori"
                 // [WHEN] The implementation is asked whether it is enabled
                 MessageTypeInterface := MessageType;
 
-                // [THEN] It is
+                // [THEN] It is enabled. An unconfigured company is covered by Sub Configured Tst ori.
                 Assert.IsTrue(MessageTypeInterface.IsEnabled(), StrSubstNo('%1 should be enabled.', Format(MessageType)));
             end;
     end;
@@ -204,6 +206,20 @@ codeunit 95701 "Sub Msg Type Tst ori"
     begin
         FirstTypeOrdinal := 10035036;
         LastTypeOrdinal := 10035090;
+    end;
+
+    local procedure EnsureConfiguredForDiscovery()
+    var
+        Setup: Record "Subscription Contract Setup";
+    begin
+        if not Setup.Get() then begin
+            Setup.Init();
+            Setup.Insert(false);
+        end;
+        if (Setup."Subscription Header No." = '') and (Setup."Cust. Sub. Contract Nos." = '') and (Setup."Vend. Sub. Contract Nos." = '') then begin
+            Setup."Cust. Sub. Contract Nos." := 'SB98';
+            Setup.Modify(false);
+        end;
     end;
 
     local procedure IsSubscriptionBillingType(Ordinal: Integer): Boolean

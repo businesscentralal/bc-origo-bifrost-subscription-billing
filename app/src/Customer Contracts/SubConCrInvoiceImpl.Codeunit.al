@@ -25,8 +25,10 @@ codeunit 10035038 "Sub Con CrInvoice Impl ori" implements "Msg Interface ori", "
         DescriptionLbl: Label 'Bills one customer Subscription Contract to an unposted sales invoice, or a credit memo when a line calls for one. Returns the documents created.', MaxLength = 250, Comment = 'is-IS=Reikningsfærir einn áskriftarsamning viðskiptamanns á óbókaðan sölureikning, eða kreditreikning þegar lína krefst þess. Skilar þeim skjölum sem urðu til.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer
