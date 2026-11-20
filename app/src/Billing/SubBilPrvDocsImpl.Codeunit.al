@@ -28,8 +28,10 @@ codeunit 10035047 "Sub Bil PrvDocs Impl ori" implements "Msg Interface ori", "Ms
         DescriptionLbl: Label 'Previews the documents that Subscription.Billing.CreateDocuments would create for a Billing Template, by reading the existing proposal lines. Reads only; writes nothing.', MaxLength = 250, Comment = 'is-IS=Forskoðar þau skjöl sem Subscription.Billing.CreateDocuments myndi búa til fyrir reikningssniðmát, með því að lesa fyrirliggjandi tillögulínur. Les eingöngu; skrifar ekkert.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

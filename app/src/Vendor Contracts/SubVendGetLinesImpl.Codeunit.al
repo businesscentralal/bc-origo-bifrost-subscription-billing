@@ -22,8 +22,10 @@ codeunit 10035042 "Sub Vend GetLines Impl ori" implements "Msg Interface ori", "
         DescriptionLbl: Label 'Attaches unassigned Subscription Lines to a vendor subscription contract, creating a vendor contract line for each one. Returns how many lines were attached.', MaxLength = 250, Comment = 'is-IS=Tengir ótengdar áskriftarlínur við áskriftarsamning lánardrottins og býr til samningslínu lánardrottins fyrir hverja línu. Skilar fjölda tengdra lína.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

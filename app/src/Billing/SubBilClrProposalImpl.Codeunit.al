@@ -25,8 +25,10 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
         DescriptionLbl: Label 'Deletes the billing proposal lines of a Billing Template, or of one contract under it, and resets the Next Billing Date of their Subscription Lines. Refuses lines already on a document.', MaxLength = 250, Comment = 'is-IS=Eyðir línum reikningstillögu í reikningssniðmáti, eða eins samnings undir því, og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Hafnar línum sem eru þegar á skjali.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

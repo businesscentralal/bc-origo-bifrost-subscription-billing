@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+### Added (2026-11-20) - Subscription Billing operations follow the company number series (#98)
+
+- The 33 `Subscription.*` message types are enabled in a company only when Subscription Contract Setup has at least one of `Subscription Header No.`, `Cust. Sub. Contract Nos.` or `Vend. Sub. Contract Nos.` set. The setup record Microsoft creates on install does not enable them while those three are blank. Each call reads the setup again, so a change shows up without a restart. The read does not create or change setup.
+- `Subscription.Billing.PostDocuments` (10035085) keeps its posting permission check as well.
+- New codeunit 10035088 `Sub Configured ori`. Tests 95725 cover a blank setup, a missing setup record, each series on its own, clearing the last series in the same session, an empty company name, and two companies. The setup article and the assisted setup wizard say when the operations appear, in English and Icelandic.
+- A caller who cannot read Subscription Contract Setup is treated as not configured, so discovery does not throw and the Bifrost permission sets do not gain that Microsoft table.
+
 ### Fixed (2026-11-17) - Subscription.PriceUpdate.Perform carries the expectedCount marker (#95, core #1378)
 
 - `effect.changes` and the `expectedCount` parameter of `Subscription.PriceUpdate.Perform` now contain `expectedCount counts Contract Price Update Lines`, the marker the core#1378 allow-list checks. The type stays `irreversible`. Contract chapters stay English in 1033 and 1039, so the English marker applies to both.

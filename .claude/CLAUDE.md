@@ -39,7 +39,8 @@ App:
 - 10035073 codeunit `Sub Con Merge Impl ori` and enum value `Subscription.Contract.MergeLines` (#50)
 - 10035074 codeunit `Sub Con Merge Mgt ori` (Microsoft merge copy, #50)
 - 10035087 codeunit `Sub PU Perform Confirm ori` (#91; the Msg Confirm ori counter of Subscription.PriceUpdate.Perform)
-- Free: 10035088-10035090
+- 10035088 codeunit `Sub Configured ori` (#98; company number-series gate for the 33 Subscription.* types)
+- Free: 10035089-10035090
 
 Tests:
 - 95700 `Sub Test Install ori`, 95701 `Sub Msg Type Tst ori`, 95702 `Sub Helper Tst ori`,
@@ -63,8 +64,10 @@ Tests:
 - 95717 `Sub Con Ccy Tst ori` (#51), 95718 `Sub PostDocs Tst ori`, 95719 `Sub Post Gate Tst ori` (#52)
 - 95720 `Sub Con Merge Tst ori` (#50)
 - 95731 `Sub Effect Count Tst ori` (#93; effects, bilingual count help and confirmation regressions)
-- Other main allocations include 95721-95724, 95727-95728, 95730 and 95780; check source before allocating.
-- Free: 95725-95726, 95729, 95732-95739, 95744-95769, 95779, 95781-95799
+- 95725 `Sub Configured Tst ori` (#98; company number-series gate)
+- 95726 permission set `Sub Cfg Read ori` (#98; test-only read of Subscription Contract Setup for the posting-gate check)
+- Other main allocations include 95721-95724, 95727-95729 (`Sub Setup Test ori`), 95730 and 95780; check source before allocating.
+- Free: 95732-95739, 95744-95769, 95779, 95781-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**

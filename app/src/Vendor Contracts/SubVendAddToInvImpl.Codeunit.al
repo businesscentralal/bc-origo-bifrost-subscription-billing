@@ -30,8 +30,10 @@ codeunit 10035068 "Sub Vend AddToInv Impl ori" implements "Msg Interface ori", "
         DescriptionLbl: Label 'Adds the due vendor contract lines of the invoice''s vendor to an existing unposted purchase invoice, like Get Vendor Contract Lines, and returns the lines added.', MaxLength = 250, Comment = 'is-IS=Bætir gjaldföllnum samningslínum lánardrottins reikningsins við óbókaðan innkaupareikning, eins og Sækja samningslínur lánardrottins, og skilar línunum sem bættust við.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

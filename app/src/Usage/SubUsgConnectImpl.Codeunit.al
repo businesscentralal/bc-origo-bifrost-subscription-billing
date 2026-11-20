@@ -28,8 +28,10 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
         DescriptionLbl: Label 'Connects a usage data supplier''s subscriptions to Subscriptions through Microsoft''s Connect to Subscription, and returns which entries were connected and which were skipped, with the reason.', MaxLength = 250, Comment = 'is-IS=Tengir áskriftir birgis notkunargagna við áskriftir með aðgerð Microsoft, Tengjast áskrift, og skilar hvaða færslur tengdust og hverjum var sleppt, ásamt ástæðu.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

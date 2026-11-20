@@ -28,8 +28,10 @@ codeunit 10035070 "Sub Bil SetFilter Impl ori" implements "Msg Interface ori", "
         DescriptionLbl: Label 'Writes the contract filter of a Billing Template after validating it as a view of the template''s contract table, and returns the stored filter.', MaxLength = 250, Comment = 'is-IS=Skrifar samningssíu reikningssniðmáts eftir að hafa sannreynt hana sem sýn á samningatöflu sniðmátsins og skilar vistuðu síunni.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

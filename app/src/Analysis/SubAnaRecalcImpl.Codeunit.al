@@ -28,8 +28,10 @@ codeunit 10035056 "Sub Ana Recalc Impl ori" implements "Msg Interface ori", "Msg
         DescriptionLbl: Label 'Updates this month''s analysis entries for the given subscription contract, or all contracts when no contractNo is supplied. Existing entries are preserved.', MaxLength = 250, Comment = 'is-IS=Uppfærir greiningarfærslur þessa mánaðar fyrir tilgreindan áskriftarsamning eða alla samninga ef contractNo er ekki gefið. Fyrirliggjandi færslur haldast óbreyttar.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

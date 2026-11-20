@@ -49,8 +49,10 @@ codeunit 10035085 "Sub Bil PostDocs Impl ori" implements "Msg Interface ori", "M
         CreditMemoTok: Label 'Credit Memo', Locked = true;
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(PostingGate.HasPostingPermission());
+        exit(Configured.IsConfigured() and PostingGate.HasPostingPermission());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

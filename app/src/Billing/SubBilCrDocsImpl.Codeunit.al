@@ -27,8 +27,10 @@ codeunit 10035046 "Sub Bil CrDocs Impl ori" implements "Msg Interface ori", "Msg
         DescriptionLbl: Label 'Turns the unbilled Billing Line rows under a Billing Template into sales or purchase documents. Reports the documents created and how many proposal lines were processed.', MaxLength = 250, Comment = 'is-IS=Umbreytir óreikningsfærðum reikningslínum undir reikningssniðmáti í sölu- eða innkaupaskjöl. Skilar þeim skjölum sem urðu til og fjölda tillögulína sem unnið var úr.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

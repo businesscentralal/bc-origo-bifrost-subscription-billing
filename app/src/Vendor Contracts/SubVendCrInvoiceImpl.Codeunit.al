@@ -27,8 +27,10 @@ codeunit 10035043 "Sub Vend CrInvoice Impl ori" implements "Msg Interface ori", 
         DescriptionLbl: Label 'Creates an unposted purchase invoice or credit memo for the due Subscription Lines of a vendor subscription contract. Never posts the document.', MaxLength = 250, Comment = 'is-IS=Býr til óbókaðan innkaupareikning eða kreditreikning fyrir gjaldfallnar áskriftarlínur áskriftarsamnings lánardrottins. Skjalið er aldrei bókað.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

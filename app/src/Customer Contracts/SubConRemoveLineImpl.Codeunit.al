@@ -27,8 +27,10 @@ codeunit 10035071 "Sub Con RemoveLine Impl ori" implements "Msg Interface ori", 
         DescriptionLbl: Label 'Removes a line from a customer or vendor Subscription Contract and detaches its Subscription Line. Refuses lines that are billed, in billing, deferred or closed.', MaxLength = 250, Comment = 'is-IS=Fjarlægir línu úr áskriftarsamningi viðskiptamanns eða lánardrottins og losar áskriftarlínu hennar. Hafnar línum sem eru reikningsfærðar, í reikningagerð, frestaðar eða lokaðar.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

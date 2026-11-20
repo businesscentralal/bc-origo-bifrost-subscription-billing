@@ -33,8 +33,10 @@ codeunit 10035067 "Sub Usg Disconnect Impl ori" implements "Msg Interface ori", 
         DescriptionLbl: Label 'Disconnects a Subscription Line from its usage data supplier''s subscription, like Disconnect from Subscription, and returns the link that was removed.', MaxLength = 250, Comment = 'is-IS=Aftengir áskriftarlínu frá áskrift birgis notkunargagna, eins og Aftengjast áskrift, og skilar tengingunni sem var fjarlægð.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

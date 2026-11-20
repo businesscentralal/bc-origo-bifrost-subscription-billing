@@ -24,8 +24,10 @@ codeunit 10035049 "Sub PU CrProposal Impl ori" implements "Msg Interface ori", "
         DescriptionLbl: Label 'Creates the Contract Price Update Lines of a Price Update Template, as the Contract Price Update page does. Subscription Lines are not changed.', MaxLength = 250, Comment = 'is-IS=Stofnar línur verðuppfærslu áskriftarsamnings fyrir sniðmát fyrir verðuppfærslu, eins og síðan Verðuppfærsla áskriftarsamnings gerir. Áskriftarlínum er ekki breytt.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer

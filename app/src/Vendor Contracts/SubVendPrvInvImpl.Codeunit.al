@@ -27,8 +27,10 @@ codeunit 10035044 "Sub Vend PrvInv Impl ori" implements "Msg Interface ori", "Ms
         DescriptionLbl: Label 'Previews invoice lines for a vendor subscription contract. Temporary proposal writes are removed; no changes remain and no document is created.', MaxLength = 250, Comment = 'is-IS=Forskoðar reikningslínur fyrir áskriftarsamning lánardrottins. Tímabundnar tillögulínur eru fjarlægðar; engar breytingar haldast og ekkert skjal er stofnað.';
 
     procedure IsEnabled(): Boolean
+    var
+        Configured: Codeunit "Sub Configured ori";
     begin
-        exit(true);
+        exit(Configured.IsConfigured());
     end;
 
     procedure GetFilterTableNo() FilterTableId: Integer
