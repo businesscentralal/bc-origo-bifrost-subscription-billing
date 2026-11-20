@@ -67,7 +67,8 @@ Tests:
 - 95725 `Sub Configured Tst ori` (#98; company number-series gate)
 - 95726 permission set `Sub Cfg Read ori` (#98; test-only read of Subscription Contract Setup for the posting-gate check)
 - Other main allocations include 95721-95724, 95727-95729 (`Sub Setup Test ori`), 95730 and 95780; check source before allocating.
-- Free: 95732-95739, 95744-95769, 95779, 95781-95799
+- 95732 `Sub Help Names Tst ori` (#102; real array parameter names, integer hint, description language)
+- Free: 95733-95739, 95744-95769, 95779, 95781-95799
 
 ## Setup Notifications
 Setup notifications (enable outbound HTTP, missing credentials, run the setup wizard) live **only**

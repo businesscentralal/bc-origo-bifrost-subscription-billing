@@ -1294,11 +1294,23 @@ codeunit 10035075 "Sub Contract Parts ori"
         if MessageType in ['Subscription.Line.Create', 'Subscription.Contract.CreateInvoice', 'Subscription.Contract.PreviewInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.VendorContract.PreviewInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Deferral.Release', 'Subscription.VendorContract.AddLinesToInvoice', 'Subscription.PriceUpdate.CreateProposal'] then
             AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'The parameter ''%1'' is not a valid date. Use the ISO format YYYY-MM-DD.', 'A date parameter is not a date in the ISO format.', 'Send the date as YYYY-MM-DD.');
         if MessageType in ['Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Usage.DisconnectSubscription', 'Subscription.Usage.DeleteData', 'Subscription.Contract.RemoveLine', 'Subscription.Contract.MergeLines'] then
-            AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', 'An integer parameter is not a number.', 'Send a whole number.');
+            AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'The parameter ''%1'' is not a valid whole number. Use digits only, for example 1234.', 'An integer parameter is not a whole number.', 'Send a whole number, for example 1234.');
         if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines', 'Subscription.Contract.MergeLines', 'Subscription.Renewal.Extend', 'Subscription.Usage.Process', 'Subscription.Import.CreateContracts', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Renewal.CreateQuote', 'Subscription.VendorContract.AddLinesToInvoice', 'Subscription.Billing.PostDocuments'] then
             AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'The parameter ''%1'' must be a JSON array.', 'An array parameter has a value that is not an array.', 'Send a JSON array, or leave the parameter out.');
         if MessageType in ['Subscription.Contract.GetLines', 'Subscription.VendorContract.GetLines', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Renewal.CreateQuote', 'Subscription.VendorContract.AddLinesToInvoice'] then
-            AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'The parameter ''%1'' must be a JSON array of entry numbers, written as whole numbers.', 'An entry of subscriptionLineEntryNos is not a whole number.', 'Send whole numbers only.');
+            AddTypedError(Errors, "Bifrost Error Code ori"::InvalidParameterFormat, 'The parameter ''%1'' must be a JSON array of entry numbers, written as whole numbers.', 'An entry of ' + EntryNoArrayParameter(MessageType) + ' is not a whole number.', 'Send whole numbers only.');
+    end;
+
+    /// <summary>The name of the array parameter that carries entry or line numbers for the message type (#102).</summary>
+    local procedure EntryNoArrayParameter(MessageType: Text): Text
+    begin
+        case MessageType of
+            'Subscription.Renewal.CreateQuote':
+                exit('contractLineNos');
+            'Subscription.Usage.ConnectSubscriptions':
+                exit('entryNos');
+        end;
+        exit('subscriptionLineEntryNos');
     end;
 
     local procedure AddLookupErrors(MessageType: Text; var Errors: JsonArray)

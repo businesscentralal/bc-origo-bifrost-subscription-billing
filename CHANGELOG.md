@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-20) - help names the real parameters, integer hint, description language (#102)
+
+- The errors chapter of `Subscription.Renewal.CreateQuote` now names `contractLineNos`, and that of `Subscription.Usage.ConnectSubscriptions` names `entryNos`, instead of `subscriptionLineEntryNos`. The types that read `subscriptionLineEntryNos` keep that name.
+- An integer parameter that is not a whole number is refused with "The parameter '%1' is not a valid whole number. Use digits only, for example 1234." (new label `InvalidIntegerErr` in 10035058 `Sub Helper ori`, is-IS translated). Decimal parameters keep the decimal-point hint. The integer error in the contract says the same.
+- New test codeunit 95732 `Sub Help Names Tst ori`: parameter names in both errors chapters (plus GetLines as the edge case), the integer refusal in 1033 and 1039, the decimal hint unchanged, and the catalogue description of both types following lcid 1033 from an Icelandic session and lcid 1039 from an English one. No product object ID added.
+
 ### Added (2026-11-20) - Subscription Billing operations follow the company number series (#98)
 
 - The 33 `Subscription.*` message types are enabled in a company only when Subscription Contract Setup has at least one of `Subscription Header No.`, `Cust. Sub. Contract Nos.` or `Vend. Sub. Contract Nos.` set. The setup record Microsoft creates on install does not enable them while those three are blank. Each call reads the setup again, so a change shows up without a restart. The read does not create or change setup.
