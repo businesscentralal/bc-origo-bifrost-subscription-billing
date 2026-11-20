@@ -1041,6 +1041,12 @@
           <note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Færibreytan '%1' verður að vera JSON fylki af færslunúmerum, rituðum sem heilar tölur.</note>
           <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidEntryNoArrayErr</note>
         </trans-unit>
+        <trans-unit id="Codeunit 2964411042 - NamedType 280487822" size-unit="char" translate="yes" xml:space="preserve">
+          <source>The parameter '%1' is not a valid whole number. Use digits only, for example 1234.</source>
+          <target>Færibreytan '%1' er ekki gild heil tala. Notaðu eingöngu tölustafi, til dæmis 1234.</target>
+          <note from="Developer" annotates="general" priority="2">%1 = parameter name||is-IS=Færibreytan '%1' er ekki gild heil tala. Notaðu eingöngu tölustafi, til dæmis 1234.</note>
+          <note from="Xliff Generator" annotates="general" priority="3">Codeunit Sub Helper ori - NamedType InvalidIntegerErr</note>
+        </trans-unit>
         <trans-unit id="Codeunit 2964411042 - NamedType 2506076390" size-unit="char" translate="yes" xml:space="preserve">
           <source>The parameter '%1' must be either 'Customer' or 'Vendor'.</source>
           <target>Færibreytan '%1' verður að vera annaðhvort 'Customer' eða 'Vendor'.</target>

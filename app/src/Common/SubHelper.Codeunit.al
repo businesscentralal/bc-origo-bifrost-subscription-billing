@@ -33,6 +33,7 @@ codeunit 10035058 "Sub Helper ori"
         MissingParameterErr: Label 'The request is missing the required parameter ''%1''.', Comment = '%1 = parameter name||is-IS=Beiðnina vantar nauðsynlega færibreytu ''%1''.';
         InvalidDateErr: Label 'The parameter ''%1'' is not a valid date. Use the ISO format YYYY-MM-DD.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' er ekki gild dagsetning. Notaðu ISO sniðið YYYY-MM-DD.';
         InvalidDecimalErr: Label 'The parameter ''%1'' is not a valid number. Use a decimal point, for example 1234.56.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' er ekki gild tala. Notaðu tugapunkt, til dæmis 1234.56.';
+        InvalidIntegerErr: Label 'The parameter ''%1'' is not a valid whole number. Use digits only, for example 1234.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' er ekki gild heil tala. Notaðu eingöngu tölustafi, til dæmis 1234.';
         InvalidPartnerErr: Label 'The parameter ''%1'' must be either ''Customer'' or ''Vendor''.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera annaðhvort ''Customer'' eða ''Vendor''.';
         ValueTooLongErr: Label 'The parameter ''%1'' is longer than the %2 characters allowed.', Comment = '%1 = parameter name, %2 = maximum length||is-IS=Færibreytan ''%1'' er lengri en leyfilegur hámarksfjöldi stafa, %2.';
         NotAnArrayErr: Label 'The parameter ''%1'' must be a JSON array.', Comment = '%1 = parameter name||is-IS=Færibreytan ''%1'' verður að vera JSON-fylki.';
@@ -683,7 +684,7 @@ codeunit 10035058 "Sub Helper ori"
         RequestJson.Get(PropertyName, JToken);
         TextValue := JToken.AsValue().AsText();
         if not Evaluate(Value, TextValue, 9) then
-            RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidDecimalErr, PropertyName), PropertyName, TextValue, 'number');
+            RaiseError("Bifrost Error Code ori"::InvalidParameterFormat, StrSubstNo(InvalidIntegerErr, PropertyName), PropertyName, TextValue, 'integer');
     end;
 
     /// <summary>Reads a boolean value, falling back to the given default when absent.</summary>
