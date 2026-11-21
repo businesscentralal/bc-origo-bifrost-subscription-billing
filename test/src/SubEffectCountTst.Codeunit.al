@@ -290,11 +290,11 @@ codeunit 95731 "Sub Effect Count Tst ori"
     [Test]
     procedure Scenario_AC03_Writes_HelpAndOptionalCount_BothLanguages()
     begin
-        AssertWriteHelp(1033, 'Writes');
-        AssertWriteHelp(1039, 'Skrifar');
+        AssertWriteHelp(1033, 'Writes', 'ignored');
+        AssertWriteHelp(1039, 'Skrifar', 'hunsuð');
     end;
 
-    local procedure AssertWriteHelp(LanguageId: Integer; WriteWord: Text)
+    local procedure AssertWriteHelp(LanguageId: Integer; WriteWord: Text; IgnoredWord: Text)
     var
         Contract: Interface "Msg Contract ori";
         Discovery: Interface "Msg Discovery ori";
@@ -325,7 +325,7 @@ codeunit 95731 "Sub Effect Count Tst ori"
                         Parameter.AsObject().Get('required', Token);
                         Assert.IsFalse(Token.AsValue().AsBoolean(), TypeName + ' count stays optional.');
                         Description := TextValue(Parameter.AsObject(), 'description');
-                        Assert.IsTrue(Description.Contains('ignored'), TypeName + ' contract explains compatibility in English.');
+                        Assert.IsTrue(Description.Contains(IgnoredWord), TypeName + ' contract explains compatibility in the session language.');
                         Assert.IsFalse(Description.Contains('ConfirmationRequired'), TypeName + ' has no count preview requirement.');
                     end;
                 Assert.AreEqual(1, Found, TypeName + ' keeps expectedCount accepted.');
