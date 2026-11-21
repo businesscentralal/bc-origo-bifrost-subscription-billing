@@ -366,6 +366,8 @@ codeunit 95731 "Sub Effect Count Tst ori"
                     Description := TextValue(Parameter.AsObject(), 'description');
                     Assert.IsTrue(Description.Contains(CountWord), TypeName + ' parameter must name its unit.');
                     Assert.IsTrue(Description.Contains(PreviewWords), TypeName + ' parameter must explain preview.');
+                    if LanguageId = 1033 then
+                        Assert.IsTrue(Description.Contains('Require Confirmation for Irreversible Messages'), TypeName + ' parameter must name the existing setup setting.');
                 end;
             end;
             Assert.AreEqual(1, ParameterCount, TypeName + ' must declare expectedCount exactly once.');

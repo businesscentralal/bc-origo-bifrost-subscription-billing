@@ -103,6 +103,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
     /// <param name="Count">Receives the number of units currently in scope.</param>
     /// <param name="Summary">Receives the localized definition of the count.</param>
     /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    // Kept for compatibility; Foundation does not gate write effects through this counter.
     procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
     var
         DefaultConfirm: Codeunit "Default Confirm ori";
