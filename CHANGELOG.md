@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Fixed (2026-11-21) - confirmation setup help (#107, PR #108 amend)
+
+- Restores the existing "Require Confirmation for Irreversible Messages" setting name in English expectedCount help and its XLF source. The posting-type help test now pins the setting caption. Write counters remain available for compatibility and explain why Foundation does not gate write effects through them.
+
+### Fixed (2026-11-21) - only posting is irreversible (#107)
+
+- Only posting-capable Subscription Billing types are irreversible (#107): sixteen non-posting operations now declare write, accept and ignore legacy expectedCount, and execute without irreversible confirmation. PostDocuments, Deferral.Release and CreateDocuments retain confirmation. Updated English/Icelandic help and regression tests. Existing objects only; no object IDs added.
+
 ### Fixed (2026-11-20) - help names the real parameters, integer hint, description language (#102)
 
 - The errors chapter of `Subscription.Renewal.CreateQuote` now names `contractLineNos`, and that of `Subscription.Usage.ConnectSubscriptions` names `entryNos`, instead of `subscriptionLineEntryNos`. The types that read `subscriptionLineEntryNos` keep that name.

@@ -52,7 +52,7 @@ codeunit 10035052 "Sub Ren CrQuote Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Create a renewal quote: builds renewal lines from the lines of a customer contract that have an end date and creates a sales quote from them. Irreversible. To extend a Subscription directly without a quote use Subscription.Renewal.Extend.', Comment = 'is-IS=Stofna endurnýjunartilboð: býr til endurnýjunarlínur úr þeim línum áskriftarsamnings viðskiptamanns sem hafa lokadagsetningu og stofnar sölutilboð út frá þeim. Óafturkræf aðgerð. Til að framlengja áskrift beint án tilboðs skal nota Subscription.Renewal.Extend.';
+        SelectionLbl: Label 'Create a renewal quote: builds renewal lines from the lines of a customer contract that have an end date and creates a sales quote from them. Writes. To extend a Subscription directly without a quote use Subscription.Renewal.Extend.', Comment = 'is-IS=Stofna endurnýjunartilboð: býr til endurnýjunarlínur úr þeim línum áskriftarsamnings viðskiptamanns sem hafa lokadagsetningu og stofnar sölutilboð út frá þeim. Skrifar. Til að framlengja áskrift beint án tilboðs skal nota Subscription.Renewal.Extend.';
     begin
         exit(SelectionLbl);
     end;

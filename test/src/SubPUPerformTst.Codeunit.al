@@ -261,7 +261,7 @@ codeunit 95743 "Sub PU Perform Tst ori"
     end;
 
     [Test]
-    procedure Perform_ExpectedCount_CountsProposalLinesOfTheTemplate()
+    procedure Perform_ExpectedCount_IsIgnoredForTemplate()
     var
         CustomerContract: Record "Customer Subscription Contract";
         ContractPriceUpdateLine: Record "Sub. Contr. Price Update Line";
@@ -276,23 +276,14 @@ codeunit 95743 "Sub PU Perform Tst ori"
         RequestJson.Add('priceUpdateTemplateCode', PriceUpdateTemplate.Code);
         RequestJson.Add('expectedCount', 1);
         ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, true);
-        // [THEN] It is refused with the real count and nothing is performed.
-        Assert.AreEqual('ConfirmationMismatch', TestLib.ReadText(ResponseJson, 'code'), 'A count of 1 must not confirm two proposal lines.');
-        Assert.IsTrue(TestLib.ReadText(ResponseJson, 'error').Contains('2'), 'The refusal must name the real count of 2.');
+        // [THEN] Both proposal lines are performed despite the stale compatibility value.
         ContractPriceUpdateLine.SetRange("Price Update Template Code", PriceUpdateTemplate.Code);
-        Assert.AreEqual(2, ContractPriceUpdateLine.Count(), 'A refused confirmation must leave the proposal untouched.');
-        // [WHEN] It is confirmed with the number of lines.
-        Clear(RequestJson);
-        RequestJson.Add('priceUpdateTemplateCode', PriceUpdateTemplate.Code);
-        RequestJson.Add('expectedCount', 2);
-        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, true);
-        // [THEN] Both lines are performed.
-        TestLib.AssertSuccess(ResponseJson, 'A count of 2 must confirm two proposal lines.');
+        TestLib.AssertSuccess(ResponseJson, 'A non-posting price update ignores the stale expectedCount.');
         Assert.RecordIsEmpty(ContractPriceUpdateLine);
     end;
 
     [Test]
-    procedure Perform_ExpectedCount_WithoutTemplateCountsEveryTemplatesLines()
+    procedure Perform_ExpectedCount_IsIgnoredAcrossTemplates()
     var
         FirstContract: Record "Customer Subscription Contract";
         SecondContract: Record "Customer Subscription Contract";
@@ -312,15 +303,8 @@ codeunit 95743 "Sub PU Perform Tst ori"
         // [WHEN] The call names no template and is confirmed with the lines of one template.
         RequestJson.Add('expectedCount', 2);
         ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, true);
-        // [THEN] It is refused, because it would perform every template's lines, and nothing is performed.
-        Assert.AreEqual('ConfirmationMismatch', TestLib.ReadText(ResponseJson, 'code'), 'A count of one template must not confirm every template.');
-        Assert.AreEqual(AllLines, ContractPriceUpdateLine.Count(), 'A refused confirmation must leave every line in place.');
-        // [WHEN] It is confirmed with the lines of every template.
-        Clear(RequestJson);
-        RequestJson.Add('expectedCount', AllLines);
-        ResponseJson := TestLib.Invoke(Enum::"Message Type ori"::"Subscription.PriceUpdate.Perform", '', RequestJson, true);
         // [THEN] Every line is performed.
-        TestLib.AssertSuccess(ResponseJson, 'The count of every line must confirm the call.');
+        TestLib.AssertSuccess(ResponseJson, 'The write ignores a legacy count across templates.');
         Assert.RecordIsEmpty(ContractPriceUpdateLine);
     end;
 
@@ -348,7 +332,7 @@ codeunit 95743 "Sub PU Perform Tst ori"
         SavedLanguage: Integer;
     begin
         // #91 AC1 and AC3 | Time: none | Risk: None
-        // [THEN] The irreversible type names its count in the effect and the parameter, in English and Icelandic (chapters stay English).
+        // [THEN] The write type explains its ignored compatibility parameter in both session languages (chapters stay English).
         SavedLanguage := GlobalLanguage();
         GlobalLanguage(1033);
         AssertCountDefined();
@@ -373,11 +357,11 @@ codeunit 95743 "Sub PU Perform Tst ori"
         Contract.Get('effect', Token);
         EffectObject := Token.AsObject();
         EffectObject.Get('effect', Token);
-        Assert.AreEqual('irreversible', Token.AsValue().AsText(), 'The type changes prices and deletes proposal lines, so it stays irreversible.');
+        Assert.AreEqual('write', Token.AsValue().AsText(), 'Price changes never post and remain editable.');
         EffectObject.Get('changes', Token);
         ChangesText := Token.AsValue().AsText();
-        Assert.IsTrue(ChangesText.Contains('expectedCount counts Contract Price Update Lines'), 'effect.changes must carry the marker "expectedCount counts " (#95).');
-        Assert.IsTrue(ChangesText.Contains('without expectedCount'), 'effect.changes must say how to read the count without a side effect.');
+        Assert.IsFalse(ChangesText.Contains('expectedCount counts'), 'Writes do not advertise irreversible count previews.');
+        Assert.IsTrue(ChangesText.Contains('Nothing is posted'), 'Keep the factual posting note.');
         Contract.Get('parameters', Token);
         foreach Entry in Token.AsArray() do begin
             Entry.AsObject().Get('name', Token);
@@ -386,8 +370,8 @@ codeunit 95743 "Sub PU Perform Tst ori"
                 ParameterText := Token.AsValue().AsText();
             end;
         end;
-        Assert.IsTrue(ParameterText.Contains('expectedCount counts Contract Price Update Lines'), 'The expectedCount parameter must carry the marker "expectedCount counts " (#95).');
-        Assert.IsTrue(ParameterText.Contains('without expectedCount and read expected'), 'The expectedCount parameter must say how to preview the count.');
+        Assert.IsTrue(ParameterText.Contains('Accepted and ignored'), 'Keep the optional compatibility parameter.');
+        Assert.IsFalse(ParameterText.Contains('ConfirmationRequired'), 'No irreversible confirmation is required.');
     end;
 
     local procedure SeedAndPropose(var CustomerContract: Record "Customer Subscription Contract"; var PriceUpdateTemplate: Record "Price Update Template"; PriceUpdateMethod: Enum "Price Update Method"; UpdateValuePct: Decimal; PerformUpdateOnDate: Date; NextBillingDate: Date)

@@ -50,7 +50,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Create contracts from staged import rows: turns unprocessed staging rows into Subscription Headers, Customer Subscription Contracts, Subscription Lines and contract lines, one stage at a time, committing as it goes. Irreversible. To add the lines of one package to a single Subscription without staging use Subscription.Line.Create.', Comment = 'is-IS=Stofna samninga úr innfluttum bráðabirgðalínum: breytir óunnum bráðabirgðalínum í áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur, eitt skref í einu, og vistar jafnóðum. Óafturkræf aðgerð. Til að bæta línum eins pakka við eina áskrift án bráðabirgðalína skal nota Subscription.Line.Create.';
+        SelectionLbl: Label 'Create contracts from staged import rows: turns unprocessed staging rows into Subscription Headers, Customer Subscription Contracts, Subscription Lines and contract lines, one stage at a time, committing as it goes. Writes. To add the lines of one package to a single Subscription without staging use Subscription.Line.Create.', Comment = 'is-IS=Stofna samninga úr innfluttum bráðabirgðalínum: breytir óunnum bráðabirgðalínum í áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur, eitt skref í einu, og vistar jafnóðum. Skrifar. Til að bæta línum eins pakka við eina áskrift án bráðabirgðalína skal nota Subscription.Line.Create.';
     begin
         exit(SelectionLbl);
     end;
@@ -96,6 +96,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
     /// <param name="Count">Receives the number of units currently in scope.</param>
     /// <param name="Summary">Receives the localized definition of the count.</param>
     /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    // Kept for compatibility; Foundation does not gate write effects through this counter.
     procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
     var
         DefaultConfirm: Codeunit "Default Confirm ori";

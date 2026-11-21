@@ -56,7 +56,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Delete billing documents: deletes unposted sales or purchase invoices and credit memos made by billing and returns their lines to the proposal; lines of documents made without a Billing Template are deleted instead. Irreversible, and posted documents are refused. To remove the proposal itself use Subscription.Billing.ClearProposal; to make the documents again use Subscription.Billing.CreateDocuments.', Comment = 'is-IS=Eyða reikningsskjölum: eyðir óbókuðum sölu- eða innkaupareikningum og kreditreikningum sem reikningagerð bjó til og skilar línum þeirra í tillöguna; línum skjala sem búin voru til án reikningssniðmáts er eytt. Óafturkræf aðgerð og bókuðum skjölum er hafnað. Til að fjarlægja sjálfa tillöguna skal nota Subscription.Billing.ClearProposal; til að búa skjölin til aftur skal nota Subscription.Billing.CreateDocuments.';
+        SelectionLbl: Label 'Delete billing documents: deletes unposted sales or purchase invoices and credit memos made by billing and returns their lines to the proposal; lines of documents made without a Billing Template are deleted instead. Writes. Posted documents are refused. To remove the proposal itself use Subscription.Billing.ClearProposal; to make the documents again use Subscription.Billing.CreateDocuments.', Comment = 'is-IS=Eyða reikningsskjölum: eyðir óbókuðum sölu- eða innkaupareikningum og kreditreikningum sem reikningagerð bjó til og skilar línum þeirra í tillöguna; línum skjala sem búin voru til án reikningssniðmáts er eytt. Skrifar og bókuðum skjölum er hafnað. Til að fjarlægja sjálfa tillöguna skal nota Subscription.Billing.ClearProposal; til að búa skjölin til aftur skal nota Subscription.Billing.CreateDocuments.';
     begin
         exit(SelectionLbl);
     end;
@@ -102,6 +102,7 @@ codeunit 10035065 "Sub Bil DelDocs Impl ori" implements "Msg Interface ori", "Ms
     /// <param name="Count">Receives the number of units currently in scope.</param>
     /// <param name="Summary">Receives the localized definition of the count.</param>
     /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    // Kept for compatibility; Foundation does not gate write effects through this counter.
     procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
     var
         DefaultConfirm: Codeunit "Default Confirm ori";

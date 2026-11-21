@@ -57,7 +57,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the Force Field Access permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar Þvinga reitaaðgang. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
+        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Writes. Covers every Subscription in the company and needs the Force Field Access permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Skrifar, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar Þvinga reitaaðgang. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
     begin
         exit(SelectionLbl);
     end;
@@ -103,6 +103,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
     /// <param name="Count">Receives the number of units currently in scope.</param>
     /// <param name="Summary">Receives the localized definition of the count.</param>
     /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    // Kept for compatibility; Foundation does not gate write effects through this counter.
     procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
     var
         DefaultConfirm: Codeunit "Default Confirm ori";
