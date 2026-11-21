@@ -59,7 +59,7 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Delete usage data: deletes the imported lines and usage billing of one Usage Data Import so it can be processed again (resetLines), or deletes the whole import (deleteImport). Irreversible, and imports already on a billing line or document are refused. To process the import again use Subscription.Usage.Process.', Comment = 'is-IS=Eyða notkunargögnum: eyðir innfluttum línum og reikningsgerð fyrir gögn eins notkunarinnflutnings svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Óafturkræf aðgerð og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.';
+        SelectionLbl: Label 'Delete usage data: deletes the imported lines and usage billing of one Usage Data Import so it can be processed again (resetLines), or deletes the whole import (deleteImport). Writes. Imports already on a billing line or document are refused. To process the import again use Subscription.Usage.Process.', Comment = 'is-IS=Eyða notkunargögnum: eyðir innfluttum línum og reikningsgerð fyrir gögn eins notkunarinnflutnings svo hægt sé að vinna hann aftur (resetLines), eða eyðir öllum innflutningnum (deleteImport). Skrifar og innflutningi sem er þegar á reikningslínu eða skjali er hafnað. Til að vinna innflutninginn aftur skal nota Subscription.Usage.Process.';
     begin
         exit(SelectionLbl);
     end;

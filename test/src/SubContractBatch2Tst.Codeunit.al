@@ -35,13 +35,13 @@ codeunit 95707 "Sub Contract Batch2 Tst ori"
     [Test]
     procedure Batch2_Effects_MatchOperation()
     begin
-        AssertEffect('Subscription.Renewal.Extend', 'irreversible');
-        AssertEffect('Subscription.Renewal.CreateQuote', 'irreversible');
-        AssertEffect('Subscription.Usage.ImportData', 'irreversible');
-        AssertEffect('Subscription.Usage.Process', 'irreversible');
+        AssertEffect('Subscription.Renewal.Extend', 'write');
+        AssertEffect('Subscription.Renewal.CreateQuote', 'write');
+        AssertEffect('Subscription.Usage.ImportData', 'write');
+        AssertEffect('Subscription.Usage.Process', 'write');
         AssertEffect('Subscription.Deferral.Release', 'irreversible');
         AssertEffect('Subscription.Analysis.Recalculate', 'write');
-        AssertEffect('Subscription.Import.CreateContracts', 'irreversible');
+        AssertEffect('Subscription.Import.CreateContracts', 'write');
     end;
 
     local procedure AssertEffect(TypeName: Text; Expected: Text)

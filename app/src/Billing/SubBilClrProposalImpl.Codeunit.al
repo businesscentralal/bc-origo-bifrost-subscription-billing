@@ -50,7 +50,7 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Clear a billing proposal: deletes the proposal lines of a Billing Template, or of one contract, that are not on a document yet and resets the Next Billing Date of their Subscription Lines. Irreversible. If lines are already on documents, delete the documents first with Subscription.Billing.DeleteDocuments; to propose again use Subscription.Billing.CreateProposal.', Comment = 'is-IS=Hreinsa reikningstillögu: eyðir tillögulínum reikningssniðmáts, eða eins samnings, sem eru ekki enn á skjali og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Óafturkræf aðgerð. Ef línur eru þegar á skjölum skal fyrst eyða skjölunum með Subscription.Billing.DeleteDocuments; til að gera tillögu aftur skal nota Subscription.Billing.CreateProposal.';
+        SelectionLbl: Label 'Clear a billing proposal: deletes the proposal lines of a Billing Template, or of one contract, that are not on a document yet and resets the Next Billing Date of their Subscription Lines. Writes. If lines are already on documents, delete the documents first with Subscription.Billing.DeleteDocuments; to propose again use Subscription.Billing.CreateProposal.', Comment = 'is-IS=Hreinsa reikningstillögu: eyðir tillögulínum reikningssniðmáts, eða eins samnings, sem eru ekki enn á skjali og færir næstu reikningsdagsetningu áskriftarlína þeirra til baka. Skrifar. Ef línur eru þegar á skjölum skal fyrst eyða skjölunum með Subscription.Billing.DeleteDocuments; til að gera tillögu aftur skal nota Subscription.Billing.CreateProposal.';
     begin
         exit(SelectionLbl);
     end;
@@ -96,6 +96,7 @@ codeunit 10035061 "Sub Bil ClrProposal Impl ori" implements "Msg Interface ori",
     /// <param name="Count">Receives the number of units currently in scope.</param>
     /// <param name="Summary">Receives the localized definition of the count.</param>
     /// <returns>False after a counting error; missing selections pass to the operation's validation.</returns>
+    // Kept for compatibility; Foundation does not gate write effects through this counter.
     procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
     var
         DefaultConfirm: Codeunit "Default Confirm ori";

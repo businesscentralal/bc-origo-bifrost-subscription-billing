@@ -53,7 +53,7 @@ codeunit 10035066 "Sub Usg Connect Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Connect supplier subscriptions: links a usage data supplier''s subscriptions to Subscriptions, and with New Subscription Lines it also ends the old lines. Irreversible, because Subscription.Usage.DisconnectSubscription removes the link but not the new lines. Run it before Subscription.Usage.Process for new supplier subscriptions.', Comment = 'is-IS=Tengja áskriftir birgis: tengir áskriftir birgis notkunargagna við áskriftir og með nýjum áskriftarlínum lýkur það einnig gömlu línunum. Óafturkræf aðgerð, því Subscription.Usage.DisconnectSubscription fjarlægir tenginguna en ekki nýju línurnar. Keyrðu hana á undan Subscription.Usage.Process fyrir nýjar áskriftir birgis.';
+        SelectionLbl: Label 'Connect supplier subscriptions: links a usage data supplier''s subscriptions to Subscriptions, and with New Subscription Lines it also ends the old lines. Writes. Subscription.Usage.DisconnectSubscription removes the link but not the new lines. Run it before Subscription.Usage.Process for new supplier subscriptions.', Comment = 'is-IS=Tengja áskriftir birgis: tengir áskriftir birgis notkunargagna við áskriftir og með nýjum áskriftarlínum lýkur það einnig gömlu línunum. Skrifar, því Subscription.Usage.DisconnectSubscription fjarlægir tenginguna en ekki nýju línurnar. Keyrðu hana á undan Subscription.Usage.Process fyrir nýjar áskriftir birgis.';
     begin
         exit(SelectionLbl);
     end;

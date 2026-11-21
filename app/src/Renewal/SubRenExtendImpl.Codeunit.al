@@ -51,7 +51,7 @@ codeunit 10035051 "Sub Ren Extend Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Extend a Subscription: applies the item''s standard packages and any extra packages to an existing Subscription and adds the lines to the named customer and/or vendor contracts, with no dialog. Irreversible. To renew through a sales quote use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Framlengja áskrift: beitir stöðluðum pökkum vörunnar og aukapökkum á fyrirliggjandi áskrift og bætir línunum við tilgreinda samninga viðskiptamanns og/eða lánardrottins, án gluggasamskipta. Óafturkræf aðgerð. Til að endurnýja með sölutilboði skal nota Subscription.Renewal.CreateQuote.';
+        SelectionLbl: Label 'Extend a Subscription: applies the item''s standard packages and any extra packages to an existing Subscription and adds the lines to the named customer and/or vendor contracts, with no dialog. Writes. To renew through a sales quote use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Framlengja áskrift: beitir stöðluðum pökkum vörunnar og aukapökkum á fyrirliggjandi áskrift og bætir línunum við tilgreinda samninga viðskiptamanns og/eða lánardrottins, án gluggasamskipta. Skrifar. Til að endurnýja með sölutilboði skal nota Subscription.Renewal.CreateQuote.';
     begin
         exit(SelectionLbl);
     end;
