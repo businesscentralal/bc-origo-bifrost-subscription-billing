@@ -38,32 +38,32 @@ codeunit 95706 "Sub Contract Batch1 Tst ori"
         AssertEffect('Subscription.Line.Create', 'write');
         AssertEffect('Subscription.Contract.GetLines', 'write');
         AssertEffect('Subscription.Contract.MergeLines', 'write');
-        AssertEffect('Subscription.Contract.CreateInvoice', 'irreversible');
+        AssertEffect('Subscription.Contract.CreateInvoice', 'write');
         AssertEffect('Subscription.Contract.PreviewInvoice', 'write');
-        AssertEffect('Subscription.Contract.UpdateLineDates', 'irreversible');
+        AssertEffect('Subscription.Contract.UpdateLineDates', 'write');
         AssertEffect('Subscription.Contract.UpdateExchangeRates', 'write');
         AssertEffect('Subscription.VendorContract.GetLines', 'write');
-        AssertEffect('Subscription.VendorContract.CreateInvoice', 'irreversible');
+        AssertEffect('Subscription.VendorContract.CreateInvoice', 'write');
         AssertEffect('Subscription.VendorContract.PreviewInvoice', 'write');
-        AssertEffect('Subscription.Billing.CreateProposal', 'irreversible');
+        AssertEffect('Subscription.Billing.CreateProposal', 'write');
         AssertEffect('Subscription.Billing.CreateDocuments', 'irreversible');
         AssertEffect('Subscription.Billing.PostDocuments', 'irreversible');
         AssertEffect('Subscription.Billing.PreviewDocuments', 'read');
         AssertEffect('Subscription.PriceUpdate.SetTemplateFilter', 'write');
         AssertEffect('Subscription.PriceUpdate.CreateProposal', 'write');
-        AssertEffect('Subscription.PriceUpdate.Perform', 'irreversible');
+        AssertEffect('Subscription.PriceUpdate.Perform', 'write');
     end;
 
     [Test]
-    procedure CommittingTypes_AreIrreversible_WriteTypesStayWrite()
+    procedure CommittingWrites_KeepCommitNotes()
     var
         ContractMgt: Codeunit "Msg Contract Mgt ori";
         Contract: JsonObject;
         Effect: JsonObject;
         Token: JsonToken;
     begin
-        // [SCENARIO #22] Microsoft's billing proposal commits every CommitBatchSize contracts, so the type is irreversible
-        AssertEffect('Subscription.Billing.CreateProposal', 'irreversible');
+        // [SCENARIO #107] Committing proposal writes remain writes and document their commit boundaries.
+        AssertEffect('Subscription.Billing.CreateProposal', 'write');
         ContractMgt.GetContract(Enum::"Message Type ori"::"Subscription.Billing.CreateProposal", Contract);
         Contract.Get('effect', Token);
         Effect := Token.AsObject();

@@ -57,7 +57,7 @@ codeunit 10035040 "Sub Con UpdDates Impl ori" implements "Msg Interface ori", "M
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Irreversible, covers every Subscription in the company and needs the Force Field Access permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Óafturkræf aðgerð, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar Þvinga reitaaðgang. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
+        SelectionLbl: Label 'Update Subscription Line term dates: through a Job Queue Entry, closes the ended and fully invoiced Subscription Lines of every Subscription and rolls the term dates of the other lines forward. Writes. Covers every Subscription in the company and needs the Force Field Access permission set. To renew lines before they end use Subscription.Renewal.CreateQuote.', Comment = 'is-IS=Uppfæra tímadagsetningar áskriftarlína: lokar, með verkraðarfærslu, áskriftarlínum sem er lokið og eru fullreikningsfærðar í öllum áskriftum og færir tímadagsetningar hinna línanna fram. Skrifar, nær til allra áskrifta í fyrirtækinu og krefst heimildasamstæðunnar Þvinga reitaaðgang. Til að endurnýja línur áður en þeim lýkur skal nota Subscription.Renewal.CreateQuote.';
     begin
         exit(SelectionLbl);
     end;

@@ -50,7 +50,7 @@ codeunit 10035057 "Sub Imp CrContr Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Create contracts from staged import rows: turns unprocessed staging rows into Subscription Headers, Customer Subscription Contracts, Subscription Lines and contract lines, one stage at a time, committing as it goes. Irreversible. To add the lines of one package to a single Subscription without staging use Subscription.Line.Create.', Comment = 'is-IS=Stofna samninga úr innfluttum bráðabirgðalínum: breytir óunnum bráðabirgðalínum í áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur, eitt skref í einu, og vistar jafnóðum. Óafturkræf aðgerð. Til að bæta línum eins pakka við eina áskrift án bráðabirgðalína skal nota Subscription.Line.Create.';
+        SelectionLbl: Label 'Create contracts from staged import rows: turns unprocessed staging rows into Subscription Headers, Customer Subscription Contracts, Subscription Lines and contract lines, one stage at a time, committing as it goes. Writes. To add the lines of one package to a single Subscription without staging use Subscription.Line.Create.', Comment = 'is-IS=Stofna samninga úr innfluttum bráðabirgðalínum: breytir óunnum bráðabirgðalínum í áskriftarhausa, áskriftarsamninga viðskiptamanna, áskriftarlínur og samningslínur, eitt skref í einu, og vistar jafnóðum. Skrifar. Til að bæta línum eins pakka við eina áskrift án bráðabirgðalína skal nota Subscription.Line.Create.';
     begin
         exit(SelectionLbl);
     end;

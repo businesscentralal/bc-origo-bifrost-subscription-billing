@@ -265,7 +265,7 @@ codeunit 10035075 "Sub Contract Parts ori"
     procedure PriceUpdatePerformParameters() Parameters: JsonArray
     begin
         Parameters.Add(ContractMgt.Parameter('priceUpdateTemplateCode', 'string', false, 'Performs only the lines of this Price Update Template. May be supplied as the subject instead. Omit it to perform every line of every template, as the Contract Price Update page does.'));
-        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, 'expectedCount counts Contract Price Update Lines: the proposal lines this call would perform (apply and delete) now, within priceUpdateTemplateCode or the subject when one is given, otherwise across every template. It is not a number of contracts, Subscription Lines or templates. To get the number without any change, send the same request without expectedCount and read expected in the ConfirmationRequired answer. Always checked when sent; required only when Require Confirmation for Irreversible Messages is enabled in Bifrost Setup.'));
+        Parameters.Add(ContractMgt.Parameter('expectedCount', 'integer', false, GetConfirmationHelp('Subscription.PriceUpdate.Perform')));
     end;
 
     /// <summary>The parameters of Subscription.Renewal.Extend.</summary>
@@ -703,7 +703,7 @@ codeunit 10035075 "Sub Contract Parts ori"
         if MessageType = 'Subscription.Billing.PreviewDocuments' then
             Effect.Add('effect', 'read')
         else
-            if MessageType in ['Subscription.Contract.CreateInvoice', 'Subscription.VendorContract.CreateInvoice', 'Subscription.Billing.CreateProposal', 'Subscription.Billing.CreateDocuments', 'Subscription.Billing.PostDocuments', 'Subscription.Renewal.Extend', 'Subscription.Renewal.CreateQuote', 'Subscription.Usage.ImportData', 'Subscription.Usage.Process', 'Subscription.Deferral.Release', 'Subscription.Import.CreateContracts', 'Subscription.PriceUpdate.Perform', 'Subscription.Contract.UpdateLineDates', 'Subscription.Billing.ClearProposal', 'Subscription.Billing.DeleteDocuments', 'Subscription.Usage.ConnectSubscriptions', 'Subscription.Usage.DeleteData', 'Subscription.Contract.RemoveLine', 'Subscription.Package.RemoveItemAssignment'] then
+            if MessageType in ['Subscription.Billing.CreateDocuments', 'Subscription.Billing.PostDocuments', 'Subscription.Deferral.Release'] then
                 Effect.Add('effect', 'irreversible')
             else
                 Effect.Add('effect', 'write');
@@ -1109,66 +1109,27 @@ codeunit 10035075 "Sub Contract Parts ori"
     /// <returns>The localized count definition and preview instructions.</returns>
     internal procedure GetConfirmationHelp(MessageType: Text): Text
     var
-        PreviewTxt: Label 'expectedCount: %1 With Require Confirmation for Irreversible Messages enabled in Bifrost Setup, send the same request without expectedCount and read expected in ConfirmationRequired; this preview changes no business data. A supplied expectedCount is always checked. In an Orchestrator step, "@preview" requires an author-set Max Count cap.', Comment = '%1 = count unit||is-IS=expectedCount: %1 Þegar staðfesting óafturkræfra skilaboða er virk í uppsetningu Bifrastar skal senda sömu beiðni án expectedCount og lesa expected í ConfirmationRequired; þessi forskoðun breytir engum viðskiptagögnum. Sent expectedCount er alltaf sannprófað. Í Orchestrator-skrefi þarf "@preview" hámarkið Max Count sem höfundur stillir.';
+        IgnoredTxt: Label 'Optional compatibility parameter. Accepted and ignored; this write does not require confirmation.', Comment = 'is-IS=Valfrjáls færibreyta fyrir samhæfni. Samþykkt og hunsuð; þessi skrif þurfa ekki staðfestingu.';
+        PreviewTxt: Label 'expectedCount: %1 With Require Confirmation for Writes Messages enabled in Bifrost Setup, send the same request without expectedCount and read expected in ConfirmationRequired; this preview changes no business data. A supplied expectedCount is always checked. In an Orchestrator step, "@preview" requires an author-set Max Count cap.', Comment = '%1 = count unit||is-IS=expectedCount: %1 Þegar staðfesting óafturkræfra skilaboða er virk í uppsetningu Bifrastar skal senda sömu beiðni án expectedCount og lesa expected í ConfirmationRequired; þessi forskoðun breytir engum viðskiptagögnum. Sent expectedCount er alltaf sannprófað. Í Orchestrator-skrefi þarf "@preview" hámarkið Max Count sem höfundur stillir.';
     begin
+        if GetCountUnit(MessageType) = '' then
+            exit(IgnoredTxt);
         exit(StrSubstNo(PreviewTxt, GetCountUnit(MessageType)));
     end;
 
     local procedure GetCountUnit(MessageType: Text): Text
     var
-        CustomerContractTxt: Label 'Counts the one named Customer Subscription Contract, not its lines or resulting invoices.', Comment = 'is-IS=Telur einn tilgreindan áskriftarsamning viðskiptamanns, ekki línur hans eða reikninga sem verða til.';
-        VendorContractTxt: Label 'Counts the one named Vendor Subscription Contract, not its lines or resulting invoices.', Comment = 'is-IS=Telur einn tilgreindan áskriftarsamning lánardrottins, ekki línur hans eða reikninga sem verða til.';
-        TermDatesTxt: Label 'Counts all Subscription Headers in the company that the term-date job scans. An already pending job counts zero new work. In background mode this is the count when the job is queued; it is not a count of lines that will close.', Comment = 'is-IS=Telur alla áskriftarhausa í fyrirtækinu sem keyrslan fer yfir. Verk sem þegar bíður telur ekkert nýtt verk. Í bakgrunnsham er þetta fjöldinn þegar verkið er sett í biðröð; þetta er ekki fjöldi lína sem verður lokað.';
         TemplateTxt: Label 'Counts the one named Billing Template, not the contracts or proposal lines selected by its filters.', Comment = 'is-IS=Telur eitt tilgreint reikningssniðmát, ekki samninga eða tillögulínur sem síur þess velja.';
-        SubscriptionTxt: Label 'Counts the one named Subscription Header, not the package lines or contract lines created.', Comment = 'is-IS=Telur einn tilgreindan áskriftarhaus, ekki pakkalínur eða samningslínur sem verða til.';
-        QuoteContractTxt: Label 'Counts the one named Customer Subscription Contract, not its selected lines or the renewal quote lines.', Comment = 'is-IS=Telur einn tilgreindan áskriftarsamning viðskiptamanns, ekki valdar línur hans eða línur endurnýjunartilboðs.';
-        SupplierTxt: Label 'Counts the one named Usage Data Supplier, not the imported usage rows or connected subscriptions.', Comment = 'is-IS=Telur einn tilgreindan birgja notkunargagna, ekki innfluttar notkunarlínur eða tengdar áskriftir.';
-        ImportTxt: Label 'Counts the one named Usage Data Import entry, not its imported lines, billing rows or processing steps.', Comment = 'is-IS=Telur eina tilgreinda innflutningsfærslu notkunargagna, ekki innfluttar línur hennar, reikningslínur eða vinnsluskref.';
         DeferralsTxt: Label 'Counts unreleased customer and vendor contract deferral entries with Posting Date up to the session work date, across every contract.', Comment = 'is-IS=Telur óútleystar frestunarfærslur samninga viðskiptamanna og lánardrottna með bókunardagsetningu fram að vinnudagsetningu setunnar, á öllum samningum.';
-        StagingTxt: Label 'Counts staging rows eligible for at least one requested stage at preview time. A staged subscription line counts once even when both line stages select it; rows later skipped or failed still count.', Comment = 'is-IS=Telur bráðabirgðalínur sem koma til greina í að minnsta kosti einu umbeðnu skrefi við forskoðun. Innflutt áskriftarlína er talin einu sinni þótt bæði línuskref velji hana; línur sem síðar er sleppt eða mistakast teljast með.';
-        ProposalTxt: Label 'Counts Billing Line rows selected by billingTemplateCode or subject and the optional contractNo, including rows whose document link will cause validation to refuse the call.', Comment = 'is-IS=Telur reikningslínur sem billingTemplateCode eða subject og valfrjálst contractNo velja, þar með taldar línur sem valda höfnun við sannprófun vegna skjalatengingar.';
-        DocumentsTxt: Label 'Counts distinct documents referenced by the selected Billing Lines, using partner, document type and document number as the key. It is not a count of billing lines.', Comment = 'is-IS=Telur aðgreind skjöl sem valdar reikningslínur vísa á, með aðila, skjalategund og skjalanúmer sem lykil. Þetta er ekki fjöldi reikningslína.';
         PostingTxt: Label 'Counts entries in the documents array. Each entry requests one sales or purchase document posting; duplicate or invalid entries still have to pass the posting validation.', Comment = 'is-IS=Telur stök í documents-fylkinu. Hvert stak biður um bókun eins sölu- eða innkaupaskjals; tvítekin eða ógild stök þurfa samt að standast sannprófun bókunar.';
-        ContractLineTxt: Label 'Counts the one contract line named by contractNo or subject, partner and lineNo. The Subscription Line is detached, not deleted.', Comment = 'is-IS=Telur eina samningslínu sem contractNo eða subject, partner og lineNo tilgreina. Áskriftarlínan er aftengd en ekki eytt.';
-        AssignmentTxt: Label 'Counts the one Item Subscription Package assignment named by itemNo or subject and subscriptionPackageCode.', Comment = 'is-IS=Telur eina úthlutun áskriftarpakka á vöru sem itemNo eða subject og subscriptionPackageCode tilgreina.';
     begin
         case MessageType of
-            'Subscription.Contract.CreateInvoice':
-                exit(CustomerContractTxt);
-            'Subscription.VendorContract.CreateInvoice':
-                exit(VendorContractTxt);
-            'Subscription.Contract.UpdateLineDates':
-                exit(TermDatesTxt);
-            'Subscription.Billing.CreateProposal':
-                exit(TemplateTxt);
             'Subscription.Billing.CreateDocuments':
                 exit(TemplateTxt);
-            'Subscription.Renewal.Extend':
-                exit(SubscriptionTxt);
-            'Subscription.Renewal.CreateQuote':
-                exit(QuoteContractTxt);
-            'Subscription.Usage.ImportData':
-                exit(SupplierTxt);
-            'Subscription.Usage.Process':
-                exit(ImportTxt);
             'Subscription.Deferral.Release':
                 exit(DeferralsTxt);
-            'Subscription.Import.CreateContracts':
-                exit(StagingTxt);
-            'Subscription.Billing.ClearProposal':
-                exit(ProposalTxt);
-            'Subscription.Billing.DeleteDocuments':
-                exit(DocumentsTxt);
-            'Subscription.Usage.ConnectSubscriptions':
-                exit(SupplierTxt);
-            'Subscription.Usage.DeleteData':
-                exit(ImportTxt);
             'Subscription.Billing.PostDocuments':
                 exit(PostingTxt);
-            'Subscription.Contract.RemoveLine':
-                exit(ContractLineTxt);
-            'Subscription.Package.RemoveItemAssignment':
-                exit(AssignmentTxt);
         end;
         exit('');
     end;
@@ -1207,7 +1168,7 @@ codeunit 10035075 "Sub Contract Parts ori"
                 exit('Inserts Contract Price Update Lines (the contract price update proposal) for the template''s matching Subscription Lines. Subscription Lines, contracts and prices are not changed, nothing is posted and nothing is committed.');
             'Subscription.PriceUpdate.Perform':
                 exit('Writes Subscription Lines: changes their prices, Next Price Update and Price Binding Period and archives the old values in the Subscription Line Archive, or inserts Planned Subscription Lines. ' +
-                    'Deletes each performed Contract Price Update Line and commits after each line. Nothing is posted. Irreversible: expectedCount counts Contract Price Update Lines, the proposal lines the call would perform, and the same request sent without expectedCount returns it as expected without changing anything.');
+                    'Deletes each performed Contract Price Update Line and commits after each line. Nothing is posted.');
             'Subscription.Contract.UpdateExchangeRates':
                 exit('Writes Currency Code, Currency Factor and Currency Factor Date on every Subscription Line of the contract whose contract line is open, converts its Calculation Base Amount again from the local currency amount, which recalculates price and amount, flags its billing lines Update Required and archives the previous amounts. The contract itself is not changed.');
             'Subscription.Contract.UpdateLineDates':
