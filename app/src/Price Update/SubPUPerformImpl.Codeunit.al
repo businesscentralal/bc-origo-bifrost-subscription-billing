@@ -51,7 +51,7 @@ codeunit 10035050 "Sub PU Perform Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Apply a price update: writes the proposed prices to the Subscription Lines, or to Planned Subscription Lines when they cannot take effect yet, archives the old values and deletes each performed proposal line. Irreversible. Create the proposal first with Subscription.PriceUpdate.CreateProposal.', Comment = 'is-IS=Framkvæma verðuppfærslu: skrifar tillögð verð á áskriftarlínur, eða á áætlaðar áskriftarlínur þegar þau geta ekki tekið gildi strax, geymir gömlu gildin í safni og eyðir hverri framkvæmdri tillögulínu. Óafturkræf aðgerð. Fyrst þarf að stofna tillöguna með Subscription.PriceUpdate.CreateProposal.';
+        SelectionLbl: Label 'Apply a price update: writes the proposed prices to the Subscription Lines, or to Planned Subscription Lines when they cannot take effect yet, archives the old values and deletes each performed proposal line. Writes. Create the proposal first with Subscription.PriceUpdate.CreateProposal.', Comment = 'is-IS=Framkvæma verðuppfærslu: skrifar tillögð verð á áskriftarlínur, eða á áætlaðar áskriftarlínur þegar þau geta ekki tekið gildi strax, geymir gömlu gildin í safni og eyðir hverri framkvæmdri tillögulínu. Skrifar. Fyrst þarf að stofna tillöguna með Subscription.PriceUpdate.CreateProposal.';
     begin
         exit(SelectionLbl);
     end;

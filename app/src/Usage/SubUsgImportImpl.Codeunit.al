@@ -55,7 +55,7 @@ codeunit 10035053 "Sub Usg Import Impl ori" implements "Msg Interface ori", "Msg
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Import usage data: stores a supplier''s usage file (text or base64), parses it into imported lines and, with runProcessing, also processes them. Irreversible, since each step commits. For an import that is already stored use Subscription.Usage.Process; to undo one use Subscription.Usage.DeleteData.', Comment = 'is-IS=Flytja inn notkunargögn: vistar notkunarskrá birgis (texta eða base64), greinir hana í innfluttar línur og vinnur þær einnig með runProcessing. Óafturkræf aðgerð, því hvert skref vistar. Fyrir innflutning sem þegar er vistaður skal nota Subscription.Usage.Process; til að afturkalla innflutning skal nota Subscription.Usage.DeleteData.';
+        SelectionLbl: Label 'Import usage data: stores a supplier''s usage file (text or base64), parses it into imported lines and, with runProcessing, also processes them. Writes. Each step commits. For an import that is already stored use Subscription.Usage.Process; to undo one use Subscription.Usage.DeleteData.', Comment = 'is-IS=Flytja inn notkunargögn: vistar notkunarskrá birgis (texta eða base64), greinir hana í innfluttar línur og vinnur þær einnig með runProcessing. Skrifar, því hvert skref vistar. Fyrir innflutning sem þegar er vistaður skal nota Subscription.Usage.Process; til að afturkalla innflutning skal nota Subscription.Usage.DeleteData.';
     begin
         exit(SelectionLbl);
     end;

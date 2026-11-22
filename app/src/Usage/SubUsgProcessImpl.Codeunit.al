@@ -54,7 +54,7 @@ codeunit 10035054 "Sub Usg Process Impl ori" implements "Msg Interface ori", "Ms
 
     procedure GetSelectionDescription(): Text
     var
-        SelectionLbl: Label 'Process a usage import: runs the processing steps on an existing Usage Data Import and reports each step. Irreversible, since it commits before each step. Connect new supplier subscriptions first with Subscription.Usage.ConnectSubscriptions; to import a file use Subscription.Usage.ImportData; to start over use Subscription.Usage.DeleteData.', Comment = 'is-IS=Vinna úr innflutningi notkunar: keyrir vinnsluskrefin á fyrirliggjandi innflutningsfærslu notkunargagna og skilar niðurstöðu hvers skrefs. Óafturkræf aðgerð, því hún vistar á undan hverju skrefi. Fyrst eru nýjar áskriftir birgis tengdar með Subscription.Usage.ConnectSubscriptions; til að flytja inn skrá skal nota Subscription.Usage.ImportData; til að byrja upp á nýtt skal nota Subscription.Usage.DeleteData.';
+        SelectionLbl: Label 'Process a usage import: runs the processing steps on an existing Usage Data Import and reports each step. Writes. Commits before each step. Connect new supplier subscriptions first with Subscription.Usage.ConnectSubscriptions; to import a file use Subscription.Usage.ImportData; to start over use Subscription.Usage.DeleteData.', Comment = 'is-IS=Vinna úr innflutningi notkunar: keyrir vinnsluskrefin á fyrirliggjandi innflutningsfærslu notkunargagna og skilar niðurstöðu hvers skrefs. Skrifar. Vistar á undan hverju skrefi. Fyrst eru nýjar áskriftir birgis tengdar með Subscription.Usage.ConnectSubscriptions; til að flytja inn skrá skal nota Subscription.Usage.ImportData; til að byrja upp á nýtt skal nota Subscription.Usage.DeleteData.';
     begin
         exit(SelectionLbl);
     end;

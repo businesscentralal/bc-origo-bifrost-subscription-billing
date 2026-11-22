@@ -15,6 +15,7 @@ codeunit 10035087 "Sub PU Perform Confirm ori" implements "Msg Confirm ori"
     /// <param name="Count">Receives the number of Contract Price Update Lines in scope.</param>
     /// <param name="Summary">Receives a localized description of the counted lines.</param>
     /// <returns>True; an invalid or unknown template counts as no lines and is refused by the type itself.</returns>
+    // Kept for compatibility; Foundation does not gate write effects through this counter.
     procedure GetConfirmCount(var Argument: Record "Message Argument ori"; var Count: Integer; var Summary: Text): Boolean
     var
         ContractPriceUpdateLine: Record "Sub. Contr. Price Update Line";
