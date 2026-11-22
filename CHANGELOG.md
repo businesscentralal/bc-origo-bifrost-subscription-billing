@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Released 28.0.3.71 to AppSource on 2026-11-22 (submission 1152921505800031351, go-live): the effect-fix release (#107, only posting is irreversible). Entries below this line that predate it are included in that release unless a later version heading says otherwise.
+
 ### Fixed (2026-11-21) - confirmation setup help (#107, PR #108 amend)
 
 - Restores the existing "Require Confirmation for Irreversible Messages" setting name in English expectedCount help and its XLF source. The posting-type help test now pins the setting caption. Write counters remain available for compatibility and explain why Foundation does not gate write effects through them.
