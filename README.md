@@ -122,7 +122,7 @@ extension is operated entirely through message types.
 | App | ID | Publisher | Version |
 | --- | --- | --- | --- |
 | Bifrost Foundation | `7505e808-6e52-4b96-a328-82573391297a` | Origo | 28.0.3.530 |
-| Subscription Billing | `3099ffc7-4cf7-4df6-9b96-7e4bc2bb587c` | Microsoft | 28.3.0.0 |
+| Subscription Billing | `3099ffc7-4cf7-4df6-9b96-7e4bc2bb587c` | Microsoft | 28.2.0.0 |
 
 The test app requires Foundation 28.0.10 or later for the restricted licence-administrator setup regression.
 It additionally depends on Bifrost Subscription Billing itself and on Microsoft's
