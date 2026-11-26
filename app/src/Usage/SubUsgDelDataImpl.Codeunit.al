@@ -29,7 +29,6 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
         InvalidModeErr: Label 'The parameter ''mode'' must be either ''resetLines'' or ''deleteImport'', not ''%1''.', Comment = '%1 = the supplied mode||is-IS=Færibreytan ''mode'' verður að vera annaðhvort ''resetLines'' eða ''deleteImport'', ekki ''%1''.';
         InvoicedErr: Label 'Usage Data Import entry %1 has usage billing on document %2. Delete or cancel that document first; usage that is posted cannot be imported again.', Comment = '%1 = entry number, %2 = document number||is-IS=Færsla %1 í innflutningi notkunargagna hefur reikningsgerð fyrir notkunargögn á skjali %2. Eyddu eða hættu við það skjal fyrst; ekki er hægt að flytja bókaða notkun inn aftur.';
         InBillingErr: Label 'Usage Data Import entry %1 has usage billing on billing line %2. Clear that billing proposal first with Subscription.Billing.ClearProposal.', Comment = '%1 = entry number, %2 = billing line entry number||is-IS=Færsla %1 í innflutningi notkunargagna hefur reikningsgerð fyrir notkunargögn á reikningslínu %2. Hreinsaðu þá reikningstillögu fyrst með Subscription.Billing.ClearProposal.';
-        SupplierTypeErr: Label 'Usage Data Import entry %1 comes from a supplier of type %2. Mode resetLines can only reset imports of the Generic supplier type. Use mode deleteImport, or the Delete Usage Data Lines and Billing action in Business Central.', Comment = '%1 = entry number, %2 = supplier type||is-IS=Færsla %1 í innflutningi notkunargagna kemur frá birgja af gerðinni %2. Hamurinn resetLines getur aðeins núllstillt innflutning frá birgjum af almennri gerð. Notaðu haminn deleteImport, eða aðgerðina Eyða notkunargagnalínum og reikningsgerð í Business Central.';
         ResetLinesTok: Label 'resetlines', Locked = true;
         DeleteImportTok: Label 'deleteimport', Locked = true;
         DescriptionLbl: Label 'Deletes the imported lines and usage billing of a usage import so it can be processed again, or deletes the whole import. Refuses imports already on a billing line or document.', MaxLength = 250, Comment = 'is-IS=Eyðir innfluttum línum og reikningsgerð fyrir innflutt notkunargögn svo hægt sé að vinna hann aftur, eða eyðir öllum innflutningnum. Hafnar innflutningi sem er þegar á reikningslínu eða skjali.';
@@ -215,7 +214,6 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
             ResponseJson.Add('usageDataBillingDeleted', BillingRowsBefore - UsageDataBilling.Count());
             ResponseJson.Add('importDeleted', true);
         end else begin
-            CheckSupplierTypeSupported(UsageDataImport);
             DeleteUsageDataBillingLines(UsageDataImport);
             ResponseJson.Add('mode', 'resetLines');
             ResponseJson.Add('usageDataBillingDeleted', BillingRowsBefore - UsageDataBilling.Count());
@@ -246,33 +244,19 @@ codeunit 10035069 "Sub Usg DelData Impl ori" implements "Msg Interface ori", "Ms
     end;
 
     /// <summary>
-    /// The interface "Usage Data Processing" is internal in Subscription Billing 28.0, so the imported lines cannot be deleted
-    /// through the supplier type. Only the Generic type stores them, in "Usage Data Generic Import" (#110). Any other supplier
-    /// type is refused before anything is deleted, so its imported data is never left half deleted.
-    /// </summary>
-    local procedure CheckSupplierTypeSupported(UsageDataImport: Record "Usage Data Import")
-    var
-        UsageDataSupplier: Record "Usage Data Supplier";
-    begin
-        if not UsageDataSupplier.Get(UsageDataImport."Supplier No.") then
-            exit;
-        if UsageDataSupplier.Type <> UsageDataSupplier.Type::Generic then
-            Helper.RaiseRefusal("Bifrost Error Code ori"::PreconditionFailed, StrSubstNo(SupplierTypeErr, UsageDataImport."Entry No.", Format(UsageDataSupplier.Type)), 'usageDataImportEntryNo', Format(UsageDataImport."Entry No.", 0, 9));
-    end;
-
-    /// <summary>
     /// Microsoft: internal "Usage Data Import".DeleteUsageDataBillingLines, without its local OnDeleteUsageDataBillingLines event:
-    /// deletes the imported lines and the Usage Data Billing rows, and resets status, step and reason. As in Subscription
-    /// Billing 28.0 the imported lines are the "Usage Data Generic Import" rows of the import (#110).
+    /// deletes the supplier type's imported data and the Usage Data Billing rows, and resets status, step and reason.
     /// </summary>
     local procedure DeleteUsageDataBillingLines(var UsageDataImport: Record "Usage Data Import")
     var
-        UsageDataGenericImport: Record "Usage Data Generic Import";
+        UsageDataSupplier: Record "Usage Data Supplier";
         UsageDataBilling: Record "Usage Data Billing";
+        UsageDataProcessing: Interface "Usage Data Processing";
     begin
-        UsageDataGenericImport.SetRange("Usage Data Import Entry No.", UsageDataImport."Entry No.");
-        if not UsageDataGenericImport.IsEmpty() then
-            UsageDataGenericImport.DeleteAll(false);
+        if UsageDataSupplier.Get(UsageDataImport."Supplier No.") then begin
+            UsageDataProcessing := UsageDataSupplier.Type;
+            UsageDataProcessing.DeleteImportedData(UsageDataImport);
+        end;
         UsageDataBilling.SetRange("Usage Data Import Entry No.", UsageDataImport."Entry No.");
         if not UsageDataBilling.IsEmpty() then
             UsageDataBilling.DeleteAll(true);
