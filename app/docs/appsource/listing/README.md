@@ -99,7 +99,7 @@ What it does
 - Moves subscriptions in: turn staged import rows into real subscriptions and contracts.
 
 Requirements and pricing
-- Microsoft Dynamics 365 Business Central 28.3 or later, Essentials or Premium.
+- Microsoft Dynamics 365 Business Central 28.2 or later, Essentials or Premium.
 - Bifrost Foundation, available separately on AppSource.
 - Microsoft's Subscription Billing app installed and set up.
 - For prices, contact Origo (https://www.origo.is/) or your Business Central partner.

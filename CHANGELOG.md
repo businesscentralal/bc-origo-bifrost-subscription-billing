@@ -4,6 +4,11 @@
 
 - Released 28.0.3.71 to AppSource on 2026-11-22 (submission 1152921505800031351, go-live): the effect-fix release (#107, only posting is irreversible). Entries below this line that predate it are included in that release unless a later version heading says otherwise.
 
+### Changed (2026-11-26) - application minimum (#110)
+
+- Requires Business Central 28.2 or later (was 28.3): `application` and the Microsoft Subscription Billing dependency are 28.2.0.0 in the app and the test app (Gunnar's exception to the 28.0 rule). The floor is set by 28.2 APIs: `"Billing Proposal".CreateBillingProposalForPurchaseHeader` and `CreatePurchaseLines` (internal before 28.2), `"Extend Sub. Contract Mgt.".ExtendContract`/`SetHideDialog`, `"Sub. Contracts Item Management".CalculateDirectUnitCost`, the `"Subscription Line Archive"` fields `Usage Based Billing`, `Usage Based Pricing` and `Pricing Unit Cost Surcharge %`, and the `"Usage Data Processing"` interface. No feature dropped and nothing copied.
+- The Business Central floor in `.claude/CLAUDE.md`, the README dependency table and the Partner Center listing text (`app/docs/appsource/listing/README.md`, `description.md`, `description.html`) now says 28.2 instead of 28.3 (review note on PR #111).
+
 ### Fixed (2026-11-21) - confirmation setup help (#107, PR #108 amend)
 
 - Restores the existing "Require Confirmation for Irreversible Messages" setting name in English expectedCount help and its XLF source. The posting-type help test now pins the setting caption. Write counters remain available for compatibility and explain why Foundation does not gate write effects through them.
